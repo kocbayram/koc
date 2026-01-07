@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: #f0f0f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, #ff0000, #ff5e00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .search-box {
+            display: flex;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            background: #444;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .search-btn {
+            padding: 15px 20px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #cc0000;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .quick-link {
+            padding: 12px;
+            background: #333;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .quick-link:hover {
+            background: #ff0000;
+            transform: translateY(-3px);
+        }
+
+        .logo-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(90deg, #ff0000, #ff5e00);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .logo-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+        }
+
+        .settings {
+            background: #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .settings h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ff5e00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ff0000;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .firefox-warning {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 8px;
+            color: #ff9999;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .note {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .icon {
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo-btn {
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YOUTUBE PLAYER</h1>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" id="search-input" placeholder="YouTube'da arama yapın..." value="Galatasaray">
+            <button class="search-btn" id="search-btn">
+                🔍
+            </button>
+        </div>
+        
+        <div class="quick-links">
+            <a href="https://m.youtube.com/feed/trending" class="quick-link" target="_blank" rel="noopener">
+                <span class="icon">🔥</span> Popüler
+            </a>
+            <a href="https://m.youtube.com/feed/subscriptions" class="quick-link" target="_blank" rel="noopener">
+                <span class="icon">👥</span> Abonelikler
+            </a>
+            <a href="https://m.youtube.com/playlist?list=WL" class="quick-link" target="_blank" rel="noopener">
+                <span class="icon">⏰</span> İzleme Listesi
+            </a>
+            <a href="https://m.youtube.com/feed/history" class="quick-link" target="_blank" rel="noopener">
+                <span class="icon">📚</span> İzleme Geçmişi
+            </a>
+            <a href="https://music.youtube.com/" class="quick-link" target="_blank" rel="noopener">
+                <span class="icon">🎵</span> YouTube Music
+            </a>
+        </div>
+        
+        <button class="logo-btn" id="logo-btn">
+            <span class="icon">▶</span> YOUTUBE'U AÇ
+        </button>
+        
+        <div class="settings">
+            <h2><span class="icon">⚙</span> Ayarlar</h2>
+            <div class="setting-option">
+                <span>Karanlık Mod</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-option">
+                <span>Otomatik Oynatma</span>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-option">
+                <span>HD Kalitesi</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="firefox-warning" id="firefox-warning">
+            <strong>Firefox Kullanıcıları:</strong> Arka planda çalışması için "Background Play Fix" eklentisini yüklemeniz gerekebilir.
+        </div>
+        
+        <p class="note">
+            Butona tıkladıktan sonra istediğiniz videoyu seçip izleyebilirsiniz.<br>
+            <small>Not: Bazı tarayıcılarda arka plan oynatma için eklenti gerekebilir.</small>
+        </p>
+    </div>
+
+    <script>
+        function initApp() {
+            const youtubeUrl = "https://www.youtube.com";
+            const youtubeSearchUrl = "https://www.youtube.com/results?search_query=";
+            
+            const logoBtn = document.getElementById('logo-btn');
+            const searchBtn = document.getElementById('search-btn');
+            const searchInput = document.getElementById('search-input');
+            const firefoxWarning = document.getElementById('firefox-warning');
+            
+            const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+            
+            if (isFirefox) {
+                firefoxWarning.style.display = 'block';
+            }
+            
+            logoBtn.addEventListener('click', () => {
+                window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+            });
+            
+            searchBtn.addEventListener('click', () => {
+                const searchText = searchInput.value.trim();
+                if (searchText) {
+                    const searchUrl = youtubeSearchUrl + encodeURIComponent(searchText);
+                    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+                }
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && document.activeElement !== searchInput) {
+                    window.open(youtubeUrl, '_blank', 'noopener,noreferrer');
+                }
+            });
+            
+            window.addEventListener('load', () => {
+                searchInput.focus();
+                searchInput.select();
+            });
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
