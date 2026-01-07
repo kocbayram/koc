@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halk Radyo</title>
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- iOS PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Halk Radyo">
+    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f4fb.svg">
+    
+    <!-- PWA icons -->
+    <link rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f4fb.svg">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/svg/1f4fb.svg">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            color: #4cc9f0;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .status {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid #4361ee;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #stopBtn {
+            background-color: #f72585;
+        }
+        
+        #stopBtn:hover {
+            background-color: #e01e75;
+        }
+        
+        .volume-control {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .volume-slider-container {
+            width: 70%;
+            position: relative;
+        }
+        
+        .volume-slider-container input {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+        
+        .volume-slider-container input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4cc9f0;
+            cursor: pointer;
+        }
+        
+        .volume-percentage {
+            position: absolute;
+            top: -25px;
+            right: 0;
+            font-size: 0.8rem;
+            color: #4cc9f0;
+            font-weight: bold;
+        }
+        
+        .icon {
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        .warning {
+            color: #ffc107;
+            background-color: rgba(255, 193, 7, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .player-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ff6b6b;
+        }
+        
+        .status-indicator.active {
+            background-color: #4cd964;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        #videoElement {
+            display: none;
+        }
+        
+        .stream-info {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #aaa;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+        
+        .loading {
+            display: none;
+            margin: 15px 0;
+            color: #4cc9f0;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                max-width: 95%;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                padding: 10px 20px;
+                min-width: 120px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .volume-slider-container {
+                width: 60%;
+            }
+        }
+        
+        /* PWA standalone mode */
+        @media all and (display-mode: standalone) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 10px;
+                padding: 20px 15px;
+            }
+        }
+        
+        /* Prevent text selection */
+        .noselect {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="noselect">
+    <div class="container">
+        <h1><span class="icon">📻</span> Halk Radyo</h1>
+        
+        <div class="status">
+            <p><strong>Canlı Yayın:</strong> Halk Radyo</p>
+            <!-- Akış URL'si kaldırıldı -->
+        </div>
+        
+        <div class="warning" id="autoplayWarning">
+            Otomatik başlatma engellendi. Lütfen "Başlat" butonuna tıklayın.
+        </div>
+        
+        <div class="error" id="errorMessage"></div>
+        
+        <div class="loading" id="loadingIndicator">
+            <span class="icon">⏳</span> Yayın başlatılıyor...
+        </div>
+        
+        <div class="controls">
+            <button id="playBtn">
+                <span class="icon">▶️</span> Başlat
+            </button>
+            <button id="stopBtn" disabled>
+                <span class="icon">⏹️</span> Durdur
+            </button>
+        </div>
+        
+        <div class="volume-control">
+            <span class="icon">🔈</span>
+            <div class="volume-slider-container">
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7">
+                <div class="volume-percentage" id="volumePercentage">70%</div>
+            </div>
+            <span class="icon">🔊</span>
+        </div>
+        
+        <div class="player-status">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="statusText">Yayın durduruldu</span>
+        </div>
+        
+        <div class="stream-info">
+            <span>HLS Akışı</span>
+            <span id="connectionStatus">Bağlantı hazır</span>
+        </div>
+        
+        <!-- Video elementi ses çalmak için kullanılacak (görünmez) -->
+        <video id="videoElement" crossorigin="anonymous"></video>
+    </div>
+
+    <script>
+        // PWA: Service Worker kaydı
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker kaydedildi:', registration.scope);
+                        
+                        // PWA'yı ana ekrana ekleme uyarısı
+                        if (!window.matchMedia('(display-mode: standalone)').matches) {
+                            // Kullanıcıya ana ekrana eklemeyi önermek için
+                            // Burada sessiz bir bildirim yapabiliriz
+                            console.log('Ana ekrana eklemek için: Menü → "Ana ekrana ekle"');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Service Worker kaydı başarısız:', error);
+                    });
+            });
+        }
+
+        // HTML elementlerini seç
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumePercentage = document.getElementById('volumePercentage');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const errorMessage = document.getElementById('errorMessage');
+        const autoplayWarning = document.getElementById('autoplayWarning');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const videoElement = document.getElementById('videoElement');
+        const connectionStatus = document.getElementById('connectionStatus');
+        
+        // HLS akış URL'si (sadece kod içinde kalacak)
+        const streamUrl = 'https://halktv-live.daioncdn.net/halktv/halktv.m3u8';
+        
+        // HLS desteğini güvenli şekilde kontrol et
+        const hlsSupported = videoElement.canPlayType('application/vnd.apple.mpegurl') ||
+                            (typeof Hls !== 'undefined' && Hls.isSupported());
+        
+        // HLS.js instance'ı
+        let hls = null;
+        
+        // Otomatik başlatma denendi mi?
+        let autoplayAttempted = false;
+        
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // Uyarıyı gizle
+            autoplayWarning.style.display = 'none';
+            
+            if (!hlsSupported) {
+                showError('Tarayıcınız HLS akışını desteklemiyor. Lütfen güncel bir tarayıcı kullanın.');
+                playBtn.disabled = true;
+                connectionStatus.textContent = 'Desteklenmiyor';
+                connectionStatus.style.color = '#ff6b6b';
+                return;
+            }
+            
+            // Ses seviyesini ayarla ve yüzdeyi göster
+            videoElement.volume = volumeSlider.value;
+            updateVolumePercentage();
+            
+            // Otomatik başlatmayı dene
+            setTimeout(() => {
+                attemptAutoplay();
+            }, 1000); // 1 saniye gecikme ile başlat
+        });
+        
+        // Başlat butonu işlevi
+        playBtn.addEventListener('click', function() {
+            startStream();
+            // Butona tıklandığında uyarıyı gizle
+            autoplayWarning.style.display = 'none';
+        });
+        
+        // Durdur butonu işlevi
+        stopBtn.addEventListener('click', function() {
+            stopStream();
+        });
+        
+        // Ses seviyesi ayarı
+        volumeSlider.addEventListener('input', function() {
+            videoElement.volume = volumeSlider.value;
+            updateVolumePercentage();
+        });
+        
+        // Otomatik başlatma denemesi
+        function attemptAutoplay() {
+            if (autoplayAttempted) return;
+            
+            autoplayAttempted = true;
+            loadingIndicator.classList.add('active');
+            connectionStatus.textContent = 'Otomatik başlatılıyor...';
+            connectionStatus.style.color = '#4cc9f0';
+            
+            startStream();
+        }
+        
+        // Akışı başlatma fonksiyonu
+        function startStream() {
+            errorMessage.style.display = 'none';
+            loadingIndicator.classList.add('active');
+            connectionStatus.textContent = 'Bağlanıyor...';
+            connectionStatus.style.color = '#4cc9f0';
+            
+            // Modern tarayıcılar için HLS.js kullan
+            if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+                // Önceki HLS instance'ını temizle
+                if (hls) {
+                    hls.destroy();
+                }
+                
+                // Yeni HLS instance'ı oluştur
+                hls = new Hls({
+                    enableWorker: false, // Küçük uygulama için worker kullanma
+                    lowLatencyMode: true,
+                    backBufferLength: 0,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 60
+                });
+                
+                hls.loadSource(streamUrl);
+                hls.attachMedia(videoElement);
+                
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    videoElement.play()
+                        .then(() => {
+                            loadingIndicator.classList.remove('active');
+                            updateUIForPlaying();
+                            connectionStatus.textContent = 'Yayın başladı';
+                            connectionStatus.style.color = '#4cd964';
+                        })
+                        .catch(error => {
+                            loadingIndicator.classList.remove('active');
+                            handlePlayError(error);
+                        });
+                });
+                
+                hls.on(Hls.Events.ERROR, function(event, data) {
+                    console.error('HLS Error:', data);
+                    
+                    if (data.fatal) {
+                        loadingIndicator.classList.remove('active');
+                        switch(data.type) {
+                            case Hls.ErrorTypes.NETWORK_ERROR:
+                                showError('Ağ hatası. Lütfen bağlantınızı kontrol edin.');
+                                break;
+                            case Hls.ErrorTypes.MEDIA_ERROR:
+                                showError('Medya hatası. Akış yayında olmayabilir.');
+                                break;
+                            default:
+                                showError('Akış hatası. Lütfen tekrar deneyin.');
+                        }
+                        
+                        stopStream();
+                    }
+                });
+                
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                // Safari gibi tarayıcılar için native HLS desteği
+                videoElement.src = streamUrl;
+                videoElement.play()
+                    .then(() => {
+                        loadingIndicator.classList.remove('active');
+                        updateUIForPlaying();
+                        connectionStatus.textContent = 'Yayın başladı';
+                        connectionStatus.style.color = '#4cd964';
+                    })
+                    .catch(error => {
+                        loadingIndicator.classList.remove('active');
+                        handlePlayError(error);
+                    });
+            } else {
+                loadingIndicator.classList.remove('active');
+                showError('Tarayıcınız HLS akışını desteklemiyor.');
+                connectionStatus.textContent = 'Desteklenmiyor';
+                connectionStatus.style.color = '#ff6b6b';
+                return;
+            }
+        }
+        
+        // Oynatma hatası işleme
+        function handlePlayError(error) {
+            console.error('Play Error:', error);
+            
+            // Otomatik oynatma engellendi hatası
+            if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+                if (autoplayAttempted && !playBtn.disabled) {
+                    // Sadece otomatik başlatma denendiğinde ve buton etkinse uyarı göster
+                    autoplayWarning.style.display = 'block';
+                }
+                showError('Otomatik oynatma engellendi. Lütfen "Başlat" butonuna tıklayın.');
+                connectionStatus.textContent = 'Başlatma engellendi';
+                connectionStatus.style.color = '#ffc107';
+            } else {
+                showError('Oynatma hatası: ' + error.message);
+                connectionStatus.textContent = 'Oynatma hatası';
+                connectionStatus.style.color = '#ff6b6b';
+            }
+            
+            updateUIForStopped();
+        }
+        
+        // Akışı durdurma fonksiyonu
+        function stopStream() {
+            loadingIndicator.classList.remove('active');
+            
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+            
+            videoElement.pause();
+            videoElement.src = '';
+            
+            updateUIForStopped();
+            connectionStatus.textContent = 'Bağlantı kesildi';
+            connectionStatus.style.color = '#ff6b6b';
+            
+            // Durduğunda uyarıyı gizle
+            autoplayWarning.style.display = 'none';
+        }
+        
+        // Oynatma durumu için UI güncelleme
+        function updateUIForPlaying() {
+            playBtn.disabled = true;
+            stopBtn.disabled = false;
+            statusIndicator.classList.add('active');
+            statusText.textContent = 'Yayın çalınıyor...';
+        }
+        
+        // Durdurulma durumu için UI güncelleme
+        function updateUIForStopped() {
+            playBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusIndicator.classList.remove('active');
+            statusText.textContent = 'Yayın durduruldu';
+        }
+        
+        // Ses yüzdesini güncelle
+        function updateVolumePercentage() {
+            const percentage = Math.round(volumeSlider.value * 100);
+            volumePercentage.textContent = `${percentage}%`;
+        }
+        
+        // Hata mesajı gösterme
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            updateUIForStopped();
+        }
+        
+        // Sayfa kapatıldığında akışı durdur
+        window.addEventListener('beforeunload', function() {
+            stopStream();
+        });
+        
+        // Çevrimdışı olduğunda akışı durdur
+        window.addEventListener('offline', function() {
+            showError('İnternet bağlantınız kesildi. Lütfen bağlantınızı kontrol edin.');
+            connectionStatus.textContent = 'Çevrimdışı';
+            connectionStatus.style.color = '#ff6b6b';
+        });
+        
+        // Çevrimiçi olduğunda bilgi ver
+        window.addEventListener('online', function() {
+            connectionStatus.textContent = 'Bağlantı hazır';
+            connectionStatus.style.color = '#4cc9f0';
+        });
+    </script>
+    
+    <!-- HLS.js kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.5/dist/hls.min.js"></script>
+</body>
+</html>
