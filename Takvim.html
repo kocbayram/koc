@@ -135,6 +135,11 @@
             padding: 1px;
             border-radius: 0 0 4px 4px;
         }
+        /* Haftasonu günleri için özel stil */
+        .weekend {
+            color: #d32f2f;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -148,13 +153,14 @@
             <button onclick="goToToday()">Bugüne Dön</button>
         </div>
         <div class="calendar-grid" id="calendar">
-            <div class="calendar-day header" translate="no">Paz.</div>
+            <!-- Pazartesi'den başlayan günler -->
             <div class="calendar-day header" translate="no">Pzt.</div>
             <div class="calendar-day header" translate="no">Sal.</div>
             <div class="calendar-day header" translate="no">Çar.</div>
             <div class="calendar-day header" translate="no">Per.</div>
             <div class="calendar-day header" translate="no">Cum.</div>
             <div class="calendar-day header" translate="no">Cts.</div>
+            <div class="calendar-day header" translate="no">Paz.</div>
         </div>
         
         <div class="legend">
@@ -301,20 +307,28 @@
             return [...fixedHolidays, ...islamicHolidays];
         }
 
+        // JavaScript Date.getDay() metodunda Pazar=0, Pazartesi=1, ...
+        // Biz Pazartesi'yi 0 yapmak için ayarlama yapacağız
+        function getAdjustedDayIndex(date) {
+            // Pazartesi=0, Salı=1, Çarşamba=2, Perşembe=3, Cuma=4, Cumartesi=5, Pazar=6
+            return (date.getDay() + 6) % 7;
+        }
+
         function renderCalendar() {
             const calendar = document.getElementById('calendar');
+            // Sadece gün hücrelerini temizle (başlıkları koru)
             while (calendar.children.length > 7) {
                 calendar.removeChild(calendar.lastChild);
             }
 
             const firstDay = new Date(displayedYear, displayedMonth, 1);
             const lastDay = new Date(displayedYear, displayedMonth + 1, 0);
-            const firstDayIndex = firstDay.getDay();
+            const firstDayIndex = getAdjustedDayIndex(firstDay);
             const totalDays = lastDay.getDate();
 
             document.getElementById('month-year').textContent = `${firstDay.toLocaleString('tr-TR', { month: 'long' })} ${displayedYear}`;
 
-            // Boş günleri ekle
+            // Boş günleri ekle (Pazartesi'den başlayarak)
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyDay = document.createElement('div');
                 emptyDay.className = 'calendar-day';
@@ -331,6 +345,12 @@
                 dayElement.textContent = day;
 
                 const currentDay = new Date(displayedYear, displayedMonth, day);
+                const dayOfWeek = currentDay.getDay(); // 0=Pazar, 1=Pazartesi, ...
+                
+                // Haftasonu günlerini işaretle (Cumartesi ve Pazar)
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayElement.classList.add('weekend');
+                }
                 
                 // Bugün kontrolü
                 if (
