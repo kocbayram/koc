@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>Türkiye Takvimi - Resmi Tatiller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+        }
+        .calendar-container {
+            background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+            border: 2px solid #bbb;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 12px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            text-align: center;
+        }
+        .calendar-day {
+            padding: 6px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 12px;
+            min-height: 30px;
+            position: relative;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .calendar-day:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .calendar-day.header {
+            background: #009999;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+            border: 2px solid #1A4731;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .current-day {
+            background: #009999;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #1A4731;
+        }
+        /* Dini bayramlar ve resmi tatiller için sarı tonları */
+        .holiday {
+            background: #FFEB3B !important; /* Parlak sarı */
+            border: 2px solid #FFB300 !important;
+            color: #333 !important;
+            font-weight: bold !important;
+        }
+        .arefe {
+            background: #FFF59D !important; /* Açık sarı */
+            border: 2px solid #FFD54F !important;
+            color: #333 !important;
+            font-weight: bold !important;
+        }
+        /* Renk açıklamaları */
+        .legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 9px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        .controls {
+            text-align: center;
+            margin: 8px 0;
+        }
+        button {
+            padding: 6px 12px;
+            border: 2px solid #009999;
+            border-radius: 6px;
+            background: #009999;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s, border 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: #1A4731;
+            border: 2px solid #123524;
+        }
+        .holiday-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 1px;
+            border-radius: 0 0 4px 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button onclick="changeMonth(-1)">◄ Önceki</button>
+            <h2 id="month-year">Mayıs 2025</h2>
+            <button onclick="changeMonth(1)">Sonraki ►</button>
+        </div>
+        <div class="controls">
+            <button onclick="goToToday()">Bugüne Dön</button>
+        </div>
+        <div class="calendar-grid" id="calendar">
+            <div class="calendar-day header" translate="no">Paz.</div>
+            <div class="calendar-day header" translate="no">Pzt.</div>
+            <div class="calendar-day header" translate="no">Sal.</div>
+            <div class="calendar-day header" translate="no">Çar.</div>
+            <div class="calendar-day header" translate="no">Per.</div>
+            <div class="calendar-day header" translate="no">Cum.</div>
+            <div class="calendar-day header" translate="no">Cts.</div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #009999;"></div>
+                <span>Bugün</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FFF59D;"></div>
+                <span>Arefe Günü</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #FFEB3B;"></div>
+                <span>Resmi Tatil</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let displayedMonth = currentDate.getMonth();
+        let displayedYear = currentDate.getFullYear();
+
+        // Sabit resmi tatiller (her yıl aynı tarihte)
+        function getFixedHolidays(year) {
+            return [
+                { month: 0, day: 1, type: "holiday", name: "Yılbaşı", year: year },
+                { month: 3, day: 23, type: "holiday", name: "Ulusal Egemenlik ve Çocuk Bayramı", year: year },
+                { month: 4, day: 1, type: "holiday", name: "Emek ve Dayanışma Günü", year: year },
+                { month: 4, day: 19, type: "holiday", name: "Atatürk'ü Anma, Gençlik ve Spor Bayramı", year: year },
+                { month: 6, day: 15, type: "holiday", name: "Demokrasi ve Milli Birlik Günü", year: year },
+                { month: 7, day: 30, type: "holiday", name: "Zafer Bayramı", year: year },
+                { month: 9, day: 29, type: "holiday", name: "Cumhuriyet Bayramı", year: year },
+                { month: 9, day: 28, type: "arefe", name: "Cumhuriyet Arefesi", year: year }
+            ];
+        }
+
+        // Hicri takvime göre dini bayramları hesapla
+        function calculateIslamicHolidays(year) {
+            const holidays = [];
+            
+            // Hicri takvim hesaplaması için temel referans
+            // 1 Muharrem 1446 = 28 Haziran 2024 (referans noktası)
+            // Hicri yıl = 354.367 gün (ortalama)
+            // Miladi yıl = 365.2425 gün (ortalama)
+            
+            // Referans: 1 Muharrem 1446 = 28 Haziran 2024
+            const referenceHijriYear = 1446;
+            const referenceGregorianDate = new Date(2024, 5, 28); // 28 Haziran 2024
+            
+            // İstenen yıl için yaklaşık hicri yıl hesapla
+            const targetDate = new Date(year, 0, 1);
+            const daysDiff = Math.floor((targetDate - referenceGregorianDate) / (1000 * 60 * 60 * 24));
+            const hijriYearDiff = Math.floor(daysDiff / 354.367);
+            const currentHijriYear = referenceHijriYear + hijriYearDiff;
+            
+            // Ramazan Bayramı (Şevval 1-3) - Hicri yılın 10. ayının 1. günü
+            // Kurban Bayramı (Zilhicce 10-13) - Hicri yılın 12. ayının 10. günü
+            
+            // Yaklaşık hesaplama (her hicri yıl 354 gün, her yıl 10-11 gün önce)
+            // 2025 yılı için referans tarihler:
+            // Ramazan Bayramı: 30 Mart 2025 (yaklaşık)
+            // Kurban Bayramı: 6 Haziran 2025 (yaklaşık)
+            
+            // Hicri yıl başına 10.8 gün kayma
+            const daysPerHijriYear = 354.367;
+            
+            // 2025 referans tarihleri
+            const ramadanBayram2025 = new Date(2025, 2, 30); // 30 Mart 2025
+            const kurbanBayram2025 = new Date(2025, 5, 6);   // 6 Haziran 2025
+            
+            // İstenen yıl için kayma miktarını hesapla
+            const yearsDiff = year - 2025;
+            const dayShift = Math.floor(yearsDiff * 10.8);
+            
+            // Ramazan Bayramı tarihleri (3 gün + arefe)
+            const ramadanBayramDate = new Date(ramadanBayram2025);
+            ramadanBayramDate.setDate(ramadanBayramDate.getDate() + dayShift);
+            
+            // Arefe günü (bayramdan 1 gün önce)
+            const ramadanArefe = new Date(ramadanBayramDate);
+            ramadanArefe.setDate(ramadanArefe.getDate() - 1);
+            
+            // Ramazan Bayramı tatilleri
+            holidays.push({
+                month: ramadanArefe.getMonth(),
+                day: ramadanArefe.getDate(),
+                type: "arefe",
+                name: "Ramazan Bayramı Arefesi",
+                year: year
+            });
+            
+            for (let i = 0; i < 3; i++) {
+                const bayramDay = new Date(ramadanBayramDate);
+                bayramDay.setDate(bayramDay.getDate() + i);
+                holidays.push({
+                    month: bayramDay.getMonth(),
+                    day: bayramDay.getDate(),
+                    type: "holiday",
+                    name: i === 0 ? "Ramazan Bayramı 1. Gün" : 
+                          i === 1 ? "Ramazan Bayramı 2. Gün" : "Ramazan Bayramı 3. Gün",
+                    year: year
+                });
+            }
+            
+            // Kurban Bayramı tarihleri (4 gün + arefe)
+            const kurbanBayramDate = new Date(kurbanBayram2025);
+            kurbanBayramDate.setDate(kurbanBayramDate.getDate() + dayShift);
+            
+            // Arefe günü (bayramdan 1 gün önce)
+            const kurbanArefe = new Date(kurbanBayramDate);
+            kurbanArefe.setDate(kurbanArefe.getDate() - 1);
+            
+            // Kurban Bayramı tatilleri
+            holidays.push({
+                month: kurbanArefe.getMonth(),
+                day: kurbanArefe.getDate(),
+                type: "arefe",
+                name: "Kurban Bayramı Arefesi",
+                year: year
+            });
+            
+            for (let i = 0; i < 4; i++) {
+                const bayramDay = new Date(kurbanBayramDate);
+                bayramDay.setDate(bayramDay.getDate() + i);
+                holidays.push({
+                    month: bayramDay.getMonth(),
+                    day: bayramDay.getDate(),
+                    type: "holiday",
+                    name: i === 0 ? "Kurban Bayramı 1. Gün" : 
+                          i === 1 ? "Kurban Bayramı 2. Gün" : 
+                          i === 2 ? "Kurban Bayramı 3. Gün" : "Kurban Bayramı 4. Gün",
+                    year: year
+                });
+            }
+            
+            return holidays;
+        }
+
+        // Belirli bir yıl için tüm tatilleri getir
+        function getHolidaysForYear(year) {
+            const fixedHolidays = getFixedHolidays(year);
+            const islamicHolidays = calculateIslamicHolidays(year);
+            return [...fixedHolidays, ...islamicHolidays];
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            while (calendar.children.length > 7) {
+                calendar.removeChild(calendar.lastChild);
+            }
+
+            const firstDay = new Date(displayedYear, displayedMonth, 1);
+            const lastDay = new Date(displayedYear, displayedMonth + 1, 0);
+            const firstDayIndex = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+
+            document.getElementById('month-year').textContent = `${firstDay.toLocaleString('tr-TR', { month: 'long' })} ${displayedYear}`;
+
+            // Boş günleri ekle
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendar.appendChild(emptyDay);
+            }
+
+            // İlgili yıl için tatilleri al
+            const holidays = getHolidaysForYear(displayedYear);
+
+            // Ayın günlerini ekle
+            for (let day = 1; day <= totalDays; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+
+                const currentDay = new Date(displayedYear, displayedMonth, day);
+                
+                // Bugün kontrolü
+                if (
+                    currentDay.getDate() === currentDate.getDate() &&
+                    currentDay.getMonth() === currentDate.getMonth() &&
+                    currentDay.getFullYear() === currentDate.getFullYear()
+                ) {
+                    dayElement.classList.add('current-day');
+                }
+
+                // Tatil kontrolü
+                holidays.forEach(holiday => {
+                    if (holiday.month === displayedMonth && 
+                        holiday.day === day && 
+                        holiday.year === displayedYear) {
+                        
+                        dayElement.classList.add(holiday.type);
+                        
+                        // Tatil adını ekle
+                        const holidayName = document.createElement('div');
+                        holidayName.className = 'holiday-name';
+                        holidayName.textContent = holiday.name;
+                        dayElement.appendChild(holidayName);
+                    }
+                });
+
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(offset) {
+            displayedMonth += offset;
+            if (displayedMonth < 0) {
+                displayedMonth = 11;
+                displayedYear--;
+            } else if (displayedMonth > 11) {
+                displayedMonth = 0;
+                displayedYear++;
+            }
+            renderCalendar();
+        }
+
+        function goToToday() {
+            displayedMonth = currentDate.getMonth();
+            displayedYear = currentDate.getFullYear();
+            renderCalendar();
+        }
+
+        renderCalendar();
+    </script>
+</body>
+</html>
