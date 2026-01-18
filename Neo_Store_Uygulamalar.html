@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo Store - Uygulama Linkleri</title>
+    <style>
+        :root {
+            --primary-color: #00B894;
+            --hover-color: #00A085;
+            --bg-color: #F0F9F7;
+            --card-color: #FFFFFF;
+            --text-color: #2D3436;
+            --border-color: #E0E0E0;
+            --search-color: #0984E3;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            line-height: 1.5;
+            color: var(--text-color);
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin: 20px 0 30px 0;
+            font-size: 2em;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        .search-section {
+            background: var(--card-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 2px solid var(--border-color);
+        }
+
+        .search-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            display: table;
+        }
+
+        .search-table tr {
+            display: table-row;
+        }
+
+        .search-table td {
+            display: table-cell;
+            padding: 0;
+            vertical-align: middle;
+        }
+
+        .search-input-cell {
+            width: 75%;
+            padding-right: 10px !important;
+        }
+
+        .search-button-cell {
+            width: 25%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--search-color);
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        }
+
+        .search-button {
+            background: var(--search-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            background: #0770C4;
+        }
+
+        .bookmark-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .bookmark-item {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            padding: 15px 18px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bookmark-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .bookmark-item a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.05em;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .bookmark-item a::before {
+            content: "📱";
+            position: absolute;
+            left: 5px;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+        
+        .bookmark-item:hover a::before {
+            transform: scale(1.2);
+        }
+        
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #777;
+        }
+        
+        /* Responsive - Tüm Cihazlarda Tablo Yapısını Koru */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            /* TELEFONLARDA DA TABLO YAPISINI KORU - YAN YANA */
+            .search-table {
+                display: table !important;
+                width: 100% !important;
+                table-layout: fixed !important;
+            }
+            
+            .search-table tr {
+                display: table-row !important;
+            }
+            
+            .search-table td {
+                display: table-cell !important;
+                width: auto !important;
+            }
+            
+            .search-input-cell {
+                width: 70% !important;
+                padding-right: 10px !important;
+            }
+            
+            .search-button-cell {
+                width: 30% !important;
+            }
+            
+            .bookmark-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .bookmark-item {
+                grid-template-columns: 1fr auto auto;
+                gap: 10px;
+                padding: 12px 15px;
+            }
+            .bookmark-item a {
+                padding-left: 25px;
+                font-size: 1em;
+                white-space: normal;
+            }
+        }
+        
+        /* Çok küçük ekranlar için */
+        @media (max-width: 480px) {
+            .search-input-cell {
+                width: 65% !important;
+            }
+            
+            .search-button-cell {
+                width: 35% !important;
+            }
+            
+            .search-input {
+                padding: 10px 15px;
+                font-size: 0.95em;
+            }
+            
+            .search-button {
+                padding: 10px 15px;
+                font-size: 0.95em;
+            }
+        }
+        
+        /* Çok çok küçük ekranlar için */
+        @media (max-width: 360px) {
+            .search-input-cell {
+                width: 60% !important;
+            }
+            
+            .search-button-cell {
+                width: 40% !important;
+            }
+            
+            .search-input {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+            
+            .search-button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+        }
+
+        @keyframes highlight {
+            0% { background-color: rgba(0, 184, 148, 0.15); }
+            50% { background-color: rgba(0, 184, 148, 0.25); }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Neo Store - Uygulama Linkleri</h1>
+    
+    <div class="search-section">
+        <table class="search-table" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="search-input-cell">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Uygulama adına göre ara veya ilk harfi yazın...">
+                </td>
+                <td class="search-button-cell">
+                    <button id="searchBtn" class="search-button">🔍 Ara</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="bookmark-container" id="bookmarksContainer">
+        <div class="bookmark-item" data-name="barkod tarayıcı" data-url="https://f-droid.org/repo/com.atharok.barcodescanner_47.apk">
+            <a href="https://f-droid.org/repo/com.atharok.barcodescanner_47.apk" target="_blank" title="https://f-droid.org/repo/com.atharok.barcodescanner_47.apk">Barkod Tarayıcı</a>
+        </div>
+        <div class="bookmark-item" data-name="batterybot pro" data-url="https://f-droid.org/repo/com.darshancomputing.batteryindicatorpro_26016.apk">
+            <a href="https://f-droid.org/repo/com.darshancomputing.BatteryIndicatorPro_26016.apk" target="_blank" title="https://f-droid.org/repo/com.darshancomputing.BatteryIndicatorPro_26016.apk">BatteryBot Pro</a>
+        </div>
+        <div class="bookmark-item" data-name="dnsnet" data-url="https://f-droid.org/repo/dev.clombardo.dnsnet_67.apk">
+            <a href="https://f-droid.org/repo/dev.clombardo.dnsnet_67.apk" target="_blank" title="https://f-droid.org/repo/dev.clombardo.dnsnet_67.apk">DnsNet</a>
+        </div>
+        <div class="bookmark-item" data-name="fadcam" data-url="https://apt.izzysoft.de/fdroid/repo/com.fadcam_31.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.fadcam_31.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.fadcam_31.apk">FadCam</a>
+        </div>
+        <div class="bookmark-item" data-name="http request shortcuts" data-url="https://f-droid.org/repo/ch.rmy.android.http_shortcuts_1104010002.apk">
+            <a href="https://f-droid.org/repo/ch.rmy.android.http_shortcuts_1104010002.apk" target="_blank" title="https://f-droid.org/repo/ch.rmy.android.http_shortcuts_1104010002.apk">HTTP Request Shortcuts</a>
+        </div>
+        <div class="bookmark-item" data-name="imagepipe" data-url="https://f-droid.org/repo/de.kaffeemitkoffein.imagepipe_55.apk">
+            <a href="https://f-droid.org/repo/de.kaffeemitkoffein.imagepipe_55.apk" target="_blank" title="https://f-droid.org/repo/de.kaffeemitkoffein.imagepipe_55.apk">Imagepipe</a>
+        </div>
+        <div class="bookmark-item" data-name="i̇mage toolbox" data-url="https://apt.izzysoft.de/fdroid/repo/ru.tech.imageresizershrinker_196.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/ru.tech.imageresizershrinker_196.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/ru.tech.imageresizershrinker_196.apk">İmage Toolbox</a>
+        </div>
+        <div class="bookmark-item" data-name="liberra reader" data-url="https://f-droid.org/repo/com.foobnix.pro.pdf.reader_6798.apk">
+            <a href="https://f-droid.org/repo/com.foobnix.pro.pdf.reader_6798.apk" target="_blank" title="https://f-droid.org/repo/com.foobnix.pro.pdf.reader_6798.apk">Liberra Reader</a>
+        </div>
+        <div class="bookmark-item" data-name="linkhub" data-url="https://f-droid.org/repo/com.amrdeveloper.linkhub_32.apk">
+            <a href="https://f-droid.org/repo/com.amrdeveloper.linkhub_32.apk" target="_blank" title="https://f-droid.org/repo/com.amrdeveloper.linkhub_32.apk">Linkhub</a>
+        </div>
+        <div class="bookmark-item" data-name="local send" data-url="https://f-droid.org/repo/org.localsend.localsend_app_583.apk">
+            <a href="https://f-droid.org/repo/org.localsend.localsend_app_583.apk" target="_blank" title="https://f-droid.org/repo/org.localsend.localsend_app_583.apk">Local Send</a>
+        </div>
+        <div class="bookmark-item" data-name="mastodon" data-url="https://apt.izzysoft.de/fdroid/repo/org.joinmastodon.android_158.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/org.joinmastodon.android_158.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/org.joinmastodon.android_158.apk">Mastodon</a>
+        </div>
+        <div class="bookmark-item" data-name="musify" data-url="https://f--droid-org.translate.goog/repo/com.gokadzev.musify.fdroid_149.apk">
+            <a href="https://f--droid-org.translate.goog/repo/com.gokadzev.musify.fdroid_149.apk" target="_blank" title="https://f--droid-org.translate.goog/repo/com.gokadzev.musify.fdroid_149.apk">Musify</a>
+        </div>
+        <div class="bookmark-item" data-name="muzza" data-url="https://apt.izzysoft.de/fdroid/repo/com.maloy.muzza_44.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.maloy.muzza_44.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.maloy.muzza_44.apk">Muzza</a>
+        </div>
+        <div class="bookmark-item" data-name="neo store i̇ndir" data-url="https://f-droid.org/repo/com.machiav3lli.fdroid_1107.apk">
+            <a href="https://f-droid.org/repo/com.machiav3lli.fdroid_1107.apk" target="_blank" title="https://f-droid.org/repo/com.machiav3lli.fdroid_1107.apk">Neo Store İndir</a>
+        </div>
+        <div class="bookmark-item" data-name="newpipe" data-url="https://f-droid.org/repo/org.schabi.newpipe_1006.apk">
+            <a href="https://f-droid.org/repo/org.schabi.newpipe_1006.apk" target="_blank" title="https://f-droid.org/repo/org.schabi.newpipe_1006.apk">NewPipe</a>
+        </div>
+        <div class="bookmark-item" data-name="nora" data-url="https://f-droid.org/repo/jp.nonbili.nora_3803.apk">
+            <a href="https://f-droid.org/repo/jp.nonbili.nora_3803.apk" target="_blank" title="https://f-droid.org/repo/jp.nonbili.nora_3803.apk">Nora</a>
+        </div>
+        <div class="bookmark-item" data-name="opendocument reader" data-url="https://f-droid.org/repo/at.tomtasche.reader_199.apk">
+            <a href="https://f-droid.org/repo/at.tomtasche.reader_199.apk" target="_blank" title="https://f-droid.org/repo/at.tomtasche.reader_199.apk">OpenDocument Reader</a>
+        </div>
+        <div class="bookmark-item" data-name="oss belge tarayıcı" data-url="https://apt.izzysoft.de/fdroid/repo/com.akylas.documentscanner_131.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.akylas.documentscanner_131.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.akylas.documentscanner_131.apk">OSS Belge Tarayıcı</a>
+        </div>
+        <div class="bookmark-item" data-name="pineapple lock screen" data-url="https://f-droid.org/repo/net.blumia.pineapple.lockscreen.oss_19.apk">
+            <a href="https://f-droid.org/repo/net.blumia.pineapple.lockscreen.oss_19.apk" target="_blank" title="https://f-droid.org/repo/net.blumia.pineapple.lockscreen.oss_19.apk">Pineapple Lock Screen</a>
+        </div>
+        <div class="bookmark-item" data-name="quillpad" data-url="https://f--droid-org.translate.goog/repo/io.github.quillpad_48.apk">
+            <a href="https://f--droid-org.translate.goog/repo/io.github.quillpad_48.apk" target="_blank" title="https://f--droid-org.translate.goog/repo/io.github.quillpad_48.apk">Quillpad</a>
+        </div>
+        <div class="bookmark-item" data-name="ringdroid - editor" data-url="https://f-droid.org/repo/org.thayyil.ringdroid_20804.apk">
+            <a href="https://f-droid.org/repo/org.thayyil.ringdroid_20804.apk" target="_blank" title="https://f-droid.org/repo/org.thayyil.ringdroid_20804.apk">Ringdroid - Editor</a>
+        </div>
+        <div class="bookmark-item" data-name="seal video-ses i̇ndirici" data-url="https://f-droid.org/repo/com.junkfood.seal_11314.apk">
+            <a href="https://f-droid.org/repo/com.junkfood.seal_11314.apk" target="_blank" title="https://f-droid.org/repo/com.junkfood.seal_11314.apk">Seal Video-Ses İndirici</a>
+        </div>
+        <div class="bookmark-item" data-name="silentnotes" data-url="https://apt.izzysoft.de/fdroid/repo/ch.martinstoeckli.silentnotes_92.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/ch.martinstoeckli.silentnotes_92.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/ch.martinstoeckli.silentnotes_92.apk">SilentNotes</a>
+        </div>
+        <div class="bookmark-item" data-name="thor app manager" data-url="https://apt.izzysoft.de/fdroid/repo/com.valhalla.thor_1707.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.valhalla.thor_1707.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.valhalla.thor_1707.apk">Thor App Manager</a>
+        </div>
+        <div class="bookmark-item" data-name="vivi" data-url="https://apt.izzysoft.de/fdroid/repo/com.vivi.vivimusic_17.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.vivi.vivimusic_17.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.vivi.vivimusic_17.apk">Vivi</a>
+        </div>
+        <div class="bookmark-item" data-name="zipxtract" data-url="https://apt.izzysoft.de/fdroid/repo/com.wirelessalien.zipxtract_25.apk">
+            <a href="https://apt.izzysoft.de/fdroid/repo/com.wirelessalien.zipxtract_25.apk" target="_blank" title="https://apt.izzysoft.de/fdroid/repo/com.wirelessalien.zipxtract_25.apk">ZipXtract</a>
+        </div>
+    </div>
+
+    <script>
+        function searchBookmarks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const bookmarks = document.querySelectorAll('.bookmark-item');
+            
+            if (!searchTerm) {
+                bookmarks.forEach(item => {
+                    item.style.display = 'grid';
+                    item.style.animation = '';
+                });
+                return;
+            }
+            
+            let foundCount = 0;
+            let firstMatch = null;
+            
+            bookmarks.forEach(item => {
+                const name = item.dataset.name || '';
+                const url = item.dataset.url || '';
+                
+                if (name.includes(searchTerm) || url.includes(searchTerm)) {
+                    item.style.display = 'grid';
+                    item.style.animation = 'highlight 1.5s ease';
+                    foundCount++;
+                    
+                    if (!firstMatch) {
+                        firstMatch = item;
+                    }
+                } else {
+                    item.style.display = 'none';
+                    item.style.animation = '';
+                }
+            });
+            
+            if (firstMatch) {
+                setTimeout(() => {
+                    firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+            
+            const container = document.getElementById('bookmarksContainer');
+            let emptyState = container.querySelector('.empty-state');
+            
+            if (foundCount === 0) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.className = 'empty-state';
+                    emptyState.innerHTML = '<h3>🔍 Sonuç bulunamadı</h3><p>Arama kriterlerinize uygun uygulama bulunamadı.</p>';
+                    container.appendChild(emptyState);
+                }
+            } else if (emptyState) {
+                emptyState.remove();
+            }
+            
+            if (searchTerm.length === 1) {
+                const firstMatchByLetter = Array.from(bookmarks).find(item => {
+                    if (item.style.display !== 'none') {
+                        const name = item.dataset.name || '';
+                        return name.charAt(0) === searchTerm;
+                    }
+                    return false;
+                });
+                
+                if (firstMatchByLetter) {
+                    setTimeout(() => {
+                        firstMatchByLetter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 150);
+                }
+            }
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', searchBookmarks);
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBookmarks();
+            }
+        });
+        
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchBookmarks, 300);
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').focus();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+                document.getElementById('searchInput').select();
+            }
+        });
+    </script>
+</body>
+</html>
