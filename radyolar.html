@@ -359,13 +359,13 @@
         KEMENÇE FM
       </button>
       <button class="radio-item" data-index="21" onclick="playStation(21)">
-        CAN RADYO
-      </button>
-      <button class="radio-item" data-index="22" onclick="playStation(22)">
         RADYO ÇAĞDAŞ
       </button>
-      <button class="radio-item" data-index="23" onclick="playStation(23)">
+      <button class="radio-item" data-index="22" onclick="playStation(22)">
         BATI RADYO
+      </button>
+      <button class="radio-item" data-index="23" onclick="playStation(23)">
+        CAN RADYO
       </button>
     </div>
 
@@ -427,9 +427,9 @@
       "RADYO ASYA": "https://sslyayin.netyayin.net/asya/stream;",
       "RADYO YAREN": "https://sslyayin.radyoyayini.com:7097/stream;",
       "KEMENÇE FM": "https://ip132.ozelip.com/8058/stream;",
-      "CAN RADYO": "https://thenonstopradio.com/embedded/can_radyo_tr-4-Turkish",
       "RADYO ÇAĞDAŞ": "https://icecast.netmedya.net/radyocagdas",
-      "BATI RADYO": "https://sslyayin.netyayin.net:10902/;"    };
+      "BATI RADYO": "https://sslyayin.netyayin.net:10902/;",
+      "CAN RADYO": "https://canradyo.kesintisizyayin.com:3838/;"    };
 
     let hls = null;
     let currentAudio = new Audio();
@@ -438,7 +438,7 @@
     let errorTimeout = null;
     let volume = 0.7;
     let currentStationName = "";
-    let radioNames = ["RADYO YOL","AVRASYA TÜRK","RADYO 45'lik","90'Lar","KAFA RADYO","RADYO ÖZGÜR","RADYO UMUT","RADYO SEYMEN","TÜRKÜ RADYO","SHOW FM","RADYO GÜNEY","RADYO EKİN","YÖN RADYO","RADYO AKDENİZ","FON RADYO","BEST FM","BURSA FM","RADYO KİLİM","RADYO ASYA","RADYO YAREN","KEMENÇE FM","CAN RADYO","RADYO ÇAĞDAŞ","BATI RADYO"];
+    let radioNames = ["RADYO YOL","AVRASYA TÜRK","RADYO 45'lik","90'Lar","KAFA RADYO","RADYO ÖZGÜR","RADYO UMUT","RADYO SEYMEN","TÜRKÜ RADYO","SHOW FM","RADYO GÜNEY","RADYO EKİN","YÖN RADYO","RADYO AKDENİZ","FON RADYO","BEST FM","BURSA FM","RADYO KİLİM","RADYO ASYA","RADYO YAREN","KEMENÇE FM","RADYO ÇAĞDAŞ","BATI RADYO","CAN RADYO"];
 
     function initialize() {
       // Ses butonları
