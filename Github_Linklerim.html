@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Github Linklerim</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        
+        .link-count {
+            color: #64748b;
+            font-size: 1.1rem;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .links-list {
+            margin-top: 30px;
+        }
+        
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .link-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+        
+        .link-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .link-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e293b;
+            flex: 1;
+        }
+        
+        .link-arrow {
+            color: #3b82f6;
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .link-item:hover .link-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .footer-note {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .link-item {
+                padding: 14px 16px;
+            }
+            
+            .link-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+                margin-right: 15px;
+            }
+            
+            .link-name {
+                font-size: 1rem;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .link-item {
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Github Linklerim</h1>
+            <div class="link-count">Toplam 13 Link</div>
+        </header>
+        
+        <div class="links-list">
+            
+            <a href="https://kocbayram.github.io/koc/Kisayollar.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0s forwards; opacity: 0;">
+                <div class="link-number">1</div>
+                <div class="link-name">Kısayollar</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/Spor.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.05s forwards; opacity: 0;">
+                <div class="link-number">2</div>
+                <div class="link-name">Spor Tv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/TRT1.htm" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.1s forwards; opacity: 0;">
+                <div class="link-number">3</div>
+                <div class="link-name">TRT1</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/Takvim.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.15000000000000002s forwards; opacity: 0;">
+                <div class="link-number">4</div>
+                <div class="link-name">Takvim</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/halkradyo.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.2s forwards; opacity: 0;">
+                <div class="link-number">5</div>
+                <div class="link-name">Halk Radyo</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/htspor.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.25s forwards; opacity: 0;">
+                <div class="link-number">6</div>
+                <div class="link-name">HT Spor</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/radyolar.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.30000000000000004s forwards; opacity: 0;">
+                <div class="link-number">7</div>
+                <div class="link-name">Radyolar</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/sl.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.35000000000000003s forwards; opacity: 0;">
+                <div class="link-number">8</div>
+                <div class="link-name">Spor Linkleri</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/sporradyolari.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.4s forwards; opacity: 0;">
+                <div class="link-number">9</div>
+                <div class="link-name">Spor Radyoları</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/yerimleri.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.45s forwards; opacity: 0;">
+                <div class="link-number">10</div>
+                <div class="link-name">Yerimleri</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/ytb.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.5s forwards; opacity: 0;">
+                <div class="link-number">11</div>
+                <div class="link-name">YouTube</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/Neo_Store_Uygulamalar.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.55s forwards; opacity: 0;">
+                <div class="link-number">12</div>
+                <div class="link-name">Neo Store Uygulamalar</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+            <a href="https://kocbayram.github.io/koc/TRT_Radyolari.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.6000000000000001s forwards; opacity: 0;">
+                <div class="link-number">13</div>
+                <div class="link-name">Trt Radyoları</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
+        </div>
+        
+        <footer>
+            <p>Oluşturulma Tarihi: 24 Ocak 2026 08:30</p>
+            
+    </div>
+</body>
+</html>
