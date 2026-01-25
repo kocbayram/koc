@@ -7,6 +7,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
+        :root {
+            --primary-color: #3b82f6;
+            --border-color: #e2e8f0;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -28,20 +33,20 @@
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
         }
         
         header {
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 25px;
-            border-bottom: 2px solid #3b82f6;
+            border-bottom: 2px solid var(--primary-color);
         }
         
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #3b82f6;
+            color: var(--primary-color);
             margin-bottom: 10px;
         }
         
@@ -66,23 +71,24 @@
             margin-bottom: 10px;
             background: white;
             border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
             text-decoration: none;
             color: inherit;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
         }
         
         .link-item:hover {
             transform: translateX(5px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+            border-color: var(--primary-color);
             background: #f8fafc;
         }
         
         .link-number {
             font-size: 1rem;
             font-weight: 600;
-            color: #3b82f6;
+            color: var(--primary-color);
             background: rgba(59, 130, 246, 0.1);
             width: 30px;
             height: 30px;
@@ -102,7 +108,7 @@
         }
         
         .link-arrow {
-            color: #3b82f6;
+            color: var(--primary-color);
             font-size: 1.2rem;
             opacity: 0;
             transform: translateX(-10px);
@@ -118,7 +124,7 @@
             text-align: center;
             margin-top: 50px;
             padding-top: 25px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border-color);
             color: #64748b;
             font-size: 0.9rem;
         }
@@ -175,7 +181,7 @@
     <div class="container">
         <header>
             <h1>Github Linklerim</h1>
-            <div class="link-count">Toplam 13 Link</div>
+            <div class="link-count">Toplam 14 Link</div>
         </header>
         
         <div class="links-list">
@@ -284,10 +290,18 @@
                 </div>
             </a>
             
+            <a href="https://kocbayram.github.io/koc/Linklerim.html" target="_blank" class="link-item" style="animation: fadeIn 0.4s ease 0.65s forwards; opacity: 0;">
+                <div class="link-number">14</div>
+                <div class="link-name">Github Linklerim</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            
         </div>
         
         <footer>
-            <p>Oluşturulma Tarihi: 24 Ocak 2026 08:30</p>
+            <p>Oluşturulma Tarihi: 25 Ocak 2026 12:29</p>
             
     </div>
 </body>
