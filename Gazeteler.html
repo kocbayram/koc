@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gazeteler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin-top: 20px;
+            background-color: #eeaea;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 25px 20px 15px 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            min-width: 140px;
+            height: 3px;
+            background: #1e88e5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 12px;
+            font-size: 16px;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            text-decoration: none;
+            color: #000000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .bullet {
+            color: #696969;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">GAZETELER</div>
+        <table>
+            <tbody>
+                <tr><td><a href="https://www.birgun.net/"><span class="bullet">→</span>Birgün</a></td></tr>
+                <tr><td><a href="https://www.cumhuriyet.com.tr/"><span class="bullet">→</span>Cumhuriyet</a></td></tr>
+                <tr><td><a href="https://www.diken.com.tr/"><span class="bullet">→</span>Diken</a></td></tr>
+                <tr><td><a href="https://www.evrensel.net/son-24-saat"><span class="bullet">→</span>Evrensel</a></td></tr>
+                <tr><td><a href="https://gazeteoksijen.com/"><span class="bullet">→</span>Gazete Oksijen</a></td></tr>
+                <tr><td><a href="https://www.gercekgundem.com/son-dakika-haberleri"><span class="bullet">→</span>Gerçek Gündem</a></td></tr>
+                <tr><td><a href="https://haber240.com/son-haberler"><span class="bullet">→</span>Haber 240</a></td></tr>
+                <tr><td><a href="https://kisadalga.net/son-haberler"><span class="bullet">→</span>Kısa Dalga</a></td></tr>
+                <tr><td><a href="https://www.korkusuz.com.tr/"><span class="bullet">→</span>Korkusuz</a></td></tr>
+                <tr><td><a href="https://www.nefes.com.tr/"><span class="bullet">→</span>Nefes Gazetesi</a></td></tr>
+                <tr><td><a href="https://www.gazetepencere.com/"><span class="bullet">→</span>Pencere</a></td></tr>
+                <tr><td><a href="https://haber.sol.org.tr/mobil"><span class="bullet">→</span>soL haber</a></td></tr>
+                <tr><td><a href="https://www.sozcu.com.tr/son-dakika"><span class="bullet">→</span>Sözcü Gazetesi</a></td></tr>
+                <tr><td><a href="https://t24.com.tr/son-dakika"><span class="bullet">→</span>T24</a></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach((row, index) => {
+                if (index % 2 === 0) {
+                    row.style.backgroundColor = '#ffffff';
+                } else {
+                    row.style.backgroundColor = '#f2f2f2';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
