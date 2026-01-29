@@ -34,13 +34,13 @@
             padding-bottom: 15px;
         }
         
+        /* DEĞİŞTİRİLDİ: Başlık çizgisi başlık metniyle eşit uzunlukta (çıktı için de) */
         h1::after {
             content: "";
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
             height: 3px;
             background: var(--primary-color);
         }
@@ -278,7 +278,7 @@
     </style>
 </head>
 <body>
-    <h1>🌟 Sık Kullanılanlar</h1>
+    <h1 id="outputHeader">🌟 Sık Kullanılanlar</h1>
     
     <div class="search-section">
         <table class="search-table" cellspacing="0" cellpadding="0">
@@ -459,6 +459,21 @@
     </div>
 
     <script>
+        // Çıktı sayfasında başlık çizgisini ayarla
+        function updateOutputHeaderLine() {
+            const header = document.getElementById('outputHeader');
+            if (header) {
+                const headerWidth = header.offsetWidth;
+                const style = document.createElement('style');
+                style.textContent = `
+                    #outputHeader::after {
+                        width: ${headerWidth}px !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
         function searchBookmarks() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const bookmarks = document.querySelectorAll('.bookmark-item');
@@ -545,6 +560,9 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('searchInput').focus();
+            // Çıktı sayfasında başlık çizgisini ayarla
+            setTimeout(updateOutputHeaderLine, 100);
+            window.addEventListener('resize', updateOutputHeaderLine);
         });
         
         document.addEventListener('keydown', function(e) {
