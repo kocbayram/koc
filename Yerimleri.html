@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kısayollar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #6C5CE7;
+            text-align: center;
+            margin: 20px 0 30px 0;
+            font-size: 2em;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            min-width: 140px;
+            height: 4px;
+            background: #1e88e5;
+            border-radius: 2px;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .search-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        
+        .search-table tr {
+            display: table-row;
+        }
+        
+        .search-table td {
+            display: table-cell;
+            padding: 0;
+            vertical-align: middle;
+        }
+        
+        .search-input-cell {
+            width: 75%;
+            padding-right: 10px !important;
+        }
+        
+        .search-button-cell {
+            width: 25%;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #0984E3;
+            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+        }
+        
+        .search-button {
+            background: #0984E3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        
+        .search-button:hover {
+            background: #0770C4;
+        }
+        
+        .shortcuts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+            min-height: 72px;
+        }
+        
+        .shortcut-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #d0d0d0;
+        }
+        
+        .shortcut-item:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .shortcut-name {
+            font-weight: 500;
+            font-size: 18px;
+            color: #1a1a1a;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* GAZETELER.HTML'DEN ALINAN OK STİLİ */
+        .bullet {
+            color: #696969;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin: 15px 0 20px 0;
+            }
+            
+            .shortcut-item {
+                padding: 16px;
+                border-radius: 14px;
+                min-height: 68px;
+            }
+            
+            .shortcut-name {
+                font-size: 17px;
+            }
+            
+            .bullet {
+                font-size: 16px;
+            }
+            
+            .search-input-cell {
+                width: 70%;
+            }
+            
+            .search-button-cell {
+                width: 30%;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .shortcut-item {
+                padding: 14px;
+            }
+            
+            .shortcut-name {
+                font-size: 16px;
+            }
+            
+            .bullet {
+                font-size: 15px;
+            }
+            
+            .search-input-cell {
+                width: 65%;
+            }
+            
+            .search-button-cell {
+                width: 35%;
+            }
+        }
+        
+        @keyframes highlight {
+            0% { background-color: rgba(9, 132, 227, 0.15); }
+            50% { background-color: rgba(9, 132, 227, 0.25); }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Kısayollar</h1>
+
+    <div class="search-section">
+        <table class="search-table" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="search-input-cell">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Kısayol adına göre ara...">
+                </td>
+                <td class="search-button-cell">
+                    <button id="searchBtn" class="search-button">🔍 Ara</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="shortcuts-container" id="shortcutsContainer">
+        <a href="https://12punto.com.tr/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>12 Punto
+            </div>
+        </a>
+        <a href="https://www.canlitv.my/aspor-canli-izle" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>A Spor Canlı izle
+            </div>
+        </a>
+        <a href="https://ajansspor.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>AjansSpor
+            </div>
+        </a>
+        <a href="https://arsiv.mackolik.com/Takim/14198/Amasyaspor-Futbol-Kulubu" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Amasyaspor
+            </div>
+        </a>
+        <a href="https://amazon.com.tr/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Amazon
+            </div>
+        </a>
+        <a href="http://bayramkoc.freehostia.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Bayram KOÇ
+            </div>
+        </a>
+        <a href="https://bsky.app/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Bluesky
+            </div>
+        </a>
+        <a href="https://borsaseans.com/haberler" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Borsa Seans
+            </div>
+        </a>
+        <a href="https://getborsa.com/bugun/index.html" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Borsa-Bugün
+            </div>
+        </a>
+        <a href="https://mobile.twitter.com/borsacibaba" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>BorsacıBaba
+            </div>
+        </a>
+        <a href="https://www.denizbank.com/oran-ve-fiyatlar/denizbank-kur-bilgileri.aspx" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>DenizBank Kur Bilgileri
+            </div>
+        </a>
+        <a href="https://mobile.twitter.com/ekrem_imamoglu" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Ekrem İmamoğlu
+            </div>
+        </a>
+        <a href="https://mobile.twitter.com/Fintables" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Fintables
+            </div>
+        </a>
+        <a href="https://fixtur.es/tr/team/galatasaray" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Fixtur GS
+            </div>
+        </a>
+        <a href="https://galatasaray.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>GALATASARAY
+            </div>
+        </a>
+        <a href="https://www.gercekgundem.com/bugun" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Gerçek Gündem
+            </div>
+        </a>
+        <a href="https://www.google.com/finance/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Google Finans
+            </div>
+        </a>
+        <a href="https://haber240.com/son-haberler" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Haber 240
+            </div>
+        </a>
+        <a href="http://bayramkoc.freehostia.com/Televizyonlar.html" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>HaberTv
+            </div>
+        </a>
+        <a href="https://halktv-live.daioncdn.net/halktv/halktv.m3u8" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Halk Tv
+            </div>
+        </a>
+        <a href="https://hepsiburada.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Hepsi Burada
+            </div>
+        </a>
+        <a href="https://www.borsaveyatirim.com/araci-kurum-hisse-onerileri" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Hisse Önerileri
+            </div>
+        </a>
+        <a href="https://ciner.daioncdn.net/ht-spor/ht-spor_360p.m3u8?ex=0&sid=72gm2yvr6y5r&app=d5539841-018b-48b4-80fe-8bac2ffc3d5e&ce=2" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>HT-Spor
+            </div>
+        </a>
+        <a href="https://www.ilacprospektusu.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>İlaç Tanıtmalıkları
+            </div>
+        </a>
+        <a href="https://www.kap.org.tr/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>KAP
+            </div>
+        </a>
+        <a href="https://kisadalga.net/son-haberler" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Kısa Dalga
+            </div>
+        </a>
+        <a href="https://mobile.twitter.com/M_B_QUENN" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Melike Başer
+            </div>
+        </a>
+        <a href="http://192.168.1.1/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Modem Reset
+            </div>
+        </a>
+        <a href="https://modyolo.com/apps/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Modyolo
+            </div>
+        </a>
+        <a href="https://myactivity.google.com/myactivity" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>My Activity
+            </div>
+        </a>
+        <a href="https://n11.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>N11
+            </div>
+        </a>
+        <a href="https://uycyyuuzyh.turknet.ercdn.net/nphindgytw/nowtv/nowtv.m3u8" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Now Tv
+            </div>
+        </a>
+        <a href="https://www.paraborsa.net/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Para & Borsa
+            </div>
+        </a>
+        <a href="https://piyasaanalizleri.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Piyasa Analizleri
+            </div>
+        </a>
+        <a href="https://www.pttavm.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>PttAVM
+            </div>
+        </a>
+        <a href="http://bayramkoc.freehostia.com/renkkodlari.htm" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Renk Kodları
+            </div>
+        </a>
+        <a href="https://secim.sozcu.com.tr/secim2024mart31" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Seçim Sonuçları 2024
+            </div>
+        </a>
+        <a href="https://www.sondepremler.org/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Son Depremler
+            </div>
+        </a>
+        <a href="https://sozluk.gov.tr/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Sözlük
+            </div>
+        </a>
+        <a href="https://kocbayram.github.io/koc/Spor.html" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Spor Tv
+            </div>
+        </a>
+        <a href="https://www.sporx.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Sporx
+            </div>
+        </a>
+        <a href="https://t24.com.tr/son-dakika" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>T24
+            </div>
+        </a>
+        <a href="https://kocbayram.github.io/koc/Takvim.html" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Takvim
+            </div>
+        </a>
+        <a href="https://www.gedik.com/bilgi-egitimler/tedbirli-hisseler" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Tedbirli Hisseler
+            </div>
+        </a>
+        <a href="https://www.gedik.com/piyasalar/temettu-odemeleri" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Temettü Ödemeleri
+            </div>
+        </a>
+        <a href="https://www.mgm.gov.tr/tahmin/il-ve-ilceler.aspx?il=Tokat&ilce=Turhal" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Tokat-Turhal Hava Durumu
+            </div>
+        </a>
+        <a href="https://tv-trtspor1.medya.trt.com.tr/master.m3u8" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>TRT Spor
+            </div>
+        </a>
+        <a href="https://tv-trt1.medya.trt.com.tr/master.m3u8" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>TRT1
+            </div>
+        </a>
+        <a href="https://www.accuweather.com/tr/tr/turhal/321258/weather-forecast/321258" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Turhal Hava Durumu
+            </div>
+        </a>
+        <a href="https://m.webaslan.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>WEBASLAN
+            </div>
+        </a>
+        <a href="https://yandex.com.tr/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Yandex
+            </div>
+        </a>
+        <a href="http://bayramkoc.freehostia.com/yapayzeka.html" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>Yapay Zeka Siteleri
+            </div>
+        </a>
+        <a href="https://m.youtube.com/" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>YouTube
+            </div>
+        </a>
+        <a href="https://www.ysense.com/surveys" target="_blank" class="shortcut-item">
+            <div class="shortcut-name">
+                <span class="bullet">→</span>ySense
+            </div>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const shortcuts = document.querySelectorAll('.shortcut-item');
+            shortcuts.forEach((shortcut, index) => {
+                shortcut.style.opacity = '0';
+                shortcut.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    shortcut.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    shortcut.style.opacity = '1';
+                    shortcut.style.transform = 'translateY(0)';
+                }, 50 * index);
+            });
+            
+            function searchShortcuts() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+                const shortcuts = document.querySelectorAll('.shortcut-item');
+                
+                if (!searchTerm) {
+                    shortcuts.forEach(item => {
+                        item.style.display = 'flex';
+                        item.style.animation = '';
+                    });
+                    return;
+                }
+                
+                let foundCount = 0;
+                let firstMatch = null;
+                
+                shortcuts.forEach(item => {
+                    const name = item.querySelector('.shortcut-name').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                        item.style.animation = 'highlight 1.5s ease';
+                        foundCount++;
+                        
+                        if (!firstMatch) {
+                            firstMatch = item;
+                        }
+                    } else {
+                        item.style.display = 'none';
+                        item.style.animation = '';
+                    }
+                });
+                
+                if (firstMatch) {
+                    setTimeout(() => {
+                        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
+                
+                if (searchTerm.length === 1) {
+                    const firstMatchByLetter = Array.from(shortcuts).find(item => {
+                        if (item.style.display !== 'none') {
+                            const name = item.querySelector('.shortcut-name').textContent.toLowerCase();
+                            return name.charAt(0) === searchTerm;
+                        }
+                        return false;
+                    });
+                    
+                    if (firstMatchByLetter) {
+                        setTimeout(() => {
+                            firstMatchByLetter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 150);
+                    }
+                }
+            }
+
+            document.getElementById('searchBtn').addEventListener('click', searchShortcuts);
+            
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchShortcuts();
+                }
+            });
+            
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(searchShortcuts, 300);
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                    document.getElementById('searchInput').select();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
