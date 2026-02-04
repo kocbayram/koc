@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Takip Sistemi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            color: #4cc9f0;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .panel h2 {
+            color: #4361ee;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(67, 97, 238, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a9a9a9;
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        textarea {
+            min-height: 60px;
+            font-family: monospace;
+        }
+        
+        .btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn:hover {
+            background: #3a56d4;
+        }
+        
+        .btn-secondary {
+            background: #f72585;
+        }
+        
+        .btn-secondary:hover {
+            background: #e01e75;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .result-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .active-link {
+            font-size: 1rem;
+            word-break: break-all;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status.active {
+            background: rgba(76, 201, 240, 0.2);
+            color: #4cc9f0;
+        }
+        
+        .status.checking {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status.inactive {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+        
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        
+        .history-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-link {
+            color: #a9a9a9;
+            text-decoration: none;
+            word-break: break-all;
+            flex-grow: 1;
+            font-size: 0.85rem;
+        }
+        
+        .log-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+        }
+        
+        .log-entry {
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a9a9a9;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .tab-btn.active {
+            background: rgba(67, 97, 238, 0.3);
+            color: #4361ee;
+            border-color: #4361ee;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4361ee;
+            width: 0%;
+        }
+        
+        .stats-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4cc9f0;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: #a9a9a9;
+        }
+        
+        .auto-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sound-notification {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .quick-numbers {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        
+        .number-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .number-btn:hover {
+            background: rgba(67, 97, 238, 0.3);
+        }
+        
+        .notification-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4361ee;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Link Takip Sistemi</h1>
+        </header>
+        
+        <div class="main-content">
+            <div class="panel">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="settings">Ayarlar</button>
+                    <button class="tab-btn" data-tab="extensions">Uzantılar</button>
+                </div>
+                
+                <div id="settings" class="tab-content active">
+                    <h2>Temel Ayarlar</h2>
+                    
+                    <div class="input-group">
+                        <label>Domain</label>
+                        <input type="text" id="baseDomain" placeholder="softtv" value="softtv">
+                    </div>
+                    
+                    <div class="input-group">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label>Başlangıç No</label>
+                                <input type="number" id="startNumber" value="5" min="1">
+                            </div>
+                            <div>
+                                <label>Tarama Sınırı</label>
+                                <input type="number" id="maxChecks" value="20000" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-numbers">
+                        <button class="number-btn" data-number="5">5</button>
+                        <button class="number-btn" data-number="10">10</button>
+                        <button class="number-btn" data-number="20">20</button>
+                        <button class="number-btn" data-number="50">50</button>
+                    </div>
+                </div>
+                
+                <div id="extensions" class="tab-content">
+                    <h2>Uzantı Ayarları</h2>
+                    
+                    <div class="input-group">
+                        <label>Birincil Uzantı</label>
+                        <input type="text" id="primaryExtension" value="live">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>İkincil Uzantılar</label>
+                        <textarea id="secondaryExtensions">xyz, us, tv, com, net</textarea>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="findActiveBtn">
+                        Aktif Linki Bul
+                    </button>
+                    <button class="btn btn-secondary" id="stopBtn" disabled>
+                        Durdur
+                    </button>
+                </div>
+                
+                <div class="auto-check">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="autoCheck">
+                        <label for="autoCheck">Otomatik kontrol</label>
+                    </div>
+                    <select id="checkInterval">
+                        <option value="30">30 dakika</option>
+                        <option value="60">1 saat</option>
+                    </select>
+                </div>
+                
+                <div class="sound-notification">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="soundNotification" checked>
+                        <label for="soundNotification">Sesli bildirim</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>Sonuçlar</h2>
+                
+                <div id="currentStatus">
+                    <p>"Aktif Linki Bul" butonuna tıklayın.</p>
+                </div>
+                
+                <div id="resultContainer" style="display: none;">
+                    <div class="stats-box">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statCurrentNumber">-</div>
+                            <div class="stat-label">No</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statChecked">0</div>
+                            <div class="stat-label">Kontrol</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statExtensions">1/1</div>
+                            <div class="stat-label">Uzantı</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statPhase">1</div>
+                            <div class="stat-label">Aşama</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    
+                    <div class="result-box">
+                        <div class="active-link" id="activeLinkContainer">
+                            <a href="#" target="_blank" id="activeLink" style="color: #4cc9f0; text-decoration: none;">-</a>
+                        </div>
+                        <div style="margin-top: 10px; display: flex; gap: 8px;">
+                            <button class="btn" id="copyLinkBtn">
+                                Kopyala
+                            </button>
+                            <button class="btn" id="openLinkBtn">
+                                Aç
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 15px; font-size: 1rem;">Geçmiş</h3>
+                <div class="history-list" id="historyList">
+                    <!-- Geçmiş buraya eklenecek -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2>Sistem Günlüğü</h2>
+            <div class="log-box" id="logBox">
+                <!-- Log mesajları buraya eklenecek -->
+            </div>
+        </div>
+        
+        <div class="notification-badge" id="notificationBadge">
+            <i class="fas fa-check-circle"></i> Aktif link bulundu!
+        </div>
+    </div>
+
+    <script>
+        // DOM elementleri
+        const baseDomainInput = document.getElementById('baseDomain');
+        const startNumberInput = document.getElementById('startNumber');
+        const maxChecksInput = document.getElementById('maxChecks');
+        const findActiveBtn = document.getElementById('findActiveBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const autoCheckCheckbox = document.getElementById('autoCheck');
+        const checkIntervalSelect = document.getElementById('checkInterval');
+        const soundNotificationCheckbox = document.getElementById('soundNotification');
+        const resultContainer = document.getElementById('resultContainer');
+        const currentStatus = document.getElementById('currentStatus');
+        const activeLink = document.getElementById('activeLink');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const openLinkBtn = document.getElementById('openLinkBtn');
+        const historyList = document.getElementById('historyList');
+        const logBox = document.getElementById('logBox');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const primaryExtensionInput = document.getElementById('primaryExtension');
+        const secondaryExtensionsInput = document.getElementById('secondaryExtensions');
+        const progressFill = document.getElementById('progressFill');
+        const quickNumberBtns = document.querySelectorAll('.number-btn');
+        const statCurrentNumber = document.getElementById('statCurrentNumber');
+        const statChecked = document.getElementById('statChecked');
+        const statExtensions = document.getElementById('statExtensions');
+        const statPhase = document.getElementById('statPhase');
+        const notificationBadge = document.getElementById('notificationBadge');
+
+        // Değişkenler
+        let isChecking = false;
+        let stopRequested = false;
+        let autoCheckInterval = null;
+        let activeLinkFound = null;
+        let linkHistory = JSON.parse(localStorage.getItem('linkHistory')) || [];
+        
+        // Sesli bildirim çal
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Ses çalınamadı:', e);
+            }
+        }
+        
+        // Bildirim göster
+        function showNotification() {
+            notificationBadge.style.display = 'block';
+            setTimeout(() => {
+                notificationBadge.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Tab geçişi
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Uzantı listesini al
+        function getExtensions() {
+            const primary = primaryExtensionInput.value.trim();
+            const secondaryText = secondaryExtensionsInput.value.trim();
+            let extensions = [primary];
+            
+            if (secondaryText) {
+                const secondaryList = secondaryText.split(',')
+                    .map(ext => ext.trim())
+                    .filter(ext => ext.length > 0 && ext !== primary);
+                extensions = extensions.concat(secondaryList);
+            }
+            
+            return [...new Set(extensions)];
+        }
+        
+        // URL oluştur
+        function buildUrl(number, extension) {
+            const base = baseDomainInput.value.trim() || 'softtv';
+            return `https://${base}${number}.${extension}/`;
+        }
+        
+        // Günlüğe mesaj ekle
+        function addLog(message) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('tr-TR', {hour12: false});
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span style="color: #a9a9a9;">[${timeString}]</span> ${message}`;
+            logBox.appendChild(logEntry);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+        
+        // Geçmişi güncelle
+        function updateHistory() {
+            historyList.innerHTML = '';
+            
+            if (linkHistory.length === 0) {
+                historyList.innerHTML = '<p style="color: #a9a9a9; text-align: center; padding: 10px;">Geçmiş yok.</p>';
+                return;
+            }
+            
+            const sortedHistory = [...linkHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            sortedHistory.slice(0, 10).forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                const date = new Date(item.timestamp).toLocaleTimeString('tr-TR');
+                historyItem.innerHTML = `
+                    <a href="${item.url}" target="_blank" class="history-link">${item.url}</a>
+                    <span style="color: #a9a9a9; font-size: 0.8rem;">${date}</span>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            localStorage.setItem('linkHistory', JSON.stringify(linkHistory));
+        }
+        
+        // Link kontrolü
+        async function checkLink(number, extension) {
+            const url = buildUrl(number, extension);
+            statCurrentNumber.textContent = number;
+            
+            addLog(`${extension}.${number} kontrol ediliyor...`);
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(url, { 
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                return { success: true, url, extension, number };
+            } catch (error) {
+                addLog(`${extension}.${number} ulaşılamadı`);
+                return { success: false, url, extension, number };
+            }
+        }
+        
+        // İlerleme çubuğu
+        function updateProgress(completed, total) {
+            const progress = total > 0 ? (completed / total) * 100 : 0;
+            progressFill.style.width = `${progress}%`;
+        }
+        
+        // Aktif link bulundu
+        function handleActiveLinkFound(result) {
+            activeLinkFound = result.url;
+            activeLink.href = result.url;
+            activeLink.textContent = result.url;
+            addLog(`✓ Aktif: ${result.extension}.${result.number}`);
+            
+            // Sesli bildirim
+            if (soundNotificationCheckbox.checked) {
+                playNotificationSound();
+                showNotification();
+            }
+            
+            // Geçmişe ekle
+            const historyItem = {
+                number: result.number,
+                extension: result.extension,
+                url: result.url,
+                timestamp: new Date().toISOString()
+            };
+            
+            linkHistory.push(historyItem);
+            if (linkHistory.length > 50) linkHistory.shift();
+            updateHistory();
+            
+            // Otomatik aç
+            setTimeout(() => {
+                window.open(result.url, '_blank');
+            }, 500);
+            
+            return true;
+        }
+        
+        // 1. Aşama tarama
+        async function phase1Scan(extensions, startNumber, maxChecks) {
+            const primaryExtension = extensions[0];
+            addLog(`1. Aşama: ${primaryExtension} uzantısı taranıyor...`);
+            
+            for (let i = 0; i < maxChecks; i++) {
+                if (stopRequested) {
+                    addLog('Durduruldu.');
+                    return false;
+                }
+                
+                const currentNum = startNumber + i;
+                const result = await checkLink(currentNum, primaryExtension);
+                
+                if (result.success) {
+                    return handleActiveLinkFound(result);
+                }
+                
+                updateProgress(i + 1, maxChecks);
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            addLog(`1. aşama tamamlandı. Aktif link bulunamadı.`);
+            return false;
+        }
+        
+        // 2. Aşama tarama
+        async function phase2Scan(extensions, startNumber, maxChecks) {
+            const secondaryExtensions = extensions.slice(1);
+            if (secondaryExtensions.length === 0) return false;
+            
+            addLog(`2. Aşama: ${secondaryExtensions.length} ikincil uzantı taranacak...`);
+            
+            for (let extIndex = 0; extIndex < secondaryExtensions.length; extIndex++) {
+                const extension = secondaryExtensions[extIndex];
+                addLog(`2. aşama: ${extension} uzantısı taranıyor...`);
+                
+                for (let i = 0; i < maxChecks; i++) {
+                    if (stopRequested) return false;
+                    
+                    const currentNum = startNumber + i;
+                    const result = await checkLink(currentNum, extension);
+                    
+                    if (result.success) {
+                        return handleActiveLinkFound(result);
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            }
+            
+            addLog('2. aşama tamamlandı. Hiçbir uzantıda aktif link bulunamadı.');
+            return false;
+        }
+        
+        // Ana tarama fonksiyonu
+        async function findActiveLink() {
+            if (isChecking) return;
+            
+            const startNumber = parseInt(startNumberInput.value);
+            const maxChecks = parseInt(maxChecksInput.value);
+            const extensions = getExtensions();
+            
+            if (extensions.length === 0 || isNaN(startNumber) || isNaN(maxChecks)) {
+                addLog('Geçersiz ayarlar.');
+                return;
+            }
+            
+            isChecking = true;
+            stopRequested = false;
+            activeLinkFound = null;
+            
+            findActiveBtn.disabled = true;
+            stopBtn.disabled = false;
+            resultContainer.style.display = 'block';
+            currentStatus.style.display = 'none';
+            progressFill.style.width = '0%';
+            
+            addLog(`Arama başlatıldı: Başlangıç ${startNumber}, Uzantılar: ${extensions.join(', ')}`);
+            
+            try {
+                const phase1Result = await phase1Scan(extensions, startNumber, maxChecks);
+                
+                if (!phase1Result && !stopRequested) {
+                    const phase2Result = await phase2Scan(extensions, startNumber, maxChecks);
+                    if (!phase2Result) {
+                        addLog('Hiçbir aşamada aktif link bulunamadı.');
+                    }
+                }
+            } catch (error) {
+                addLog('Hata: ' + error.message);
+            }
+            
+            isChecking = false;
+            findActiveBtn.disabled = false;
+            stopBtn.disabled = true;
+            addLog('Tarama tamamlandı.');
+        }
+        
+        // Otomatik kontrol
+        function toggleAutoCheck() {
+            if (autoCheckCheckbox.checked) {
+                const intervalMinutes = parseInt(checkIntervalSelect.value);
+                autoCheckInterval = setInterval(findActiveLink, intervalMinutes * 60 * 1000);
+                findActiveLink();
+            } else if (autoCheckInterval) {
+                clearInterval(autoCheckInterval);
+                autoCheckInterval = null;
+            }
+        }
+        
+        // Olay dinleyicileri
+        findActiveBtn.addEventListener('click', findActiveLink);
+        stopBtn.addEventListener('click', () => stopRequested = true);
+        copyLinkBtn.addEventListener('click', () => {
+            if (activeLinkFound) {
+                navigator.clipboard.writeText(activeLinkFound);
+                addLog('Link kopyalandı.');
+            }
+        });
+        openLinkBtn.addEventListener('click', () => {
+            if (activeLinkFound) window.open(activeLinkFound, '_blank');
+        });
+        autoCheckCheckbox.addEventListener('change', toggleAutoCheck);
+        checkIntervalSelect.addEventListener('change', () => {
+            if (autoCheckCheckbox.checked && autoCheckInterval) {
+                clearInterval(autoCheckInterval);
+                toggleAutoCheck();
+            }
+        });
+        
+        // Hızlı numara butonları
+        quickNumberBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                startNumberInput.value = btn.getAttribute('data-number');
+            });
+        });
+        
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHistory();
+            addLog('Sistem hazır.');
+            
+            // Sesli bildirim ayarını localStorage'dan yükle
+            const savedSoundSetting = localStorage.getItem('soundNotification');
+            if (savedSoundSetting !== null) {
+                soundNotificationCheckbox.checked = savedSoundSetting === 'true';
+            }
+        });
+        
+        // Sesli bildirim ayarını kaydet
+        soundNotificationCheckbox.addEventListener('change', () => {
+            localStorage.setItem('soundNotification', soundNotificationCheckbox.checked);
+        });
+        
+        // Sayfa kapanırken
+        window.addEventListener('beforeunload', () => {
+            if (autoCheckInterval) clearInterval(autoCheckInterval);
+        });
+    </script>
+</body>
+</html>
