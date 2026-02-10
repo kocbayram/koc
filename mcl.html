@@ -3,362 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maç Linklerim</title>
+    <title>Linkler</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-color: #3b82f6;
+            --border-color: #e2e8f0;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
         
         body {
-            background-color: #f8f9fa;
-            color: #333;
-            padding: 16px;
-            max-width: 800px;
-            margin: 0 auto;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
             min-height: 100vh;
+            padding: 30px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--primary-color);
         }
         
         h1 {
-            color: #6C5CE7;
-            text-align: center;
-            margin: 20px 0 30px 0;
-            font-size: 2em;
-            position: relative;
-            padding-bottom: 15px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
         
-        h1::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            min-width: 140px;
-            height: 4px;
-            background: #1e88e5;
-            border-radius: 2px;
+        .link-count {
+            color: #64748b;
+            font-size: 1.1rem;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 10px;
         }
         
-        .search-section {
+        .links-list {
+            margin-top: 30px;
+        }
+        
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 10px;
             background: white;
-            padding: 16px;
-            border-radius: 16px;
-            margin: 20px 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e0e0e0;
-        }
-        
-        .search-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-        
-        .search-table tr {
-            display: table-row;
-        }
-        
-        .search-table td {
-            display: table-cell;
-            padding: 0;
-            vertical-align: middle;
-        }
-        
-        .search-input-cell {
-            width: 75%;
-            padding-right: 10px !important;
-        }
-        
-        .search-button-cell {
-            width: 25%;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #0984E3;
-            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
-        }
-        
-        .search-button {
-            background: #0984E3;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-        
-        .search-button:hover {
-            background: #0770C4;
-        }
-        
-        .shortcuts-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .shortcut-item {
-            display: flex;
-            align-items: center;
-            background-color: white;
-            border-radius: 16px;
-            padding: 18px 20px;
             text-decoration: none;
-            color: #333;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e0e0e0;
-            min-height: 72px;
+            color: inherit;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
         }
         
-        .shortcut-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border-color: #d0d0d0;
+        .link-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+            border-color: var(--primary-color);
+            background: #f8fafc;
         }
         
-        .shortcut-item:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .shortcut-name {
-            font-weight: 500;
-            font-size: 18px;
-            color: #1a1a1a;
-            flex-grow: 1;
+        .link-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
         }
         
-        /* GAZETELER.HTML'DEN ALINAN OK STİLİ */
-        .bullet {
-            color: #696969;
-            font-size: 18px;
-            font-weight: normal;
+        .link-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e293b;
+            flex: 1;
         }
         
-        @media (max-width: 600px) {
-            body {
-                padding: 12px;
+        .link-arrow {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .link-item:hover .link-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
             }
             
             h1 {
-                font-size: 1.8em;
-                margin: 15px 0 20px 0;
+                font-size: 2rem;
             }
             
-            .shortcut-item {
-                padding: 16px;
-                border-radius: 14px;
-                min-height: 68px;
+            .link-item {
+                padding: 14px 16px;
             }
             
-            .shortcut-name {
-                font-size: 17px;
+            .link-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+                margin-right: 15px;
             }
             
-            .bullet {
-                font-size: 16px;
-            }
-            
-            .search-input-cell {
-                width: 70%;
-            }
-            
-            .search-button-cell {
-                width: 30%;
+            .link-name {
+                font-size: 1rem;
             }
         }
         
-        @media (max-width: 400px) {
-            .shortcut-item {
-                padding: 14px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
-            
-            .shortcut-name {
-                font-size: 16px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            
-            .bullet {
-                font-size: 15px;
-            }
-            
-            .search-input-cell {
-                width: 65%;
-            }
-            
-            .search-button-cell {
-                width: 35%;
-            }
-        }
-        
-        @keyframes highlight {
-            0% { background-color: rgba(9, 132, 227, 0.15); }
-            50% { background-color: rgba(9, 132, 227, 0.25); }
-            100% { background-color: transparent; }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Maç Linklerim</h1>
-
-    <div class="search-section">
-        <table class="search-table" cellspacing="0" cellpadding="0">
-            <tr>
-                <td class="search-input-cell">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Kısayol adına göre ara...">
-                </td>
-                <td class="search-button-cell">
-                    <button id="searchBtn" class="search-button">🔍 Ara</button>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="shortcuts-container" id="shortcutsContainer">
-        <a href="https://amps.inattvgiris-amp.cfd" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>İnat Tv
-            </div>
-        </a>
-        <a href="https://tvjustin.com/event3.html?id=androstreamlivebs1" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Justin Tv
-            </div>
-        </a>
-        <a href="https://netspor.co/event.html?id=androstreamlivebs1" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Net Spor
-            </div>
-        </a>
-        <a href="https://patronspor28.xyz/ch.html?id=zirve" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Selçuk Sports
-            </div>
-        </a>
-        <a href="https://softtv7.live/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>SoftTv
-            </div>
-        </a>
-        <a href="https://taraftarium24.xyz/event.html?id=androstreamlivebs1" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Taraftarium24
-            </div>
-        </a>
+    <div class="container">
+        <header>
+            <h1>Linkler</h1>
+          
+        </header>
+        
+        <div class="links-list" id="linksList">
+            <a href="https://amps.inattvgiris-amp.cfd" target="_blank" class="link-item" style="animation-delay: 0s;">
+                <div class="link-number">1</div>
+                <div class="link-name">İnat Tv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://tvjustin.com/event3.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.05s;">
+                <div class="link-number">2</div>
+                <div class="link-name">Justin Tv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://netspor.co/event.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.1s;">
+                <div class="link-number">3</div>
+                <div class="link-name">Net Spor</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://patronspor28.xyz/ch.html?id=zirve" target="_blank" class="link-item" style="animation-delay: 0.15000000000000002s;">
+                <div class="link-number">4</div>
+                <div class="link-name">Selçuk Sports</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://softtv8.live/" target="_blank" class="link-item" style="animation-delay: 0.2s;">
+                <div class="link-number">5</div>
+                <div class="link-name">SoftTv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://taraftarium24.xyz/event.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.25s;">
+                <div class="link-number">6</div>
+                <div class="link-name">Taraftarium24</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+        
+        <footer>
+            <p>Oluşturulma Tarihi: 10 Şubat 2026 21:59</p>
+            <p style="margin-top: 5px; font-size: 0.85rem; color: #94a3b8;">
+                <i class="fas fa-sort-alpha-down"></i> Alfabetik Sıralı
+            </p>
+        </footer>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const shortcuts = document.querySelectorAll('.shortcut-item');
-            shortcuts.forEach((shortcut, index) => {
-                shortcut.style.opacity = '0';
-                shortcut.style.transform = 'translateY(10px)';
-                
-                setTimeout(() => {
-                    shortcut.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    shortcut.style.opacity = '1';
-                    shortcut.style.transform = 'translateY(0)';
-                }, 50 * index);
-            });
-            
-            function searchShortcuts() {
-                const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-                const shortcuts = document.querySelectorAll('.shortcut-item');
-                
-                if (!searchTerm) {
-                    shortcuts.forEach(item => {
-                        item.style.display = 'flex';
-                        item.style.animation = '';
-                    });
-                    return;
-                }
-                
-                let foundCount = 0;
-                let firstMatch = null;
-                
-                shortcuts.forEach(item => {
-                    const name = item.querySelector('.shortcut-name').textContent.toLowerCase();
-                    
-                    if (name.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                        item.style.animation = 'highlight 1.5s ease';
-                        foundCount++;
-                        
-                        if (!firstMatch) {
-                            firstMatch = item;
-                        }
-                    } else {
-                        item.style.display = 'none';
-                        item.style.animation = '';
-                    }
-                });
-                
-                if (firstMatch) {
-                    setTimeout(() => {
-                        firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                }
-                
-                if (searchTerm.length === 1) {
-                    const firstMatchByLetter = Array.from(shortcuts).find(item => {
-                        if (item.style.display !== 'none') {
-                            const name = item.querySelector('.shortcut-name').textContent.toLowerCase();
-                            return name.charAt(0) === searchTerm;
-                        }
-                        return false;
-                    });
-                    
-                    if (firstMatchByLetter) {
-                        setTimeout(() => {
-                            firstMatchByLetter.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 150);
-                    }
-                }
-            }
-
-            document.getElementById('searchBtn').addEventListener('click', searchShortcuts);
-            
-            document.getElementById('searchInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchShortcuts();
-                }
-            });
-            
-            let searchTimeout;
-            document.getElementById('searchInput').addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(searchShortcuts, 300);
-            });
-            
-            document.addEventListener('keydown', function(e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-                    e.preventDefault();
-                    document.getElementById('searchInput').focus();
-                    document.getElementById('searchInput').select();
-                }
+            const linkItems = document.querySelectorAll('.link-item');
+            linkItems.forEach((item, index) => {
+                item.style.animationDelay = (index * 0.05) + 's';
             });
         });
     </script>
