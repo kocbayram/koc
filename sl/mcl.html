@@ -5,97 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linkler</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary-color: #3b82f6;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
+        
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        
         .container {
-            width: 90%;
-            max-width: 500px;
-            margin-top: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
         }
-        .header {
+        
+        header {
             text-align: center;
-            padding: 25px 20px 15px 20px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #2c3e50;
-            position: relative;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--primary-color);
         }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            min-width: 140px;
-            height: 3px;
-            background: #1e88e5;
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        
+        .link-count {
+            color: #64748b;
+            font-size: 1.1rem;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 6px 15px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 10px;
         }
-        td {
-            padding: 12px;
-            font-size: 16px;
+        
+        .links-list {
+            margin-top: 30px;
         }
-        tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        a {
-            text-decoration: none;
-            color: #000000;
-            font-weight: bold;
+        
+        .link-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            animation: fadeIn 0.4s ease forwards;
+            opacity: 0;
         }
-        a:hover {
-            text-decoration: underline;
+        
+        .link-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+            border-color: var(--primary-color);
+            background: #f8fafc;
         }
-        .bullet {
-            color: #696969;
-            font-size: 18px;
+        
+        .link-number {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(59, 130, 246, 0.1);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .link-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e293b;
+            flex: 1;
+        }
+        
+        .link-arrow {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .link-item:hover .link-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .link-item {
+                padding: 14px 16px;
+            }
+            
+            .link-number {
+                width: 26px;
+                height: 26px;
+                font-size: 0.9rem;
+                margin-right: 15px;
+            }
+            
+            .link-name {
+                font-size: 1rem;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <div class="header">Linkler</div>
-        <table>
-            <tbody>
-                <tr><td><a href="https://kocbayram.github.io/koc/sl/dsl.html"><span class="bullet">→</span>Dahili Link 1</a></td></tr>
-                <tr><td><a href="https://amps.inattvgiris-amp.cfd"><span class="bullet">→</span>İnat Tv</a></td></tr>
-                <tr><td><a href="https://tvjustin.com/event3.html?id=androstreamlivebs1"><span class="bullet">→</span>Justin Tv</a></td></tr>
-                <tr><td><a href="https://netspor.co/event.html?id=androstreamlivebs1"><span class="bullet">→</span>Net Spor</a></td></tr>
-                <tr><td><a href="https://patronspor28.xyz/ch.html?id=zirve"><span class="bullet">→</span>Selçuk Sports</a></td></tr>
-                <tr><td><a href="https://softtv8.live/"><span class="bullet">→</span>SoftTv</a></td></tr>
-                <tr><td><a href="https://taraftarium24.xyz/event.html?id=androstreamlivebs1"><span class="bullet">→</span>Taraftarium24</a></td></tr>
-            </tbody>
-        </table>
+        <header>
+            <h1>Linkler</h1>
+          
+        </header>
+        
+        <div class="links-list" id="linksList">
+            <a href="https://bosssports360.com/" target="_blank" class="link-item" style="animation-delay: 0s;">
+                <div class="link-number">1</div>
+                <div class="link-name">Bosssport</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://kocbayram.github.io/koc/sl/dsl.html" target="_blank" class="link-item" style="animation-delay: 0.05s;">
+                <div class="link-number">2</div>
+                <div class="link-name">Dahili Link 1</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://amps.inattvgiris-amp.cfd" target="_blank" class="link-item" style="animation-delay: 0.1s;">
+                <div class="link-number">3</div>
+                <div class="link-name">İnat Tv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://tvjustin.com/event3.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.15000000000000002s;">
+                <div class="link-number">4</div>
+                <div class="link-name">Justin Tv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://netspor.co/event.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.2s;">
+                <div class="link-number">5</div>
+                <div class="link-name">Net Spor</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://patronspor28.xyz/ch.html?id=zirve" target="_blank" class="link-item" style="animation-delay: 0.25s;">
+                <div class="link-number">6</div>
+                <div class="link-name">Selçuk Sports</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://softtv8.live/" target="_blank" class="link-item" style="animation-delay: 0.30000000000000004s;">
+                <div class="link-number">7</div>
+                <div class="link-name">SoftTv</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            <a href="https://taraftarium24.xyz/event.html?id=androstreamlivebs1" target="_blank" class="link-item" style="animation-delay: 0.35000000000000003s;">
+                <div class="link-number">8</div>
+                <div class="link-name">Taraftarium24</div>
+                <div class="link-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+        
+        <footer>
+            <p>Oluşturulma Tarihi: 11 Şubat 2026 13:31</p>
+            <p style="margin-top: 5px; font-size: 0.85rem; color: #94a3b8;">
+                <i class="fas fa-sort-alpha-down"></i> Alfabetik Sıralı
+            </p>
+        </footer>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach((row, index) => {
-                if (index % 2 === 0) {
-                    row.style.backgroundColor = '#ffffff';
-                } else {
-                    row.style.backgroundColor = '#f2f2f2';
-                }
+            const linkItems = document.querySelectorAll('.link-item');
+            linkItems.forEach((item, index) => {
+                item.style.animationDelay = (index * 0.05) + 's';
             });
         });
     </script>
