@@ -404,17 +404,17 @@
   </div>
 
   <script>
-    // RADYO İSTASYONLARI - DÜZGÜN SIRALAMA
+    // RADYO İSTASYONLARI - TÜM URL'LER PROTOKOL-BAĞIMSIZ (MIXED CONTENT ÖNLEMİ)
     const radioStations = {
       "AVRASYA TÜRK": "https://sslyayin.netyayin.net:10909/stream?icy=http",
       "RADYO 45'lik": "https://stream.radyo45lik.com:4545/",
-      "90'Lar": "http://37.247.98.8/stream/166/",
+      "90'Lar": "//37.247.98.8/stream/166/",                    // HTTP -> protocol-relative
       "KAFA RADYO": "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
       "RADYO ÖZGÜR": "https://radyoozgur.kesintisizyayin.com:9898/;",
       "RADYO UMUT": "https://yayin2.canliyayin.org:10953/;/;stream.mp3",
       "RADYO SEYMEN": "https://yayin.radyoseymen.com.tr:1070/stream",
       "TÜRKÜ RADYO": "https://yayin.turkhosted.com/4591/stream",
-      "SHOW FM": "http://46.20.3.229/",
+      "SHOW FM": "//46.20.3.229/",                              // HTTP -> protocol-relative
       "RADYO GÜNEY": "https://stream.radyolarburada.com/radio/8250/radyoguney;",
       "RADYO EKİN": "https://yayin.turkhosted.com/6006/stream;",
       "YÖN RADYO": "https://stream.radyolarburada.com/radio/8020/;?type=http&nocache=107036",
@@ -429,7 +429,8 @@
       "RADYO ÇAĞDAŞ": "https://icecast.netmedya.net/radyocagdas",
       "BATI RADYO": "https://sslyayin.netyayin.net:10902/;",
       "CAN RADYO": "https://canradyo.kesintisizyayin.com:3838/;",
-      "RADYO YOL": "http://r1.comcities.com:7100/;"    };
+      "RADYO YOL": "//r1.comcities.com:7100/;"                  // HTTP -> protocol-relative
+    };
 
     let hls = null;
     let currentAudio = new Audio();
@@ -441,19 +442,12 @@
     let radioNames = ["AVRASYA TÜRK","RADYO 45'lik","90'Lar","KAFA RADYO","RADYO ÖZGÜR","RADYO UMUT","RADYO SEYMEN","TÜRKÜ RADYO","SHOW FM","RADYO GÜNEY","RADYO EKİN","YÖN RADYO","RADYO AKDENİZ","FON RADYO","BEST FM","BURSA FM","RADYO KİLİM","RADYO ASYA","RADYO YAREN","KEMENÇE FM","RADYO ÇAĞDAŞ","BATI RADYO","CAN RADYO","RADYO YOL"];
 
     function initialize() {
-      // Ses butonları
       document.getElementById('volDownBtn').addEventListener('click', decreaseVolume);
       document.getElementById('volUpBtn').addEventListener('click', increaseVolume);
-
-      // Oynatma butonları
       document.getElementById('playPauseBtn').addEventListener('click', togglePlay);
       document.getElementById('prevBtn').addEventListener('click', playPrevious);
       document.getElementById('nextBtn').addEventListener('click', playNext);
-
-      // Klavye kontrolleri
       document.addEventListener('keydown', handleKeyPress);
-      
-      // Başlangıç ses göstergesi
       updateVolumeDisplay();
     }
 
@@ -520,44 +514,58 @@
       currentStationName = radioNames[index];
       const url = radioStations[currentStationName];
 
-      if (hls) hls.destroy();
+      if (hls) {
+        hls.destroy();
+        hls = null;
+      }
       currentAudio.pause();
       currentAudio = new Audio();
 
-      const errorHandler = () => handleError(index);
+      // Hata yönetimi için aynı fonksiyon
+      const errorHandler = handleError;
 
       if (url.includes('m3u8') && Hls.isSupported()) {
         hls = new Hls();
         hls.loadSource(url);
         hls.attachMedia(currentAudio);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          currentAudio.play();
-          isPlaying = true;
-          updateUI();
+          currentAudio.play()
+            .then(() => {
+              isPlaying = true;
+              updateUI();
+            })
+            .catch(() => {});
         });
         hls.on(Hls.Events.ERROR, errorHandler);
       } else {
         currentAudio.src = url;
-        currentAudio.play();
+        currentAudio.play()
+          .then(() => {
+            isPlaying = true;
+            updateUI();
+          })
+          .catch(() => {});
         currentAudio.addEventListener('error', errorHandler);
-        isPlaying = true;
-        updateUI();
       }
 
       currentAudio.addEventListener('canplay', () => clearTimeout(errorTimeout));
       currentAudio.volume = volume;
     }
 
-    function handleError(currentIndex) {
+    // Düzeltilmiş hata yönetimi - parametre yok, currentIndex üzerinden çalışır
+    function handleError() {
       clearTimeout(errorTimeout);
+      const failedIndex = currentIndex; // Hatanın oluştuğu anki index'i sakla
       errorTimeout = setTimeout(() => {
-        const nextIndex = (currentIndex + 1) % radioNames.length;
-        playStation(nextIndex);
+        // Eğer hâlâ aynı kanalda takılıysak ve çalışmıyorsa sonraki kanala geç
+        if (currentIndex === failedIndex) {
+          const nextIndex = (failedIndex + 1) % radioNames.length;
+          playStation(nextIndex);
+        }
       }, 5000);
     }
 
     function updateUI() {
-      // Radyo butonlarını güncelle
       document.querySelectorAll('.radio-item').forEach(item => {
         item.classList.remove('active');
       });
@@ -566,9 +574,7 @@
         document.querySelector(`[data-index="${currentIndex}"]`).classList.add('active');
       }
 
-      // Oynatma butonunu güncelle
       const playBtn = document.getElementById('playPauseBtn');
-      
       if (isPlaying) {
         playBtn.textContent = "Durdur";
         playBtn.classList.add('playing');
@@ -583,11 +589,15 @@
       
       if (isPlaying) {
         currentAudio.pause();
+        isPlaying = false;
       } else {
-        currentAudio.play();
+        currentAudio.play()
+          .then(() => {
+            isPlaying = true;
+            updateUI();
+          })
+          .catch(() => {});
       }
-      
-      isPlaying = !isPlaying;
       updateUI();
     }
 
