@@ -296,76 +296,76 @@
 
     <div class="radio-grid">
       <button class="radio-item" data-index="0" onclick="playStation(0)">
-        RADYO YOL
-      </button>
-      <button class="radio-item" data-index="1" onclick="playStation(1)">
         AVRASYA TÜRK
       </button>
-      <button class="radio-item" data-index="2" onclick="playStation(2)">
+      <button class="radio-item" data-index="1" onclick="playStation(1)">
         RADYO 45'lik
       </button>
-      <button class="radio-item" data-index="3" onclick="playStation(3)">
+      <button class="radio-item" data-index="2" onclick="playStation(2)">
         90'Lar
       </button>
-      <button class="radio-item" data-index="4" onclick="playStation(4)">
+      <button class="radio-item" data-index="3" onclick="playStation(3)">
         KAFA RADYO
       </button>
-      <button class="radio-item" data-index="5" onclick="playStation(5)">
+      <button class="radio-item" data-index="4" onclick="playStation(4)">
         RADYO ÖZGÜR
       </button>
-      <button class="radio-item" data-index="6" onclick="playStation(6)">
+      <button class="radio-item" data-index="5" onclick="playStation(5)">
         RADYO UMUT
       </button>
-      <button class="radio-item" data-index="7" onclick="playStation(7)">
+      <button class="radio-item" data-index="6" onclick="playStation(6)">
         RADYO SEYMEN
       </button>
-      <button class="radio-item" data-index="8" onclick="playStation(8)">
+      <button class="radio-item" data-index="7" onclick="playStation(7)">
         TÜRKÜ RADYO
       </button>
-      <button class="radio-item" data-index="9" onclick="playStation(9)">
+      <button class="radio-item" data-index="8" onclick="playStation(8)">
         SHOW FM
       </button>
-      <button class="radio-item" data-index="10" onclick="playStation(10)">
+      <button class="radio-item" data-index="9" onclick="playStation(9)">
         RADYO GÜNEY
       </button>
-      <button class="radio-item" data-index="11" onclick="playStation(11)">
+      <button class="radio-item" data-index="10" onclick="playStation(10)">
         RADYO EKİN
       </button>
-      <button class="radio-item" data-index="12" onclick="playStation(12)">
+      <button class="radio-item" data-index="11" onclick="playStation(11)">
         YÖN RADYO
       </button>
-      <button class="radio-item" data-index="13" onclick="playStation(13)">
+      <button class="radio-item" data-index="12" onclick="playStation(12)">
         RADYO AKDENİZ
       </button>
-      <button class="radio-item" data-index="14" onclick="playStation(14)">
+      <button class="radio-item" data-index="13" onclick="playStation(13)">
         FON RADYO
       </button>
-      <button class="radio-item" data-index="15" onclick="playStation(15)">
+      <button class="radio-item" data-index="14" onclick="playStation(14)">
         BEST FM
       </button>
-      <button class="radio-item" data-index="16" onclick="playStation(16)">
+      <button class="radio-item" data-index="15" onclick="playStation(15)">
         BURSA FM
       </button>
-      <button class="radio-item" data-index="17" onclick="playStation(17)">
+      <button class="radio-item" data-index="16" onclick="playStation(16)">
         RADYO KİLİM
       </button>
-      <button class="radio-item" data-index="18" onclick="playStation(18)">
+      <button class="radio-item" data-index="17" onclick="playStation(17)">
         RADYO ASYA
       </button>
-      <button class="radio-item" data-index="19" onclick="playStation(19)">
+      <button class="radio-item" data-index="18" onclick="playStation(18)">
         RADYO YAREN
       </button>
-      <button class="radio-item" data-index="20" onclick="playStation(20)">
+      <button class="radio-item" data-index="19" onclick="playStation(19)">
         KEMENÇE FM
       </button>
-      <button class="radio-item" data-index="21" onclick="playStation(21)">
+      <button class="radio-item" data-index="20" onclick="playStation(20)">
         RADYO ÇAĞDAŞ
       </button>
-      <button class="radio-item" data-index="22" onclick="playStation(22)">
+      <button class="radio-item" data-index="21" onclick="playStation(21)">
         BATI RADYO
       </button>
-      <button class="radio-item" data-index="23" onclick="playStation(23)">
+      <button class="radio-item" data-index="22" onclick="playStation(22)">
         CAN RADYO
+      </button>
+      <button class="radio-item" data-index="23" onclick="playStation(23)">
+        RADYO YOL
       </button>
     </div>
 
@@ -406,7 +406,6 @@
   <script>
     // RADYO İSTASYONLARI - DÜZGÜN SIRALAMA
     const radioStations = {
-      "RADYO YOL": "http://radyo.yayin.com.tr:5932/;",
       "AVRASYA TÜRK": "https://sslyayin.netyayin.net:10909/stream?icy=http",
       "RADYO 45'lik": "https://stream.radyo45lik.com:4545/",
       "90'Lar": "http://37.247.98.8/stream/166/",
@@ -429,7 +428,8 @@
       "KEMENÇE FM": "https://ip132.ozelip.com/8058/stream;",
       "RADYO ÇAĞDAŞ": "https://icecast.netmedya.net/radyocagdas",
       "BATI RADYO": "https://sslyayin.netyayin.net:10902/;",
-      "CAN RADYO": "https://canradyo.kesintisizyayin.com:3838/;"    };
+      "CAN RADYO": "https://canradyo.kesintisizyayin.com:3838/;",
+      "RADYO YOL": "http://r1.comcities.com:7100/;"    };
 
     let hls = null;
     let currentAudio = new Audio();
@@ -438,7 +438,7 @@
     let errorTimeout = null;
     let volume = 0.7;
     let currentStationName = "";
-    let radioNames = ["RADYO YOL","AVRASYA TÜRK","RADYO 45'lik","90'Lar","KAFA RADYO","RADYO ÖZGÜR","RADYO UMUT","RADYO SEYMEN","TÜRKÜ RADYO","SHOW FM","RADYO GÜNEY","RADYO EKİN","YÖN RADYO","RADYO AKDENİZ","FON RADYO","BEST FM","BURSA FM","RADYO KİLİM","RADYO ASYA","RADYO YAREN","KEMENÇE FM","RADYO ÇAĞDAŞ","BATI RADYO","CAN RADYO"];
+    let radioNames = ["AVRASYA TÜRK","RADYO 45'lik","90'Lar","KAFA RADYO","RADYO ÖZGÜR","RADYO UMUT","RADYO SEYMEN","TÜRKÜ RADYO","SHOW FM","RADYO GÜNEY","RADYO EKİN","YÖN RADYO","RADYO AKDENİZ","FON RADYO","BEST FM","BURSA FM","RADYO KİLİM","RADYO ASYA","RADYO YAREN","KEMENÇE FM","RADYO ÇAĞDAŞ","BATI RADYO","CAN RADYO","RADYO YOL"];
 
     function initialize() {
       // Ses butonları
