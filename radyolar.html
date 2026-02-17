@@ -324,14 +324,11 @@
     <!-- KONTROL PANELİ - TEK SATIR -->
     <div class="controls">
       <div class="control-container">
-        <!-- SES KONTROL BUTONLARI -->
         <div class="volume-control">
           <button class="volume-btn" id="volDownBtn" title="Sesi Azalt">▼</button>
           <div class="volume-display" id="volumePercent">70%</div>
           <button class="volume-btn" id="volUpBtn" title="Sesi Artır">▲</button>
         </div>
-
-        <!-- OYNATMA BUTONLARI -->
         <div class="playback-controls">
           <button class="control-btn" id="prevBtn" title="Önceki Radyo">Önceki</button>
           <button class="control-btn" id="playPauseBtn" title="Başlat/Durdur">Başlat</button>
@@ -342,32 +339,32 @@
   </div>
 
   <script>
-    // TÜM YAYIN ADRESLERİ PROTOKOL-BAĞIMSIZ (sayfa HTTPS ise HTTPS, HTTP ise HTTP kullanılır)
+    // RADYO İSTASYONLARI - ORİJİNAL HALLERİ (YOL RADYO HTTP, DİĞERLERİ HTTPS)
     const radioStations = {
-      "AVRASYA TÜRK": "//sslyayin.netyayin.net:10909/stream?icy=http",
-      "RADYO 45'lik": "//stream.radyo45lik.com:4545/",
-      "90'Lar": "//37.247.98.8/stream/166/",
-      "KAFA RADYO": "//moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
-      "RADYO ÖZGÜR": "//radyoozgur.kesintisizyayin.com:9898/;",
-      "RADYO UMUT": "//yayin2.canliyayin.org:10953/;/;stream.mp3",
-      "RADYO SEYMEN": "//yayin.radyoseymen.com.tr:1070/stream",
-      "TÜRKÜ RADYO": "//yayin.turkhosted.com/4591/stream",
-      "SHOW FM": "//46.20.3.229/",
-      "RADYO GÜNEY": "//stream.radyolarburada.com/radio/8250/radyoguney;",
-      "RADYO EKİN": "//yayin.turkhosted.com/6006/stream;",
-      "YÖN RADYO": "//stream.radyolarburada.com/radio/8020/;?type=http&nocache=107036",
-      "RADYO AKDENİZ": "//yayin.radyoakdeniz.com:9470/stream;",
-      "FON RADYO": "//sssx.radyosfer.com/radyofon/stream;",
-      "BEST FM": "//ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
-      "BURSA FM": "//radyo.yayin.com.tr:1055/;type=mp3;",
-      "RADYO KİLİM": "//sslyayin.netyayin.net/2727/stream;",
-      "RADYO ASYA": "//sslyayin.netyayin.net/asya/stream;",
-      "RADYO YAREN": "//sslyayin.radyoyayini.com:7097/stream;",
-      "KEMENÇE FM": "//ip132.ozelip.com/8058/stream;",
-      "RADYO ÇAĞDAŞ": "//icecast.netmedya.net/radyocagdas",
-      "BATI RADYO": "//sslyayin.netyayin.net:10902/;",
-      "CAN RADYO": "//canradyo.kesintisizyayin.com:3838/;",
-      "RADYO YOL": "/http://r1.comcities.com:7100/stream/;"
+      "AVRASYA TÜRK": "https://sslyayin.netyayin.net:10909/stream?icy=http",
+      "RADYO 45'lik": "https://stream.radyo45lik.com:4545/",
+      "90'Lar": "http://37.247.98.8/stream/166/",
+      "KAFA RADYO": "https://moondigitalmaster.radyotvonline.net/kafaradyo/playlist.m3u8",
+      "RADYO ÖZGÜR": "https://radyoozgur.kesintisizyayin.com:9898/;",
+      "RADYO UMUT": "https://yayin2.canliyayin.org:10953/;/;stream.mp3",
+      "RADYO SEYMEN": "https://yayin.radyoseymen.com.tr:1070/stream",
+      "TÜRKÜ RADYO": "https://yayin.turkhosted.com/4591/stream",
+      "SHOW FM": "http://46.20.3.229/",
+      "RADYO GÜNEY": "https://stream.radyolarburada.com/radio/8250/radyoguney;",
+      "RADYO EKİN": "https://yayin.turkhosted.com/6006/stream;",
+      "YÖN RADYO": "https://stream.radyolarburada.com/radio/8020/;?type=http&nocache=107036",
+      "RADYO AKDENİZ": "https://yayin.radyoakdeniz.com:9470/stream;",
+      "FON RADYO": "https://sssx.radyosfer.com/radyofon/stream;",
+      "BEST FM": "https://ssldyg.radyotvonline.com/best/bestfm.stream/playlist.m3u8",
+      "BURSA FM": "https://radyo.yayin.com.tr:1055/;type=mp3;",
+      "RADYO KİLİM": "https://sslyayin.netyayin.net/2727/stream;",
+      "RADYO ASYA": "https://sslyayin.netyayin.net/asya/stream;",
+      "RADYO YAREN": "https://sslyayin.radyoyayini.com:7097/stream;",
+      "KEMENÇE FM": "https://ip132.ozelip.com/8058/stream;",
+      "RADYO ÇAĞDAŞ": "https://icecast.netmedya.net/radyocagdas",
+      "BATI RADYO": "https://sslyayin.netyayin.net:10902/;",
+      "CAN RADYO": "https://canradyo.kesintisizyayin.com:3838/;",
+      "RADYO YOL": "http://r1.comcities.com:7100/;"
     };
 
     let hls = null;
@@ -440,7 +437,6 @@
       currentAudio.pause();
       currentAudio = new Audio();
 
-      // Hata yönetimi
       const errorHandler = () => handleError(index);
 
       if (url.includes('m3u8') && Hls.isSupported()) {
@@ -454,8 +450,6 @@
         });
         hls.on(Hls.Events.ERROR, errorHandler);
       } else {
-        // URL'ye protokol ekle: sayfa HTTPS ise HTTPS eklenir, HTTP ise HTTP eklenir.
-        // protocol-relative URL zaten sayfanın protokolünü alır.
         currentAudio.src = url;
         currentAudio.play()
           .then(() => { isPlaying = true; updateUI(); })
@@ -470,7 +464,6 @@
     function handleError(failedIndex) {
       clearTimeout(errorTimeout);
       errorTimeout = setTimeout(() => {
-        // Eğer hâlâ aynı kanal seçiliyse (kullanıcı başka kanala geçmemişse) sonraki kanala geç
         if (currentIndex === failedIndex) {
           const nextIndex = (failedIndex + 1) % radioNames.length;
           playStation(nextIndex);
