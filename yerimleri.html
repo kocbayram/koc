@@ -48,23 +48,52 @@
             const shortcuts = document.querySelectorAll('.shortcut-item');
             function search() {
                 const term = document.getElementById('searchInput').value.toLowerCase().trim();
-                let firstMatch = null;
-                shortcuts.forEach(item => {
-                    const name = item.dataset.name || '';
-                    if (!term || name.includes(term)) {
-                        item.style.display = 'flex';
-                        item.style.animation = term ? 'highlight 1.5s ease' : '';
-                        if (!firstMatch && term) firstMatch = item;
-                    } else {
-                        item.style.display = 'none';
-                    }
+                if (term === '') {
+                    shortcuts.forEach(item => item.style.display = 'flex');
+                    return;
+                }
+                
+                let filtered = [];
+                if (term.length === 1) {
+                    // Tek harf: başlangıç kontrolü
+                    filtered = Array.from(shortcuts).filter(item => 
+                        item.dataset.name.startsWith(term)
+                    );
+                } else {
+                    // Çok harf: içerme kontrolü
+                    filtered = Array.from(shortcuts).filter(item => 
+                        item.dataset.name.includes(term)
+                    );
+                }
+                
+                // Tümünü gizle, sadece filtrelenmiş olanları göster
+                shortcuts.forEach(item => item.style.display = 'none');
+                filtered.forEach(item => {
+                    item.style.display = 'flex';
+                    item.style.animation = 'highlight 1.5s ease';
                 });
-                if (firstMatch) setTimeout(() => firstMatch.scrollIntoView({ behavior:'smooth', block:'center' }), 100);
+                
+                // Tek harf ve sonuç varsa ilkine scroll et
+                if (term.length === 1 && filtered.length > 0) {
+                    setTimeout(() => {
+                        filtered[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                }
             }
+            
             document.getElementById('searchBtn').addEventListener('click', search);
             document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') search(); });
-            document.getElementById('searchInput').addEventListener('input', e => { clearTimeout(window.st); window.st = setTimeout(search, 300); });
-            document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); document.getElementById('searchInput').select(); } });
+            document.getElementById('searchInput').addEventListener('input', e => { 
+                clearTimeout(window.st); 
+                window.st = setTimeout(search, 300); 
+            });
+            document.addEventListener('keydown', e => { 
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') { 
+                    e.preventDefault(); 
+                    document.getElementById('searchInput').focus(); 
+                    document.getElementById('searchInput').select(); 
+                } 
+            });
         })();
     </script>
 </body>
