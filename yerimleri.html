@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kısayollar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -36,10 +37,10 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: auto;
-            min-width: 140px;
+            width: 100%;
+            max-width: 800px;
             height: 4px;
-            background: #1e88e5;
+            background: linear-gradient(90deg, #6C5CE7, #a29bfe, #6C5CE7);
             border-radius: 2px;
         }
         
@@ -142,21 +143,31 @@
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
         
+        .shortcut-icon {
+            color: #696969;
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .shortcut-item:hover .shortcut-icon {
+            color: #6C5CE7;
+            transform: translateX(5px);
+        }
+        
         .shortcut-name {
             font-weight: 500;
             font-size: 18px;
             color: #1a1a1a;
             flex-grow: 1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            transition: all 0.3s ease;
         }
         
-        /* GAZETELER.HTML'DEN ALINAN OK STİLİ */
-        .bullet {
-            color: #696969;
-            font-size: 18px;
-            font-weight: normal;
+        .shortcut-item:hover .shortcut-name {
+            padding-left: 5px;
         }
         
         @media (max-width: 600px) {
@@ -175,12 +186,13 @@
                 min-height: 68px;
             }
             
-            .shortcut-name {
-                font-size: 17px;
+            .shortcut-icon {
+                font-size: 16px;
+                margin-right: 12px;
             }
             
-            .bullet {
-                font-size: 16px;
+            .shortcut-name {
+                font-size: 17px;
             }
             
             .search-input-cell {
@@ -197,12 +209,13 @@
                 padding: 14px;
             }
             
-            .shortcut-name {
+            .shortcut-icon {
                 font-size: 16px;
+                margin-right: 10px;
             }
             
-            .bullet {
-                font-size: 15px;
+            .shortcut-name {
+                font-size: 16px;
             }
             
             .search-input-cell {
@@ -239,274 +252,334 @@
 
     <div class="shortcuts-container" id="shortcutsContainer">
         <a href="https://12punto.com.tr/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>12 Punto
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">12 Punto</div>
         </a>
         <a href="https://www.canlitv.my/aspor-canli-izle" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>A Spor Canlı izle
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">A Spor Canlı izle</div>
         </a>
         <a href="https://ajansspor.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>AjansSpor
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">AjansSpor</div>
         </a>
         <a href="https://arsiv.mackolik.com/Takim/14198/Amasyaspor-Futbol-Kulubu" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Amasyaspor
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Amasyaspor</div>
         </a>
         <a href="https://amazon.com.tr/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Amazon
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Amazon</div>
         </a>
         <a href="http://bayramkoc.freehostia.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Bayram KOÇ
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Bayram KOÇ</div>
         </a>
         <a href="https://bsky.app/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Bluesky
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Bluesky</div>
         </a>
         <a href="https://borsaseans.com/haberler" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Borsa Seans
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Borsa Seans</div>
         </a>
         <a href="https://getborsa.com/bugun/index.html" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Borsa-Bugün
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Borsa-Bugün</div>
         </a>
         <a href="https://mobile.twitter.com/borsacibaba" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>BorsacıBaba
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">BorsacıBaba</div>
         </a>
         <a href="https://www.denizbank.com/oran-ve-fiyatlar/denizbank-kur-bilgileri.aspx" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>DenizBank Kur Bilgileri
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">DenizBank Kur Bilgileri</div>
         </a>
         <a href="https://mobile.twitter.com/ekrem_imamoglu" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Ekrem İmamoğlu
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Ekrem İmamoğlu</div>
         </a>
         <a href="https://mobile.twitter.com/Fintables" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Fintables
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Fintables</div>
         </a>
         <a href="https://fixtur.es/tr/team/galatasaray" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Fixtur GS
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Fixtur GS</div>
         </a>
         <a href="https://galatasaray.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>GALATASARAY
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">GALATASARAY</div>
         </a>
         <a href="https://www.gercekgundem.com/bugun" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Gerçek Gündem
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Gerçek Gündem</div>
         </a>
         <a href="https://www.google.com/finance/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Google Finans
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Google Finans</div>
+        </a>
+        <a href="https://kocbayram.github.io/koc/piyasalar.htm" target="_blank" class="shortcut-item">
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
+            </div>
+            <div class="shortcut-name">Google Piyasalar</div>
         </a>
         <a href="https://haber240.com/son-haberler" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Haber 240
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Haber 240</div>
         </a>
         <a href="http://bayramkoc.freehostia.com/Televizyonlar.html" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>HaberTv
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">HaberTv</div>
         </a>
         <a href="https://halktv-live.daioncdn.net/halktv/halktv.m3u8" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Halk Tv
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Halk Tv</div>
         </a>
         <a href="https://hepsiburada.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Hepsi Burada
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Hepsi Burada</div>
         </a>
         <a href="https://www.borsaveyatirim.com/araci-kurum-hisse-onerileri" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Hisse Önerileri
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Hisse Önerileri</div>
         </a>
         <a href="https://ciner.daioncdn.net/ht-spor/ht-spor_360p.m3u8?ex=0&sid=72gm2yvr6y5r&app=d5539841-018b-48b4-80fe-8bac2ffc3d5e&ce=2" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>HT-Spor
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">HT-Spor</div>
         </a>
         <a href="https://www.ilacprospektusu.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>İlaç Tanıtmalıkları
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">İlaç Tanıtmalıkları</div>
         </a>
         <a href="https://www.kap.org.tr/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>KAP
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">KAP</div>
         </a>
         <a href="https://kisadalga.net/son-haberler" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Kısa Dalga
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Kısa Dalga</div>
         </a>
         <a href="https://mobile.twitter.com/M_B_QUENN" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Melike Başer
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Melike Başer</div>
         </a>
         <a href="http://192.168.1.1/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Modem Reset
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Modem Reset</div>
         </a>
         <a href="https://modyolo.com/apps/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Modyolo
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Modyolo</div>
         </a>
         <a href="https://myactivity.google.com/myactivity" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>My Activity
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">My Activity</div>
         </a>
         <a href="https://n11.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>N11
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">N11</div>
         </a>
         <a href="https://uycyyuuzyh.turknet.ercdn.net/nphindgytw/nowtv/nowtv.m3u8" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Now Tv
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Now Tv</div>
         </a>
         <a href="https://www.paraborsa.net/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Para & Borsa
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Para & Borsa</div>
         </a>
         <a href="https://piyasaanalizleri.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Piyasa Analizleri
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Piyasa Analizleri</div>
         </a>
         <a href="https://www.pttavm.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>PttAVM
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">PttAVM</div>
         </a>
         <a href="http://bayramkoc.freehostia.com/renkkodlari.htm" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Renk Kodları
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Renk Kodları</div>
         </a>
         <a href="https://secim.sozcu.com.tr/secim2024mart31" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Seçim Sonuçları 2024
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Seçim Sonuçları 2024</div>
         </a>
         <a href="https://www.sondepremler.org/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Son Depremler
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Son Depremler</div>
         </a>
         <a href="https://sozluk.gov.tr/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Sözlük
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Sözlük</div>
         </a>
         <a href="https://kocbayram.github.io/koc/Spor.html" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Spor Tv
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Spor Tv</div>
         </a>
         <a href="https://www.sporx.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Sporx
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Sporx</div>
         </a>
         <a href="https://t24.com.tr/son-dakika" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>T24
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">T24</div>
         </a>
         <a href="https://kocbayram.github.io/koc/Takvim.html" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Takvim
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Takvim</div>
         </a>
         <a href="https://www.gedik.com/bilgi-egitimler/tedbirli-hisseler" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Tedbirli Hisseler
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Tedbirli Hisseler</div>
         </a>
         <a href="https://www.gedik.com/piyasalar/temettu-odemeleri" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Temettü Ödemeleri
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Temettü Ödemeleri</div>
         </a>
         <a href="https://www.mgm.gov.tr/tahmin/il-ve-ilceler.aspx?il=Tokat&ilce=Turhal" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Tokat-Turhal Hava Durumu
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Tokat-Turhal Hava Durumu</div>
         </a>
         <a href="https://tv-trtspor1.medya.trt.com.tr/master.m3u8" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>TRT Spor
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">TRT Spor</div>
         </a>
         <a href="https://tv-trt1.medya.trt.com.tr/master.m3u8" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>TRT1
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">TRT1</div>
         </a>
         <a href="https://www.accuweather.com/tr/tr/turhal/321258/weather-forecast/321258" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Turhal Hava Durumu
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Turhal Hava Durumu</div>
         </a>
         <a href="https://m.webaslan.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>WEBASLAN
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">WEBASLAN</div>
         </a>
         <a href="https://yandex.com.tr/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Yandex
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Yandex</div>
         </a>
         <a href="http://bayramkoc.freehostia.com/yapayzeka.html" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>Yapay Zeka Siteleri
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">Yapay Zeka Siteleri</div>
         </a>
         <a href="https://m.youtube.com/" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>YouTube
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">YouTube</div>
         </a>
         <a href="https://www.ysense.com/surveys" target="_blank" class="shortcut-item">
-            <div class="shortcut-name">
-                <span class="bullet">→</span>ySense
+            <div class="shortcut-icon">
+                <span class="bullet">→</span>
             </div>
+            <div class="shortcut-name">ySense</div>
         </a>
     </div>
 
