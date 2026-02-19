@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piyasa Bilgileri</title>
+<link rel="preload" href="critical.css" as="style">
+<link rel="prefetch" href="next-page.html">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .kazananlar { background-color: #d4edda; }
+        .kaybedenler { background-color: #f8d7da; }
+        .endeksler { background-color: #d1ecf1; }
+        .aktif { background-color: #fff3cd; }
+        .kripto { background-color: #e2e3e5; }
+        .kurlar { background-color: #f5f5f5; }
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .kazananlar-btn { background-color: #28a745; color: white; }
+        .kaybedenler-btn { background-color: #dc3545; color: white; }
+        .endeksler-btn { background-color: #007bff; color: white; }
+        .aktif-btn { background-color: #ffc107; color: black; }
+        .kripto-btn { background-color: #6c757d; color: white; }
+        .kurlar-btn { background-color: #17a2b8; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Piyasa Bilgileri</h1>
+    <table>
+        <tr>
+            <td class="kazananlar"><button class="kazananlar-btn" onclick="window.open('https://www.google.com/finance/markets/gainers?authuser=0', '_blank')">Kazananlar</button></td>
+        </tr>
+        <tr>
+            <td class="kaybedenler"><button class="kaybedenler-btn" onclick="window.open('https://www.google.com/finance/markets/losers?authuser=0', '_blank')">Kaybedenler</button></td>
+        </tr>
+        <tr>
+            <td class="endeksler"><button class="endeksler-btn" onclick="window.open('https://www.google.com/finance/markets/indexes?authuser=0', '_blank')">Piyasa Endeksleri</button></td>
+        </tr>
+        <tr>
+            <td class="aktif"><button class="aktif-btn" onclick="window.open('https://www.google.com/finance/markets/most-active?authuser=0', '_blank')">En Aktif</button></td>
+        </tr>
+        <tr>
+            <td class="kripto"><button class="kripto-btn" onclick="window.open('https://www.google.com/finance/markets/cryptocurrencies?authuser=0', '_blank')">Kripto</button></td>
+        </tr>
+        <tr>
+            <td class="kurlar"><button class="kurlar-btn" onclick="window.open('https://www.google.com/finance/markets/currencies?authuser=0', '_blank')">Kurlar</button></td>
+        </tr>
+    </table>
+</body>
+</html>
