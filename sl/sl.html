@@ -337,6 +337,32 @@
             white-space: nowrap;
             z-index: 10;
         }
+        .download-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .download-btn:hover {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
         .delete-btn, .edit-btn {
             background: transparent;
             padding: 5px;
@@ -437,87 +463,125 @@
     </style>
 </head>
 <body>
-    <div class="container"><h1>Spor Linkleri</h1><div class="links-container"><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 1</div>
-                    <div class="link-url">https://bosssports360.com/</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 2</div>
-                    <div class="link-url">https://patronspor.is/</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 3</div>
-                    <div class="link-url">https://amps.inattvgiris-amp.cfd</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 4</div>
-                    <div class="link-url">https://tvjustin.com/event3.htm?id=androstreamlivebs1</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 5</div>
-                    <div class="link-url">https://netspor.co/event.html?id=androstreamlivebs1</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 6</div>
-                    <div class="link-url">https://taraftarium24.xyz/event.html?id=androstreamlivebs1</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 7</div>
-                    <div class="link-url">https://softtv12.live/</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 8</div>
-                    <div class="link-url">https://netsportv236.top/</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-external"></span> Harici Link 9</div>
-                    <div class="link-url">https://sultansportv1945.com/tv/bein-sports-1/</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn link-btn-open" onclick="updateLink(this); return false;">
-                            <span class="icon icon-external"></span> Yeni Sekmede Aç
-                        </a>
-                    </div>
-                </div><div class="link-card">
-                    <div class="link-title"><span class="icon icon-play"></span> Dahili Link 1</div>
-                    <div class="link-url">https://andro.226503.xyz/checklist/receptestt.m3u8</div>
-                    <div class="link-actions">
-                        <a href="#" class="link-btn hls-player-btn" onclick="updateHlsLink(this); return false;">
-                            <span class="icon icon-play"></span> HLS Oynatıcıda Aç
-                        </a>
-                    </div>
-                </div></div><div class="footer"><p>© 2023 Spor Linkleri - Tüm Hakları Saklıdır</p></div></div>
+    <div class="container">
+        <h1>Spor Linkleri</h1>
+        
+        <!-- Yönetim butonları -->
+        
+
+        <!-- Yeni link ekleme butonları -->
+        
+        
+        <!-- Linklerin listeleneceği alan (başlangıçta boş) -->
+        <div class="links-container"><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 1</div>
+                <div class="link-url" onclick="this.focus()">https://bosssports360.com/</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 2</div>
+                <div class="link-url" onclick="this.focus()">https://patronspor.is/</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 3</div>
+                <div class="link-url" onclick="this.focus()">https://amps.inattvgiris-amp.cfd</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 4</div>
+                <div class="link-url" onclick="this.focus()">https://tvjustin.com/event3.html?id=androstreamlivebs1</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 5</div>
+                <div class="link-url" onclick="this.focus()">https://netspor.co/event.html?id=androstreamlivebs1</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 6</div>
+                <div class="link-url" onclick="this.focus()">https://taraftarium24.xyz/event.html?id=androstreamlivebs1</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 7</div>
+                <div class="link-url" onclick="this.focus()">hhttps://live.softtv2.com/</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 8</div>
+                <div class="link-url" onclick="this.focus()">https://netsportv236.top/</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-external"></span> Harici Link 9</div>
+                <div class="link-url" onclick="this.focus()">https://sultansportv1945.com/tv/bein-sports-1/</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn link-btn-open" onclick="updateLink(this)">
+                        <span class="icon icon-external"></span> Yeni Sekmede Aç
+                    </a>
+                </div>
+            </div><div class="link-card">
+                
+                
+                <div class="link-title"><span class="icon icon-play"></span> Dahili Link 1</div>
+                <div class="link-url" onclick="this.focus()">https://andro.226503.xyz/checklist/receptestt.m3u8</div>
+                <div class="link-actions">
+                    <a href="#" class="link-btn hls-player-btn" onclick="updateHlsLink(this)">
+                        <span class="icon icon-play"></span> HLS Oynatıcıda Aç
+                    </a>
+                </div>
+            </div></div>
+
+        <!-- HTML olarak indir butonu -->
+        
+        
+        <div class="footer">
+            <p>© 2023 Spor Linkleri - Tüm Hakları Saklıdır</p>
+        </div>
+    </div>
     <div id="hls-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -539,38 +603,35 @@
             </div>
         </div>
     </div>
-    <div class="toast" id="toast" style="display: none;">Linkler yüklendi</div>
+    <div class="toast" id="toast" style="display: none;">Link silindi</div>
     <script>
-        
-                let hls = new Hls();
-                let video = document.getElementById('hls-player');
-                function closeModal() { document.getElementById('hls-modal').style.display = 'none'; if (hls) hls.destroy(); if (video) video.pause(); }
-                function toggleFullscreen() { if (!document.fullscreenElement) { if (video.requestFullscreen) video.requestFullscreen(); else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen(); else if (video.msRequestFullscreen) video.msRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); else if (document.msExitFullscreen) document.msExitFullscreen(); } }
-                function setVolume(value) { video.volume = value; }
-                function updateHlsLink(element) {
-                    const linkCard = element.closest('.link-card');
-                    const linkUrl = linkCard.querySelector('.link-url').textContent;
-                    const linkTitle = linkCard.querySelector('.link-title').innerText.replace(/[🔗▶]/, '').trim();
-                    document.querySelector('.modal-title').innerHTML = '<span class="icon icon-play"></span> ' + linkTitle;
-                    const modal = document.getElementById('hls-modal');
-                    const loading = document.getElementById('loading');
-                    modal.style.display = 'flex';
-                    loading.style.display = 'block';
-                    if (Hls.isSupported()) {
-                        hls.loadSource(linkUrl);
-                        hls.attachMedia(video);
-                        hls.on(Hls.Events.MANIFEST_PARSED, function() { loading.style.display = 'none'; video.play(); });
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = linkUrl;
-                        video.addEventListener('loadedmetadata', function() { loading.style.display = 'none'; video.play(); });
-                    }
-                }
-                function updateLink(element) { 
-                    const linkCard = element.closest('.link-card'); 
-                    window.open(linkCard.querySelector('.link-url').textContent, '_blank');
-                }
-                function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 3000); }
-            
+        if (Hls.isSupported()) { console.log("HLS.js destekleniyor"); } 
+        else { alert("Tarayıcınız HLS formatını desteklemiyor."); }
+        let hls = new Hls();
+        let video = document.getElementById('hls-player');
+        function closeModal() { document.getElementById('hls-modal').style.display = 'none'; if (hls) hls.destroy(); if (video) video.pause(); }
+        function toggleFullscreen() { if (!document.fullscreenElement) { if (video.requestFullscreen) video.requestFullscreen(); else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen(); else if (video.msRequestFullscreen) video.msRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); else if (document.msExitFullscreen) document.msExitFullscreen(); } }
+        function setVolume(value) { video.volume = value; }
+        function updateHlsLink(element) {
+            const linkCard = element.closest('.link-card');
+            const linkUrl = linkCard.querySelector('.link-url').textContent;
+            const linkTitle = linkCard.querySelector('.link-title').innerText.replace(/[🔗▶]/, '').trim();
+            document.querySelector('.modal-title').innerHTML = '<span class="icon icon-play"></span> ' + linkTitle;
+            const modal = document.getElementById('hls-modal');
+            const loading = document.getElementById('loading');
+            modal.style.display = 'flex';
+            loading.style.display = 'block';
+            if (Hls.isSupported()) {
+                hls.loadSource(linkUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() { loading.style.display = 'none'; video.play(); });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = linkUrl;
+                video.addEventListener('loadedmetadata', function() { loading.style.display = 'none'; video.play(); });
+            }
+        }
+        function updateLink(element) { const linkCard = element.closest('.link-card'); element.href = linkCard.querySelector('.link-url').textContent; }
+        function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 3000); }
     </script>
 </body>
 </html>
