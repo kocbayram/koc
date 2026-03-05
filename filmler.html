@@ -15,7 +15,7 @@
         .stats-bar { display: flex; gap: 12px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
         .stat-item { background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 40px; font-size: 0.9rem; }
         
-        /* Dil ve Dublaj Seçici - YENİ */
+        /* Dil ve Dublaj Seçici */
         .language-bar {
             background: #1e293b;
             border-radius: 50px;
@@ -68,35 +68,40 @@
         .favorite-icon { padding: 15px; color: #64748b; cursor: pointer; }
         .favorite-icon.active { color: #fbbf24; }
         
-        /* Oynatıcı - TAM DONANIMLI */
+        /* Oynatıcı - 3 SATIR TASARIM */
         .player-container { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; }
         .player-header { background: #1e293b; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .player-title { font-weight: bold; font-size: 1rem; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .video-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; background: #000; }
         video, iframe { width: 100%; height: 100%; max-width: 1280px; max-height: 720px; }
         
-        /* Kontrol Paneli - TÜM BUTONLAR GERİ GELDİ */
+        /* Kontrol Paneli - 3 SATIR */
         .controls {
             background: #1e293b;
-            padding: 15px;
+            padding: 15px 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
+        
+        /* 1. SATIR: Navigasyon Butonları */
         .nav-buttons {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
         }
-        .volume-section {
+        
+        /* 2. SATIR: Ses Kontrolleri + Yüzde (Sağda) */
+        .volume-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
-        .volume-controls {
+        
+        .volume-buttons {
             display: flex;
             align-items: center;
             gap: 5px;
@@ -104,23 +109,48 @@
             padding: 5px 10px;
             border-radius: 50px;
         }
-        .quality-selector {
+        
+        .volume-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .volume-btn:hover { color: #3b82f6; }
+        
+        .volume-percent {
+            background: #0f172a;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        /* 3. SATIR: Kalite ve Dil Seçici (Yan Yana) */
+        .selector-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .selector {
             background: #0f172a;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             cursor: pointer;
-        }
-        .volume-indicator {
-            background: #0f172a;
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-weight: bold;
-            min-width: 60px;
+            min-width: 140px;
             text-align: center;
         }
+        
         .btn {
             padding: 10px 20px;
             border: none;
@@ -133,24 +163,17 @@
             align-items: center;
             gap: 8px;
             transition: 0.2s;
+            font-size: 0.95rem;
         }
         .btn:hover { background: #2563eb; transform: translateY(-2px); }
         .btn-back { background: #ef4444; }
         .btn-back:hover { background: #dc2626; }
-        .volume-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 5px 10px;
-        }
-        .volume-btn:hover { color: #3b82f6; }
         
         /* Loader */
         #loader { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; 
             flex-direction: column; align-items: center; justify-content: center; z-index: 10000; 
+            padding: 20px;
         }
         .spinner { 
             border: 4px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; 
@@ -158,11 +181,15 @@
             margin-bottom: 20px; 
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .error-message { color: #ef4444; margin-top: 15px; text-align: center; font-size: 1.1rem; max-width: 80%; line-height: 1.5; }
+        .retry-button { margin-top: 20px; padding: 10px 20px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .back-button { margin-top: 10px; }
         
         @media (max-width: 768px) {
-            .controls { padding: 10px; }
-            .btn { padding: 8px 12px; font-size: 0.85rem; }
-            .volume-section { flex-direction: column; }
+            .controls { padding: 12px; }
+            .btn { padding: 8px 16px; font-size: 0.85rem; }
+            .selector { padding: 8px 16px; font-size: 0.85rem; min-width: 120px; }
+            .volume-percent { padding: 6px 15px; min-width: 70px; }
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -179,7 +206,7 @@
             </div>
         </header>
         
-        <!-- DİL ve DUBLAJ SEÇİCİ - YENİ -->
+        <!-- DİL ve DUBLAJ SEÇİCİ -->
         <div class="language-bar">
             <div class="lang-option active" onclick="setLanguage('tr')">
                 <i class="fas fa-check-circle"></i> Türkçe
@@ -209,7 +236,7 @@
         <div class="channel-list" id="list"></div>
     </div>
 
-    <!-- TAM DONANIMLI OYNATICI -->
+    <!-- OYNATICI - 3 SATIR TASARIM -->
     <div class="player-container" id="player">
         <div class="player-header">
             <span class="player-title" id="p-title">Film</span>
@@ -220,42 +247,45 @@
             <iframe id="f" style="display:none;" allowfullscreen></iframe>
         </div>
         <div class="controls">
-            <!-- Navigasyon Butonları -->
+            <!-- 1. SATIR: Navigasyon Butonları -->
             <div class="nav-buttons">
                 <button class="btn" onclick="change(-1)"><i class="fas fa-backward"></i> Önceki</button>
                 <button class="btn btn-back" onclick="closeP()"><i class="fas fa-list"></i> Listeye Dön</button>
                 <button class="btn" onclick="change(1)">Sonraki <i class="fas fa-forward"></i></button>
             </div>
             
-            <!-- SES KONTROLLERİ - GERİ GETİRİLDİ -->
-            <div class="volume-section">
-                <div class="volume-controls">
+            <!-- 2. SATIR: Ses Kontrolleri + Yüzde (Sağda) -->
+            <div class="volume-row">
+                <div class="volume-buttons">
                     <button class="volume-btn" onclick="vol(-0.1)"><i class="fas fa-volume-down"></i></button>
                     <button class="volume-btn" onclick="toggleMute()"><i class="fas fa-volume-up" id="m-icon"></i></button>
                     <button class="volume-btn" onclick="vol(0.1)"><i class="fas fa-volume-up"></i></button>
                 </div>
-                <span class="volume-indicator" id="v-val">100%</span>
-                
-                <!-- KALİTE SEÇİCİ -->
-                <select id="quality" class="quality-selector" onchange="setQ(this.value)">
-                    <option value="-1">Otomatik Kalite</option>
+                <span class="volume-percent" id="v-val">100%</span>
+            </div>
+            
+            <!-- 3. SATIR: Kalite ve Dil Seçici (Yan Yana) -->
+            <div class="selector-row">
+                <select id="quality" class="selector" onchange="setQ(this.value)">
+                    <option value="-1">⚙️ Otomatik Kalite</option>
                 </select>
                 
-                <!-- DİL SEÇİCİ (Oynatıcı içinde) -->
-                <select id="audioTrack" class="quality-selector" onchange="changeAudio(this.value)">
-                    <option value="tr">Türkçe</option>
-                    <option value="en">English</option>
-                    <option value="original">Orijinal</option>
+                <select id="audioTrack" class="selector" onchange="changeAudio(this.value)">
+                    <option value="tr">🇹🇷 Türkçe</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="original">🎬 Orijinal</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- LOADER -->
+    <!-- LOADER - HATA YÖNETİMİ -->
     <div id="loader">
-        <div class="spinner"></div>
-        <p id="s-text">Yükleniyor...</p>
-        <button id="retryBtn" class="btn" style="display:none; margin-top:15px;" onclick="retryPlay()">Tekrar Dene</button>
+        <div class="spinner" id="s-spin"></div>
+        <p id="s-text" style="text-align:center;">Yükleniyor...</p>
+        <div id="errorMessage" class="error-message"></div>
+        <button id="retryBtn" class="retry-button" style="display:none;" onclick="retryPlay()">Tekrar Dene</button>
+        <button id="backBtn" class="btn btn-back back-button" style="display:none; margin-top:10px;" onclick="closeP()">Listeye Dön</button>
     </div>
 
     <script>
@@ -264,22 +294,77 @@
         let curIdx = -1; 
         let h = null; 
         let tO = null;
+        let currentChannel = null;
         let isDubbingEnabled = false;
         let currentLanguage = 'tr';
         
         const v = document.getElementById('v'); 
         const f = document.getElementById('f');
+        const loader = document.getElementById('loader');
+        const retryBtn = document.getElementById('retryBtn');
+        const backBtn = document.getElementById('backBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const sSpin = document.getElementById('s-spin');
+        const sText = document.getElementById('s-text');
+        
+        // ==================== YARDIMCI FONKSİYON: Link tipini kontrol et ====================
+        function getLinkType(link) {
+            if (link.includes('.m3u8')) {
+                return 'hls';
+            } else if (link.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i) || link.includes('video') || link.includes('getvid')) { 
+                return 'video';
+            } else {
+                return 'iframe';
+            }
+        }
+        
+        // ==================== LOADER YÖNETİMİ ====================
+        function showLoader(message = 'Yükleniyor...') {
+            loader.style.display = 'flex';
+            sSpin.style.display = 'block';
+            sText.style.display = 'block';
+            sText.innerText = message;
+            errorMessage.innerText = '';
+            retryBtn.style.display = 'none';
+            backBtn.style.display = 'none';
+        }
+        
+        function showError(msg) {
+            sSpin.style.display = 'none';
+            sText.style.display = 'none';
+            errorMessage.innerText = msg;
+            retryBtn.style.display = 'block';
+            backBtn.style.display = 'block';
+            if (tO) clearTimeout(tO);
+        }
+        
+        function hideLoader() {
+            loader.style.display = 'none';
+            if (tO) clearTimeout(tO);
+        }
+        
+        // ==================== ZAMAN AŞIMI BAŞLAT ====================
+        function startTimeout() {
+            if (tO) clearTimeout(tO);
+            tO = setTimeout(() => {
+                if (loader.style.display === 'flex') {
+                    showError('Yayın yüklenemedi. Lütfen tekrar deneyin.');
+                }
+            }, 8000); // 8 saniyeye çıkardık, daha toleranslı
+        }
         
         // Dil ve Dublaj Fonksiyonları
         window.setLanguage = function(lang) {
             currentLanguage = lang;
             document.querySelectorAll('.lang-option').forEach(opt => {
                 opt.classList.remove('active');
-                opt.innerHTML = '<i class="fas fa-circle"></i> ' + (opt.innerText.includes('Türkçe') ? 'Türkçe' : (opt.innerText.includes('English') ? 'English' : 'Orijinal'));
+                if (opt.innerText.includes(lang === 'tr' ? 'Türkçe' : (lang === 'en' ? 'English' : 'Orijinal'))) {
+                    opt.classList.add('active');
+                    opt.innerHTML = '<i class="fas fa-check-circle"></i> ' + (lang === 'tr' ? 'Türkçe' : (lang === 'en' ? 'English' : 'Orijinal'));
+                } else {
+                    opt.innerHTML = '<i class="fas fa-circle"></i> ' + (opt.innerText.includes('Türkçe') ? 'Türkçe' : (opt.innerText.includes('English') ? 'English' : 'Orijinal'));
+                }
             });
-            const activeOpt = event.currentTarget;
-            activeOpt.classList.add('active');
-            activeOpt.innerHTML = '<i class="fas fa-check-circle"></i> ' + (lang === 'tr' ? 'Türkçe' : (lang === 'en' ? 'English' : 'Orijinal'));
         };
         
         window.toggleDubbing = function() {
@@ -290,7 +375,6 @@
         
         window.changeAudio = function(lang) {
             console.log('Ses dili değiştirildi:', lang);
-            // Gerçek uygulamada burada video/iframe'in audio track'i değiştirilir
         };
         
         function render(mode) {
@@ -324,73 +408,108 @@
             render(document.getElementById('tab-all').classList.contains('active') ? 'all' : 'fav');
         }
         
+        // ==================== GÜNCELLENMİŞ PLAY FONKSİYONU ====================
         function play(idx) {
             curIdx = idx; 
-            const currentChannel = data[idx];
+            currentChannel = data[idx];
             document.getElementById('player').style.display = 'flex';
             document.getElementById('p-title').innerText = currentChannel.name;
             
-            const l = document.getElementById('loader');
-            l.style.display = 'flex';
-            document.getElementById('s-text').innerText = 'Yükleniyor...';
-            document.getElementById('retryBtn').style.display = 'none';
-            
-            clearTimeout(tO);
-            tO = setTimeout(() => {
-                document.getElementById('s-text').innerText = 'Yüklenemedi!';
-                document.getElementById('retryBtn').style.display = 'block';
-            }, 10000);
+            // Loader'ı göster ve zaman aşımını başlat
+            showLoader();
+            startTimeout();
             
             if(h) h.destroy();
             v.style.display = 'none'; f.style.display = 'none'; v.src = ''; f.src = '';
             
-            if(currentChannel.playerType === 'hls') {
+            // Link tipini belirle
+            const linkType = getLinkType(currentChannel.link);
+            
+            if (linkType === 'hls') {
+                // HLS (m3u8) Oynatma
                 v.style.display = 'block';
-                if(Hls.isSupported()) {
-                    h = new Hls();
-                    h.loadSource(currentChannel.link);
+                if (Hls.isSupported()) {
+                    h = new Hls(); 
+                    h.loadSource(currentChannel.link); 
                     h.attachMedia(v);
                     h.on(Hls.Events.MANIFEST_PARSED, () => {
-                        v.play().catch(()=>{});
-                        clearTimeout(tO);
-                        l.style.display = 'none';
+                        v.play().catch(()=>{}); 
+                        hideLoader();
                         const qs = document.getElementById('quality');
-                        qs.innerHTML = '<option value="-1">Otomatik</option>';
+                        qs.innerHTML = '<option value="-1">⚙️ Otomatik Kalite</option>';
                         if (h.levels) {
                             h.levels.forEach((lvl, i) => qs.innerHTML += `<option value="${i}">${lvl.height}p</option>`);
                         }
+                        updateVolumeDisplay();
                     });
-                    h.on(Hls.Events.ERROR, () => {
-                        clearTimeout(tO);
-                        document.getElementById('s-text').innerText = 'Yayın hatası!';
-                        document.getElementById('retryBtn').style.display = 'block';
+                    h.on(Hls.Events.ERROR, (e, d) => { 
+                        if(d.fatal) { 
+                            showError('Yayın hatası!');
+                        } 
                     });
-                } else {
+                } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
                     v.src = currentChannel.link;
                     v.addEventListener('loadedmetadata', () => {
                         v.play().catch(()=>{});
-                        clearTimeout(tO);
-                        l.style.display = 'none';
+                        hideLoader();
+                        updateVolumeDisplay();
+                    });
+                    v.addEventListener('error', () => {
+                        showError('Yayın hatası!');
                     });
                 }
-            } else {
+            } else if (linkType === 'video') {
+                // Direkt Video Dosyası (mp4, webm, etc.) Oynatma
+                v.style.display = 'block';
+                v.src = currentChannel.link;
+                v.load();
+                
+                // Video yüklendiğinde
+                v.oncanplaythrough = () => {
+                    v.play().catch(()=>{}); 
+                    hideLoader();
+                    updateVolumeDisplay();
+                    document.getElementById('quality').innerHTML = '<option value="-1">⚙️ MP4 Video</option>';
+                };
+                
+                // Video hatası
+                v.onerror = () => {
+                    showError('Video yüklenemedi!');
+                };
+                
+                // Metadata yüklendiğinde de loader'ı kaldır (canplaythrough'dan önce de olabilir)
+                v.onloadedmetadata = () => {
+                    if (v.readyState >= 2) {
+                        hideLoader();
+                    }
+                };
+            } else { 
+                // Iframe Oynatma (Diğer tüm linkler)
                 f.style.display = 'block'; 
                 f.src = currentChannel.link;
-                f.onload = () => { clearTimeout(tO); l.style.display = 'none'; };
-                f.onerror = () => {
-                    clearTimeout(tO);
-                    document.getElementById('s-text').innerText = 'Yayın hatası!';
-                    document.getElementById('retryBtn').style.display = 'block';
+                
+                // Iframe yüklendiğinde
+                f.onload = () => { 
+                    hideLoader(); 
+                };
+                
+                // Iframe hatası
+                f.onerror = () => { 
+                    showError('Yayın açılamıyor!');
                 };
             }
-            
-            // Ses seviyesi göstergesini güncelle
-            updateVolumeDisplay();
         }
         
-        function retryPlay() { if (curIdx >= 0) play(curIdx); }
+        function retryPlay() { 
+            if (currentChannel) play(curIdx); 
+        }
         
-        function setQ(i) { if(h) h.currentLevel = parseInt(i); }
+        // ==================== GÜNCELLENMİŞ SETQ FONKSİYONU ====================
+        function setQ(i) { 
+            if(h) { 
+                h.currentLevel = parseInt(i); 
+            }
+        }
         
         // SES KONTROL FONKSİYONLARI
         function vol(delta) {
@@ -421,15 +540,15 @@
         
         function closeP() { 
             document.getElementById('player').style.display = 'none'; 
-            document.getElementById('loader').style.display = 'none';
+            hideLoader();
             v.pause(); v.src = ''; f.src = ''; 
             if(h) h.destroy(); 
-            clearTimeout(tO);
         }
         
         function toggleFs() { 
             const el = v.style.display === 'block' ? v : f; 
             if(el.requestFullscreen) el.requestFullscreen(); 
+            else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen(); 
         }
         
         // Klavye kısayolları
