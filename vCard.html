@@ -1579,6 +1579,26 @@
         document.getElementById('actionsModal').style.display = 'none';
     }
 
+    // YENİ: Dosya adı oluşturma fonksiyonu
+    function getFileName(format) {
+        const selected = getSelectedContacts();
+        
+        // Eğer tek kişi seçiliyse onun adını kullan
+        if (selected.length === 1) {
+            // Geçersiz karakterleri temizle
+            const cleanName = selected[0].name.replace(/[^\w\sçğıöşüÇĞİÖŞÜ]/g, '').replace(/\s+/g, ' ').trim();
+            return cleanName + format;
+        } 
+        // Birden fazla kişi seçiliyse
+        else if (selected.length > 1) {
+            return "Toplu Rehber" + format;
+        }
+        // Hiçbir şey seçili değilse tüm listeyi al
+        else {
+            return "Rehber" + format;
+        }
+    }
+
     function exportContacts(format) {
         const selected = getSelectedContacts();
         const contacts = selected.length ? selected : loadedContacts;
@@ -1589,50 +1609,53 @@
         }
 
         let content = '';
-        let filename = '';
+        let fileExtension = '';
         let type = '';
 
         switch(format) {
             case 'vcf':
                 content = contacts.map(c => vcardOlustur(c.name, c.tel)).join('\n');
-                filename = 'rehber.vcf';
+                fileExtension = '.vcf';
                 type = 'text/vcard';
                 break;
             case 'csv':
                 content = '\uFEFFİsim,Telefon\n' + contacts.map(c => `"${c.name}","${c.tel}"`).join('\n');
-                filename = 'rehber.csv';
+                fileExtension = '.csv';
                 type = 'text/csv';
                 break;
             case 'txt':
                 content = contacts.map(c => `${c.name}: ${c.tel}`).join('\n');
-                filename = 'rehber.txt';
+                fileExtension = '.txt';
                 type = 'text/plain';
                 break;
             case 'html':
                 content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rehber</title><style>body{font-family:Segoe UI;display:flex;justify-content:center;padding:20px;background:linear-gradient(135deg,#667eea,#764ba2);}table{border-collapse:collapse;margin:auto;background:white;border-radius:15px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.3);}th{background:#25D366;color:white;padding:12px;}td{padding:10px 15px;border:1px solid #ddd;}tr:nth-child(even){background:#f9f9f9;}tr:hover{background:#f0fff4;}</style></head><body><table><tr><th>İsim</th><th>Telefon</th></tr>${
                     contacts.map(c => `<tr><td>${c.name}</td><td>${c.tel}</td></tr>`).join('')
                 }</table></body></html>`;
-                filename = 'rehber.html';
+                fileExtension = '.html';
                 type = 'text/html';
                 break;
             case 'json':
                 content = JSON.stringify(contacts, null, 2);
-                filename = 'rehber.json';
+                fileExtension = '.json';
                 type = 'application/json';
                 break;
             case 'xml':
                 content = '<?xml version="1.0" encoding="UTF-8"?>\n<contacts>\n' + 
                     contacts.map(c => `  <contact>\n    <name>${c.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</name>\n    <tel>${c.tel}</tel>\n  </contact>`).join('\n') +
                     '\n</contacts>';
-                filename = 'rehber.xml';
+                fileExtension = '.xml';
                 type = 'application/xml';
                 break;
         }
 
+        // YENİ: Dinamik dosya adı oluştur
+        const fileName = getFileName(fileExtension);
+
         const blob = new Blob([content], { type: `${type};charset=UTF-8` });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.download = filename;
+        a.download = fileName;
         a.href = url;
         a.click();
         
@@ -1700,7 +1723,8 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         
-        const fileName = selected.length > 1 ? "Toplu Rehber.vcf" : `${selected[0].name}.vcf`;
+        // YENİ: WhatsApp için de dinamik dosya adı
+        const fileName = selected.length > 1 ? "Toplu Rehber.vcf" : `${selected[0].name.replace(/[^\w\sçğıöşüÇĞİÖŞÜ]/g, '').trim()}.vcf`;
         
         a.download = fileName;
         a.href = url;
@@ -1765,5 +1789,6 @@ END:VCARD`;
         showStatus('Temizlendi!', 'info');
     }
 </script>
+
 </body>
 </html>
