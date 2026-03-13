@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vCard Master Pro 🌟</title>
+    <style>
+        /* Mükemmelleştirilmiş tasarım - aynı kalıyor */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            animation: pulse 10s ease infinite;
+            z-index: 0;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .card { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 30px 70px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.5) inset; 
+            width: 100%; 
+            max-width: 650px; 
+            animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            margin: auto;
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes slideIn { 
+            0% { opacity: 0; transform: translateY(50px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        h2 { 
+            background: linear-gradient(135deg, #075E54, #128C7E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center; 
+            margin-bottom: 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: wrap;
+            font-size: 2.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .badge-container {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .badge { 
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white; 
+            padding: 5px 15px; 
+            border-radius: 30px; 
+            font-size: 13px; 
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(37,211,102,0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        .badge.warning { 
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .badge.danger { 
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        @keyframes glow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .input-group { 
+            margin-bottom: 15px; 
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05), inset 0 1px 3px rgba(255,255,255,0.9);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: 700; 
+            color: #075E54; 
+            font-size: 14px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"], input[type="tel"], select { 
+            width: 100%; 
+            padding: 14px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 15px; 
+            box-sizing: border-box; 
+            font-size: 15px; 
+            outline: none; 
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        input:focus { 
+            border-color: #25D366; 
+            box-shadow: 0 0 0 5px rgba(37,211,102,0.2), 0 5px 15px rgba(0,0,0,0.1); 
+            transform: translateY(-2px);
+        }
+        
+        .drop-zone { 
+            border: 3px dashed #25D366; 
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            color: #128C7E; 
+            cursor: pointer; 
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f8f0 100%);
+            margin: 20px 0; 
+            transition: all 0.4s; 
+            position: relative; 
+            font-size: 16px; 
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(37,211,102,0.2);
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        
+        .drop-zone.dragover { 
+            background: linear-gradient(135deg, #dcf8c6 0%, #c8f0b0 100%);
+            border-color: #075E54; 
+            transform: scale(1.03) translateY(-3px);
+            box-shadow: 0 20px 40px rgba(37,211,102,0.3);
+        }
+        
+        #list-section { 
+            display: none; 
+            border-top: 2px solid rgba(0,0,0,0.05); 
+            padding-top: 20px; 
+            margin-top: 20px; 
+        }
+        
+        #contact-list { 
+            max-height: 400px; 
+            overflow-y: auto; 
+            border: 2px solid #f0f0f0; 
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            background: #fff;
+            text-align: left;
+            box-shadow: inset 0 2px 15px rgba(0,0,0,0.05);
+        }
+        
+        .contact-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 10px; 
+            border-bottom: 1px solid #f1f1f1; 
+            gap: 10px; 
+            animation: fadeIn 0.3s ease;
+            transition: all 0.3s;
+        }
+        
+        .contact-item:hover {
+            background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+            transform: translateX(8px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .contact-item.invalid-phone {
+            background: linear-gradient(90deg, #fff3f3 0%, #ffffff 100%);
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .contact-item.duplicate-phone {
+            background: linear-gradient(90deg, #fff8e7 0%, #ffffff 100%);
+            border-left: 5px solid #f39c12;
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0.5; transform: translateX(-15px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+        
+        .vcf-check { 
+            width: 22px; 
+            height: 22px; 
+            cursor: pointer; 
+            accent-color: #25D366; 
+            transition: all 0.2s;
+        }
+        
+        .vcf-check:hover {
+            transform: scale(1.2);
+        }
+        
+        .edit-box { 
+            display: flex; 
+            flex: 1; 
+            gap: 10px; 
+        }
+        
+        .editable-name, .editable-tel { 
+            flex: 1; 
+            font-size: 14px; 
+            padding: 10px 15px; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fafafa;
+        }
+        
+        .editable-name:focus, .editable-tel:focus { 
+            border-color: #25D366; 
+            background-color: #fff; 
+            box-shadow: 0 0 0 4px rgba(37,211,102,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .delete-icon { 
+            color: #e74c3c; 
+            cursor: pointer; 
+            font-size: 22px; 
+            font-weight: bold; 
+            width: 36px; 
+            height: 36px;
+            text-align: center; 
+            user-select: none; 
+            transition: all 0.3s; 
+            border-radius: 50%;
+            line-height: 36px;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .delete-icon:hover { 
+            color: #c0392b; 
+            transform: scale(1.2) rotate(90deg); 
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
+        .btn-group { 
+            display: flex; 
+            gap: 12px; 
+            margin-top: 20px; 
+            flex-wrap: wrap; 
+        }
+        
+        .btn { 
+            flex: 1; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 15px; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: white; 
+            transition: all 0.3s; 
+            min-width: 130px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3); 
+        }
+        
+        .btn:active { 
+            transform: translateY(0); 
+        }
+        
+        .btn-main { 
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+        
+        .btn-reset { 
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .btn-export { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .btn-warning { 
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .select-actions { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 15px; 
+            justify-content: flex-end; 
+            flex-wrap: wrap; 
+        }
+        
+        .btn-sm { 
+            padding: 8px 16px; 
+            font-size: 12px; 
+            border-radius: 25px; 
+            border: 2px solid #25D366; 
+            background: white; 
+            color: #128C7E; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-sm:hover { 
+            background: #25D366; 
+            color: white; 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(37,211,102,0.3);
+        }
+        
+        .btn-sm.warning { 
+            border-color: #f39c12; 
+            color: #e67e22; 
+        }
+        
+        .btn-sm.warning:hover { 
+            background: #f39c12; 
+            color: white; 
+        }
+        
+        .btn-sm.danger { 
+            border-color: #e74c3c; 
+            color: #c0392b; 
+        }
+        
+        .btn-sm.danger:hover { 
+            background: #e74c3c; 
+            color: white; 
+        }
+        
+        .status-msg { 
+            display: none; 
+            text-align: center; 
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #075E54; 
+            background: #dcf8c6; 
+            padding: 15px; 
+            border-radius: 15px; 
+            line-height: 1.6; 
+            animation: slideIn 0.3s ease;
+            border-left: 5px solid #25D366;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .search-container {
+            position: relative;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .search-wrapper {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .search-box {
+            flex: 1;
+            padding: 16px 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 40px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+            box-sizing: border-box;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .search-box:focus {
+            border-color: #25D366;
+            box-shadow: 0 0 0 8px rgba(37,211,102,0.15), 0 8px 25px rgba(0,0,0,0.1);
+            outline: none;
+            transform: translateY(-3px);
+        }
+        
+        .search-button {
+            padding: 16px 30px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(37,211,102,0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37,211,102,0.4);
+        }
+        
+        .search-button:active {
+            transform: translateY(0);
+        }
+        
+        .search-clear {
+            position: absolute;
+            right: 120px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+            font-size: 22px;
+            display: none;
+            z-index: 1;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .search-clear:hover {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .search-stats {
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
+            padding-right: 15px;
+            min-height: 20px;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #fff3b0 0%, #ffe680 100%);
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 0 3px;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(255,193,7,0.3);
+        }
+        
+        .stats-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 12px 20px; 
+            border-radius: 15px; 
+            font-size: 14px; 
+            margin-bottom: 20px;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+        
+        .tooltip { 
+            position: relative; 
+            display: inline-block; 
+        }
+        
+        .tooltip:hover:after { 
+            content: attr(data-tooltip); 
+            position: absolute; 
+            bottom: 100%; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: #333; 
+            color: white; 
+            padding: 8px 15px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+            white-space: nowrap; 
+            z-index: 1000; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 2000; 
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 30px; 
+            max-width: 550px; 
+            width: 90%; 
+            max-height: 80vh; 
+            overflow-y: auto;
+            margin: auto;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+            transform: scale(1);
+            animation: modalIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        
+        @keyframes modalIn {
+            0% { opacity: 0; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+        
+        .close-btn { 
+            cursor: pointer; 
+            font-size: 28px; 
+            color: #666; 
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            background: #f0f0f0;
+        }
+        
+        .close-btn:hover { 
+            color: #e74c3c; 
+            background: #ffe6e6;
+            transform: rotate(180deg);
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            border-bottom: 1px solid #eee;
+            gap: 15px;
+            transition: all 0.3s;
+            background: #fafafa;
+            border-radius: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .action-item:hover {
+            background: #f0f0f0;
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .action-btn.merge { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .action-btn.merge:hover { background: linear-gradient(135deg, #e67e22, #d35400); transform: translateY(-2px); }
+        .action-btn.delete { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .action-btn.delete:hover { background: linear-gradient(135deg, #c0392b, #a93226); transform: translateY(-2px); }
+        .action-btn.edit { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .action-btn.edit:hover { background: linear-gradient(135deg, #2980b9, #1f618d); transform: translateY(-2px); }
+        .action-btn.keep { background: linear-gradient(135deg, #27ae60, #229954); }
+        .action-btn.keep:hover { background: linear-gradient(135deg, #229954, #1e8449); transform: translateY(-2px); }
+        
+        .progress-bar { 
+            width: 100%; 
+            height: 8px; 
+            background: #f0f0f0; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            margin-top: 20px; 
+            display: none; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #25D366, #128C7E, #25D366); 
+            background-size: 200% 100%;
+            width: 0%; 
+            transition: width 0.3s;
+            animation: progressShine 2s linear infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+        
+        .suggestion-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            margin-left: 5px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .suggestion-badge.duplicate { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .suggestion-badge.invalid { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        
+        .search-filters {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-chip {
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: #f0f0f0;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .filter-chip:hover {
+            background: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-chip.active {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border-color: #075E54;
+            box-shadow: 0 5px 15px rgba(37,211,102,0.4);
+        }
+        
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            h2 { font-size: 1.8em; }
+            .edit-box { flex-direction: column; gap: 8px; }
+            .btn { min-width: 100%; }
+            .btn-group { flex-direction: column; }
+            .select-actions { justify-content: center; }
+            .badge-container { flex-wrap: wrap; }
+            .search-wrapper {
+                flex-direction: column;
+            }
+            .search-button {
+                width: 100%;
+            }
+            .search-clear {
+                right: 20px;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #128C7E, #075E54);
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .export-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: #f8f9fa;
+        }
+        
+        .export-option:hover {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border-color: #075E54;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(37,211,102,0.3);
+        }
+        
+        /* WhatsApp mesajı önizleme */
+        .message-preview {
+            background: linear-gradient(135deg, #dcf8c6 0%, #c8e6c9 100%);
+            border-radius: 18px;
+            padding: 12px 18px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #075E54;
+            border: 2px solid #25D366;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            animation: messagePop 0.5s ease;
+        }
+        
+        .message-preview::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #dcf8c6;
+        }
+        
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>
+        <span>🌟 vCard Master Pro</span>
+    </h2>
+    
+    <div class="badge-container">
+        <span class="badge" id="contactCount">0</span>
+        <span class="badge warning" id="duplicateCount" style="display: none;">0 Tekrar</span>
+        <span class="badge danger" id="invalidCount" style="display: none;">0 Geçersiz</span>
+    </div>
+    
+    <div class="stats-bar" id="statsBar" style="display: none;">
+        <span>📊 <span id="totalContacts">0</span> kişi</span>
+        <span>✅ <span id="selectedCount">0</span> seçili</span>
+        <span>📱 <span id="validPhoneCount">0</span> geçerli</span>
+        <span>⚠️ <span id="issueCount">0</span> sorunlu</span>
+    </div>
+
+    <div class="input-group">
+        <label>📝 Manuel Yeni Kişi</label>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="manual-name" placeholder="Ad Soyad" class="tooltip" data-tooltip="İsim ve soyad girin" style="flex: 1;">
+            <input type="tel" id="manual-tel" placeholder="Telefon" class="tooltip" data-tooltip="Başında +90 olabilir" style="flex: 1;">
+        </div>
+        <button class="btn-sm" onclick="manuelEkle()" style="margin-top: 5px; width: 100%;">➕ Kişi Ekle</button>
+    </div>
+
+    <div id="drop-zone" class="drop-zone">
+        📁 Dosya Seç veya Sürükle (.vcf, .csv)
+        <input type="file" id="file-input" accept=".vcf,.csv" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer;">
+    </div>
+
+    <!-- Gelişmiş Arama Kutusu -->
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-box" placeholder="İsim veya telefon ara..." autocomplete="off">
+            <button class="search-button" onclick="performSearch()">🔍 Ara</button>
+            <span class="search-clear" id="searchClear" onclick="clearSearch()">✖</span>
+        </div>
+        <div class="search-stats" id="searchStats"></div>
+        
+        <!-- Hızlı filtreler -->
+        <div class="search-filters">
+            <span class="filter-chip active" onclick="setFilter('all')">Tümü</span>
+            <span class="filter-chip" onclick="setFilter('valid')">✅ Geçerli</span>
+            <span class="filter-chip" onclick="setFilter('invalid')">❌ Geçersiz</span>
+            <span class="filter-chip" onclick="setFilter('duplicate')">🔄 Tekrarlanan</span>
+            <span class="filter-chip" onclick="setFilter('selected')">✓ Seçili</span>
+        </div>
+    </div>
+
+    <div class="select-actions" style="justify-content: space-between; margin-bottom: 10px;">
+        <div>
+            <button class="btn-sm" onclick="toggleAll(true)">✓ Tümünü Seç</button>
+            <button class="btn-sm" onclick="toggleAll(false)">✗ Seçimi Kaldır</button>
+        </div>
+        <div>
+            <button class="btn-sm warning" onclick="showDuplicateActions()" id="dupBtn" style="display: none;">🔄 Tekrarları Yönet</button>
+            <button class="btn-sm danger" onclick="showInvalidActions()" id="invBtn" style="display: none;">❌ Geçersizleri Yönet</button>
+        </div>
+    </div>
+
+    <div id="list-section">
+        <div id="contact-list"></div>
+    </div>
+
+    <!-- WhatsApp Mesajı Önizleme (sadece seçim varsa gösterilir) -->
+    <div id="messagePreview" class="message-preview" style="display: none;"></div>
+
+    <div class="btn-group">
+        <button class="btn btn-main tooltip" onclick="islemYap()" data-tooltip="Seçili kişilerden vCard oluştur">📤 WhatsApp</button>
+        <button class="btn btn-export tooltip" onclick="showExportModal()" data-tooltip="Farklı formatlarda dışa aktar">💾 Dışa Aktar</button>
+        <button class="btn btn-warning tooltip" onclick="analyzeAndSuggest()" data-tooltip="Sorunları analiz et ve öneriler sun">🔍 Analiz</button>
+        <button class="btn btn-reset tooltip" onclick="sifirla()" data-tooltip="Tümünü temizle">🗑️ Sıfırla</button>
+    </div>
+
+    <div id="status" class="status-msg"></div>
+    <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<!-- Export Modal -->
+<div id="exportModal" class="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📤 Dışa Aktarma Seçenekleri</h3>
+            <span class="close-btn" onclick="closeModal()">✖</span>
+        </div>
+        <div class="export-options">
+            <div class="export-option" onclick="exportContacts('vcf')">📇 vCard (.vcf)</div>
+            <div class="export-option" onclick="exportContacts('csv')">📊 CSV (.csv)</div>
+            <div class="export-option" onclick="exportContacts('txt')">📝 Metin (.txt)</div>
+            <div class="export-option" onclick="exportContacts('html')">🌐 HTML Tablo</div>
+            <div class="export-option" onclick="exportContacts('json')">🔧 JSON</div>
+            <div class="export-option" onclick="exportContacts('xml')">📋 XML</div>
+        </div>
+        <p style="font-size: 13px; color: #666; margin-top: 15px; text-align: center; font-style: italic;">💡 Seçili kişiler veya tüm liste aktarılır</p>
+    </div>
+</div>
+
+<!-- Actions Modal -->
+<div id="actionsModal" class="modal" onclick="if(event.target===this)closeActionsModal()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="actionsModalTitle">🔧 İşlem Önerileri</h3>
+            <span class="close-btn" onclick="closeActionsModal()">✖</span>
+        </div>
+        <div id="actionsContent"></div>
+    </div>
+</div>
+
+<script>
+    let loadedContacts = [];
+    let searchTerm = '';
+    let activeFilter = 'all';
+    
+    // Tertemiz başlangıç - HİÇBİR ÖRNEK YOK
+    // Kullanıcı kendi verilerini ekleyecek
+
+    // Enter tuşu ile arama
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+    
+    function performSearch() {
+        searchTerm = document.getElementById('searchInput').value;
+        document.getElementById('searchClear').style.display = searchTerm ? 'flex' : 'none';
+        renderList();
+        updateSearchStats();
+    }
+    
+    function updateSearchStats() {
+        const filtered = getFilteredContacts();
+        const statsEl = document.getElementById('searchStats');
+        
+        if (searchTerm && searchTerm.length >= 2) {
+            statsEl.innerHTML = `🔍 "${searchTerm}" için ${filtered.length} sonuç bulundu`;
+        } else if (searchTerm && searchTerm.length === 1) {
+            statsEl.innerHTML = `⚠️ En az 2 karakter girin (${filtered.length} sonuç)`;
+        } else if (activeFilter !== 'all') {
+            const filterNames = {
+                'all': 'Tümü',
+                'valid': 'Geçerli',
+                'invalid': 'Geçersiz',
+                'duplicate': 'Tekrarlanan',
+                'selected': 'Seçili'
+            };
+            statsEl.innerHTML = `📋 ${filterNames[activeFilter]} kayıtlar: ${filtered.length}`;
+        } else {
+            statsEl.innerHTML = `📋 Toplam ${loadedContacts.length} kayıt`;
+        }
+    }
+    
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        searchTerm = '';
+        document.getElementById('searchClear').style.display = 'none';
+        renderList();
+        updateSearchStats();
+    }
+    
+    function setFilter(filter) {
+        activeFilter = filter;
+        updateFilterChips();
+        renderList();
+        updateSearchStats();
+    }
+    
+    function updateFilterChips() {
+        const chips = document.querySelectorAll('.filter-chip');
+        chips.forEach((chip, index) => {
+            chip.classList.remove('active');
+            if (index === 0 && activeFilter === 'all') chip.classList.add('active');
+            if (index === 1 && activeFilter === 'valid') chip.classList.add('active');
+            if (index === 2 && activeFilter === 'invalid') chip.classList.add('active');
+            if (index === 3 && activeFilter === 'duplicate') chip.classList.add('active');
+            if (index === 4 && activeFilter === 'selected') chip.classList.add('active');
+        });
+    }
+    
+    function getFilteredContacts() {
+        let filtered = loadedContacts;
+        
+        if (searchTerm && searchTerm.length >= 2) {
+            const searchLower = searchTerm.toLowerCase();
+            
+            // Önce eşleşenleri bul ve skorla
+            const matches = loadedContacts.map((c, index) => {
+                const nameLower = c.name.toLowerCase();
+                const telMatch = c.tel.includes(searchTerm);
+                const nameMatch = nameLower.includes(searchLower);
+                
+                if (!nameMatch && !telMatch) return null;
+                
+                // Skor hesaplama: 
+                // 100: Kelime başında büyük harfle başlayan (örn: "Nazlı" için "Na")
+                // 90: Kelime başında küçük harfle başlayan
+                // 80: Kelime içinde büyük harf
+                // 70: Kelime içinde küçük harf
+                // 60: Telefon eşleşmesi
+                
+                let score = 0;
+                
+                if (nameMatch) {
+                    // Kelime başında mı kontrol et
+                    const words = c.name.split(' ');
+                    for (let word of words) {
+                        if (word.toLowerCase().startsWith(searchLower)) {
+                            if (word[0] === word[0].toUpperCase() && word[0] === searchTerm[0].toUpperCase()) {
+                                score = 100; // Büyük harfle başlayan kelime başı
+                            } else {
+                                score = 90; // Küçük harfle başlayan kelime başı
+                            }
+                            break;
+                        }
+                    }
+                    
+                    // Kelime başında değilse
+                    if (score === 0) {
+                        const pos = nameLower.indexOf(searchLower);
+                        if (pos > 0 && c.name[pos] === c.name[pos].toUpperCase()) {
+                            score = 80; // Kelime içinde büyük harf
+                        } else {
+                            score = 70; // Kelime içinde küçük harf
+                        }
+                    }
+                } else if (telMatch) {
+                    score = 60; // Telefon eşleşmesi
+                }
+                
+                return { index, score, contact: c };
+            }).filter(item => item !== null);
+            
+            // Skora göre sırala (yüksekten düşüğe)
+            matches.sort((a, b) => b.score - a.score);
+            
+            // Sıralanmış kontakları döndür
+            filtered = matches.map(item => item.contact);
+        }
+        
+        // Filtreleri uygula
+        const duplicates = findDuplicates().map(d => d.index);
+        const invalid = findInvalidPhones().map(d => d.index);
+        
+        const filteredWithIndices = filtered.map(c => {
+            const originalIndex = loadedContacts.findIndex(lc => lc.name === c.name && lc.tel === c.tel);
+            return { contact: c, originalIndex };
+        });
+        
+        switch(activeFilter) {
+            case 'valid':
+                filtered = filteredWithIndices
+                    .filter(item => !invalid.includes(item.originalIndex))
+                    .map(item => item.contact);
+                break;
+            case 'invalid':
+                filtered = filteredWithIndices
+                    .filter(item => invalid.includes(item.originalIndex))
+                    .map(item => item.contact);
+                break;
+            case 'duplicate':
+                filtered = filteredWithIndices
+                    .filter(item => duplicates.includes(item.originalIndex))
+                    .map(item => item.contact);
+                break;
+            case 'selected':
+                const selectedIndices = Array.from(document.querySelectorAll('.vcf-check:checked')).map(cb => parseInt(cb.dataset.index));
+                filtered = filteredWithIndices
+                    .filter(item => selectedIndices.includes(item.originalIndex))
+                    .map(item => item.contact);
+                break;
+        }
+        
+        return filtered;
+    }
+
+    const dropZone = document.getElementById('drop-zone');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+    });
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    document.getElementById('file-input').onchange = (e) => {
+        if (!e.target.files.length) return;
+        handleFiles(e.target.files);
+    };
+
+    function handleFiles(files) {
+        showProgress(true);
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (file.name.endsWith('.vcf')) {
+                    parseVcf(event.target.result);
+                } else if (file.name.endsWith('.csv')) {
+                    parseCsv(event.target.result);
+                }
+                updateProgress();
+            };
+            reader.readAsText(file, 'UTF-8');
+        });
+    }
+
+    function parseCsv(content) {
+        const lines = content.split('\n');
+        let count = 0;
+        lines.forEach(line => {
+            const parts = line.split(',');
+            if (parts.length >= 2) {
+                loadedContacts.push({
+                    name: parts[0].trim().replace(/^"|"$/g, ''),
+                    tel: parts[1].trim().replace(/[^\d+]/g, '').replace(/^"|"$/g, '')
+                });
+                count++;
+            }
+        });
+        renderList();
+        showProgress(false);
+        analyzeAndSuggest();
+        showStatus(`${count} kişi CSV'den yüklendi`, 'success');
+    }
+
+    function parseVcf(content) {
+        const vcardRegex = /BEGIN:VCARD[\s\S]*?END:VCARD/g;
+        const matches = content.match(vcardRegex);
+        if (!matches) return;
+
+        loadedContacts = matches.map((vcf) => {
+            const fn = vcf.match(/FN(?:.*)?:(.*)/i);
+            const tel = vcf.match(/TEL(?:.*)?:(.*)/i);
+            
+            let name = fn ? fn[1].trim() : "İsimsiz";
+            try {
+                name = decodeURIComponent(escape(name));
+            } catch(e) {}
+            
+            return { 
+                name: name, 
+                tel: tel ? tel[1].replace(/[^\d+]/g, '').trim() : ""
+            };
+        });
+        renderList();
+        showProgress(false);
+        analyzeAndSuggest();
+        showStatus(`${matches.length} kişi vCard'dan yüklendi`, 'success');
+    }
+
+    function manuelEkle() {
+        const name = document.getElementById('manual-name').value.trim();
+        const tel = document.getElementById('manual-tel').value.trim();
+
+        if (!name || !tel) {
+            showStatus('İsim ve telefon gerekli!', 'error');
+            return;
+        }
+
+        if (!telefonKontrol(tel)) {
+            showStatus('Geçersiz telefon numarası!', 'error');
+            return;
+        }
+
+        loadedContacts.push({ name, tel });
+        renderList();
+        document.getElementById('manual-name').value = '';
+        document.getElementById('manual-tel').value = '';
+        analyzeAndSuggest();
+        showStatus('Kişi eklendi!', 'success');
+    }
+
+    function telefonKontrol(tel) {
+        const temiz = tel.replace(/[^\d+]/g, '');
+        return temiz.length >= 10 && temiz.length <= 15;
+    }
+
+    function findDuplicates() {
+        const telMap = new Map();
+        const duplicates = [];
+        
+        loadedContacts.forEach((contact, index) => {
+            const temizTel = contact.tel.replace(/[^\d+]/g, '');
+            if (temizTel) {
+                if (telMap.has(temizTel)) {
+                    duplicates.push({ index, tel: temizTel, name: contact.name });
+                } else {
+                    telMap.set(temizTel, index);
+                }
+            }
+        });
+        
+        return duplicates;
+    }
+
+    function findInvalidPhones() {
+        const invalid = [];
+        loadedContacts.forEach((contact, index) => {
+            if (!telefonKontrol(contact.tel)) {
+                invalid.push({ index, tel: contact.tel, name: contact.name });
+            }
+        });
+        return invalid;
+    }
+
+    function analyzeAndSuggest() {
+        const duplicates = findDuplicates();
+        const invalid = findInvalidPhones();
+        
+        document.getElementById('dupBtn').style.display = duplicates.length ? 'inline-block' : 'none';
+        document.getElementById('invBtn').style.display = invalid.length ? 'inline-block' : 'none';
+        
+        document.getElementById('duplicateCount').textContent = duplicates.length ? `${duplicates.length} Tekrar` : '';
+        document.getElementById('duplicateCount').style.display = duplicates.length ? 'inline-block' : 'none';
+        document.getElementById('invalidCount').textContent = invalid.length ? `${invalid.length} Geçersiz` : '';
+        document.getElementById('invalidCount').style.display = invalid.length ? 'inline-block' : 'none';
+        
+        document.getElementById('issueCount').textContent = duplicates.length + invalid.length;
+        
+        if (duplicates.length || invalid.length) {
+            showStatus(`${duplicates.length} tekrarlanan, ${invalid.length} geçersiz numara tespit edildi.`, 'warning');
+        }
+        
+        renderList();
+    }
+
+    function showDuplicateActions() {
+        const duplicates = findDuplicates();
+        if (!duplicates.length) {
+            showStatus('Tekrarlanan numara bulunamadı!', 'info');
+            return;
+        }
+        
+        const modal = document.getElementById('actionsModal');
+        const title = document.getElementById('actionsModalTitle');
+        const content = document.getElementById('actionsContent');
+        
+        title.innerHTML = '🔄 Tekrarlanan Numaralar İçin Öneriler';
+        
+        const groups = {};
+        duplicates.forEach(d => {
+            const tel = d.tel;
+            if (!groups[tel]) {
+                groups[tel] = [];
+            }
+            loadedContacts.forEach((c, idx) => {
+                if (c.tel.replace(/[^\d+]/g, '') === tel && !groups[tel].some(item => item.index === idx)) {
+                    groups[tel].push({ index: idx, name: c.name, tel: c.tel });
+                }
+            });
+        });
+        
+        let html = '';
+        Object.keys(groups).forEach(tel => {
+            const group = groups[tel];
+            if (group.length > 1) {
+                html += `
+                    <div class="action-item">
+                        <div>
+                            <strong>📞 ${tel}</strong><br>
+                            <small>${group.length} kişi: ${group.map(g => g.name).join(', ')}</small>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn merge" onclick="mergeDuplicates('${tel}')">🔗 Birleştir</button>
+                            <button class="action-btn delete" onclick="deleteAllWithPhone('${tel}')">🗑️ Tümünü Sil</button>
+                            <button class="action-btn keep" onclick="keepFirstOnly('${tel}')">⭐ İlki Kalsın</button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        if (!html) {
+            html = '<p style="text-align: center; padding: 20px;">İşlem yapılabilecek tekrarlanan numara bulunamadı.</p>';
+        }
+        
+        content.innerHTML = html;
+        modal.style.display = 'flex';
+    }
+
+    function showInvalidActions() {
+        const invalid = findInvalidPhones();
+        if (!invalid.length) {
+            showStatus('Geçersiz numara bulunamadı!', 'info');
+            return;
+        }
+        
+        const modal = document.getElementById('actionsModal');
+        const title = document.getElementById('actionsModalTitle');
+        const content = document.getElementById('actionsContent');
+        
+        title.innerHTML = '❌ Geçersiz Numaralar İçin Öneriler';
+        
+        let html = '';
+        invalid.forEach(item => {
+            html += `
+                <div class="action-item">
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>📞 ${item.tel || '(boş)'}</small>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" onclick="editPhone(${item.index})">✏️ Düzenle</button>
+                        <button class="action-btn delete" onclick="deleteContact(${item.index})">🗑️ Sil</button>
+                        <button class="action-btn keep" onclick="keepContact(${item.index})">✅ Geçerli Say</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        content.innerHTML = html;
+        modal.style.display = 'flex';
+    }
+
+    function mergeDuplicates(tel) {
+        const indices = [];
+        const names = [];
+        loadedContacts.forEach((c, idx) => {
+            if (c.tel.replace(/[^\d+]/g, '') === tel) {
+                indices.push(idx);
+                names.push(c.name);
+            }
+        });
+        
+        if (indices.length <= 1) return;
+        
+        const uniqueNames = [...new Set(names)];
+        const mergedName = uniqueNames.join(' & ');
+        
+        loadedContacts[indices[0]].name = mergedName;
+        
+        for (let i = indices.length - 1; i > 0; i--) {
+            loadedContacts.splice(indices[i], 1);
+        }
+        
+        renderList();
+        analyzeAndSuggest();
+        closeActionsModal();
+        showStatus('Numaralar birleştirildi!', 'success');
+    }
+
+    function deleteAllWithPhone(tel) {
+        if (confirm('Bu numaraya sahip TÜM kişiler silinecek! Emin misiniz?')) {
+            loadedContacts = loadedContacts.filter(c => c.tel.replace(/[^\d+]/g, '') !== tel);
+            renderList();
+            analyzeAndSuggest();
+            closeActionsModal();
+            showStatus('Tüm kayıtlar silindi!', 'success');
+        }
+    }
+
+    function keepFirstOnly(tel) {
+        let firstFound = false;
+        loadedContacts = loadedContacts.filter(c => {
+            const currentTel = c.tel.replace(/[^\d+]/g, '');
+            if (currentTel === tel) {
+                if (!firstFound) {
+                    firstFound = true;
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        });
+        
+        renderList();
+        analyzeAndSuggest();
+        closeActionsModal();
+        showStatus('Sadece ilk kayıt korundu!', 'success');
+    }
+
+    function editPhone(index) {
+        const newTel = prompt('Yeni telefon numarası girin:', loadedContacts[index].tel);
+        if (newTel && telefonKontrol(newTel)) {
+            loadedContacts[index].tel = newTel;
+            renderList();
+            analyzeAndSuggest();
+            closeActionsModal();
+            showStatus('Numara güncellendi!', 'success');
+        } else if (newTel) {
+            showStatus('Geçersiz numara formatı!', 'error');
+        }
+    }
+
+    function keepContact(index) {
+        closeActionsModal();
+        showStatus('Numara korundu.', 'info');
+    }
+
+    function renderList() {
+        const container = document.getElementById('contact-list');
+        const filtered = getFilteredContacts();
+
+        const duplicates = findDuplicates().map(d => d.index);
+        const invalid = findInvalidPhones().map(d => d.index);
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 30px; color: #999; font-size: 16px;">🔍 Sonuç bulunamadı</div>';
+        } else {
+            container.innerHTML = filtered.map((c, idx) => {
+                const originalIndex = loadedContacts.findIndex(lc => lc.name === c.name && lc.tel === c.tel);
+                const isDuplicate = duplicates.includes(originalIndex);
+                const isInvalid = invalid.includes(originalIndex);
+                
+                let itemClass = 'contact-item';
+                if (isInvalid) itemClass += ' invalid-phone';
+                else if (isDuplicate) itemClass += ' duplicate-phone';
+                
+                let badge = '';
+                if (isInvalid) badge = '<span class="suggestion-badge invalid" title="Geçersiz numara">❌</span>';
+                else if (isDuplicate) badge = '<span class="suggestion-badge duplicate" title="Tekrarlanan numara">🔄</span>';
+                
+                let displayName = c.name;
+                let displayTel = c.tel;
+                
+                if (searchTerm && searchTerm.length >= 2) {
+                    const searchLower = searchTerm.toLowerCase();
+                    if (c.name.toLowerCase().includes(searchLower)) {
+                        const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        displayName = c.name.replace(regex, '<span class="highlight">$1</span>');
+                    }
+                    if (c.tel.includes(searchTerm)) {
+                        const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'g');
+                        displayTel = c.tel.replace(regex, '<span class="highlight">$1</span>');
+                    }
+                }
+                
+                return `
+                <div class="${itemClass}" data-index="${originalIndex}">
+                    <input type="checkbox" class="vcf-check" data-index="${originalIndex}" checked>
+                    <div class="edit-box">
+                        <input type="text" class="editable-name" value="${c.name.replace(/"/g, '&quot;')}" id="name-${originalIndex}" onchange="updateContact(${originalIndex}, 'name', this.value)">
+                        <input type="tel" class="editable-tel" value="${c.tel}" id="tel-${originalIndex}" onchange="updateContact(${originalIndex}, 'tel', this.value)">
+                    </div>
+                    ${badge}
+                    <span class="delete-icon" onclick="deleteContact(${originalIndex})" title="Sil">✖</span>
+                </div>
+            `}).join('');
+        }
+        
+        document.getElementById('list-section').style.display = loadedContacts.length ? "block" : "none";
+        updateStats();
+        updateSearchStats();
+        updateMessagePreview();
+    }
+
+    function updateMessagePreview() {
+        const selected = getSelectedContacts();
+        const previewEl = document.getElementById('messagePreview');
+        
+        if (selected.length === 1) {
+            const message = `Merhaba, ${selected[0].name} kişisine ait vCard dosyasını ekte gönderiyorum. Dosyaya tıklayarak rehberinize hızlıca kaydedebilirsiniz.`;
+            previewEl.innerHTML = `📱 WhatsApp Mesajı Önizleme:<br>${message}`;
+            previewEl.style.display = 'block';
+        } else if (selected.length > 1) {
+            const names = selected.map(c => c.name).join(', ');
+            const message = `Merhaba, ${selected.length} kişiye ait toplu vCard dosyasını ekte gönderiyorum. Dosyaya tıklayarak rehberinize hızlıca kaydedebilirsiniz.`;
+            previewEl.innerHTML = `📱 WhatsApp Mesajı Önizleme (${selected.length} kişi):<br>${message}`;
+            previewEl.style.display = 'block';
+        } else {
+            previewEl.style.display = 'none';
+        }
+    }
+
+    function updateContact(index, field, value) {
+        if (field === 'tel' && !telefonKontrol(value)) {
+            showStatus('Geçersiz telefon!', 'error');
+            return;
+        }
+        loadedContacts[index][field] = value;
+        renderList();
+        analyzeAndSuggest();
+        showStatus('Güncellendi!', 'success');
+    }
+
+    function deleteContact(index) {
+        if (confirm('Bu kişiyi silmek istediğinize emin misiniz?')) {
+            loadedContacts.splice(index, 1);
+            renderList();
+            analyzeAndSuggest();
+            showStatus('Kişi silindi', 'info');
+        }
+    }
+
+    function deleteSelected() {
+        const checks = document.querySelectorAll('.vcf-check:checked');
+        if (!checks.length) {
+            showStatus('Silinecek kişi seçilmedi!', 'warning');
+            return;
+        }
+
+        if (confirm(`${checks.length} kişiyi silmek istediğinize emin misiniz?`)) {
+            const indexes = Array.from(checks).map(cb => parseInt(cb.dataset.index));
+            loadedContacts = loadedContacts.filter((_, i) => !indexes.includes(i));
+            renderList();
+            analyzeAndSuggest();
+            showStatus(`${indexes.length} kişi silindi`, 'success');
+        }
+    }
+
+    function toggleAll(state) {
+        const checks = document.querySelectorAll('.vcf-check');
+        checks.forEach(cb => cb.checked = state);
+        updateStats();
+        updateMessagePreview();
+        if (activeFilter === 'selected') {
+            renderList();
+        }
+    }
+
+    function sortContacts(type) {
+        if (type === 'name') {
+            loadedContacts.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+        }
+        renderList();
+        showStatus('Sıralandı!', 'success');
+    }
+
+    function showExportModal() {
+        document.getElementById('exportModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('exportModal').style.display = 'none';
+    }
+
+    function closeActionsModal() {
+        document.getElementById('actionsModal').style.display = 'none';
+    }
+
+    function exportContacts(format) {
+        const selected = getSelectedContacts();
+        const contacts = selected.length ? selected : loadedContacts;
+
+        if (!contacts.length) {
+            showStatus('Aktarılacak kişi yok!', 'error');
+            return;
+        }
+
+        let content = '';
+        let filename = '';
+        let type = '';
+
+        switch(format) {
+            case 'vcf':
+                content = contacts.map(c => vcardOlustur(c.name, c.tel)).join('\n');
+                filename = 'rehber.vcf';
+                type = 'text/vcard';
+                break;
+            case 'csv':
+                content = '\uFEFFİsim,Telefon\n' + contacts.map(c => `"${c.name}","${c.tel}"`).join('\n');
+                filename = 'rehber.csv';
+                type = 'text/csv';
+                break;
+            case 'txt':
+                content = contacts.map(c => `${c.name}: ${c.tel}`).join('\n');
+                filename = 'rehber.txt';
+                type = 'text/plain';
+                break;
+            case 'html':
+                content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rehber</title><style>body{font-family:Segoe UI;display:flex;justify-content:center;padding:20px;background:linear-gradient(135deg,#667eea,#764ba2);}table{border-collapse:collapse;margin:auto;background:white;border-radius:15px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.3);}th{background:#25D366;color:white;padding:12px;}td{padding:10px 15px;border:1px solid #ddd;}tr:nth-child(even){background:#f9f9f9;}tr:hover{background:#f0fff4;}</style></head><body><table><tr><th>İsim</th><th>Telefon</th></tr>${
+                    contacts.map(c => `<tr><td>${c.name}</td><td>${c.tel}</td></tr>`).join('')
+                }</table></body></html>`;
+                filename = 'rehber.html';
+                type = 'text/html';
+                break;
+            case 'json':
+                content = JSON.stringify(contacts, null, 2);
+                filename = 'rehber.json';
+                type = 'application/json';
+                break;
+            case 'xml':
+                content = '<?xml version="1.0" encoding="UTF-8"?>\n<contacts>\n' + 
+                    contacts.map(c => `  <contact>\n    <name>${c.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</name>\n    <tel>${c.tel}</tel>\n  </contact>`).join('\n') +
+                    '\n</contacts>';
+                filename = 'rehber.xml';
+                type = 'application/xml';
+                break;
+        }
+
+        const blob = new Blob([content], { type: `${type};charset=UTF-8` });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = filename;
+        a.href = url;
+        a.click();
+        
+        closeModal();
+        showStatus(`${contacts.length} kişi ${format.toUpperCase()} olarak dışa aktarıldı!`, 'success');
+    }
+
+    function getSelectedContacts() {
+        const checks = document.querySelectorAll('.vcf-check:checked');
+        return Array.from(checks).map(cb => {
+            const i = cb.dataset.index;
+            return loadedContacts[i];
+        });
+    }
+
+    function updateStats() {
+        document.getElementById('contactCount').textContent = loadedContacts.length;
+        document.getElementById('totalContacts').textContent = loadedContacts.length;
+        
+        const selected = document.querySelectorAll('.vcf-check:checked').length;
+        document.getElementById('selectedCount').textContent = selected;
+        
+        const validPhones = loadedContacts.filter(c => telefonKontrol(c.tel)).length;
+        document.getElementById('validPhoneCount').textContent = validPhones;
+        
+        document.getElementById('statsBar').style.display = 'flex';
+    }
+
+    function showProgress(show) {
+        document.getElementById('progressBar').style.display = show ? 'block' : 'none';
+    }
+
+    function updateProgress() {
+        const fill = document.getElementById('progressFill');
+        fill.style.width = '100%';
+        setTimeout(() => showProgress(false), 500);
+    }
+
+    function showStatus(message, type = 'info') {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = message;
+        statusDiv.style.display = 'block';
+        statusDiv.style.background = type === 'error' ? '#f8d7da' : 
+                                    type === 'success' ? '#dcf8c6' : 
+                                    type === 'warning' ? '#fff3cd' : '#d1ecf1';
+        statusDiv.style.color = type === 'error' ? '#721c24' : 
+                                type === 'success' ? '#075E54' : 
+                                type === 'warning' ? '#856404' : '#0c5460';
+        
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 3000);
+    }
+
+    function islemYap() {
+        const selected = getSelectedContacts();
+        
+        if (selected.length === 0) {
+            showStatus('Lütfen en az bir kişi seçin!', 'error');
+            return;
+        }
+
+        const vcards = selected.map(c => vcardOlustur(c.name, c.tel));
+        const blob = new Blob([vcards.join("\n")], { type: 'text/vcard;charset=UTF-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        const fileName = selected.length > 1 ? "Toplu Rehber.vcf" : `${selected[0].name}.vcf`;
+        
+        a.download = fileName;
+        a.href = url;
+        a.click();
+
+        let whatsappMesaj;
+        if (selected.length === 1) {
+            whatsappMesaj = `Merhaba, ${selected[0].name} kişisine ait vCard dosyasını ekte gönderiyorum. Dosyaya tıklayarak rehberinize hızlıca kaydedebilirsiniz.`;
+        } else {
+            const names = selected.map(c => c.name).join(', ');
+            whatsappMesaj = `Merhaba, ${selected.length} kişiye ait toplu vCard dosyasını ekte gönderiyorum. Dosyaya tıklayarak rehberinize hızlıca kaydedebilirsiniz.`;
+        }
+        
+        showStatus(`✅ ${fileName} indirildi! WhatsApp açılıyor...`, 'success');
+        
+        setTimeout(() => {
+            window.open(`https://wa.me/?text=${encodeURIComponent(whatsappMesaj)}`, '_blank');
+        }, 1500);
+    }
+
+    function vcardOlustur(tamAd, tel) {
+        const parcalar = tamAd.trim().split(/\s+/);
+        let ad = "", soyad = "";
+
+        if (parcalar.length > 1) {
+            soyad = parcalar.pop();
+            ad = parcalar.join(" ");
+        } else {
+            ad = tamAd;
+        }
+
+        return `BEGIN:VCARD
+VERSION:3.0
+FN;CHARSET=UTF-8:${tamAd}
+N;CHARSET=UTF-8:${soyad};${ad};;;
+TEL;TYPE=CELL:${tel}
+END:VCARD`;
+    }
+
+    function sifirla() {
+        if (loadedContacts.length && !confirm('Tüm veriler silinecek! Emin misiniz?')) return;
+        
+        document.getElementById('manual-name').value = "";
+        document.getElementById('manual-tel').value = "";
+        document.getElementById('file-input').value = "";
+        document.getElementById('searchInput').value = "";
+        document.getElementById('contact-list').innerHTML = "";
+        document.getElementById('list-section').style.display = "none";
+        document.getElementById('status').style.display = "none";
+        document.getElementById('statsBar').style.display = "none";
+        document.getElementById('dupBtn').style.display = "none";
+        document.getElementById('invBtn').style.display = "none";
+        document.getElementById('duplicateCount').style.display = "none";
+        document.getElementById('invalidCount').style.display = "none";
+        document.getElementById('searchClear').style.display = "none";
+        document.getElementById('searchStats').innerHTML = "";
+        document.getElementById('messagePreview').style.display = "none";
+        loadedContacts = [];
+        searchTerm = '';
+        activeFilter = 'all';
+        updateFilterChips();
+        showStatus('Temizlendi!', 'info');
+    }
+</script>
+</body>
+</html>
