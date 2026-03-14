@@ -1745,17 +1745,23 @@
         }, 1500);
     }
 
+    // DÜZELTİLEN KISIM: Alfabetik sıralama için N alanı doğru formatta
     function vcardOlustur(tamAd, tel) {
         const parcalar = tamAd.trim().split(/\s+/);
-        let ad = "", soyad = "";
+        let ad = "";
+        let soyad = "";
 
         if (parcalar.length > 1) {
+            // Son kelime soyad, diğerleri ad
             soyad = parcalar.pop();
             ad = parcalar.join(" ");
         } else {
             ad = tamAd;
+            soyad = "";
         }
 
+        // N alanı: Soyad;Ad;;;
+        // Bu format alfabetik sıralama için DOĞRU format
         return `BEGIN:VCARD
 VERSION:3.0
 FN;CHARSET=UTF-8:${tamAd}
