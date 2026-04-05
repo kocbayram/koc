@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu Pro | Metin Tam Aşağı İnebilir</title>
+    <title>Kutlama Kartı Stüdyosu Pro | Great Vibes & Özel Mesaj</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -86,7 +86,7 @@
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.6"/><path d="M17 17l3-3-3-3" stroke-width="1.5"/><circle cx="18" cy="17" r="2" stroke-width="1.4"/></svg></div>
         <h1>Kutlama Kartı Stüdyosu Pro</h1>
-        <div class="sub">🎨 Metin Tam Aşağı İnebilir • 200+ Font • Çift Kenarlık</div>
+        <div class="sub">🎨 Metin Tam Aşağı İnebilir • 200+ Font • Çift Kenarlık • Great Vibes Varsayılan</div>
     </div>
 
     <div class="two-columns">
@@ -147,20 +147,23 @@
 
                 <div class="symbol-panel" id="symbolPanel"></div>
 
-                <textarea id="cardText" rows="4" placeholder="Kart metnini yaz...
-⭐✨ Mutluluklar Dilerim! ✨⭐
-Harika bir gün seninle daha güzel.
+                <textarea id="cardText" rows="4" placeholder="Kart metnini yaz...">✨ Sevgili Kızım ✨ 
+Doğum gününü kutlar, ümitlerinin aydınlık,
+özlemlerinin gerçek, mutluluğunun
+bitimsiz olacağı nice yıllar dilerim.
 
-🌸 Sevgiler, 🌸
-Ahmet Yılmaz">⭐✨ Mutluluklar Dilerim! ✨⭐
-Harika bir gün seninle daha güzel.
+❤️ Sevgiler ❤️ 
 
-🌸 Sevgiler, 🌸
-Ahmet Yılmaz</textarea>
+Bayram Koç</textarea>
                 
                 <div class="controls">
-                    <input type="number" id="fontSize" value="26" min="12" max="80" step="1">
-                    <select id="fontWeight"><option value="300">Light</option><option value="400" selected>Regular</option><option value="600">SemiBold</option><option value="700">Bold</option></select>
+                    <input type="number" id="fontSize" value="32" min="12" max="80" step="1">
+                    <select id="fontWeight">
+                        <option value="300">Light</option>
+                        <option value="400">Regular</option>
+                        <option value="600">SemiBold</option>
+                        <option value="700" selected>Bold</option>
+                    </select>
                     <select id="textAlign"><option value="center">Merkez</option><option value="left">Sola</option><option value="right">Sağa</option></select>
                 </div>
 
@@ -184,8 +187,8 @@ Ahmet Yılmaz</textarea>
                 <div class="color-row" style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
-                    <label>📐 Dış Kenar:</label><input type="color" id="borderOuterColor" value="#c084fc">
-                    <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#a855f7">
+                    <label>📐 Dış Kenar:</label><input type="color" id="borderOuterColor" value="#b392ac">
+                    <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#d9bfc2">
                     <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="8" value="4" style="width:80px">
                 </div>
                 
@@ -200,10 +203,11 @@ Ahmet Yılmaz</textarea>
     </div>
 
     <div class="footer">
-        <span>💜 200+ Font (Önceden Yüklenir)</span>
+        <span>💜 200+ Font (Great Vibes Varsayılan)</span>
         <span>🎨 48+ Renk Paleti</span>
         <span>🦁 Logo: En/Boy Ayrı Boyutlandır</span>
         <span>📝 Metin Tam Aşağı İnebilir (Y max: 470)</span>
+        <span>🎂 Özel Doğum Günü Mesajı</span>
     </div>
 </div>
 
@@ -231,7 +235,8 @@ Ahmet Yılmaz</textarea>
         "Alegreya", "Volkhov", "Old Standard TT", "PT Serif", "Noto Serif"
     ];
 
-    let currentFont = "Dancing Script";
+    // Varsayılan font "Great Vibes" olarak ayarlandı
+    let currentFont = "Great Vibes";
     let bgImage = null;
     let overlayImage = null;
     let overlayX = 275, overlayY = 250;
@@ -296,7 +301,9 @@ Ahmet Yılmaz</textarea>
             const div = document.createElement("div");
             div.className = "font-item";
             div.onclick = () => selectFont(font);
-            div.innerHTML = `<span class="font-name" style="font-family: '${font}', cursive;">${font}</span><span class="font-badge">🖊️ Font</span>`;
+            // Varsayılan fontu listede belirgin yapalım (isteğe bağlı)
+            const isDefault = (font === "Great Vibes");
+            div.innerHTML = `<span class="font-name" style="font-family: '${font}', cursive;">${font} ${isDefault ? '✓ (varsayılan)' : ''}</span><span class="font-badge">🖊️ Font</span>`;
             container.appendChild(div);
         });
     }
@@ -634,6 +641,7 @@ Ahmet Yılmaz</textarea>
     document.getElementById("clearOverlayBtn").addEventListener("click", () => { overlayImage = null; document.getElementById("overlayPreviewArea").style.display = "none"; overlayInput.value = ""; drawCard(); showAlert("Logo/Resim kaldırıldı"); });
 
     renderFontList();
+    // İlk çizim yapılırken varsayılan font Great Vibes, font boyutu 32 ve bold ile çizim tetiklenir
     drawCard();
 </script>
 </body>
