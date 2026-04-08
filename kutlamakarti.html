@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu Pro | Great Vibes & Özel Mesaj</title>
+    <title>Kutlama Kartı Stüdyosu Pro | Sınırsız Renk + Özel HEX</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -78,7 +78,51 @@
         .footer { margin-top: 25px; text-align: center; font-size: 10px; color: #bb9be0; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid #eeddff; }
         textarea { font-family: inherit; resize: vertical; width: 100%; padding: 14px; border-radius: 24px; border: 2px solid #eeddff; margin: 10px 0; font-size: 15px; line-height: 1.5; min-height: 160px; }
 
-        @media (max-width: 800px) { .glass-mor { padding: 20px; } h1 { font-size: 26px; } .two-columns { flex-direction: column; } .color-palette-grid { grid-template-columns: repeat(8,1fr); } }
+        /* Yeni: Özel HEX kod alanları için stiller */
+        .custom-hex-row {
+            background: #faf5ff;
+            border-radius: 24px;
+            padding: 12px 15px;
+            margin: 12px 0 8px 0;
+            border: 1px solid #eeddff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hex-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 5px 12px;
+            border-radius: 40px;
+            border: 1px solid #eeddff;
+            flex: 1;
+            min-width: 160px;
+        }
+        .hex-item label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #8b5ccf;
+            white-space: nowrap;
+        }
+        .hex-item input {
+            border: none;
+            background: transparent;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: 600;
+            width: 95px;
+            padding: 6px 0;
+            outline: none;
+            color: #4a2e6b;
+        }
+        .hex-item input:focus {
+            border-bottom: 1px solid #c084fc;
+        }
+        @media (max-width: 800px) { .glass-mor { padding: 20px; } h1 { font-size: 26px; } .two-columns { flex-direction: column; } .color-palette-grid { grid-template-columns: repeat(8,1fr); } .hex-item { min-width: 140px; } }
     </style>
 </head>
 <body>
@@ -86,7 +130,7 @@
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.6"/><path d="M17 17l3-3-3-3" stroke-width="1.5"/><circle cx="18" cy="17" r="2" stroke-width="1.4"/></svg></div>
         <h1>Kutlama Kartı Stüdyosu Pro</h1>
-        <div class="sub">🎨 Metin Tam Aşağı İnebilir • 200+ Font • Çift Kenarlık • Great Vibes Varsayılan</div>
+        <div class="sub">🎨 Metin Tam Aşağı İnebilir • 200+ Font • Çift Kenarlık • Great Vibes Varsayılan • <span style="color:#a855f7;">✨ Sınırsız Renk (Özel HEX)</span></div>
     </div>
 
     <div class="two-columns">
@@ -184,6 +228,7 @@ Bayram Koç</textarea>
                     <div class="color-palette-grid" id="borderInnerPalette"></div>
                 </div>
 
+                <!-- Mevcut renk seçiciler (color input) -->
                 <div class="color-row" style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
@@ -191,7 +236,16 @@ Bayram Koç</textarea>
                     <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#d9bfc2">
                     <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="8" value="4" style="width:80px">
                 </div>
-                
+
+                <!-- YENİ: Özel HEX kod giriş alanları (sınırsız renk seçimi için) -->
+                <div class="custom-hex-row">
+                    <div class="hex-item"><label>🎨 Metin HEX:</label><input type="text" id="customTextHex" placeholder="#4a2e6b" maxlength="7"></div>
+                    <div class="hex-item"><label>🖌️ Arka Plan HEX:</label><input type="text" id="customBgHex" placeholder="#faf5ff" maxlength="7"></div>
+                    <div class="hex-item"><label>📐 Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" placeholder="#b392ac" maxlength="7"></div>
+                    <div class="hex-item"><label>📐 İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" placeholder="#d9bfc2" maxlength="7"></div>
+                </div>
+                <div style="font-size: 11px; color: #b77bff; text-align: center; margin-top: -5px; margin-bottom: 8px;">💡 Renk paletlerinden seç veya istediğin HEX kodu buraya yaz (örn: #eeeeff) → sınırsız renk özgürlüğü!</div>
+
                 <div class="action-buttons">
                     <button id="clearTextBtn" class="btn-secondary" style="background:#ffe0e0;">🧹 Metni Temizle</button>
                     <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
@@ -204,7 +258,7 @@ Bayram Koç</textarea>
 
     <div class="footer">
         <span>💜 200+ Font (Great Vibes Varsayılan)</span>
-        <span>🎨 48+ Renk Paleti</span>
+        <span>🎨 48+ Renk Paleti + Sınırsız HEX Girişi</span>
         <span>🦁 Logo: En/Boy Ayrı Boyutlandır</span>
         <span>📝 Metin Tam Aşağı İnebilir (Y max: 470)</span>
         <span>🎂 Özel Doğum Günü Mesajı</span>
@@ -235,7 +289,6 @@ Bayram Koç</textarea>
         "Alegreya", "Volkhov", "Old Standard TT", "PT Serif", "Noto Serif"
     ];
 
-    // Varsayılan font "Great Vibes" olarak ayarlandı
     let currentFont = "Great Vibes";
     let bgImage = null;
     let overlayImage = null;
@@ -301,7 +354,6 @@ Bayram Koç</textarea>
             const div = document.createElement("div");
             div.className = "font-item";
             div.onclick = () => selectFont(font);
-            // Varsayılan fontu listede belirgin yapalım (isteğe bağlı)
             const isDefault = (font === "Great Vibes");
             div.innerHTML = `<span class="font-name" style="font-family: '${font}', cursive;">${font} ${isDefault ? '✓ (varsayılan)' : ''}</span><span class="font-badge">🖊️ Font</span>`;
             container.appendChild(div);
@@ -438,6 +490,61 @@ Bayram Koç</textarea>
         }
     }
 
+    // ========== YENİ: HEX input senkronizasyon (sınırsız renk desteği) ==========
+    function isValidHex(hex) {
+        return /^#[0-9A-Fa-f]{6}$/.test(hex) || /^#[0-9A-Fa-f]{3}$/.test(hex);
+    }
+    function normalizeHex(hex) {
+        if (!hex.startsWith('#')) hex = '#' + hex;
+        if (hex.length === 4) { // #RGB -> #RRGGBB
+            hex = '#' + hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3];
+        }
+        return hex.toUpperCase();
+    }
+
+    // Color input -> custom HEX input senkron
+    const textColorInput = document.getElementById("textColor");
+    const bgColorInput = document.getElementById("bgColor");
+    const borderOuterInput = document.getElementById("borderOuterColor");
+    const borderInnerInput = document.getElementById("borderInnerColor");
+    const customTextHex = document.getElementById("customTextHex");
+    const customBgHex = document.getElementById("customBgHex");
+    const customBorderOuterHex = document.getElementById("customBorderOuterHex");
+    const customBorderInnerHex = document.getElementById("customBorderInnerHex");
+
+    function syncCustomHexFromColorInput() {
+        customTextHex.value = textColorInput.value.toUpperCase();
+        customBgHex.value = bgColorInput.value.toUpperCase();
+        customBorderOuterHex.value = borderOuterInput.value.toUpperCase();
+        customBorderInnerHex.value = borderInnerInput.value.toUpperCase();
+    }
+
+    function setColorFromCustomHex(customInput, colorInput, colorName) {
+        let val = customInput.value.trim();
+        if (val === "") return;
+        if (!val.startsWith('#')) val = '#' + val;
+        if (isValidHex(val)) {
+            const normalized = normalizeHex(val);
+            colorInput.value = normalized;
+            drawCard();
+            showAlert(`${colorName} rengi güncellendi: ${normalized}`);
+            customInput.value = normalized;
+        } else {
+            showAlert(`Geçersiz HEX kodu: ${val} (örnek: #eeeeff veya #eee)`, "error");
+            customInput.value = colorInput.value.toUpperCase();
+        }
+    }
+
+    customTextHex.addEventListener("change", () => setColorFromCustomHex(customTextHex, textColorInput, "Metin"));
+    customBgHex.addEventListener("change", () => setColorFromCustomHex(customBgHex, bgColorInput, "Arka Plan"));
+    customBorderOuterHex.addEventListener("change", () => setColorFromCustomHex(customBorderOuterHex, borderOuterInput, "Dış Kenar"));
+    customBorderInnerHex.addEventListener("change", () => setColorFromCustomHex(customBorderInnerHex, borderInnerInput, "İç Kenar"));
+
+    textColorInput.addEventListener("input", () => { syncCustomHexFromColorInput(); drawCard(); });
+    bgColorInput.addEventListener("input", () => { syncCustomHexFromColorInput(); drawCard(); });
+    borderOuterInput.addEventListener("input", () => { syncCustomHexFromColorInput(); drawCard(); });
+    borderInnerInput.addEventListener("input", () => { syncCustomHexFromColorInput(); drawCard(); });
+
     // Sürükleme işlemleri
     function handleMouseDown(e) {
         const rect = canvas.getBoundingClientRect();
@@ -552,12 +659,12 @@ Bayram Koç</textarea>
     document.getElementById("resetLogoPosBtn").addEventListener("click", () => { overlayX = 275; overlayY = 250; document.getElementById("logoX").value = 275; document.getElementById("logoY").value = 250; drawCard(); showAlert("Logo konumu sıfırlandı"); });
     document.getElementById("resetLogoSizeBtn").addEventListener("click", () => { overlayWidth = 80; overlayHeight = 80; document.getElementById("logoWidth").value = 80; document.getElementById("logoHeight").value = 80; drawCard(); showAlert("Logo boyutu sıfırlandı"); });
     
-    // Metin kontrolleri (Y ekseni 470'e kadar çıkabilir - en alta kadar)
+    // Metin kontrolleri
     document.getElementById("textX").addEventListener("input", (e) => { textPosX = parseInt(e.target.value); drawCard(); });
     document.getElementById("textY").addEventListener("input", (e) => { textPosY = parseInt(e.target.value); drawCard(); });
     document.getElementById("resetTextPosBtn").addEventListener("click", () => { textPosX = 275; textPosY = 250; document.getElementById("textX").value = 275; document.getElementById("textY").value = 250; drawCard(); showAlert("Metin konumu sıfırlandı"); });
     
-    function showAlert(msg) {
+    function showAlert(msg, type = "success") {
         const alertDiv = document.getElementById("alertMsg");
         alertDiv.textContent = msg;
         alertDiv.style.display = "block";
@@ -613,10 +720,6 @@ Bayram Koç</textarea>
     document.getElementById("fontSize").addEventListener("input", drawCard);
     document.getElementById("fontWeight").addEventListener("change", drawCard);
     document.getElementById("textAlign").addEventListener("change", drawCard);
-    document.getElementById("textColor").addEventListener("input", drawCard);
-    document.getElementById("bgColor").addEventListener("input", drawCard);
-    document.getElementById("borderOuterColor").addEventListener("input", drawCard);
-    document.getElementById("borderInnerColor").addEventListener("input", drawCard);
     document.getElementById("borderWidth").addEventListener("input", drawCard);
     document.getElementById("clearTextBtn").addEventListener("click", () => { document.getElementById("cardText").value = ""; drawCard(); showAlert("Metin temizlendi!"); });
     document.getElementById("downloadPngBtn").addEventListener("click", () => downloadImage("png"));
@@ -641,7 +744,7 @@ Bayram Koç</textarea>
     document.getElementById("clearOverlayBtn").addEventListener("click", () => { overlayImage = null; document.getElementById("overlayPreviewArea").style.display = "none"; overlayInput.value = ""; drawCard(); showAlert("Logo/Resim kaldırıldı"); });
 
     renderFontList();
-    // İlk çizim yapılırken varsayılan font Great Vibes, font boyutu 32 ve bold ile çizim tetiklenir
+    syncCustomHexFromColorInput(); // Başlangıçta HEX kutularını doldur
     drawCard();
 </script>
 </body>
