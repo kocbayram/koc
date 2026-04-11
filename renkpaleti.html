@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Renk Paleti Oluşturucu Pro | Tüm Tarayıcılar İçin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #f5f0ff 0%, #f1eaff 50%, #f8f2ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(#d9c5ff 1px, transparent 1px);
+            background-size: 36px 36px;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .glass-mor {
+            background: rgba(255, 252, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border-radius: 56px;
+            box-shadow: 0 30px 55px -18px rgba(110, 70, 180, 0.25), 0 0 0 1px rgba(210, 180, 255, 0.6);
+            padding: 44px;
+            max-width: 1200px;
+            width: 100%;
+            animation: floatMor 0.55s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes floatMor {
+            from { opacity: 0; transform: translateY(32px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-lavanta {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .icon-mor {
+            width: 84px;
+            height: 84px;
+            background: linear-gradient(145deg, #e5d5ff, #d9c2ff);
+            border-radius: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .icon-mor svg {
+            width: 44px;
+            height: 44px;
+            stroke: #9b6bdf;
+            stroke-width: 1.7;
+            fill: none;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(125deg, #b77bff, #d28eff, #c084fc, #a855f7);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: purpleWave 7s ease infinite;
+        }
+
+        @keyframes purpleWave {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .sub-mor {
+            color: #a07ad2;
+            font-size: 14px;
+            background: rgba(210, 180, 255, 0.35);
+            display: inline-block;
+            padding: 6px 24px;
+            border-radius: 60px;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        /* ÖZEL RENK SEÇİCİ (Firefox dahil tüm tarayıcılar için) */
+        .custom-color-picker {
+            background: linear-gradient(135deg, #c084fc, #a855f7);
+            border: 4px solid white;
+            border-radius: 48px;
+            padding: 20px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 20px 40px -12px #a855f7;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .custom-color-picker:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 50px -15px #a855f7;
+        }
+
+        .custom-color-picker span {
+            font-size: 48px;
+            display: block;
+        }
+
+        .custom-color-picker div {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            margin-top: 10px;
+        }
+
+        /* RENK TAYFASI (Spectrum) - JS ile oluşturulacak */
+        .spectrum-container {
+            background: white;
+            border-radius: 32px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #eeddff;
+            display: none;
+        }
+
+        .spectrum-canvas {
+            width: 100%;
+            height: 200px;
+            border-radius: 20px;
+            cursor: crosshair;
+            margin-bottom: 15px;
+            border: 2px solid #c084fc;
+        }
+
+        .spectrum-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .spectrum-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .spectrum-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .close-spectrum {
+            background: #f3ecff;
+            border: 1px solid #e2ceff;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .color-preview-box {
+            width: 100%;
+            height: 160px;
+            border-radius: 36px;
+            margin-bottom: 24px;
+            transition: 0.2s;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            border: 3px solid white;
+        }
+
+        .hex-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .hex-input {
+            flex: 2;
+            padding: 14px 18px;
+            border-radius: 56px;
+            border: 2px solid #eeddff;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            background: white;
+        }
+
+        .copy-btn {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            padding: 12px 24px;
+            border-radius: 56px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .convert-card {
+            background: #faf5ff;
+            border-radius: 36px;
+            padding: 22px;
+            border: 1px solid #eeddff;
+            margin-top: 20px;
+        }
+
+        .format-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eeddff;
+        }
+
+        .format-label {
+            font-weight: 800;
+            color: #8b5ccf;
+        }
+
+        .format-value {
+            font-family: monospace;
+            font-weight: 600;
+            color: #4a2e6b;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .random-btn {
+            margin-top: 18px;
+            width: 100%;
+            background: linear-gradient(115deg, #b77bff, #a855f7);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 56px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .palette-card {
+            background: #faf5ff;
+            border-radius: 36px;
+            padding: 22px;
+            border: 1px solid #eeddff;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .palette-item {
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .palette-color {
+            height: 90px;
+            border-radius: 24px;
+            margin-bottom: 10px;
+            border: 3px solid white;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        .palette-hex {
+            font-size: 11px;
+            font-family: monospace;
+            font-weight: 700;
+            color: #8b5ccf;
+        }
+
+        .palette-item:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-mor {
+            background: linear-gradient(115deg, #b77bff, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 56px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        .btn-mor-light {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            color: #b77bff;
+        }
+
+        .alert-mor {
+            padding: 12px 20px;
+            border-radius: 40px;
+            margin: 20px 0 0;
+            display: none;
+            font-size: 13px;
+        }
+
+        .alert-success {
+            background: #efe6ff;
+            color: #6b48a5;
+            border-left: 4px solid #c084fc;
+        }
+
+        .footer-mor {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 11px;
+            color: #bb9be0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eeddff;
+        }
+
+        @media (max-width: 750px) {
+            .glass-mor { padding: 28px 20px; }
+            h1 { font-size: 28px; }
+            .two-columns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="glass-mor">
+    <div class="header-lavanta">
+        <div class="icon-mor">
+            <svg viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="1.6" fill="none"/>
+                <path d="M12 2v4M22 12h-4M12 20v-4M4 12H2M19.07 4.93l-2.83 2.83M6.34 17.66l-2.83 2.83M17.66 17.66l2.83 2.83M4.93 4.93l2.83 2.83" stroke-width="1.4"/>
+            </svg>
+        </div>
+        <h1>Renk Paleti Oluşturucu Pro</h1>
+        <div class="sub-mor">🎨 Firefox • Chrome • Samsung • Tüm tarayıcılar</div>
+    </div>
+
+    <div class="two-columns">
+        <div class="column">
+            <!-- ÖZEL RENK SEÇİCİ BUTONU -->
+            <button id="openSpectrumBtn" class="custom-color-picker">
+                <span>🎨</span>
+                <div>RENK SEÇİCİYİ AÇ</div>
+                <small style="font-size: 12px;">🦊 Firefox • Chrome • Hepsi çalışır</small>
+            </button>
+
+            <!-- RENK TAYFASI PANELİ -->
+            <div id="spectrumPanel" class="spectrum-container">
+                <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="200"></canvas>
+                <input type="range" id="hueSlider" class="spectrum-slider" min="0" max="360" value="271">
+                <div class="spectrum-controls">
+                    <div id="spectrumPreview" class="spectrum-preview" style="background-color: #c084fc;"></div>
+                    <input type="text" id="spectrumHex" class="hex-input" style="flex:1; min-width:120px;" value="#c084fc">
+                    <button id="spectrumSelectBtn" class="close-spectrum">✓ Seç</button>
+                    <button id="spectrumCloseBtn" class="close-spectrum">✖ Kapat</button>
+                </div>
+            </div>
+
+            <div class="color-preview-box" id="colorPreviewBox" style="background-color: #c084fc;"></div>
+            
+            <div class="hex-row">
+                <input type="text" id="hexInput" class="hex-input" placeholder="#RRGGBB" value="#c084fc" maxlength="7">
+                <button id="copyHexBtn" class="copy-btn">📋 Kopyala</button>
+            </div>
+
+            <div class="convert-card">
+                <div class="format-row">
+                    <span class="format-label">HEX</span>
+                    <span class="format-value" id="hexValue">#c084fc</span>
+                </div>
+                <div class="format-row">
+                    <span class="format-label">RGB</span>
+                    <span class="format-value" id="rgbValue">rgb(192, 132, 252)</span>
+                </div>
+                <div class="format-row">
+                    <span class="format-label">HSL</span>
+                    <span class="format-value" id="hslValue">hsl(271, 95%, 75%)</span>
+                </div>
+                <div class="format-row">
+                    <span class="format-label">CMYK</span>
+                    <span class="format-value" id="cmykValue">cmyk(24%, 48%, 0%, 1%)</span>
+                </div>
+                <button id="randomColorBtn" class="random-btn">🎲 Rastgele Renk</button>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="palette-card">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px;">
+                    <button id="generatePaletteBtn" class="btn-mor">🌈 Palet Oluştur</button>
+                    <button id="exportPaletteBtn" class="btn-mor btn-mor-light">💾 Dışa Aktar</button>
+                </div>
+                <div id="paletteContainer" class="palette-grid">
+                    <div style="grid-column:1/-1; text-align:center; color:#bb9be0; padding: 30px;">"Palet Oluştur" butonuna tıklayın</div>
+                </div>
+                <div style="font-size: 12px; color: #b77bff; text-align: center; margin-top: 8px;">
+                    💡 Paletteki renge tıkla → o renk seçilir
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertBox" class="alert-mor"></div>
+
+    <div class="footer-mor">
+        <span>🦊 Firefox dahil TÜM tarayıcılar çalışır</span>
+        <span>🌈 Özel renk tayfası (spectrum)</span>
+        <span>📥 CSS / JSON / TXT dışa aktar</span>
+    </div>
+</div>
+
+<script>
+    // DOM
+    const openSpectrumBtn = document.getElementById('openSpectrumBtn');
+    const spectrumPanel = document.getElementById('spectrumPanel');
+    const spectrumCanvas = document.getElementById('spectrumCanvas');
+    const hueSlider = document.getElementById('hueSlider');
+    const spectrumPreview = document.getElementById('spectrumPreview');
+    const spectrumHex = document.getElementById('spectrumHex');
+    const spectrumSelectBtn = document.getElementById('spectrumSelectBtn');
+    const spectrumCloseBtn = document.getElementById('spectrumCloseBtn');
+    const colorPreviewBox = document.getElementById('colorPreviewBox');
+    const hexInput = document.getElementById('hexInput');
+    const hexValue = document.getElementById('hexValue');
+    const rgbValue = document.getElementById('rgbValue');
+    const hslValue = document.getElementById('hslValue');
+    const cmykValue = document.getElementById('cmykValue');
+    const copyHexBtn = document.getElementById('copyHexBtn');
+    const randomColorBtn = document.getElementById('randomColorBtn');
+    const generatePaletteBtn = document.getElementById('generatePaletteBtn');
+    const exportPaletteBtn = document.getElementById('exportPaletteBtn');
+    const paletteContainer = document.getElementById('paletteContainer');
+    const alertBox = document.getElementById('alertBox');
+
+    let currentColor = { hex: '#c084fc', r: 192, g: 132, b: 252 };
+    let currentPalette = [];
+    let currentHue = 271;
+    let ctx = spectrumCanvas.getContext('2d');
+    let isDrawing = false;
+
+    // Canvas boyutlarını ayarla
+    spectrumCanvas.width = 400;
+    spectrumCanvas.height = 200;
+
+    function drawSpectrum(hue) {
+        const width = spectrumCanvas.width;
+        const height = spectrumCanvas.height;
+        const imageData = ctx.createImageData(width, height);
+        
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const sat = x / width;
+                const light = 1 - (y / height);
+                const rgb = hslToRgb(hue, sat, light);
+                const idx = (y * width + x) * 4;
+                imageData.data[idx] = rgb.r;
+                imageData.data[idx + 1] = rgb.g;
+                imageData.data[idx + 2] = rgb.b;
+                imageData.data[idx + 3] = 255;
+            }
+        }
+        ctx.putImageData(imageData, 0, 0);
+    }
+
+    function hslToRgb(h, s, l) {
+        h = (h % 360) / 360;
+        let r, g, b;
+        if (s === 0) r = g = b = l;
+        else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+        return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) h = s = 0;
+        else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+
+    function getCanvasColor(x, y) {
+        const pixel = ctx.getImageData(x, y, 1, 1).data;
+        return { r: pixel[0], g: pixel[1], b: pixel[2] };
+    }
+
+    function updateFromRgb(r, g, b) {
+        const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+        updateAllFromHex(hex);
+    }
+
+    function updateAllFromHex(hex) {
+        if (!hex.match(/^#[0-9A-Fa-f]{6}$/)) {
+            if (hex.match(/^#[0-9A-Fa-f]{3}$/)) {
+                hex = '#' + hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3];
+            } else return false;
+        }
+        const r = parseInt(hex.slice(1,3), 16);
+        const g = parseInt(hex.slice(3,5), 16);
+        const b = parseInt(hex.slice(5,7), 16);
+        const hsl = rgbToHsl(r, g, b);
+        const cmyk = rgbToCmyk(r, g, b);
+        
+        currentColor = { hex: hex.toUpperCase(), r, g, b };
+        colorPreviewBox.style.backgroundColor = hex;
+        hexInput.value = hex.toUpperCase();
+        hexValue.textContent = hex.toUpperCase();
+        rgbValue.textContent = `rgb(${r}, ${g}, ${b})`;
+        hslValue.textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        cmykValue.textContent = `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`;
+        
+        spectrumHex.value = hex.toUpperCase();
+        spectrumPreview.style.backgroundColor = hex;
+        currentHue = hsl.h;
+        hueSlider.value = currentHue;
+        drawSpectrum(currentHue);
+        return true;
+    }
+
+    function rgbToCmyk(r, g, b) {
+        let c = 1 - (r / 255);
+        let m = 1 - (g / 255);
+        let y = 1 - (b / 255);
+        let k = Math.min(c, m, y);
+        if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
+        c = Math.round(((c - k) / (1 - k)) * 100);
+        m = Math.round(((m - k) / (1 - k)) * 100);
+        y = Math.round(((y - k) / (1 - k)) * 100);
+        k = Math.round(k * 100);
+        return { c, m, y, k };
+    }
+
+    function hslToHex(h, s, l) {
+        const rgb = hslToRgb(h, s / 100, l / 100);
+        return '#' + [rgb.r, rgb.g, rgb.b].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    function generateHarmonicPalette(baseHex) {
+        const baseRgb = { r: currentColor.r, g: currentColor.g, b: currentColor.b };
+        const baseHsl = rgbToHsl(baseRgb.r, baseRgb.g, baseRgb.b);
+        const types = ['analogous', 'monochrome', 'complementary'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        
+        let colors = [];
+        if (type === 'analogous') {
+            const hues = [baseHsl.h, (baseHsl.h + 30) % 360, (baseHsl.h + 60) % 360, (baseHsl.h - 30 + 360) % 360, (baseHsl.h - 60 + 360) % 360];
+            colors = hues.map(h => hslToHex(h, baseHsl.s, baseHsl.l));
+        } else if (type === 'monochrome') {
+            const lightness = [25, 45, 65, 80, 92];
+            colors = lightness.map(l => hslToHex(baseHsl.h, baseHsl.s, l));
+        } else {
+            const comp = (baseHsl.h + 180) % 360;
+            colors = [baseHex, hslToHex(comp, baseHsl.s, baseHsl.l), 
+                      hslToHex((baseHsl.h + 25) % 360, baseHsl.s, baseHsl.l),
+                      hslToHex((comp - 25 + 360) % 360, baseHsl.s, baseHsl.l),
+                      hslToHex(baseHsl.h, baseHsl.s, Math.min(baseHsl.l + 25, 95))];
+        }
+        return colors.slice(0, 5);
+    }
+
+    function renderPalette(palette) {
+        if (!palette.length) return;
+        paletteContainer.innerHTML = palette.map(hex => `
+            <div class="palette-item" onclick="selectPaletteColor('${hex}')">
+                <div class="palette-color" style="background-color: ${hex};"></div>
+                <div class="palette-hex">${hex}</div>
+            </div>
+        `).join('');
+    }
+
+    window.selectPaletteColor = function(hex) {
+        updateAllFromHex(hex);
+        showAlert(`🎨 Renk seçildi: ${hex}`, 'success');
+    };
+
+    function showAlert(msg, type) {
+        alertBox.textContent = msg;
+        alertBox.className = `alert-mor alert-${type}`;
+        alertBox.style.display = 'block';
+        setTimeout(() => alertBox.style.display = 'none', 3000);
+    }
+
+    // Spektrum olayları
+    openSpectrumBtn.addEventListener('click', () => {
+        spectrumPanel.style.display = 'block';
+        drawSpectrum(currentHue);
+    });
+
+    spectrumCloseBtn.addEventListener('click', () => {
+        spectrumPanel.style.display = 'none';
+    });
+
+    hueSlider.addEventListener('input', (e) => {
+        currentHue = parseInt(e.target.value);
+        drawSpectrum(currentHue);
+    });
+
+    spectrumCanvas.addEventListener('click', (e) => {
+        const rect = spectrumCanvas.getBoundingClientRect();
+        const scaleX = spectrumCanvas.width / rect.width;
+        const scaleY = spectrumCanvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+        if (x >= 0 && x < spectrumCanvas.width && y >= 0 && y < spectrumCanvas.height) {
+            const rgb = getCanvasColor(Math.floor(x), Math.floor(y));
+            updateFromRgb(rgb.r, rgb.g, rgb.b);
+            spectrumHex.value = currentColor.hex;
+            spectrumPreview.style.backgroundColor = currentColor.hex;
+        }
+    });
+
+    spectrumSelectBtn.addEventListener('click', () => {
+        spectrumPanel.style.display = 'none';
+        showAlert(`Renk seçildi: ${currentColor.hex}`, 'success');
+    });
+
+    spectrumHex.addEventListener('change', (e) => {
+        let val = e.target.value;
+        if (!val.startsWith('#')) val = '#' + val;
+        if (updateAllFromHex(val)) {
+            spectrumPreview.style.backgroundColor = val;
+        }
+    });
+
+    // Diğer eventler
+    hexInput.addEventListener('change', (e) => {
+        let val = e.target.value;
+        if (!val.startsWith('#')) val = '#' + val;
+        if (updateAllFromHex(val)) showAlert('Renk güncellendi', 'success');
+        else { showAlert('Geçersiz HEX!', 'error'); hexInput.value = currentColor.hex; }
+    });
+
+    copyHexBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(currentColor.hex);
+        showAlert(`HEX kopyalandı: ${currentColor.hex}`, 'success');
+    });
+
+    randomColorBtn.addEventListener('click', () => {
+        const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+        updateAllFromHex(randomHex);
+        showAlert(`Rastgele renk: ${randomHex}`, 'success');
+    });
+
+    generatePaletteBtn.addEventListener('click', () => {
+        const palette = generateHarmonicPalette(currentColor.hex);
+        currentPalette = palette;
+        renderPalette(palette);
+        showAlert('✨ Yeni renk paleti oluşturuldu!', 'success');
+    });
+
+    exportPaletteBtn.addEventListener('click', () => {
+        if (!currentPalette.length) {
+            showAlert('Önce bir palet oluşturun', 'error');
+            return;
+        }
+        const format = confirm('CSS değişkenleri için Tamam, JSON için İptal, TXT için İptal sonrası Tamam?');
+        let content = '', ext = '';
+        if (format === true) {
+            content = ':root {\n' + currentPalette.map((c, i) => `  --color-${i+1}: ${c};`).join('\n') + '\n}';
+            ext = '.css';
+        } else {
+            const second = confirm('JSON için Tamam, TXT için İptal');
+            if (second) { content = JSON.stringify(currentPalette, null, 2); ext = '.json'; }
+            else { content = currentPalette.join('\n'); ext = '.txt'; }
+        }
+        const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = `renk_paleti_${Date.now()}${ext}`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showAlert(`Palet dışa aktarıldı (${ext})`, 'success');
+    });
+
+    updateAllFromHex('#c084fc');
+    generatePaletteBtn.click();
+</script>
+</body>
+</html>
