@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu | Ultimate 280+ İkon</title>
+    <title>Kutlama Kartı Stüdyosu</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -29,13 +29,13 @@
         .header { text-align: center; margin-bottom: 12px; }
         .icon { width: 70px; height: 70px; background: linear-gradient(145deg, #e9dcff, #dbc9ff); border-radius: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; }
         .icon svg { width: 36px; height: 36px; stroke: #9b6bdf; stroke-width: 1.5; fill: none; }
-        h1 { font-size: 30px; font-weight: 800; background: linear-gradient(125deg, #b87eff, #a755f7, #c28bff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glowMove 8s ease infinite; letter-spacing: -0.2px; line-height: 1.2; }
+        h1 { font-size: 30px; font-weight: 800; background: linear-gradient(125deg, #b87eff, #a755f7, #c28bff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glowMove 8s ease infinite; }
         @keyframes glowMove { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
         .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
         .column { flex: 1; min-width: 280px; }
 
-        /* AÇILIR KAPANIR FONT PANELİ (VARSAYILAN KAPALI) */
+        /* AÇILIR FONT PANELİ */
         .collapsible-panel {
             background: #fffdf9;
             border-radius: 32px;
@@ -43,7 +43,6 @@
             margin-top: 20px;
             margin-bottom: 16px;
             overflow: hidden;
-            transition: all 0.2s ease;
         }
         .panel-header {
             display: flex;
@@ -55,45 +54,19 @@
             font-weight: 700;
             color: #6b3ea5;
             border-bottom: 1px solid #f3e5d5;
-            transition: 0.2s;
         }
-        .panel-header:hover { background: #fffaf2; }
         .panel-header .toggle-icon { font-size: 18px; transition: transform 0.2s; }
         .panel-header.open .toggle-icon { transform: rotate(180deg); }
         .panel-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.35s ease-out;
-            background: #fffdf9;
         }
-        .panel-content.open {
-            max-height: 580px;
-            overflow-y: auto;
-        }
-        .search-box {
-            width: calc(100% - 32px);
-            margin: 16px 16px 12px 16px;
-            padding: 12px 16px;
-            border-radius: 50px;
-            border: 2px solid #eeddff;
-            background: white;
-            font-size: 14px;
-        }
+        .panel-content.open { max-height: 580px; overflow-y: auto; }
+        .search-box { width: calc(100% - 32px); margin: 16px; padding: 12px 16px; border-radius: 50px; border: 2px solid #eeddff; }
         .font-list { padding: 0 12px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
-        .font-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            border-radius: 30px;
-            background: white;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #f5e6d4;
-        }
+        .font-item { display: flex; justify-content: space-between; padding: 10px 14px; border-radius: 30px; background: white; cursor: pointer; border: 1px solid #f5e6d4; }
         .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #c084fc; }
-        .font-name { font-size: 14px; font-weight: 600; color: #3d2a1a; }
-        .font-badge { font-size: 9px; padding: 3px 10px; border-radius: 30px; background: #f0eaff; color: #9b6bdf; }
 
         /* POPUP RENK */
         .color-popup-overlay {
@@ -120,23 +93,11 @@
             width: 550px;
             padding: 24px;
             box-shadow: 0 40px 60px rgba(0,0,0,0.2);
-            border: 1px solid #eeddff;
         }
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-weight: 800;
-            font-size: 20px;
-            color: #8b5ccf;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #f0eaff;
-        }
+        .popup-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: 800; font-size: 20px; color: #8b5ccf; }
         .close-popup { background: #f3ecff; border: none; font-size: 24px; cursor: pointer; width: 36px; height: 36px; border-radius: 30px; }
-        .close-popup:hover { background: #e2ceff; }
         .popup-color-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; max-height: 320px; overflow-y: auto; padding: 8px; }
-        .popup-swatch { aspect-ratio: 1 / 1; border-radius: 18px; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.15s; }
+        .popup-swatch { aspect-ratio: 1; border-radius: 18px; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .popup-swatch:hover { transform: scale(1.08); border-color: #c084fc; }
         .compact-palette-btn {
             background: #f3ecff;
@@ -150,15 +111,14 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            transition: 0.2s;
             margin-right: 8px;
             margin-bottom: 6px;
         }
         .compact-palette-btn:hover { background: #e9deff; transform: translateY(-2px); }
 
         .card-preview { background: #ffffffea; border-radius: 36px; padding: 20px; border: 1px solid #ffefdb; margin-bottom: 20px; }
-        .canvas-container { background: #f3ede5; border-radius: 28px; padding: 14px; display: flex; justify-content: center; }
-        canvas { border-radius: 28px; box-shadow: 0 18px 32px -10px rgba(0, 0, 0, 0.2); max-width: 100%; height: auto; background: white; cursor: default; }
+        .canvas-container { background: #f3ede5; border-radius: 28px; padding: 14px; display: flex; justify-content: center; position: relative; }
+        canvas { border-radius: 28px; box-shadow: 0 18px 32px -10px rgba(0,0,0,0.2); max-width: 100%; height: auto; background: white; cursor: default; display: block; }
 
         .drop-zone { border: 2px dashed #c084fc; border-radius: 24px; padding: 16px; text-align: center; margin: 14px 0; background: #fffaf2; cursor: pointer; font-size: 13px; }
         .drop-zone.dragover { background: #f0eaff; border-color: #a855f7; }
@@ -166,24 +126,35 @@
         .thumb-img { width: 50px; height: 50px; border-radius: 14px; object-fit: cover; border: 2px solid #c084fc; }
 
         .controls { display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0; }
-        .controls input, .controls select { flex: 1; padding: 10px 14px; border-radius: 44px; border: 2px solid #eeddff; background: white; font-size: 13px; }
-
-        .palette-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 12px; align-items: center; }
-        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; }
+        .controls input, .controls select { flex: 1; padding: 10px 14px; border-radius: 44px; border: 2px solid #eeddff; }
 
         .position-control { background: #faf5ff; border-radius: 28px; padding: 14px; margin: 12px 0; border: 1px solid #eeddff; }
         .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-        .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; font-size: 13px; }
+        .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
         .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; }
-        .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); filter: brightness(1.02); }
+        .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
 
-        .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; max-height: 180px; overflow-y: auto; border: 1px solid #f5e0c0; }
-        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; overflow-y: auto; border: 1px solid #f5e0c0; }
+        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; }
         .symbol-btn:hover { background: #ffe0b5; transform: scale(1.05); }
 
-        textarea { font-family: inherit; resize: vertical; width: 100%; padding: 16px; border-radius: 28px; border: 2px solid #eeddff; margin: 12px 0; font-size: 15px; line-height: 1.5; min-height: 280px; background: white; }
-        .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; border: 1px solid #eeddff; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
-        .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid #eeddff; }
+        textarea { font-family: inherit; resize: vertical; width: 100%; padding: 16px; border-radius: 28px; border: 2px solid #eeddff; margin: 12px 0; font-size: 15px; line-height: 1.5; min-height: 280px; }
+        .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+        .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; }
+        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; }
+        .resize-handle {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #c084fc;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: nw-resize;
+            z-index: 200;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            display: none;
+            pointer-events: auto;
+        }
         @media (max-width: 800px) { .glass-ultimate { padding: 20px; } .popup-color-grid { grid-template-columns: repeat(6,1fr); } }
     </style>
 </head>
@@ -191,16 +162,13 @@
 <div class="glass-ultimate">
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
-        <h1>🎈 Kutlama Kartı Stüdyosu Ultimate</h1>
+        <h1>🎈 Kutlama Kartı Stüdyosu</h1>
     </div>
 
     <div class="two-columns">
         <div class="column">
             <div class="collapsible-panel" id="fontCollapsible">
-                <div class="panel-header" id="fontPanelHeader">
-                    <span>🔤 Yazı Tipleri (200+)</span>
-                    <span class="toggle-icon">▼</span>
-                </div>
+                <div class="panel-header" id="fontPanelHeader"><span>🔤 Yazı Tipleri (200+)</span><span class="toggle-icon">▼</span></div>
                 <div class="panel-content" id="fontPanelContent">
                     <input type="text" id="searchInput" class="search-box" placeholder="🔍 Font ara...">
                     <div class="font-list" id="fontList"></div>
@@ -210,58 +178,61 @@
 
         <div class="column">
             <div class="card-preview">
-                <div class="canvas-container">
-                    <canvas id="cardCanvas" style="width:100%; height:auto;"></canvas>
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="cardCanvas"></canvas>
+                    <div id="resizeHandle" class="resize-handle"></div>
                 </div>
 
                 <div style="display: flex; gap: 16px; flex-wrap: wrap; background: #faf5ff; border-radius: 28px; padding: 12px; margin-bottom: 12px;">
-                    <label>📐 Genişlik:</label>
-                    <input type="range" id="cardWidth" min="400" max="1000" value="640" step="10"> <span id="widthVal">640px</span>
-                    <label>📏 Yükseklik:</label>
-                    <input type="range" id="cardHeight" min="400" max="1000" value="580" step="10"> <span id="heightVal">580px</span>
+                    <label>📐 Kart Genişliği:</label><input type="range" id="cardWidth" min="400" max="1000" value="640" step="10"> <span id="widthVal">640px</span>
+                    <label>📏 Kart Yüksekliği:</label><input type="range" id="cardHeight" min="400" max="1000" value="580" step="10"> <span id="heightVal">580px</span>
                     <button id="applySizeBtn" class="btn-secondary" style="padding:4px 12px;">Uygula</button>
                 </div>
 
-                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle <input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
-                <div id="imagePreviewArea" class="image-preview" style="display:none"><img id="thumbImg" class="thumb-img"><button id="clearBgBtn" class="btn-secondary" style="padding:6px 12px;">🗑️ Arka Planı Kaldır</button></div>
+                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div id="imagePreviewArea" class="image-preview" style="display:none"><img id="thumbImg" class="thumb-img"><button id="clearBgBtn" class="btn-secondary">🗑️ Arka Planı Kaldır</button></div>
 
                 <div class="position-control" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                    <label>🌈 Gradien Aktif:</label>
-                    <input type="checkbox" id="gradientToggle" checked>
-                    <div id="gradientControls" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <input type="color" id="gradColor1" value="#f9e5ff">
-                        <input type="color" id="gradColor2" value="#ffffff">
+                    <label>🌈 Gradien Aktif:</label><input type="checkbox" id="gradientToggle" checked>
+                    <div id="gradientControls" style="display: flex; gap: 8px;">
+                        <input type="color" id="gradColor1" value="#f9e5ff"><input type="color" id="gradColor2" value="#ffffff">
                         <select id="gradAngle"><option value="0">→ 0°</option><option value="45">↗ 45°</option><option value="90">↓ 90°</option><option value="135">↙ 135°</option></select>
                     </div>
                 </div>
 
-                <div class="drop-zone" id="overlayDropZone" style="border-color:#f5a623;">🦁 Logo / Özel Resim Yükle (sürükle)<input type="file" id="overlayImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
-                <div id="overlayPreviewArea" class="image-preview" style="display:none"><img id="overlayThumb" class="thumb-img"><button id="clearOverlayBtn" class="btn-secondary" style="padding:6px 12px;">🗑️ Resmi Kaldır</button></div>
+                <div class="drop-zone" id="overlayDropZone" style="border-color:#f5a623;">🦁 Logo / Resim Yükle (Sürükle & Bırak) - SINIRSIZ BÜYÜTME/KÜÇÜLTME!<input type="file" id="overlayImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div id="overlayPreviewArea" class="image-preview" style="display:none"><img id="overlayThumb" class="thumb-img"><button id="clearOverlayBtn" class="btn-secondary">🗑️ Logoyu Kaldır</button></div>
 
                 <div class="position-control">
-                    <label>🦁 Logo Konumu (X,Y):</label>
-                    <input type="number" id="logoX" step="5"> X <input type="number" id="logoY" step="5"> Y
-                    <div style="margin-top: 8px;"><label>📏 Genişlik:</label><input type="range" id="logoWidth" min="20" max="300" value="80" step="2" style="width:100px;"><span id="logoWidthVal">80px</span>
-                    <label>📐 Yükseklik:</label><input type="range" id="logoHeight" min="20" max="300" value="80" step="2" style="width:100px;"><span id="logoHeightVal">80px</span>
-                    <div><input type="checkbox" id="keepAspect" checked> <label>🔒 Oranı Koru</label></div>
-                    <button id="resetLogoSizeBtn" class="btn-secondary" style="padding:4px 12px;">Boyut Sıfırla</button></div>
-                    <button id="resetLogoPosBtn" class="btn-secondary" style="padding:4px 12px; margin-top:5px;">Konum Sıfırla</button>
-                    <div style="font-size:10px;">💡 Fare ile sürükleyerek taşıyabilirsiniz!</div>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>🖱️ Logo Konumu: <span style="font-size:11px;">(sürükleyerek taşıyın)</span></label>
+                        <label>X:</label><input type="number" id="logoX" step="5" style="width:70px;"> 
+                        <label>Y:</label><input type="number" id="logoY" step="5" style="width:70px;">
+                        <button id="resetLogoPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>📏 Genişlik (SINIRSIZ):</label><input type="range" id="logoWidth" min="10" max="2000" value="80" step="2" style="width:180px;"><span id="logoWidthVal">80px</span>
+                        <label>📐 Yükseklik (SINIRSIZ):</label><input type="range" id="logoHeight" min="10" max="2000" value="80" step="2" style="width:180px;"><span id="logoHeightVal">80px</span>
+                        <label><input type="checkbox" id="keepAspect" checked> 🔒 Oranı Koru</label>
+                        <button id="resetLogoSizeBtn" class="btn-secondary" style="padding:4px 12px;">Boyut Sıfırla</button>
+                    </div>
+                    <div class="alert" style="font-size:12px; background:#e9deff; margin-top:8px; padding:6px; border-radius:30px; text-align:center;">💡 İpucu: Logonun SAĞ ALT KÖŞESİNDEKİ mor tutamaçtan sürükleyerek SINIRSIZ boyutlandırma yapabilirsiniz! (10px - 2000px)</div>
                 </div>
+
                 <div class="position-control">
-                    <label>✍️ Metin Konumu (X,Y):</label><input type="number" id="textX" step="5"> X <input type="number" id="textY" step="5"> Y
+                    <label>✍️ Metin Konumu:</label><input type="number" id="textX" step="5" style="width:70px;"> X <input type="number" id="textY" step="5" style="width:70px;"> Y
                     <button id="resetTextPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
                     <div><input type="checkbox" id="textShadow"> <label>✨ Metin Gölgesi</label></div>
                 </div>
 
                 <div class="palette-shortcuts">
-                    <div class="compact-palette-btn" data-target="textColor">🎨 Metin Rengi Seç <span class="color-dot" id="textColorDot" style="background:#4a2e6b;"></span></div>
-                    <div class="compact-palette-btn" data-target="bgColor">🖌️ Arka Plan Rengi Seç <span class="color-dot" id="bgColorDot" style="background:#faf5ff;"></span></div>
-                    <div class="compact-palette-btn" data-target="borderOuterColor">📐 Dış Kenar Rengi Seç <span class="color-dot" id="borderOuterDot" style="background:#81778A;"></span></div>
-                    <div class="compact-palette-btn" data-target="borderInnerColor">📐 İç Kenar Rengi Seç <span class="color-dot" id="borderInnerDot" style="background:#D9D6DE;"></span></div>
+                    <div class="compact-palette-btn" data-target="textColor">🎨 Metin Rengi Seç <span class="color-dot" id="textColorDot"></span></div>
+                    <div class="compact-palette-btn" data-target="bgColor">🖌️ Arka Plan Rengi Seç <span class="color-dot" id="bgColorDot"></span></div>
+                    <div class="compact-palette-btn" data-target="borderOuterColor">📐 Dış Kenar Seç <span class="color-dot" id="borderOuterDot"></span></div>
+                    <div class="compact-palette-btn" data-target="borderInnerColor">📐 İç Kenar Seç <span class="color-dot" id="borderInnerDot"></span></div>
                 </div>
 
-                <div class="color-row" style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <div class="color-row" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
                     <label>📐 Dış Kenar:</label><input type="color" id="borderOuterColor" value="#81778A">
@@ -270,13 +241,12 @@
                 </div>
 
                 <div class="custom-hex-row">
-                    <div class="hex-item"><label>🎨 Metin HEX:</label><input type="text" id="customTextHex" maxlength="7" placeholder="#4a2e6b"></div>
-                    <div class="hex-item"><label>🖌️ Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7" placeholder="#faf5ff"></div>
-                    <div class="hex-item"><label>📐 Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7" placeholder="#81778A"></div>
-                    <div class="hex-item"><label>📐 İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7" placeholder="#D9D6DE"></div>
+                    <div class="hex-item"><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7"></div>
+                    <div class="hex-item"><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7"></div>
+                    <div class="hex-item"><label>Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7"></div>
+                    <div class="hex-item"><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7"></div>
                 </div>
 
-                <!-- 280+ SEMBOL PANELİ (TAM LİSTE) -->
                 <div class="symbol-panel" id="symbolPanel"></div>
                 <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
 Hayatın sana hep güzellikler sunsun,
@@ -299,74 +269,47 @@ Nice mutlu yıllara! 🎁
                     <button id="downloadJpgBtn" class="btn-primary btn-secondary">🖼️ JPG İndir</button>
                 </div>
             </div>
-            <div id="alertMsg" class="alert" style="display:none;"></div>
+            <div id="alertMsg" class="alert" style="display:none; background:#efe6ff; padding:10px; border-radius:40px; text-align:center; margin-top:10px;"></div>
         </div>
     </div>
-    <div class="footer">
-        <span>💜 200+ Font | 280+ Sembol (Galatasaray Özel)</span>
-        <span>🎨 Renk Paletleri Pop-up ile Kompakt</span>
-        <span>🦁 Logo Oran Korumalı & Sürükle</span>
-    </div>
+    <div class="footer"><span>💜 200+ Font | 280+ Sembol | SINIRSIZ Logo Boyutlandırma (10px - 2000px)</span></div>
 </div>
 
-<div id="colorPopup" class="color-popup-overlay">
-    <div class="color-popup-card">
-        <div class="popup-header"><span id="popupTitle">Renk Seçici</span><button class="close-popup" id="closePopupBtn">✕</button></div>
-        <div class="popup-color-grid" id="popupColorGrid"></div>
-    </div>
-</div>
+<div id="colorPopup" class="color-popup-overlay"><div class="color-popup-card"><div class="popup-header"><span id="popupTitle">Renk Seçici</span><button class="close-popup" id="closePopupBtn">✕</button></div><div class="popup-color-grid" id="popupColorGrid"></div></div></div>
 
 <script>
-    // ---------- FONTLAR ----------
-    const fontData = [ "Beau Rivage", "Great Vibes", "Dancing Script", "Pacifico", "Lobster", "Satisfy", "Indie Flower", "Caveat", "Amatic SC", "Courgette", "Kaushan Script", "Shadows Into Light", "Tangerine", "Allura", "Parisienne", "Alex Brush", "Cookie", "Handlee", "Kristi", "Yellowtail", "Sacramento", "Merienda", "Gloria Hallelujah", "Pangolin", "Bad Script", "Marck Script", "Pinyon Script", "La Belle Aurore", "Mr De Haviland", "Rouge Script", "Seaweed Script", "Norican", "Rochester", "Birthstone", "Festive", "Love Light", "Moon Dance", "Quintessential", "WindSong", "Water Brush", "Updock", "The Nautigal", "Send Flowers", "Qwitcher Grypen", "Praise", "Meow Script", "Luxurious Roman", "Klee One", "Inspiration", "Gwendolyn", "Gemunu Libre", "Fuggles", "Freehand", "Estonia", "Dongle", "Corinthia", "Comforter Brush", "Cedarville Cursive", "Birthstone Bounce", "Arizonia", "Zeyada", "Yesteryear", "Vibur", "Sofia", "Ruthie", "Qwigley", "Petit Formal Script", "Niconne", "Monsieur La Doulaise", "Miltonian Tattoo", "Meddon", "Loved by the King", "Long Cang", "Liu Jian Mao Cao", "League Script", "Kurale", "Jim Nightshade", "Italianno", "Herr Von Muellerhoff", "Fondamento", "Emilys Candy", "Crafty Girls", "Bilbo", "Averia Gruesa Libre", "Permanent Marker", "Fredoka One", "Righteous", "Bangers", "Comfortaa", "Press Start 2P", "Monoton", "Abril Fatface", "Fjalla One", "Anton", "Oswald", "Bebas Neue", "Luckiest Guy", "Chewy", "Patrick Hand", "Covered By Your Grace", "Rock Salt", "Bungee", "Orbitron", "Exo 2", "Titillium Web", "Josefin Sans", "Audiowide", "Black Ops One", "Poppins", "Roboto", "Open Sans", "Montserrat", "Nunito", "Raleway", "Inter", "Lato", "Mukta", "Work Sans", "DM Sans", "Manrope", "Urbanist", "Lexend", "Figtree", "Quicksand", "Rubik", "Outfit", "Be Vietnam Pro", "Playfair Display", "Lora", "Merriweather", "Cormorant Garamond", "EB Garamond", "Libre Baskerville", "Crimson Pro", "Bitter", "Source Serif 4", "Alegreya", "Volkhov", "Old Standard TT", "PT Serif", "Noto Serif" ];
+    // ---------- TÜM TEMEL ÖZELLİKLER ----------
+    const fontData = ["Beau Rivage","Great Vibes","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif"];
     let currentFont = "Beau Rivage";
     let bgImage = null, overlayImage = null, originalImgW = 1, originalImgH = 1;
     let overlayX = 320, overlayY = 290, overlayWidth = 80, overlayHeight = 80;
     let textPosX = 320, textPosY = 290;
-    let isDraggingOverlay = false, isDraggingText = false;
-    let dragStartX = 0, dragStartY = 0, textDragStartX = 0, textDragStartY = 0;
     let canvasWidth = 640, canvasHeight = 580;
     const canvas = document.getElementById("cardCanvas");
     let ctx = canvas.getContext("2d");
 
-    const colorPaletteFull = ["#4a2e6b","#c084fc","#a855f7","#8b5ccf","#6b48a5","#9b6bdf","#d28eff","#b77bff","#e879f9","#f0a3ff","#c026d3","#d946ef","#f5d0fe","#fae8ff","#f3e8ff","#e9d5ff","#f5a623","#f97316","#ef4444","#dc2626","#b91c1c","#fca5a5","#fecaca","#fff0f0","#10b981","#059669","#047857","#34d399","#a7f3d0","#d1fae5","#f0fdf4","#ecfdf5","#3b82f6","#2563eb","#1d4ed8","#60a5fa","#93c5fd","#bfdbfe","#eff6ff","#e0f2fe","#f59e0b","#d97706","#b45309","#fbbf24","#fde68a","#fef3c7","#fffbeb","#fefce8"];
+    let isDraggingOverlay = false, isResizing = false;
+    let dragStartX = 0, dragStartY = 0;
+    let resizeStartW = 0, resizeStartH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
+    const keepAspectCheck = document.getElementById("keepAspect");
 
+    const colorPaletteFull = ["#4a2e6b","#c084fc","#a855f7","#8b5ccf","#6b48a5","#9b6bdf","#d28eff","#b77bff","#e879f9","#f0a3ff","#c026d3","#d946ef","#f5d0fe","#fae8ff","#f3e8ff","#e9d5ff","#f5a623","#f97316","#ef4444","#dc2626","#b91c1c","#fca5a5","#fecaca","#fff0f0","#10b981","#059669","#047857","#34d399","#a7f3d0","#d1fae5","#f0fdf4","#ecfdf5","#3b82f6","#2563eb","#1d4ed8","#60a5fa","#93c5fd","#bfdbfe","#eff6ff","#e0f2fe","#f59e0b","#d97706","#b45309","#fbbf24","#fde68a","#fef3c7","#fffbeb","#fefce8"];
+    
     // Popup
     let activeColorInputId = "textColor";
-    const popupOverlay = document.getElementById("colorPopup");
-    const popupGrid = document.getElementById("popupColorGrid");
-    const popupTitle = document.getElementById("popupTitle");
-    function openColorPicker(targetInputId, title) {
-        activeColorInputId = targetInputId;
+    const popupOverlay = document.getElementById("colorPopup"), popupGrid = document.getElementById("popupColorGrid"), popupTitle = document.getElementById("popupTitle");
+    function openColorPicker(targetId, title) {
+        activeColorInputId = targetId;
         popupTitle.innerText = title;
         popupGrid.innerHTML = "";
         colorPaletteFull.forEach(col => {
-            const sw = document.createElement("div");
-            sw.className = "popup-swatch";
-            sw.style.backgroundColor = col;
-            sw.onclick = () => {
-                document.getElementById(activeColorInputId).value = col;
-                syncHexFromInputs();
-                drawCard();
-                updateColorDots();
-                showAlert(`${title} seçildi: ${col}`);
-                popupOverlay.classList.remove("active");
-            };
+            let sw = document.createElement("div"); sw.className = "popup-swatch"; sw.style.backgroundColor = col;
+            sw.onclick = () => { document.getElementById(activeColorInputId).value = col; syncHexFromInputs(); drawCard(); updateColorDots(); popupOverlay.classList.remove("active"); showAlert(`${title} seçildi`); };
             popupGrid.appendChild(sw);
         });
         popupOverlay.classList.add("active");
     }
-    document.querySelectorAll(".compact-palette-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const targetId = btn.getAttribute("data-target");
-            let title = "";
-            if(targetId === "textColor") title = "Metin Rengi Seç";
-            else if(targetId === "bgColor") title = "Arka Plan Rengi Seç";
-            else if(targetId === "borderOuterColor") title = "Dış Kenar Rengi Seç";
-            else if(targetId === "borderInnerColor") title = "İç Kenar Rengi Seç";
-            openColorPicker(targetId, title);
-        });
-    });
+    document.querySelectorAll(".compact-palette-btn").forEach(btn => btn.addEventListener("click", () => { let target = btn.getAttribute("data-target"); let t = target==="textColor"?"Metin Rengi":target==="bgColor"?"Arka Plan":target==="borderOuterColor"?"Dış Kenar":"İç Kenar"; openColorPicker(target, t); }));
     document.getElementById("closePopupBtn").addEventListener("click", () => popupOverlay.classList.remove("active"));
     popupOverlay.addEventListener("click", (e) => { if(e.target === popupOverlay) popupOverlay.classList.remove("active"); });
 
@@ -376,95 +319,149 @@ Nice mutlu yıllara! 🎁
         document.getElementById("borderOuterDot").style.backgroundColor = document.getElementById("borderOuterColor").value;
         document.getElementById("borderInnerDot").style.backgroundColor = document.getElementById("borderInnerColor").value;
     }
-
     const textColor = document.getElementById("textColor"), bgColor = document.getElementById("bgColor"), borderOuter = document.getElementById("borderOuterColor"), borderInner = document.getElementById("borderInnerColor");
     const cText = document.getElementById("customTextHex"), cBg = document.getElementById("customBgHex"), cOuter = document.getElementById("customBorderOuterHex"), cInner = document.getElementById("customBorderInnerHex");
     function syncHexFromInputs() { cText.value = textColor.value.toUpperCase(); cBg.value = bgColor.value.toUpperCase(); cOuter.value = borderOuter.value.toUpperCase(); cInner.value = borderInner.value.toUpperCase(); updateColorDots(); }
     function setFromHex(custom, colorInput, name) { let v = custom.value.trim(); if(!v) return; if(!v.startsWith('#')) v = '#' + v; if(/^#[0-9A-Fa-f]{6}$/.test(v) || /^#[0-9A-Fa-f]{3}$/.test(v)) { let norm = v.length===4 ? '#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3] : v.toUpperCase(); colorInput.value = norm; drawCard(); syncHexFromInputs(); showAlert(`${name}: ${norm}`); } else { showAlert(`Geçersiz HEX`); custom.value = colorInput.value.toUpperCase(); } }
-    cText.addEventListener("change",()=>setFromHex(cText,textColor,"Metin"));
-    cBg.addEventListener("change",()=>setFromHex(cBg,bgColor,"Arkaplan"));
-    cOuter.addEventListener("change",()=>setFromHex(cOuter,borderOuter,"Dış Kenar"));
-    cInner.addEventListener("change",()=>setFromHex(cInner,borderInner,"İç Kenar"));
-    textColor.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); });
-    bgColor.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); });
-    borderOuter.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); });
-    borderInner.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); });
-
+    cText.addEventListener("change",()=>setFromHex(cText,textColor,"Metin")); cBg.addEventListener("change",()=>setFromHex(cBg,bgColor,"Arkaplan")); cOuter.addEventListener("change",()=>setFromHex(cOuter,borderOuter,"Dış Kenar")); cInner.addEventListener("change",()=>setFromHex(cInner,borderInner,"İç Kenar"));
+    textColor.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); }); bgColor.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); }); borderOuter.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); }); borderInner.addEventListener("input",()=>{ syncHexFromInputs(); drawCard(); });
+    
     const gradToggle = document.getElementById("gradientToggle"), gradControls = document.getElementById("gradientControls"), gradColor1 = document.getElementById("gradColor1"), gradColor2 = document.getElementById("gradColor2"), gradAngle = document.getElementById("gradAngle");
     gradToggle.addEventListener("change",()=>{gradControls.style.display=gradToggle.checked?"flex":"none"; drawCard();});
     gradColor1.addEventListener("input",drawCard); gradColor2.addEventListener("input",drawCard); gradAngle.addEventListener("change",drawCard);
     const textShadowCheck = document.getElementById("textShadow");
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
     function wrapText(ctx, text, maxWidth) { let lines = [], paragraphs = text.split("\n"); for(let p of paragraphs) { if(p==="") { lines.push(""); continue; } let words = p.split(" "); let current = ""; for(let w of words) { let test = current + (current?" ":"") + w; if(ctx.measureText(test).width > maxWidth && current) { lines.push(current); current = w; } else current = test; } if(current) lines.push(current); } return lines; }
-    function drawCard() { if(!ctx) return; canvas.width = canvasWidth; canvas.height = canvasHeight; ctx.clearRect(0,0,canvasWidth,canvasHeight); const radius = 30; if(bgImage) { ctx.save(); roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); ctx.clip(); ctx.drawImage(bgImage,0,0,canvasWidth,canvasHeight); ctx.restore(); } else { if(gradToggle.checked) { let angle = parseInt(gradAngle.value); let rad = angle * Math.PI/180; let x1 = Math.cos(rad)*0.5+0.5, y1 = Math.sin(rad)*0.5+0.5; let grad = ctx.createLinearGradient(x1*canvasWidth, y1*canvasHeight, (1-x1)*canvasWidth, (1-y1)*canvasHeight); grad.addColorStop(0, gradColor1.value); grad.addColorStop(1, gradColor2.value); ctx.fillStyle = grad; } else { ctx.fillStyle = bgColor.value; } roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); ctx.fill(); } let bw = parseInt(document.getElementById("borderWidth").value); roundedRect(ctx,6,6,canvasWidth-12,canvasHeight-12,radius-4); ctx.strokeStyle = borderOuter.value; ctx.lineWidth = bw; ctx.stroke(); roundedRect(ctx,14,14,canvasWidth-28,canvasHeight-28,radius-8); ctx.strokeStyle = borderInner.value; ctx.lineWidth = bw*0.6; ctx.stroke(); if(overlayImage) { let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; ctx.drawImage(overlayImage, dx, dy, overlayWidth, overlayHeight); } let raw = document.getElementById("cardText").value; if(raw.trim()) { let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; ctx.font = `${fontWeight} ${fontSize}px '${currentFont}', cursive`; ctx.fillStyle = textColor.value; ctx.textAlign = align; if(textShadowCheck.checked) { ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 4; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; } else ctx.shadowColor = "transparent"; let maxW = canvasWidth - 80, lines = wrapText(ctx, raw, maxW), lineH = fontSize * 1.35, totalH = lines.length * lineH; let startX = textPosX, startY = textPosY - totalH/2; if(align === "center") startX = textPosX; else if(align === "left") startX = textPosX - maxW/2; else startX = textPosX + maxW/2; for(let i=0; i<lines.length; i++) ctx.fillText(lines[i], startX, startY + i*lineH); ctx.shadowColor = "transparent"; } }
-    function applySize() { canvasWidth = parseInt(document.getElementById("cardWidth").value); canvasHeight = parseInt(document.getElementById("cardHeight").value); document.getElementById("widthVal").innerText = canvasWidth+"px"; document.getElementById("heightVal").innerText = canvasHeight+"px"; overlayX = Math.min(Math.max(overlayX,30),canvasWidth-30); overlayY = Math.min(Math.max(overlayY,30),canvasHeight-30); textPosX = Math.min(Math.max(textPosX,50),canvasWidth-50); textPosY = Math.min(Math.max(textPosY,40),canvasHeight-40); document.getElementById("logoX").value = overlayX; document.getElementById("logoY").value = overlayY; document.getElementById("textX").value = textPosX; document.getElementById("textY").value = textPosY; drawCard(); }
-    const keepAspect = document.getElementById("keepAspect"), logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight"); function updateLogoSizeFromWidth(w) { if(keepAspect.checked && originalImgW>0 && originalImgH>0) { let newH = Math.round(w * (originalImgH/originalImgW)); newH = Math.min(Math.max(newH,20),300); overlayWidth = w; overlayHeight = newH; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayWidth = w; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); } function updateLogoSizeFromHeight(h) { if(keepAspect.checked && originalImgW>0 && originalImgH>0) { let newW = Math.round(h * (originalImgW/originalImgH)); newW = Math.min(Math.max(newW,20),300); overlayHeight = h; overlayWidth = newW; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayHeight = h; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); } logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
-    function getMouseCoord(e) { const rect = canvas.getBoundingClientRect(); const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height; let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else { cx=e.clientX; cy=e.clientY; } return { mx: Math.min(Math.max((cx - rect.left)*scaleX,0), canvas.width), my: Math.min(Math.max((cy - rect.top)*scaleY,0), canvas.height) }; }
-    function onMouseDown(e) { let {mx,my} = getMouseCoord(e); if(overlayImage) { let hw = overlayWidth/2, hh = overlayHeight/2; if(mx>=overlayX-hw-20 && mx<=overlayX+hw+20 && my>=overlayY-hh-20 && my<=overlayY+hh+20) { isDraggingOverlay = true; dragStartX = mx - overlayX; dragStartY = my - overlayY; canvas.style.cursor = "grabbing"; return; } } let fontSize = parseInt(document.getElementById("fontSize").value); ctx.font = `${fontSize}px '${currentFont}', cursive`; let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { isDraggingText = true; textDragStartX = mx - textPosX; textDragStartY = my - textPosY; canvas.style.cursor = "grabbing"; } }
-    function onMouseMove(e) { if(!isDraggingOverlay && !isDraggingText) return; let {mx,my} = getMouseCoord(e); if(isDraggingOverlay && overlayImage) { let nx = Math.min(Math.max(mx - dragStartX,30), canvas.width-30), ny = Math.min(Math.max(my - dragStartY,30), canvas.height-30); overlayX = nx; overlayY = ny; document.getElementById("logoX").value = Math.round(overlayX); document.getElementById("logoY").value = Math.round(overlayY); drawCard(); } else if(isDraggingText) { let nx = Math.min(Math.max(mx - textDragStartX,50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY,40), canvas.height-40); textPosX = nx; textPosY = ny; document.getElementById("textX").value = Math.round(textPosX); document.getElementById("textY").value = Math.round(textPosY); drawCard(); } }
-    function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; canvas.style.cursor="default"; }
+    function drawCard() { if(!ctx) return; canvas.width = canvasWidth; canvas.height = canvasHeight; ctx.clearRect(0,0,canvasWidth,canvasHeight); const radius = 30; if(bgImage) { ctx.save(); roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); ctx.clip(); ctx.drawImage(bgImage,0,0,canvasWidth,canvasHeight); ctx.restore(); } else { if(gradToggle.checked) { let angle = parseInt(gradAngle.value), rad = angle*Math.PI/180, x1 = Math.cos(rad)*0.5+0.5, y1 = Math.sin(rad)*0.5+0.5; let grad = ctx.createLinearGradient(x1*canvasWidth, y1*canvasHeight, (1-x1)*canvasWidth, (1-y1)*canvasHeight); grad.addColorStop(0, gradColor1.value); grad.addColorStop(1, gradColor2.value); ctx.fillStyle = grad; } else { ctx.fillStyle = bgColor.value; } roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); ctx.fill(); } let bw = parseInt(document.getElementById("borderWidth").value); roundedRect(ctx,6,6,canvasWidth-12,canvasHeight-12,radius-4); ctx.strokeStyle = borderOuter.value; ctx.lineWidth = bw; ctx.stroke(); roundedRect(ctx,14,14,canvasWidth-28,canvasHeight-28,radius-8); ctx.strokeStyle = borderInner.value; ctx.lineWidth = bw*0.6; ctx.stroke(); if(overlayImage) { let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; ctx.drawImage(overlayImage, dx, dy, overlayWidth, overlayHeight); } let raw = document.getElementById("cardText").value; if(raw.trim()) { let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; ctx.font = `${fontWeight} ${fontSize}px '${currentFont}', cursive`; ctx.fillStyle = textColor.value; ctx.textAlign = align; if(textShadowCheck.checked) { ctx.shadowColor = "rgba(0,0,0,0.3)"; ctx.shadowBlur = 4; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; } else ctx.shadowColor = "transparent"; let maxW = canvasWidth - 80, lines = wrapText(ctx, raw, maxW), lineH = fontSize * 1.35, totalH = lines.length * lineH; let startX = textPosX, startY = textPosY - totalH/2; if(align === "center") startX = textPosX; else if(align === "left") startX = textPosX - maxW/2; else startX = textPosX + maxW/2; for(let i=0; i<lines.length; i++) ctx.fillText(lines[i], startX, startY + i*lineH); ctx.shadowColor = "transparent"; } updateResizeHandlePosition(); }
+    
+    function updateResizeHandlePosition() {
+        const handle = document.getElementById("resizeHandle");
+        if(!overlayImage) { handle.style.display = "none"; return; }
+        handle.style.display = "block";
+        const canvasRect = canvas.getBoundingClientRect();
+        const containerRect = document.getElementById("canvasContainer").getBoundingClientRect();
+        const logoRightX = overlayX + overlayWidth/2;
+        const logoBottomY = overlayY + overlayHeight/2;
+        const handleX = canvasRect.left + (logoRightX * (canvasRect.width/canvas.width)) - 12;
+        const handleY = canvasRect.top + (logoBottomY * (canvasRect.height/canvas.height)) - 12;
+        handle.style.left = (handleX - containerRect.left) + "px";
+        handle.style.top = (handleY - containerRect.top) + "px";
+    }
+    
+    function applySize() { canvasWidth = parseInt(document.getElementById("cardWidth").value); canvasHeight = parseInt(document.getElementById("cardHeight").value); document.getElementById("widthVal").innerText = canvasWidth+"px"; document.getElementById("heightVal").innerText = canvasHeight+"px"; overlayX = Math.min(Math.max(overlayX,30),canvasWidth-30); overlayY = Math.min(Math.max(overlayY,30),canvasHeight-30); textPosX = Math.min(Math.max(textPosX,50),canvasWidth-50); textPosY = Math.min(Math.max(textPosY,40),canvasHeight-40); document.getElementById("logoX").value = Math.round(overlayX); document.getElementById("logoY").value = Math.round(overlayY); document.getElementById("textX").value = Math.round(textPosX); document.getElementById("textY").value = Math.round(textPosY); drawCard(); }
+    const logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight");
+    function updateLogoSizeFromWidth(w) { if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { let newH = Math.round(w * (originalImgH/originalImgW)); newH = Math.min(Math.max(newH, 10), 2000); overlayWidth = w; overlayHeight = newH; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayWidth = w; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); }
+    function updateLogoSizeFromHeight(h) { if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { let newW = Math.round(h * (originalImgW/originalImgH)); newW = Math.min(Math.max(newW, 10), 2000); overlayHeight = h; overlayWidth = newW; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayHeight = h; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); }
+    logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
+    
+    const resizeHandle = document.getElementById("resizeHandle");
+    function getMouseCoordCanvas(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else { cx=e.clientX; cy=e.clientY; }
+        return { mx: (cx - rect.left) * scaleX, my: (cy - rect.top) * scaleY };
+    }
+    function isOverResizeHandle(e) {
+        if(!overlayImage) return false;
+        const rect = resizeHandle.getBoundingClientRect();
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
+        return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
+    }
+    function onMouseDown(e) {
+        if(isOverResizeHandle(e)) { 
+            isResizing = true; 
+            resizeStartW = overlayWidth; 
+            resizeStartH = overlayHeight; 
+            let {mx,my} = getMouseCoordCanvas(e); 
+            resizeStartMouseX = mx; 
+            resizeStartMouseY = my; 
+            canvas.style.cursor = "nw-resize"; 
+            e.preventDefault(); 
+            return; 
+        }
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(overlayImage) { 
+            let left = overlayX - overlayWidth/2, right = overlayX + overlayWidth/2, top = overlayY - overlayHeight/2, bottom = overlayY + overlayHeight/2; 
+            if(mx>=left-15 && mx<=right+15 && my>=top-15 && my<=bottom+15) { 
+                isDraggingOverlay = true; 
+                dragStartX = mx - overlayX; 
+                dragStartY = my - overlayY; 
+                canvas.style.cursor = "grabbing"; 
+                e.preventDefault(); 
+                return; 
+            } 
+        }
+        let fontSize = parseInt(document.getElementById("fontSize").value); ctx.font = `${fontSize}px '${currentFont}', cursive`; let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { isDraggingText = true; textDragStartX = mx - textPosX; textDragStartY = my - textPosY; canvas.style.cursor = "grabbing"; }
+    }
+    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
+    function onMouseMove(e) {
+        if(isResizing && overlayImage) {
+            let {mx,my} = getMouseCoordCanvas(e); let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
+            let newW = Math.min(Math.max(resizeStartW + deltaX, 10), 2000); 
+            let newH = Math.min(Math.max(resizeStartH + deltaY, 10), 2000);
+            if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+                let ratio = originalImgW/originalImgH; 
+                newH = newW / ratio; 
+                if(newH<10) { newH = 10; newW = newH * ratio; } 
+                if(newH>2000) { newH = 2000; newW = newH * ratio; } 
+                if(newW<10) { newW = 10; newH = newW / ratio; } 
+                if(newW>2000) { newW = 2000; newH = newW / ratio; } 
+            }
+            overlayWidth = Math.min(Math.max(newW,10),2000); 
+            overlayHeight = Math.min(Math.max(newH,10),2000); 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+            document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+            document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
+            drawCard(); 
+            return;
+        }
+        if(!isDraggingOverlay && !isDraggingText) return;
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(isDraggingOverlay && overlayImage) { 
+            let nx = Math.min(Math.max(mx - dragStartX, 20), canvas.width-20), ny = Math.min(Math.max(my - dragStartY, 20), canvas.height-20); 
+            overlayX = nx; overlayY = ny; 
+            document.getElementById("logoX").value = Math.round(overlayX); 
+            document.getElementById("logoY").value = Math.round(overlayY); 
+            drawCard(); 
+        }
+        else if(isDraggingText) { 
+            let nx = Math.min(Math.max(mx - textDragStartX, 50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY, 40), canvas.height-40); 
+            textPosX = nx; textPosY = ny; 
+            document.getElementById("textX").value = Math.round(textPosX); 
+            document.getElementById("textY").value = Math.round(textPosY); 
+            drawCard(); 
+        }
+    }
+    function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
     canvas.addEventListener("mousedown",onMouseDown); window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); canvas.addEventListener("touchstart",onMouseDown); window.addEventListener("touchmove",onMouseMove); window.addEventListener("touchend",onMouseUp);
+    
     document.getElementById("cardWidth").addEventListener("input",applySize); document.getElementById("cardHeight").addEventListener("input",applySize); document.getElementById("applySizeBtn").addEventListener("click",applySize);
     document.getElementById("logoX").addEventListener("input",(e)=>{overlayX=parseInt(e.target.value); drawCard();}); document.getElementById("logoY").addEventListener("input",(e)=>{overlayY=parseInt(e.target.value); drawCard();}); document.getElementById("resetLogoPosBtn").addEventListener("click",()=>{overlayX=canvasWidth/2; overlayY=canvasHeight/2; document.getElementById("logoX").value=overlayX; document.getElementById("logoY").value=overlayY; drawCard(); showAlert("Logo konumu sıfırlandı");});
-    document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{if(overlayImage && originalImgW){ let base=80; let asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),20),300); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard();} else {overlayWidth=80; overlayHeight=80; logoWSlider.value=80; logoHSlider.value=80; drawCard();} showAlert("Logo boyutu sıfırlandı");});
+    document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{if(overlayImage && originalImgW){ let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard();} else {overlayWidth=80; overlayHeight=80; logoWSlider.value=80; logoHSlider.value=80; drawCard();} showAlert("Logo boyutu sıfırlandı (80px)");});
     document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();}); document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();}); document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
     document.getElementById("cardText").addEventListener("input",drawCard); document.getElementById("fontSize").addEventListener("input",drawCard); document.getElementById("fontWeight").addEventListener("change",drawCard); document.getElementById("textAlign").addEventListener("change",drawCard); document.getElementById("borderWidth").addEventListener("input",drawCard); document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");}); textShadowCheck.addEventListener("change",drawCard);
     function downloadImage(format) { let link = document.createElement("a"); link.download = format==="png"?"kutlama_karti.png":"kutlama_karti.jpg"; link.href = canvas.toDataURL(format==="png"?"image/png":"image/jpeg",0.95); link.click(); showAlert(`${format.toUpperCase()} indirildi!`); }
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
     function loadBg(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
-    function loadOverlay(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80; let asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),20),300); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
+    function loadOverlay(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi - SINIRSIZ boyutlandırma için köşedeki tutamacı kullanın!");}; img.src=e.target.result;}; r.readAsDataURL(file);}
     const dropZone=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); dropZone.addEventListener("click",()=>bgInput.click()); dropZone.addEventListener("dragover",e=>{e.preventDefault(); dropZone.classList.add("dragover");}); dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("dragover")); dropZone.addEventListener("drop",e=>{e.preventDefault(); dropZone.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
     const overlayDrop=document.getElementById("overlayDropZone"), overlayInput=document.getElementById("overlayImageInput"); overlayDrop.addEventListener("click",()=>overlayInput.click()); overlayDrop.addEventListener("dragover",e=>{e.preventDefault(); overlayDrop.classList.add("dragover");}); overlayDrop.addEventListener("dragleave",()=>overlayDrop.classList.remove("dragover")); overlayDrop.addEventListener("drop",e=>{e.preventDefault(); overlayDrop.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadOverlay(e.dataTransfer.files[0]);}); overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);}); document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
     function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,"+")}:wght@300;400;600;700&display=swap`; document.head.appendChild(l);});} preloadFonts();
     function renderFontList() { let term=document.getElementById("searchInput").value.toLowerCase(); let cont=document.getElementById("fontList"); cont.innerHTML=""; fontData.forEach(f=>{if(term && !f.toLowerCase().includes(term)) return; let div=document.createElement("div"); div.className="font-item"; div.onclick=()=>{currentFont=f; drawCard(); showAlert(`Font: ${f}`);}; div.innerHTML=`<span class="font-name" style="font-family: '${f}', cursive;">${f}</span><span class="font-badge">🖊️</span>`; cont.appendChild(div);});}
     document.getElementById("searchInput").addEventListener("input",renderFontList);
-
-    // ========== 280+ TAM SEMBOL LİSTESİ (ESKİ ZENGİNLİK + GALATASARAY ÖZEL) ==========
-    const symbols = [
-        "⭐","✨","🌟","💫","⚡","🔥","💥","✨","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","🌟","💢",
-        "❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟",
-        "🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️",
-        "🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄",
-        "🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹",
-        "🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦",
-        "🇹🇷","🇺🇸","🇬🇧","🇫🇷","🇩🇪","🇮🇹","🇪🇸","🇵🇹","🇳🇱","🇧🇪","🇨🇭","🇦🇹","🇸🇪","🇳🇴","🇩🇰",
-        "🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳",
-        "🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯",
-        "🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀",
-        "👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🧑","🤝","✋","🖐️","👋","🤚","🖖","👌",
-        "🎄","🎃","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎉","🎊","🥳","🎂","🎈",
-        "🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","🎤","🎧","📱",
-        "☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈",
-        "🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","🕊️","⛪","🕌","🕍","🕋","☸️","✡️","☯️","☦️","🕉️",
-        "💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄",
-        "💛","❤️","🧡","💛❤️","❤️💛","💛🧡","🧡💛","💛🔥","❤️🔥","💛⭐","❤️⭐","💛🏆","❤️🏆","🟡","🔴","🟡🔴","🔴🟡","🟡❤️","🔴💛",
-        "GS","G💛❤️S","Cimbom","Galatasaray","Aslan","🦁","🦁⭐","🦁🏆","🦁💛❤️","🏆⭐","🏆💛❤️","⭐🏆","🥇💛","🥇❤️","🏅💛","🏅❤️",
-        "📣💛❤️","🎺💛","🥁❤️","🧣💛❤️","🧤💛","⚽💛❤️","🥅💛","🚩💛","🚩❤️","🎌💛❤️","💛❤️","💛💛❤️❤️","💛❤️💛❤️","❤️💛❤️💛","💛🧡❤️","❤️🧡💛",
-        "🦁⭐","⭐🦁","🦁🏆⭐","⭐🏆🦁","🏆💛","🏆❤️","🏆💛❤️","🥇💛❤️","🎖️💛","🎖️❤️"
-    ]; // Toplam 280+ ikon
-
-    const symPanel = document.getElementById("symbolPanel");
-    symPanel.innerHTML = '<span style="font-size:12px; font-weight:600; color:#b77bff;">✨ 280+ Sembol (Galatasaray özel ikonlar dahil): </span>';
-    symbols.forEach(sym => {
-        const btn = document.createElement("button");
-        btn.className = "symbol-btn";
-        btn.textContent = sym;
-        btn.title = "Karta eklemek için tıklayın";
-        btn.onclick = () => {
-            const ta = document.getElementById("cardText");
-            ta.value += sym;
-            drawCard();
-            showAlert(`✨ "${sym}" eklendi`);
-        };
-        symPanel.appendChild(btn);
-    });
-
-    function showAlert(msg) { let a=document.getElementById("alertMsg"); a.textContent=msg; a.style.display="block"; setTimeout(()=>a.style.display="none",2000);}
+    
+    // 280+ SEMBOL (Sadece Türk Bayrağı kalacak, diğer bayraklar yok)
+    const symbols = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🧑","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄","💛❤️","GS","G💛❤️S","Cimbom","Galatasaray","Aslan","🦁","🦁⭐","🦁🏆","🦁💛❤️","🏆⭐","🥇💛","🥇❤️","🏅💛","🏅❤️","📣💛❤️","🎺💛","🥁❤️","🧣💛❤️","⚽💛❤️","🚩💛","🚩❤️","🎌💛❤️","💛💛❤️❤️","💛❤️💛❤️","❤️💛❤️💛","🦁⭐","⭐🦁","🦁🏆⭐","⭐🏆🦁","🏆💛","🏆❤️","🥇💛❤️","🎖️💛","🎖️❤️"];
+    
+    const symPanel = document.getElementById("symbolPanel"); symPanel.innerHTML = '<span style="font-size:12px; font-weight:600;">✨ 280+ Sembol (Sadece 🇹🇷 Türk Bayrağı): </span>'; symbols.forEach(sym => { const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym; btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert(`✨ "${sym}" eklendi`); }; symPanel.appendChild(btn); });
+    function showAlert(msg) { let a=document.getElementById("alertMsg"); a.textContent=msg; a.style.display="block"; setTimeout(()=>a.style.display="none",3000);}
     renderFontList(); syncHexFromInputs(); applySize(); updateColorDots();
-    const panelHeader = document.getElementById("fontPanelHeader"); const panelContent = document.getElementById("fontPanelContent");
+    const panelHeader = document.getElementById("fontPanelHeader"), panelContent = document.getElementById("fontPanelContent");
     panelHeader.addEventListener("click", () => { panelContent.classList.toggle("open"); panelHeader.classList.toggle("open"); });
     panelContent.classList.remove("open"); panelHeader.classList.remove("open");
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard,200);
+    window.addEventListener("resize", () => { drawCard(); });
 </script>
 </body>
 </html>
