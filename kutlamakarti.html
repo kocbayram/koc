@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu Ultimate | Yuvarlak Köşe + Gradien + Boyut</title>
+    <title>Kutlama Kartı Stüdyosu Ultimate</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -26,17 +26,17 @@
             border: 1px solid rgba(200, 180, 255, 0.5);
         }
 
-        .header { text-align: center; margin-bottom: 28px; }
-        .icon { width: 80px; height: 80px; background: linear-gradient(145deg, #e9dcff, #dbc9ff); border-radius: 32px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .icon svg { width: 42px; height: 42px; stroke: #9b6bdf; stroke-width: 1.5; fill: none; }
-        h1 { font-size: 36px; font-weight: 800; background: linear-gradient(125deg, #b87eff, #a755f7, #c28bff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glowMove 8s ease infinite; letter-spacing: -0.3px; }
+        .header { text-align: center; margin-bottom: 12px; } /* Daraltıldı */
+        .icon { width: 70px; height: 70px; background: linear-gradient(145deg, #e9dcff, #dbc9ff); border-radius: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .icon svg { width: 36px; height: 36px; stroke: #9b6bdf; stroke-width: 1.5; fill: none; }
+        h1 { font-size: 30px; font-weight: 800; background: linear-gradient(125deg, #b87eff, #a755f7, #c28bff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glowMove 8s ease infinite; letter-spacing: -0.2px; line-height: 1.2; }
         @keyframes glowMove { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-        .sub { color: #a07ad2; font-size: 14px; background: rgba(215, 190, 255, 0.4); display: inline-block; padding: 6px 24px; border-radius: 60px; backdrop-filter: blur(4px); }
+        .sub { color: #a07ad2; font-size: 13px; background: rgba(215, 190, 255, 0.4); display: inline-block; padding: 4px 20px; border-radius: 60px; backdrop-filter: blur(4px); }
 
         .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
         .column { flex: 1; min-width: 280px; }
 
-        .search-box { width: 100%; padding: 12px 20px; border-radius: 50px; border: 2px solid #eeddff; background: white; font-size: 14px; margin-bottom: 16px; transition: 0.2s; }
+        .search-box { width: 100%; padding: 12px 20px; border-radius: 50px; border: 2px solid #eeddff; background: white; font-size: 14px; margin-top: 20px; margin-bottom: 16px; transition: 0.2s; } /* margin-top eklendi */
         .search-box:focus { border-color: #c084fc; outline: none; box-shadow: 0 0 0 3px rgba(192,132,252,0.2); }
 
         .font-list { background: #fffdf9; border-radius: 32px; border: 1px solid #f3e5d5; height: 520px; overflow-y: auto; padding: 12px; }
@@ -72,11 +72,12 @@
         .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; }
         .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); filter: brightness(1.02); }
 
-        .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; max-height: 110px; overflow-y: auto; }
-        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 7px 16px; font-size: 18px; cursor: pointer; transition: 0.2s; }
+        .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; max-height: 180px; overflow-y: auto; border: 1px solid #f5e0c0; }
+        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .symbol-btn:hover { background: #ffe0b5; transform: scale(1.05); }
 
-        textarea { font-family: inherit; resize: vertical; width: 100%; padding: 16px; border-radius: 28px; border: 2px solid #eeddff; margin: 12px 0; font-size: 15px; line-height: 1.5; min-height: 170px; background: white; }
+        /* Metin alanı yüksekliği artırıldı */
+        textarea { font-family: inherit; resize: vertical; width: 100%; padding: 16px; border-radius: 28px; border: 2px solid #eeddff; margin: 12px 0; font-size: 15px; line-height: 1.5; min-height: 300px; background: white; }
 
         .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; border: 1px solid #eeddff; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
         .hex-item { display: flex; align-items: center; gap: 8px; background: white; padding: 6px 14px; border-radius: 44px; border: 1px solid #eeddff; flex: 1; min-width: 160px; }
@@ -90,7 +91,7 @@
         .alert { padding: 12px 20px; border-radius: 40px; margin: 14px 0; display: none; font-size: 12px; background: #efe6ff; color: #6b48a5; text-align: center; }
         .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid #eeddff; }
 
-        @media (max-width: 800px) { .glass-ultimate { padding: 20px; } h1 { font-size: 28px; } .two-columns { flex-direction: column; } .color-palette-grid { grid-template-columns: repeat(8,1fr); } }
+        @media (max-width: 800px) { .glass-ultimate { padding: 20px; } h1 { font-size: 26px; } .two-columns { flex-direction: column; } .color-palette-grid { grid-template-columns: repeat(8,1fr); } .symbol-btn { font-size: 18px; padding: 4px 10px; } }
     </style>
 </head>
 <body>
@@ -98,7 +99,6 @@
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
         <h1>🎈 Kutlama Kartı Stüdyosu Ultimate</h1>
-        <div class="sub">✨ Yuvarlak Köşe • Gradien • Boyut Özgürlüğü • Metin Gölgesi</div>
     </div>
 
     <div class="two-columns">
@@ -115,9 +115,9 @@
 
                 <div class="dimension-slider">
                     <label>📐 Kart Genişliği:</label>
-                    <input type="range" id="cardWidth" min="400" max="1000" value="550" step="10"> <span id="widthVal">550px</span>
+                    <input type="range" id="cardWidth" min="400" max="1000" value="640" step="10"> <span id="widthVal">640px</span>
                     <label>📏 Kart Yüksekliği:</label>
-                    <input type="range" id="cardHeight" min="400" max="1000" value="500" step="10"> <span id="heightVal">500px</span>
+                    <input type="range" id="cardHeight" min="400" max="1000" value="580" step="10"> <span id="heightVal">580px</span>
                     <button id="applySizeBtn" class="btn-secondary" style="padding:4px 12px;">Uygula</button>
                 </div>
 
@@ -130,7 +130,6 @@
                     <button id="clearBgBtn" class="btn-secondary" style="padding:6px 12px;">🗑️ Arka Planı Kaldır</button>
                 </div>
 
-                <!-- Gradien Aktif kutusu varsayılan olarak işaretli ve kontroller görünür -->
                 <div class="position-control" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <label>🌈 Gradien Aktif:</label>
                     <input type="checkbox" id="gradientToggle" checked>
@@ -174,11 +173,16 @@
                     <div style="margin-top: 6px;"><input type="checkbox" id="textShadow"> <label>✨ Metin Gölgesi (ince gölge)</label></div>
                 </div>
 
+                <!-- DEVASA SEMBOL PANELİ - 280+ ikon (Galatasaray özel eklendi) -->
                 <div class="symbol-panel" id="symbolPanel"></div>
-                <textarea id="cardText" rows="4">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
+                
+                <!-- Metin alanı satır sayısı 10 yapıldı, yükseklik artırıldı -->
+                <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
 Hayatın sana hep güzellikler sunsun,
 Her yeni gün umut ve neşe getirsin.
-Doğum günün kutlu olsun. 🎁
+Doğum günün kutlu olsun. 
+
+Nice mutlu yıllara! 🎁
 
 💝 Sevgilerle, Bayram Koç 💝</textarea>
 
@@ -196,8 +200,8 @@ Doğum günün kutlu olsun. 🎁
                 <div class="color-row" style="margin-top: 10px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
-                    <label>📐 Dış Kenar:</label><input type="color" id="borderOuterColor" value="#b392ac">
-                    <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#d9bfc2">
+                    <label>📐 Dış Kenar:</label><input type="color" id="borderOuterColor" value="#81778A">
+                    <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#D9D6DE">
                     <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="10" value="4" style="width:90px">
                 </div>
 
@@ -219,15 +223,14 @@ Doğum günün kutlu olsun. 🎁
     </div>
     <div class="footer">
         <span>💜 200+ Font (Beau Rivage, Great Vibes ilk sırada)</span>
-        <span>🌈 Gradien + Düz Arkaplan (Gradien varsayılan aktif)</span>
+        <span>🌈 Gradien + Düz Arkaplan</span>
         <span>🦁 Logo Oran Korumalı & Sürükle</span>
-        <span>📐 Kart Boyutu Özelleştir</span>
-        <span>✨ Yuvarlak Köşe (tam oval)</span>
+        <span>📐 Kart Boyutu 640x580 (telefon uyumlu)</span>
     </div>
 </div>
 
 <script>
-    // ---------- EN SEVİLEN FONTLAR İLK SIRADA ----------
+    // ---------- FONTLAR ----------
     const fontData = [
         "Beau Rivage", "Great Vibes", "Dancing Script", "Pacifico", "Lobster", "Satisfy", "Indie Flower", "Caveat", "Amatic SC",
         "Courgette", "Kaushan Script", "Shadows Into Light", "Tangerine", "Allura", "Parisienne", "Alex Brush",
@@ -249,16 +252,16 @@ Doğum günün kutlu olsun. 🎁
         "Cormorant Garamond", "EB Garamond", "Libre Baskerville", "Crimson Pro", "Bitter", "Source Serif 4",
         "Alegreya", "Volkhov", "Old Standard TT", "PT Serif", "Noto Serif"
     ];
-    let currentFont = "Great Vibes";
+    let currentFont = "Beau Rivage";
     let bgImage = null;
     let overlayImage = null;
     let originalImgW = 1, originalImgH = 1;
-    let overlayX = 275, overlayY = 250;
+    let overlayX = 320, overlayY = 290;
     let overlayWidth = 80, overlayHeight = 80;
-    let textPosX = 275, textPosY = 250;
+    let textPosX = 320, textPosY = 290;
     let isDraggingOverlay = false, isDraggingText = false;
     let dragStartX = 0, dragStartY = 0, textDragStartX = 0, textDragStartY = 0;
-    let canvasWidth = 550, canvasHeight = 500;
+    let canvasWidth = 640, canvasHeight = 580;
 
     const canvas = document.getElementById("cardCanvas");
     let ctx = canvas.getContext("2d");
@@ -326,7 +329,7 @@ Doğum günün kutlu olsun. 🎁
     borderOuter.addEventListener("input",()=>{syncHex(); drawCard();});
     borderInner.addEventListener("input",()=>{syncHex(); drawCard();});
 
-    // Gradien (varsayılan aktif)
+    // Gradien
     const gradToggle = document.getElementById("gradientToggle");
     const gradControls = document.getElementById("gradientControls");
     const gradColor1 = document.getElementById("gradColor1");
@@ -338,7 +341,6 @@ Doğum günün kutlu olsun. 🎁
     gradAngle.addEventListener("change",drawCard);
     const textShadowCheck = document.getElementById("textShadow");
 
-    // YUVARLAK ÇİZİM FONKSİYONU (roundedRect)
     function roundedRect(ctx, x, y, w, h, r) {
         ctx.beginPath();
         ctx.moveTo(x+r, y);
@@ -469,7 +471,6 @@ Doğum günün kutlu olsun. 🎁
         drawCard();
     }
 
-    // Logo Oran Koruması
     const keepAspect = document.getElementById("keepAspect");
     const logoWSlider = document.getElementById("logoWidth");
     const logoHSlider = document.getElementById("logoHeight");
@@ -510,7 +511,6 @@ Doğum günün kutlu olsun. 🎁
     logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value)));
     logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
 
-    // Sürükleme işlemleri
     function getMouseCoord(e) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -585,7 +585,6 @@ Doğum günün kutlu olsun. 🎁
     window.addEventListener("touchmove",onMouseMove);
     window.addEventListener("touchend",onMouseUp);
 
-    // UI Elemanları
     document.getElementById("cardWidth").addEventListener("input",applySize);
     document.getElementById("cardHeight").addEventListener("input",applySize);
     document.getElementById("applySizeBtn").addEventListener("click",applySize);
@@ -607,7 +606,6 @@ Doğum günün kutlu olsun. 🎁
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png"));
     document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
 
-    // Resim yükleme
     function loadBg(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
     function loadOverlay(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80; let asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),20),300); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; logoWVal.innerText=overlayWidth+"px"; logoHVal.innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi, oran koruma aktif");}; img.src=e.target.result;}; r.readAsDataURL(file);}
     const dropZone=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput");
@@ -625,20 +623,100 @@ Doğum günün kutlu olsun. 🎁
     overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);});
     document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
 
-    // Font listesi
     function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,"+")}:wght@300;400;600;700&display=swap`; document.head.appendChild(l);});}
     preloadFonts();
     function renderFontList() { let term=document.getElementById("searchInput").value.toLowerCase(); let cont=document.getElementById("fontList"); cont.innerHTML=""; fontData.forEach(f=>{if(term && !f.toLowerCase().includes(term)) return; let div=document.createElement("div"); div.className="font-item"; div.onclick=()=>{currentFont=f; drawCard(); showAlert(`Font: ${f}`);}; div.innerHTML=`<span class="font-name" style="font-family: '${f}', cursive;">${f}</span><span class="font-badge">🖊️</span>`; cont.appendChild(div);});}
     document.getElementById("searchInput").addEventListener("input",renderFontList);
-    const symbols=["⭐","✨","🌟","💛","🎉","🎊","💫","🌸","🌺","🌹","❤️","🧡","💚","💙","💜","🖤","🤍","💎","🎀","🏆","🥇","🥳","🎈","🎁","🌈","☀️","🕊️","🍀","🌻","🌼","🇹🇷","🦁","💛❤️","🎂","🥂","💝"];
-    let symPanel=document.getElementById("symbolPanel");
-    symPanel.innerHTML='<span style="font-size:12px;">✨ Süsleme Ekle: </span>';
-    symbols.forEach(s=>{let btn=document.createElement("button"); btn.className="symbol-btn"; btn.textContent=s; btn.onclick=()=>{let ta=document.getElementById("cardText"); ta.value+=s; drawCard();}; symPanel.appendChild(btn);});
+
+    // ---------- DEVASA SEMBOL LİSTESİ (250+ adet + Galatasaray Özel) ----------
+    const symbols = [
+        // Yıldızlar ve Işıltılar (20)
+        "⭐", "✨", "🌟", "💫", "⚡", "🔥", "💥", "✨", "🌠", "🎇", "🎆", "🔆", "💡", "🔅", "⭐️", "🌙", "☀️", "🌞", "🌟", "💢",
+        // Kalpler ve Sevgi (20)
+        "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟",
+        // Kutlama ve Parti (20)
+        "🎉", "🎊", "🎈", "🎁", "🎀", "🎂", "🍰", "🥳", "🎃", "🎄", "🎍", "🎎", "🎏", "🎐", "🎑", "🎒", "🎓", "🎖️", "🎗️", "🎟️",
+        // Çiçekler ve Doğa (20)
+        "🌸", "🌼", "🌻", "🌺", "🌹", "🌷", "💐", "🍂", "🍃", "🍁", "🌿", "🍀", "🌱", "🌲", "🌳", "🌴", "🌵", "🌾", "🌽", "🍄",
+        // Hayvanlar (20)
+        "🐕", "🐩", "🐈", "🐅", "🐆", "🐎", "🐏", "🐑", "🐐", "🐪", "🐫", "🦙", "🦒", "🐘", "🦏", "🦛", "🐭", "🐁", "🐀", "🐹",
+        // Yiyecek ve İçecek (20)
+        "🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🍅", "🍆", "🥑", "🥦",
+        // Bayraklar ve Ülkeler (15)
+        "🇹🇷", "🇺🇸", "🇬🇧", "🇫🇷", "🇩🇪", "🇮🇹", "🇪🇸", "🇵🇹", "🇳🇱", "🇧🇪", "🇨🇭", "🇦🇹", "🇸🇪", "🇳🇴", "🇩🇰",
+        // Spor ve Başarı (15)
+        "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎳",
+        // Müzik ve Sanat (15)
+        "🎵", "🎶", "🎤", "🎧", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "🎬", "🎨", "🎭", "🎪", "🎯",
+        // Taşıtlar ve Teknoloji (15)
+        "🚗", "🚕", "🚙", "🚌", "🚎", "🏎️", "🚓", "🚑", "🚒", "🚐", "🚚", "🚛", "🚜", "✈️", "🚀",
+        // Aile ve Arkadaşlık (15)
+        "👨‍👩‍👧‍👦", "👪", "💑", "👩‍❤️‍👨", "👭", "👬", "👫", "🧑‍🤝‍🧑", "🤝", "✋", "🖐️", "👋", "🤚", "🖖", "👌",
+        // Özel Günler (15)
+        "🎄", "🎃", "🕎", "✡️", "☦️", "🕉️", "☯️", "🕊️", "🎋", "🎍", "🎉", "🎊", "🥳", "🎂", "🎈",
+        // Eğlence ve Oyunlar (15)
+        "🎮", "🕹️", "🎲", "♠️", "♥️", "♦️", "♣️", "🃏", "🎰", "🎱", "🎯", "🎳", "🎤", "🎧", "📱",
+        // Doğa ve Hava (15)
+        "☀️", "☁️", "⛅", "🌤️", "🌥️", "🌦️", "🌧️", "⛈️", "🌩️", "🌨️", "❄️", "☃️", "⛄", "💧", "🌈",
+        // Sağlık ve Huzur (10)
+        "🧘", "🧘‍♂️", "🧘‍♀️", "🏋️", "🤸", "🧗", "🚴", "🏊", "🧖", "💆",
+        // Dini ve Manevi (10)
+        "🕊️", "⛪", "🕌", "🕍", "🕋", "☸️", "✡️", "☯️", "☦️", "🕉️",
+        // Mücevher ve Lüks (10)
+        "💎", "👑", "💍", "💄", "👠", "👗", "🕶️", "⌚", "📿", "💼",
+        // Ekstra eğlenceliler (15)
+        "🤡", "👻", "👽", "🤖", "🎅", "🧙", "🧚", "🧛", "🧜", "🧞", "🧝", "🦸", "🦹", "🧟", "🦄",
+        
+        // ========== GALATASARAY ÖZEL SEMBOLLER (30+ adet) ==========
+        // Sarı-Kırmızı Kalpler ve Sevgi Sembolleri
+        "💛", "❤️", "🧡", "💛❤️", "❤️💛", "💛🧡", "🧡💛", "💛🔥", "❤️🔥", "💛⭐", "❤️⭐", "💛🏆", "❤️🏆",
+        "🟡", "🔴", "🟡🔴", "🔴🟡", "🟡❤️", "🔴💛",
+        // Galatasaray Özel Yazılar ve Logolar (metin olarak eklenebilir)
+        "GS", "G💛❤️S", "Cimbom", "Galatasaray", "Aslan", "🦁", "🦁⭐", "🦁🏆", "🦁💛❤️",
+        // Şampiyonluk ve Kupa
+        "🏆⭐", "🏆💛❤️", "⭐🏆", "🥇💛", "🥇❤️", "🏅💛", "🏅❤️",
+        // Taraftar ve Tezahürat
+        "📣💛❤️", "🎺💛", "🥁❤️", "🧣💛❤️", "🧤💛", "⚽💛❤️", "🥅💛",
+        // Özel Flama ve Rozet
+        "🚩💛", "🚩❤️", "🎌💛❤️", "💛❤️",
+        // Galatasaray Renkleri ile Kalpler (çoklu)
+        "💛💛❤️❤️", "💛❤️💛❤️", "❤️💛❤️💛", "💛🧡❤️", "❤️🧡💛",
+        // Aslan ve Yıldız
+        "🦁⭐", "⭐🦁", "🦁🏆⭐", "⭐🏆🦁",
+        // Özel Kupa ve Madalya
+        "🏆💛", "🏆❤️", "🏆💛❤️", "🥇💛❤️", "🎖️💛", "🎖️❤️"
+    ];
+    // Toplam 280+ sembol (mevcut + Galatasaray)
+
+    const symPanel = document.getElementById("symbolPanel");
+    symPanel.innerHTML = '<span style="font-size:12px; font-weight:600; color:#b77bff;">✨ 280+ Sembol (kaydırarak keşfedin, Galatasaray özel ikonlar eklendi): </span>';
+    symbols.forEach(sym => {
+        const btn = document.createElement("button");
+        btn.className = "symbol-btn";
+        btn.textContent = sym;
+        btn.title = "Karta eklemek için tıklayın";
+        btn.onclick = () => {
+            const ta = document.getElementById("cardText");
+            ta.value += sym;
+            drawCard();
+            showAlert(`✨ "${sym}" eklendi`);
+        };
+        symPanel.appendChild(btn);
+    });
 
     function showAlert(msg) { let a=document.getElementById("alertMsg"); a.textContent=msg; a.style.display="block"; setTimeout(()=>a.style.display="none",2000);}
     renderFontList();
     syncHex();
     applySize();
+
+    // Fontların tamamen yüklenmesi beklensin
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => {
+            drawCard();
+        });
+    } else {
+        setTimeout(() => drawCard(), 200);
+    }
 </script>
 </body>
 </html>
