@@ -186,7 +186,7 @@
         .custom-collapsible .panel-content input,
         .custom-collapsible .panel-content textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 44px;
             border: 2px solid #eeddff;
             margin: 8px 0;
@@ -252,6 +252,55 @@
         .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #c084fc; text-align: center; }
         .canvas-size-control button { padding: 6px 14px; font-size: 12px; }
         
+        /* Özel font bölümü link düzeni */
+        .font-link-area {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f9f5ff, #f0e8ff);
+            border-radius: 48px;
+            text-align: center;
+            border: 1px solid #e2ceff;
+        }
+        .google-fonts-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            color: #8b5ccf;
+            border: 1px solid #c084fc;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .google-fonts-link:hover {
+            background: #8b5ccf;
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 18px rgba(139, 92, 207, 0.3);
+            border-color: #8b5ccf;
+        }
+        .google-fonts-link svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            transition: all 0.2s;
+        }
+        .info-badge {
+            font-size: 11px;
+            background: #e9deff;
+            border-radius: 30px;
+            padding: 5px 12px;
+            display: inline-block;
+            margin-top: 8px;
+            color: #6b3ea5;
+        }
+        
         @media (max-width: 800px) { .glass-ultimate { padding: 20px; } .popup-color-grid { grid-template-columns: repeat(6,1fr); } }
     </style>
 </head>
@@ -278,10 +327,28 @@
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div class="panel-content" id="customFontPanelContent">
-                    <input type="text" id="customFontUrl" placeholder="Google Fonts URL">
-                    <input type="text" id="customFontName" placeholder="Font Adı">
-                    <button id="addCustomFontBtn" class="btn-secondary" style="width:100%;">➕ Font Ekle</button>
-                    <div style="font-size:11px; color:#8b5ccf; margin-top:6px; text-align:center;">💡 Google Fonts'tan "Embed" linkindeki href kopyalayın</div>
+                    <input type="text" id="customFontUrl" placeholder="Google Fonts URL (örnek: https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap)">
+                    <input type="text" id="customFontName" placeholder="Font Adı (örnek: Roboto)">
+                    <button id="addCustomFontBtn" class="btn-secondary" style="width:100%; margin: 8px 0;">➕ Font Ekle</button>
+                    
+                    <!-- GENİŞLETİLMİŞ VE TIKLANABİLİR URL ALANI -->
+                    <div class="font-link-area">
+                        <a href="https://fonts.google.com" target="_blank" class="google-fonts-link" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                            https://fonts.google.com
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" fill="none">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                        </a>
+                        <div class="info-badge">💡 Tıkla ve Google Fonts'u keşfet → Font URL'sini kopyala & yapıştır</div>
+                    </div>
+                    <div style="font-size:12px; color:#8b5ccf; margin-top:8px; text-align:center;">📌 İpucu: "Get font" butonundan embed linki kopyalayın</div>
                 </div>
             </div>
         </div>
