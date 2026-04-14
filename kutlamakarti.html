@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu</title>
+    <title>Kutlama Kartı Stüdyosu | Ultimate</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -35,7 +35,6 @@
         .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
         .column { flex: 1; min-width: 280px; }
 
-        /* AÇILIR FONT PANELİ */
         .collapsible-panel {
             background: #fffdf9;
             border-radius: 32px;
@@ -67,8 +66,8 @@
         .font-list { padding: 0 12px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
         .font-item { display: flex; justify-content: space-between; padding: 10px 14px; border-radius: 30px; background: white; cursor: pointer; border: 1px solid #f5e6d4; }
         .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #c084fc; }
+        .custom-font-item { background: #f0eaff; border-color: #c084fc; }
 
-        /* POPUP RENK */
         .color-popup-overlay {
             position: fixed;
             top: 0;
@@ -132,15 +131,28 @@
         .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
         .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
         .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; }
-        .btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
+        .btn-success { background: linear-gradient(115deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { transform: translateY(-2px); }
 
         .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; overflow-y: auto; border: 1px solid #f5e0c0; }
-        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; }
+        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: all 0.1s; }
         .symbol-btn:hover { background: #ffe0b5; transform: scale(1.05); }
 
-        textarea { font-family: inherit; resize: vertical; width: 100%; padding: 16px; border-radius: 28px; border: 2px solid #eeddff; margin: 12px 0; font-size: 15px; line-height: 1.5; min-height: 280px; }
+        textarea { 
+            font-family: inherit; 
+            resize: vertical; 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 28px; 
+            border: 2px solid #eeddff; 
+            margin: 12px 0; 
+            font-size: 15px; 
+            line-height: 1.5; 
+            min-height: 280px; 
+        }
+        
         .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
-        .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; }
+        .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
         .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; }
         .resize-handle {
             position: absolute;
@@ -155,6 +167,91 @@
             display: none;
             pointer-events: auto;
         }
+        
+        .custom-collapsible {
+            background: #faf5ff;
+            border-radius: 28px;
+            margin: 16px 0;
+            border: 2px dashed #c084fc;
+            overflow: hidden;
+        }
+        .custom-collapsible .panel-header {
+            background: #faf5ff;
+            border-bottom: none;
+            padding: 12px 18px;
+        }
+        .custom-collapsible .panel-content {
+            padding: 0 16px 16px 16px;
+        }
+        .custom-collapsible .panel-content input,
+        .custom-collapsible .panel-content textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 44px;
+            border: 2px solid #eeddff;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .custom-collapsible .panel-content textarea {
+            font-family: monospace;
+            font-size: 18px;
+            min-height: 80px;
+        }
+        .icon-preview-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 20px;
+            min-height: 50px;
+        }
+        .preview-icon-mini {
+            font-size: 24px;
+            padding: 4px 8px;
+            background: #f5eaff;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .preview-icon-mini:hover { background: #e9d5ff; transform: scale(1.1); }
+        
+        .custom-fonts-list-footer {
+            background: #f0eaff;
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+            border: 1px solid #e2ceff;
+        }
+        .custom-fonts-list-footer span {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 4px 6px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #6b3ea5;
+        }
+        
+        /* KART BOYUTLANDIRMA KONTROLÜ */
+        .canvas-size-control {
+            background: #e9deff;
+            border-radius: 28px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        .canvas-size-control label { font-weight: 600; color: #6b3ea5; font-size: 12px; }
+        .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #c084fc; text-align: center; }
+        .canvas-size-control button { padding: 6px 14px; font-size: 12px; }
+        
         @media (max-width: 800px) { .glass-ultimate { padding: 20px; } .popup-color-grid { grid-template-columns: repeat(6,1fr); } }
     </style>
 </head>
@@ -162,7 +259,7 @@
 <div class="glass-ultimate">
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
-        <h1>🎈 Kutlama Kartı Stüdyosu</h1>
+        <h1>🎈 Kutlama Kartı Stüdyosu | Ultimate</h1>
     </div>
 
     <div class="two-columns">
@@ -174,19 +271,36 @@
                     <div class="font-list" id="fontList"></div>
                 </div>
             </div>
+            
+            <div class="custom-collapsible" id="customFontCollapsible">
+                <div class="panel-header" id="customFontPanelHeader">
+                    <span>➕ Özel Font Ekle (Google Fonts)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="panel-content" id="customFontPanelContent">
+                    <input type="text" id="customFontUrl" placeholder="Google Fonts URL">
+                    <input type="text" id="customFontName" placeholder="Font Adı">
+                    <button id="addCustomFontBtn" class="btn-secondary" style="width:100%;">➕ Font Ekle</button>
+                    <div style="font-size:11px; color:#8b5ccf; margin-top:6px; text-align:center;">💡 Google Fonts'tan "Embed" linkindeki href kopyalayın</div>
+                </div>
+            </div>
         </div>
 
         <div class="column">
             <div class="card-preview">
+                <!-- KART BOYUTLANDIRMA - KONTROLLÜ -->
+                <div class="canvas-size-control">
+                    <label>📐 Kart Genişlik:</label>
+                    <input type="number" id="canvasWidthInput" value="640" step="20" min="400" max="1000">
+                    <label>📏 Kart Yükseklik:</label>
+                    <input type="number" id="canvasHeightInput" value="580" step="20" min="400" max="900">
+                    <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
+                    <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
+                </div>
+
                 <div class="canvas-container" id="canvasContainer">
                     <canvas id="cardCanvas"></canvas>
                     <div id="resizeHandle" class="resize-handle"></div>
-                </div>
-
-                <div style="display: flex; gap: 16px; flex-wrap: wrap; background: #faf5ff; border-radius: 28px; padding: 12px; margin-bottom: 12px;">
-                    <label>📐 Kart Genişliği:</label><input type="range" id="cardWidth" min="400" max="1000" value="640" step="10"> <span id="widthVal">640px</span>
-                    <label>📏 Kart Yüksekliği:</label><input type="range" id="cardHeight" min="400" max="1000" value="580" step="10"> <span id="heightVal">580px</span>
-                    <button id="applySizeBtn" class="btn-secondary" style="padding:4px 12px;">Uygula</button>
                 </div>
 
                 <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
@@ -205,24 +319,28 @@
 
                 <div class="position-control">
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                        <label>🖱️ Logo Konumu: <span style="font-size:11px;">(sürükleyerek taşıyın)</span></label>
+                        <label>🖱️ Logo Konumu:</label>
                         <label>X:</label><input type="number" id="logoX" step="5" style="width:70px;"> 
                         <label>Y:</label><input type="number" id="logoY" step="5" style="width:70px;">
                         <button id="resetLogoPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
                     </div>
                     <div style="margin-top: 12px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                        <label>📏 Genişlik (SINIRSIZ):</label><input type="range" id="logoWidth" min="10" max="2000" value="80" step="2" style="width:180px;"><span id="logoWidthVal">80px</span>
-                        <label>📐 Yükseklik (SINIRSIZ):</label><input type="range" id="logoHeight" min="10" max="2000" value="80" step="2" style="width:180px;"><span id="logoHeightVal">80px</span>
+                        <label>📏 Genişlik:</label><input type="range" id="logoWidth" min="10" max="2000" value="80" step="2" style="width:160px;"><span id="logoWidthVal">80px</span>
+                        <label>📐 Yükseklik:</label><input type="range" id="logoHeight" min="10" max="2000" value="80" step="2" style="width:160px;"><span id="logoHeightVal">80px</span>
                         <label><input type="checkbox" id="keepAspect" checked> 🔒 Oranı Koru</label>
                         <button id="resetLogoSizeBtn" class="btn-secondary" style="padding:4px 12px;">Boyut Sıfırla</button>
                     </div>
-                    <div class="alert" style="font-size:12px; background:#e9deff; margin-top:8px; padding:6px; border-radius:30px; text-align:center;">💡 İpucu: Logonun SAĞ ALT KÖŞESİNDEKİ mor tutamaçtan sürükleyerek SINIRSIZ boyutlandırma yapabilirsiniz! (10px - 2000px)</div>
+                    <div class="info-text" style="margin-top:10px;">💡 İpucu: Logonun SAĞ ALT KÖŞESİNDEKİ mor tutamaçtan sürükleyerek boyutlandırma yapabilirsiniz!</div>
                 </div>
 
                 <div class="position-control">
-                    <label>✍️ Metin Konumu:</label><input type="number" id="textX" step="5" style="width:70px;"> X <input type="number" id="textY" step="5" style="width:70px;"> Y
-                    <button id="resetTextPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
-                    <div><input type="checkbox" id="textShadow"> <label>✨ Metin Gölgesi</label></div>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>✍️ Metin Konumu:</label>
+                        <label>X:</label><input type="number" id="textX" step="5" style="width:70px;">
+                        <label>Y:</label><input type="number" id="textY" step="5" style="width:70px;">
+                        <button id="resetTextPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
+                        <label><input type="checkbox" id="textShadow"> ✨ Metin Gölgesi</label>
+                    </div>
                 </div>
 
                 <div class="palette-shortcuts">
@@ -241,13 +359,29 @@
                 </div>
 
                 <div class="custom-hex-row">
-                    <div class="hex-item"><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7"></div>
-                    <div class="hex-item"><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7"></div>
-                    <div class="hex-item"><label>Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7"></div>
-                    <div class="hex-item"><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7"></div>
+                    <div><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7"></div>
+                    <div><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7"></div>
+                    <div><label>Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7"></div>
+                    <div><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7"></div>
+                </div>
+
+                <div class="custom-collapsible" id="customIconCollapsible">
+                    <div class="panel-header" id="customIconPanelHeader">
+                        <span>🎨 Süsleme İkonu Ekle (Kopyala-Yapıştır)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="panel-content" id="customIconPanelContent">
+                        <textarea id="customIconsInput" rows="2" placeholder="İkonlarınızı buraya yapıştırın...&#10;Örnek: 🌟 🎈 🎉 💝 ⭐ 🦁 🇹🇷"></textarea>
+                        <button id="addCustomIconsBtn" class="btn-primary" style="width:100%; margin-top:8px;">✨ İkonları Denetle & Ekle</button>
+                        <button id="clearCustomIconsBtn" class="btn-secondary" style="width:100%; margin-top:6px;">🗑️ Tüm Özel İkonları Temizle</button>
+                        <div class="icon-preview-mini" id="customIconsPreview">
+                            <span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="symbol-panel" id="symbolPanel"></div>
+                
                 <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
 Hayatın sana hep güzellikler sunsun,
 Her yeni gün umut ve neşe getirsin.
@@ -258,7 +392,7 @@ Nice mutlu yıllara! 🎁
 💝 Sevgilerle, Bayram Koç 💝</textarea>
 
                 <div class="controls">
-                    <input type="number" id="fontSize" value="36" min="12" max="100" step="1">
+                    <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
                     <select id="fontWeight"><option value="300">Light</option><option value="400">Regular</option><option value="600">SemiBold</option><option value="700" selected>Bold</option></select>
                     <select id="textAlign"><option value="center">Merkez</option><option value="left">Sola</option><option value="right">Sağa</option></select>
                 </div>
@@ -266,20 +400,31 @@ Nice mutlu yıllara! 🎁
                 <div class="action-buttons">
                     <button id="clearTextBtn" class="btn-secondary">🧹 Metni Temizle</button>
                     <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
-                    <button id="downloadJpgBtn" class="btn-primary btn-secondary">🖼️ JPG İndir</button>
+                    <button id="downloadJpgBtn" class="btn-secondary">🖼️ JPG İndir</button>
+                    <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir (Özel İkon & Fontlarla)</button>
                 </div>
             </div>
             <div id="alertMsg" class="alert" style="display:none; background:#efe6ff; padding:10px; border-radius:40px; text-align:center; margin-top:10px;"></div>
+            
+            <div class="custom-fonts-list-footer" id="customFontsFooter">
+                <strong>📌 Eklenen Özel Fontlar:</strong>
+                <span id="customFontsListDisplay" style="display:inline-block; background:transparent; padding:0;">Henüz özel font eklenmedi</span>
+            </div>
         </div>
     </div>
-    <div class="footer"><span>💜 200+ Font | 280+ Sembol | SINIRSIZ Logo Boyutlandırma (10px - 2000px)</span></div>
+    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | HTML İndir | 🇹🇷</span></div>
 </div>
 
 <div id="colorPopup" class="color-popup-overlay"><div class="color-popup-card"><div class="popup-header"><span id="popupTitle">Renk Seçici</span><button class="close-popup" id="closePopupBtn">✕</button></div><div class="popup-color-grid" id="popupColorGrid"></div></div></div>
 
 <script>
-    // ---------- TÜM TEMEL ÖZELLİKLER ----------
-    const fontData = ["Beau Rivage","Great Vibes","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif"];
+    let customFontsList = [];
+    let masterSymbolsList = [];
+    
+    const defaultSymbols = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🧑","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄","💛❤️","GS","G💛❤️S","Cimbom","Galatasaray","Aslan","🦁","🦁⭐","🦁🏆","🦁💛❤️","🏆⭐","🥇💛","🥇❤️","🏅💛","🏅❤️","📣💛❤️","🎺💛","🥁❤️","🧣💛❤️","⚽💛❤️","🚩💛","🚩❤️","🎌💛❤️","💛💛❤️❤️","💛❤️💛❤️","❤️💛❤️💛","🦁⭐","⭐🦁","🦁🏆⭐","⭐🏆🦁","🏆💛","🏆❤️","🥇💛❤️🎖️💛","🎖️❤️","⚙️","🛠️","📚","🔑","🔒","🔓","📖","➡️","🌿","☘️","🤵","👧","👨‍👦","👩‍👧","💆","🧿","🤼‍♂️","🤼‍♀️","👨‍👩‍👧","💃","🚶","👨‍👨‍👦‍👦","🎭","🎪","🎨","🎬","📸","📷","🔊","🔔","📌","📍","✂️","🖍️","📝","📏","📐","🖌️","🖼️","🧸"];
+    
+    let fontData = ["Beau Rivage","Great Vibes","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif"];
+    
     let currentFont = "Beau Rivage";
     let bgImage = null, overlayImage = null, originalImgW = 1, originalImgH = 1;
     let overlayX = 320, overlayY = 290, overlayWidth = 80, overlayHeight = 80;
@@ -295,7 +440,6 @@ Nice mutlu yıllara! 🎁
 
     const colorPaletteFull = ["#4a2e6b","#c084fc","#a855f7","#8b5ccf","#6b48a5","#9b6bdf","#d28eff","#b77bff","#e879f9","#f0a3ff","#c026d3","#d946ef","#f5d0fe","#fae8ff","#f3e8ff","#e9d5ff","#f5a623","#f97316","#ef4444","#dc2626","#b91c1c","#fca5a5","#fecaca","#fff0f0","#10b981","#059669","#047857","#34d399","#a7f3d0","#d1fae5","#f0fdf4","#ecfdf5","#3b82f6","#2563eb","#1d4ed8","#60a5fa","#93c5fd","#bfdbfe","#eff6ff","#e0f2fe","#f59e0b","#d97706","#b45309","#fbbf24","#fde68a","#fef3c7","#fffbeb","#fefce8"];
     
-    // Popup
     let activeColorInputId = "textColor";
     const popupOverlay = document.getElementById("colorPopup"), popupGrid = document.getElementById("popupColorGrid"), popupTitle = document.getElementById("popupTitle");
     function openColorPicker(targetId, title) {
@@ -348,7 +492,46 @@ Nice mutlu yıllara! 🎁
         handle.style.top = (handleY - containerRect.top) + "px";
     }
     
-    function applySize() { canvasWidth = parseInt(document.getElementById("cardWidth").value); canvasHeight = parseInt(document.getElementById("cardHeight").value); document.getElementById("widthVal").innerText = canvasWidth+"px"; document.getElementById("heightVal").innerText = canvasHeight+"px"; overlayX = Math.min(Math.max(overlayX,30),canvasWidth-30); overlayY = Math.min(Math.max(overlayY,30),canvasHeight-30); textPosX = Math.min(Math.max(textPosX,50),canvasWidth-50); textPosY = Math.min(Math.max(textPosY,40),canvasHeight-40); document.getElementById("logoX").value = Math.round(overlayX); document.getElementById("logoY").value = Math.round(overlayY); document.getElementById("textX").value = Math.round(textPosX); document.getElementById("textY").value = Math.round(textPosY); drawCard(); }
+    function applyCanvasSize() {
+        let newWidth = parseInt(document.getElementById("canvasWidthInput").value);
+        let newHeight = parseInt(document.getElementById("canvasHeightInput").value);
+        if (isNaN(newWidth)) newWidth = 640;
+        if (isNaN(newHeight)) newHeight = 580;
+        newWidth = Math.min(Math.max(newWidth, 400), 1000);
+        newHeight = Math.min(Math.max(newHeight, 400), 900);
+        canvasWidth = newWidth;
+        canvasHeight = newHeight;
+        document.getElementById("canvasWidthInput").value = canvasWidth;
+        document.getElementById("canvasHeightInput").value = canvasHeight;
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        drawCard();
+        showAlert(`Kart boyutu ${canvasWidth}x${canvasHeight} olarak değiştirildi`);
+    }
+    
+    function resetCanvasSize() {
+        canvasWidth = 640;
+        canvasHeight = 580;
+        document.getElementById("canvasWidthInput").value = 640;
+        document.getElementById("canvasHeightInput").value = 580;
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        drawCard();
+        showAlert("Kart boyutu varsayılana (640x580) sıfırlandı");
+    }
+    
     const logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight");
     function updateLogoSizeFromWidth(w) { if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { let newH = Math.round(w * (originalImgH/originalImgW)); newH = Math.min(Math.max(newH, 10), 2000); overlayWidth = w; overlayHeight = newH; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayWidth = w; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); }
     function updateLogoSizeFromHeight(h) { if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { let newW = Math.round(h * (originalImgW/originalImgH)); newW = Math.min(Math.max(newW, 10), 2000); overlayHeight = h; overlayWidth = newW; logoWSlider.value = overlayWidth; logoHSlider.value = overlayHeight; } else { overlayHeight = h; } document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; drawCard(); }
@@ -436,31 +619,149 @@ Nice mutlu yıllara! 🎁
     function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
     canvas.addEventListener("mousedown",onMouseDown); window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); canvas.addEventListener("touchstart",onMouseDown); window.addEventListener("touchmove",onMouseMove); window.addEventListener("touchend",onMouseUp);
     
-    document.getElementById("cardWidth").addEventListener("input",applySize); document.getElementById("cardHeight").addEventListener("input",applySize); document.getElementById("applySizeBtn").addEventListener("click",applySize);
+    document.getElementById("applyCanvasSizeBtn").addEventListener("click", applyCanvasSize);
+    document.getElementById("resetCanvasSizeBtn").addEventListener("click", resetCanvasSize);
     document.getElementById("logoX").addEventListener("input",(e)=>{overlayX=parseInt(e.target.value); drawCard();}); document.getElementById("logoY").addEventListener("input",(e)=>{overlayY=parseInt(e.target.value); drawCard();}); document.getElementById("resetLogoPosBtn").addEventListener("click",()=>{overlayX=canvasWidth/2; overlayY=canvasHeight/2; document.getElementById("logoX").value=overlayX; document.getElementById("logoY").value=overlayY; drawCard(); showAlert("Logo konumu sıfırlandı");});
     document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{if(overlayImage && originalImgW){ let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard();} else {overlayWidth=80; overlayHeight=80; logoWSlider.value=80; logoHSlider.value=80; drawCard();} showAlert("Logo boyutu sıfırlandı (80px)");});
     document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();}); document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();}); document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
     document.getElementById("cardText").addEventListener("input",drawCard); document.getElementById("fontSize").addEventListener("input",drawCard); document.getElementById("fontWeight").addEventListener("change",drawCard); document.getElementById("textAlign").addEventListener("change",drawCard); document.getElementById("borderWidth").addEventListener("input",drawCard); document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");}); textShadowCheck.addEventListener("change",drawCard);
     function downloadImage(format) { let link = document.createElement("a"); link.download = format==="png"?"kutlama_karti.png":"kutlama_karti.jpg"; link.href = canvas.toDataURL(format==="png"?"image/png":"image/jpeg",0.95); link.click(); showAlert(`${format.toUpperCase()} indirildi!`); }
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
+    
+    function updateCustomFontsFooter() {
+        const footerDiv = document.getElementById("customFontsListDisplay");
+        if (!footerDiv) return;
+        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
+        else { footerDiv.innerHTML = customFontsList.map(font => `<span>⭐ ${font}</span>`).join(''); }
+    }
+    
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+        const customIcons = masterSymbolsList.filter(icon => !defaultSymbols.includes(icon));
+        const customFonts = [...customFontsList];
+        let currentHtml = document.documentElement.outerHTML;
+        const injectScript = `<script>(function(){const savedCustomIcons=${JSON.stringify(customIcons)};const savedCustomFonts=${JSON.stringify(customFonts)};window.addEventListener('load',function(){setTimeout(function(){let iconAddedCount=0,fontAddedCount=0;if(typeof masterSymbolsList!=='undefined'&&savedCustomIcons.length>0){savedCustomIcons.forEach(icon=>{if(!masterSymbolsList.includes(icon)){masterSymbolsList.push(icon);iconAddedCount++;}});if(iconAddedCount>0&&typeof renderSymbolPanel==='function')renderSymbolPanel();}if(typeof customFontsList!=='undefined'&&savedCustomFonts.length>0){savedCustomFonts.forEach(font=>{if(!customFontsList.includes(font)){customFontsList.push(font);fontAddedCount++;}});if(fontAddedCount>0){if(typeof renderFontList==='function')renderFontList();if(typeof updateCustomFontsFooter==='function')updateCustomFontsFooter();}}if((iconAddedCount>0||fontAddedCount>0)&&typeof showAlert==='function'){showAlert('✅ '+iconAddedCount+' özel ikon ve '+fontAddedCount+' özel font yüklendi!');}},200);});})();<\/script>`;
+        if (currentHtml.includes('</head>')) currentHtml = currentHtml.replace('</head>', injectScript + '</head>');
+        else if (currentHtml.includes('<body>')) currentHtml = currentHtml.replace('<body>', injectScript + '<body>');
+        const blob = new Blob([currentHtml], { type: "text/html" });
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kutlama_karti_ozel_ikonlu.html"; link.click(); URL.revokeObjectURL(link.href);
+        showAlert(`💾 HTML dosyası indirildi! ${customIcons.length} özel ikon ve ${customFonts.length} özel font kaydedildi.`);
+    });
+    
     function loadBg(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
-    function loadOverlay(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi - SINIRSIZ boyutlandırma için köşedeki tutamacı kullanın!");}; img.src=e.target.result;}; r.readAsDataURL(file);}
+    function loadOverlay(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
     const dropZone=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); dropZone.addEventListener("click",()=>bgInput.click()); dropZone.addEventListener("dragover",e=>{e.preventDefault(); dropZone.classList.add("dragover");}); dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("dragover")); dropZone.addEventListener("drop",e=>{e.preventDefault(); dropZone.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
     const overlayDrop=document.getElementById("overlayDropZone"), overlayInput=document.getElementById("overlayImageInput"); overlayDrop.addEventListener("click",()=>overlayInput.click()); overlayDrop.addEventListener("dragover",e=>{e.preventDefault(); overlayDrop.classList.add("dragover");}); overlayDrop.addEventListener("dragleave",()=>overlayDrop.classList.remove("dragover")); overlayDrop.addEventListener("drop",e=>{e.preventDefault(); overlayDrop.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadOverlay(e.dataTransfer.files[0]);}); overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);}); document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
+    
     function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,"+")}:wght@300;400;600;700&display=swap`; document.head.appendChild(l);});} preloadFonts();
-    function renderFontList() { let term=document.getElementById("searchInput").value.toLowerCase(); let cont=document.getElementById("fontList"); cont.innerHTML=""; fontData.forEach(f=>{if(term && !f.toLowerCase().includes(term)) return; let div=document.createElement("div"); div.className="font-item"; div.onclick=()=>{currentFont=f; drawCard(); showAlert(`Font: ${f}`);}; div.innerHTML=`<span class="font-name" style="font-family: '${f}', cursive;">${f}</span><span class="font-badge">🖊️</span>`; cont.appendChild(div);});}
-    document.getElementById("searchInput").addEventListener("input",renderFontList);
     
-    // 280+ SEMBOL (Sadece Türk Bayrağı kalacak, diğer bayraklar yok)
-    const symbols = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🧑","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄","💛❤️","GS","G💛❤️S","Cimbom","Galatasaray","Aslan","🦁","🦁⭐","🦁🏆","🦁💛❤️","🏆⭐","🥇💛","🥇❤️","🏅💛","🏅❤️","📣💛❤️","🎺💛","🥁❤️","🧣💛❤️","⚽💛❤️","🚩💛","🚩❤️","🎌💛❤️","💛💛❤️❤️","💛❤️💛❤️","❤️💛❤️💛","🦁⭐","⭐🦁","🦁🏆⭐","⭐🏆🦁","🏆💛","🏆❤️","🥇💛❤️🎖️💛","🎖️❤️", "⚙️","🛠 "];
+    function renderFontList() { 
+        let term=document.getElementById("searchInput").value.toLowerCase(); 
+        let cont=document.getElementById("fontList"); 
+        cont.innerHTML=""; 
+        let allFonts = [...fontData, ...customFontsList];
+        allFonts.forEach(f=>{
+            if(term && !f.toLowerCase().includes(term)) return; 
+            let div=document.createElement("div"); 
+            div.className="font-item" + (customFontsList.includes(f) ? " custom-font-item" : ""); 
+            div.onclick=()=>{currentFont=f; drawCard(); showAlert(`Font: ${f}`);}; 
+            div.innerHTML=`<span class="font-name" style="font-family: '${f}', cursive;">${f}</span><span class="font-badge">${customFontsList.includes(f) ? '⭐' : '🖊️'}</span>`; 
+            cont.appendChild(div);
+        });
+        updateCustomFontsFooter();
+    }
     
-    const symPanel = document.getElementById("symbolPanel"); symPanel.innerHTML = '<span style="font-size:12px; font-weight:600;">✨ 280+ Sembol (Sadece 🇹🇷 Türk Bayrağı): </span>'; symbols.forEach(sym => { const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym; btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert(`✨ "${sym}" eklendi`); }; symPanel.appendChild(btn); });
-    function showAlert(msg) { let a=document.getElementById("alertMsg"); a.textContent=msg; a.style.display="block"; setTimeout(()=>a.style.display="none",3000);}
-    renderFontList(); syncHexFromInputs(); applySize(); updateColorDots();
-    const panelHeader = document.getElementById("fontPanelHeader"), panelContent = document.getElementById("fontPanelContent");
-    panelHeader.addEventListener("click", () => { panelContent.classList.toggle("open"); panelHeader.classList.toggle("open"); });
-    panelContent.classList.remove("open"); panelHeader.classList.remove("open");
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard,200);
+    document.getElementById("addCustomFontBtn").addEventListener("click", () => {
+        const fontUrl = document.getElementById("customFontUrl").value.trim();
+        const fontName = document.getElementById("customFontName").value.trim();
+        if (!fontUrl || !fontName) { showAlert("❌ Lütfen hem font URL'sini hem de font adını girin!", "error"); return; }
+        if (!fontUrl.includes('fonts.googleapis.com')) { showAlert("⚠️ Lütfen geçerli bir Google Fonts URL'si girin!", "error"); return; }
+        const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontUrl; document.head.appendChild(link);
+        if (!customFontsList.includes(fontName)) { customFontsList.push(fontName); renderFontList(); showAlert(`✅ "${fontName}" fontu başarıyla EKLENDI!`, "success"); } 
+        else { showAlert(`⚠️ "${fontName}" fontu zaten mevcut!`, "warning"); }
+        document.getElementById("customFontUrl").value = ""; document.getElementById("customFontName").value = "";
+    });
+    
+    function extractValidIcons(text) {
+        const validIcons = [];
+        const chars = [...text];
+        for (let char of chars) {
+            if (char && char.length > 0 && char.charCodeAt(0) !== 65533 && char.trim() !== "") {
+                if (!/[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/.test(char) || /[⭐✨🌟💫⚡🔥💥❤️💛💚💙💜🎉🎊🎈🎁🎀🎂🍰🥳]/.test(char)) {
+                    if (!validIcons.includes(char)) validIcons.push(char);
+                }
+            }
+        }
+        return validIcons;
+    }
+    
+    function addCustomIcons() {
+        const inputText = document.getElementById("customIconsInput").value;
+        if (!inputText.trim()) { showAlert("📝 Lütfen önce ikonları yapıştırın!", "info"); return; }
+        const validIcons = extractValidIcons(inputText);
+        if (validIcons.length === 0) { showAlert("⚠️ Geçerli ikon bulunamadı!", "error"); return; }
+        let addedCount = 0;
+        for (let icon of validIcons) { if (!masterSymbolsList.includes(icon)) { masterSymbolsList.push(icon); addedCount++; } }
+        if (addedCount > 0) { renderSymbolPanel(); updateIconPreview(validIcons); showAlert(`✨ ${addedCount} yeni ikon EKLENDI! Toplam: ${masterSymbolsList.length} sembol`, "success"); document.getElementById("customIconsInput").value = ""; } 
+        else { showAlert(`ℹ️ Tüm ikonlar zaten mevcut. (${validIcons.length} adet)`, "info"); updateIconPreview(validIcons); }
+    }
+    
+    function updateIconPreview(icons) {
+        const previewDiv = document.getElementById("customIconsPreview");
+        if (icons.length === 0) { previewDiv.innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>'; return; }
+        previewDiv.innerHTML = "";
+        icons.slice(0, 30).forEach(icon => {
+            const span = document.createElement("span"); span.className = "preview-icon-mini"; span.textContent = icon;
+            span.title = `"${icon}" eklemek için tıkla`;
+            span.onclick = () => { document.getElementById("cardText").value += icon; drawCard(); showAlert(`✨ "${icon}" eklendi`); };
+            previewDiv.appendChild(span);
+        });
+        if (icons.length > 30) { const moreSpan = document.createElement("span"); moreSpan.textContent = `+${icons.length - 30}`; moreSpan.style.fontSize = "11px"; moreSpan.style.padding = "4px 8px"; previewDiv.appendChild(moreSpan); }
+    }
+    
+    function renderSymbolPanel() {
+        const panel = document.getElementById("symbolPanel");
+        panel.innerHTML = `<span style="font-size:12px; font-weight:600;">✨ ${masterSymbolsList.length} Sembol & Emoji: </span>`;
+        masterSymbolsList.forEach(sym => {
+            if (sym && typeof sym === "string" && sym.length > 0 && sym.charCodeAt(0) !== 65533) {
+                const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym;
+                btn.title = `"${sym}" eklemek için tıkla`;
+                btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert(`✨ "${sym}" eklendi`); document.getElementById("cardText").focus(); };
+                panel.appendChild(btn);
+            }
+        });
+    }
+    
+    document.getElementById("addCustomIconsBtn").addEventListener("click", addCustomIcons);
+    document.getElementById("clearCustomIconsBtn").addEventListener("click", () => {
+        masterSymbolsList = [...defaultSymbols]; renderSymbolPanel();
+        document.getElementById("customIconsPreview").innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>';
+        document.getElementById("customIconsInput").value = "";
+        showAlert(`🗑️ Özel ikonlar temizlendi. Varsayılan ${defaultSymbols.length} sembol kaldı.`, "info");
+    });
+    
+    function setupCollapsible(headerId, contentId) {
+        const header = document.getElementById(headerId); const content = document.getElementById(contentId);
+        if (!header || !content) return;
+        header.addEventListener("click", () => { content.classList.toggle("open"); header.classList.toggle("open"); });
+        content.classList.remove("open"); header.classList.remove("open");
+    }
+    
+    function showAlert(msg, type = "info") {
+        const a = document.getElementById("alertMsg");
+        a.textContent = msg; a.style.display = "block";
+        if (type === "error") a.style.background = "#ffe6e6";
+        else if (type === "success") a.style.background = "#e6ffe6";
+        else if (type === "warning") a.style.background = "#fff3e6";
+        else a.style.background = "#efe6ff";
+        setTimeout(() => a.style.display = "none", 4000);
+    }
+    
+    masterSymbolsList = [...defaultSymbols];
+    renderFontList(); syncHexFromInputs(); applyCanvasSize(); updateColorDots(); renderSymbolPanel();
+    setupCollapsible("fontPanelHeader", "fontPanelContent");
+    setupCollapsible("customFontPanelHeader", "customFontPanelContent");
+    setupCollapsible("customIconPanelHeader", "customIconPanelContent");
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
     window.addEventListener("resize", () => { drawCard(); });
 </script>
 </body>
