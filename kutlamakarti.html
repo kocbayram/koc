@@ -130,8 +130,22 @@
         .position-control { background: #faf5ff; border-radius: 28px; padding: 14px; margin: 12px 0; border: 1px solid #eeddff; }
         .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
         .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
-        .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; }
+        .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
         .btn-success { background: linear-gradient(115deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .btn-jpg {
+            background: linear-gradient(115deg, #f97316, #ea580c);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-jpg:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(234, 88, 12, 0.3); }
+        
         .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { transform: translateY(-2px); }
 
         .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; overflow-y: auto; border: 1px solid #f5e0c0; }
@@ -236,7 +250,6 @@
             color: #6b3ea5;
         }
         
-        /* KART BOYUTLANDIRMA KONTROLÜ */
         .canvas-size-control {
             background: #e9deff;
             border-radius: 28px;
@@ -252,7 +265,6 @@
         .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #c084fc; text-align: center; }
         .canvas-size-control button { padding: 6px 14px; font-size: 12px; }
         
-        /* Özel font bölümü link düzeni */
         .font-link-area {
             margin-top: 12px;
             padding: 12px 16px;
@@ -331,7 +343,6 @@
                     <input type="text" id="customFontName" placeholder="Font Adı (örnek: Roboto)">
                     <button id="addCustomFontBtn" class="btn-secondary" style="width:100%; margin: 8px 0;">➕ Font Ekle</button>
                     
-                    <!-- GENİŞLETİLMİŞ VE TIKLANABİLİR URL ALANI -->
                     <div class="font-link-area">
                         <a href="https://fonts.google.com" target="_blank" class="google-fonts-link" rel="noopener noreferrer">
                             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -355,7 +366,6 @@
 
         <div class="column">
             <div class="card-preview">
-                <!-- KART BOYUTLANDIRMA - KONTROLLÜ -->
                 <div class="canvas-size-control">
                     <label>📐 Kart Genişlik:</label>
                     <input type="number" id="canvasWidthInput" value="640" step="20" min="400" max="1000">
@@ -467,7 +477,7 @@ Doğum günün kutlu olsun.
                 <div class="action-buttons">
                     <button id="clearTextBtn" class="btn-secondary">🧹 Metni Temizle</button>
                     <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
-                    <button id="downloadJpgBtn" class="btn-secondary">🖼️ JPG İndir</button>
+                    <button id="downloadJpgBtn" class="btn-jpg">🖼️ JPG İndir</button>
                     <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir (Özel İkon & Fontlarla)</button>
                 </div>
             </div>
@@ -485,10 +495,11 @@ Doğum günün kutlu olsun.
 <div id="colorPopup" class="color-popup-overlay"><div class="color-popup-card"><div class="popup-header"><span id="popupTitle">Renk Seçici</span><button class="close-popup" id="closePopupBtn">✕</button></div><div class="popup-color-grid" id="popupColorGrid"></div></div></div>
 
 <script>
+    // Varsayılan ikonlar (sabit)
+    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"];
+
     let customFontsList = [];
-    let masterSymbolsList = [];
-    
-    const defaultSymbols = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🧑","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄","💛❤️","GS","G💛❤️S","Cimbom","Galatasaray","Aslan","🦁","🦁⭐","🦁🏆","🦁💛❤️","🏆⭐","🥇💛","🥇❤️","🏅💛","🏅❤️","📣💛❤️","🎺💛","🥁❤️","🧣💛❤️","⚽💛❤️","🚩💛","🚩❤️","🎌💛❤️","💛💛❤️❤️","💛❤️💛❤️","❤️💛❤️💛","🦁⭐","⭐🦁","🦁🏆⭐","⭐🏆🦁","🏆💛","🏆❤️","🥇💛❤️🎖️💛","🎖️❤️","⚙️","🛠️","📚","🔑","🔒","🔓","📖","➡️","🌿","☘️","🤵","👧","👨‍👦","👩‍👧","💆","🧿","🤼‍♂️","🤼‍♀️","👨‍👩‍👧","💃","🚶","👨‍👨‍👦‍👦","🎭","🎪","🎨","🎬","📸","📷","🔊","🔔","📌","📍","✂️","🖍️","📝","📏","📐","🖌️","🖼️","🧸"];
+    let customIconsList = [];
     
     let fontData = ["Beau Rivage","Great Vibes","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif"];
     
@@ -702,16 +713,45 @@ Doğum günün kutlu olsun.
         else { footerDiv.innerHTML = customFontsList.map(font => `<span>⭐ ${font}</span>`).join(''); }
     }
     
+    // HTML İndir - Sadece özel ikonları kaydeder, varsayılanları tekrar yazmaz
     document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
-        const customIcons = masterSymbolsList.filter(icon => !defaultSymbols.includes(icon));
-        const customFonts = [...customFontsList];
-        let currentHtml = document.documentElement.outerHTML;
-        const injectScript = `<script>(function(){const savedCustomIcons=${JSON.stringify(customIcons)};const savedCustomFonts=${JSON.stringify(customFonts)};window.addEventListener('load',function(){setTimeout(function(){let iconAddedCount=0,fontAddedCount=0;if(typeof masterSymbolsList!=='undefined'&&savedCustomIcons.length>0){savedCustomIcons.forEach(icon=>{if(!masterSymbolsList.includes(icon)){masterSymbolsList.push(icon);iconAddedCount++;}});if(iconAddedCount>0&&typeof renderSymbolPanel==='function')renderSymbolPanel();}if(typeof customFontsList!=='undefined'&&savedCustomFonts.length>0){savedCustomFonts.forEach(font=>{if(!customFontsList.includes(font)){customFontsList.push(font);fontAddedCount++;}});if(fontAddedCount>0){if(typeof renderFontList==='function')renderFontList();if(typeof updateCustomFontsFooter==='function')updateCustomFontsFooter();}}if((iconAddedCount>0||fontAddedCount>0)&&typeof showAlert==='function'){showAlert('✅ '+iconAddedCount+' özel ikon ve '+fontAddedCount+' özel font yüklendi!');}},200);});})();<\/script>`;
-        if (currentHtml.includes('</head>')) currentHtml = currentHtml.replace('</head>', injectScript + '</head>');
-        else if (currentHtml.includes('<body>')) currentHtml = currentHtml.replace('<body>', injectScript + '<body>');
-        const blob = new Blob([currentHtml], { type: "text/html" });
-        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "kutlama_karti_ozel_ikonlu.html"; link.click(); URL.revokeObjectURL(link.href);
-        showAlert(`💾 HTML dosyası indirildi! ${customIcons.length} özel ikon ve ${customFonts.length} özel font kaydedildi.`);
+        // Mevcut sayfanın kaynağını al
+        let htmlContent = document.documentElement.outerHTML;
+        
+        // Özel ikonları virgülle ayır
+        const ozelIkonlar = customIconsList.join(',');
+        const ozelFontlar = customFontsList.join(',');
+        
+        // Eklenecek küçük script
+        const yuklemeScripti = '<scr' + 'ipt>' +
+            'window.addEventListener("DOMContentLoaded",function(){' +
+            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
+            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
+            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
+            'var dizi=ikonlar.split(",");' +
+            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
+            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
+            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
+            'var dizi2=fontlar.split(",");' +
+            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
+            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
+            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
+            '</scr' + 'ipt>';
+        
+        // Head'e ekle
+        if (htmlContent.indexOf('</head>') > -1) {
+            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
+        }
+        
+        // İndir
+        const blob = new Blob([htmlContent], {type: "text/html"});
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "kutlama_karti.html";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        
+        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.');
     });
     
     function loadBg(file) { if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
@@ -767,9 +807,21 @@ Doğum günün kutlu olsun.
         const validIcons = extractValidIcons(inputText);
         if (validIcons.length === 0) { showAlert("⚠️ Geçerli ikon bulunamadı!", "error"); return; }
         let addedCount = 0;
-        for (let icon of validIcons) { if (!masterSymbolsList.includes(icon)) { masterSymbolsList.push(icon); addedCount++; } }
-        if (addedCount > 0) { renderSymbolPanel(); updateIconPreview(validIcons); showAlert(`✨ ${addedCount} yeni ikon EKLENDI! Toplam: ${masterSymbolsList.length} sembol`, "success"); document.getElementById("customIconsInput").value = ""; } 
-        else { showAlert(`ℹ️ Tüm ikonlar zaten mevcut. (${validIcons.length} adet)`, "info"); updateIconPreview(validIcons); }
+        for (let icon of validIcons) {
+            if (!customIconsList.includes(icon)) {
+                customIconsList.push(icon);
+                addedCount++;
+            }
+        }
+        if (addedCount > 0) {
+            renderSymbolPanel();
+            updateIconPreview(validIcons);
+            showAlert(`✨ ${addedCount} yeni özel ikon EKLENDI! Toplam özel ikon: ${customIconsList.length}`, "success");
+            document.getElementById("customIconsInput").value = "";
+        } else {
+            showAlert(`ℹ️ Tüm ikonlar zaten mevcut. (${validIcons.length} adet)`, "info");
+            updateIconPreview(validIcons);
+        }
     }
     
     function updateIconPreview(icons) {
@@ -787,8 +839,9 @@ Doğum günün kutlu olsun.
     
     function renderSymbolPanel() {
         const panel = document.getElementById("symbolPanel");
-        panel.innerHTML = `<span style="font-size:12px; font-weight:600;">✨ ${masterSymbolsList.length} Sembol & Emoji: </span>`;
-        masterSymbolsList.forEach(sym => {
+        const allSymbols = [...DEFAULT_SYMBOLS, ...customIconsList];
+        panel.innerHTML = `<span style="font-size:12px; font-weight:600;">✨ ${allSymbols.length} Sembol & Emoji (${customIconsList.length} özel): </span>`;
+        allSymbols.forEach(sym => {
             if (sym && typeof sym === "string" && sym.length > 0 && sym.charCodeAt(0) !== 65533) {
                 const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym;
                 btn.title = `"${sym}" eklemek için tıkla`;
@@ -800,10 +853,11 @@ Doğum günün kutlu olsun.
     
     document.getElementById("addCustomIconsBtn").addEventListener("click", addCustomIcons);
     document.getElementById("clearCustomIconsBtn").addEventListener("click", () => {
-        masterSymbolsList = [...defaultSymbols]; renderSymbolPanel();
+        customIconsList = [];
+        renderSymbolPanel();
         document.getElementById("customIconsPreview").innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>';
         document.getElementById("customIconsInput").value = "";
-        showAlert(`🗑️ Özel ikonlar temizlendi. Varsayılan ${defaultSymbols.length} sembol kaldı.`, "info");
+        showAlert(`🗑️ Tüm özel ikonlar temizlendi. Sadece varsayılan ${DEFAULT_SYMBOLS.length} sembol kaldı.`, "info");
     });
     
     function setupCollapsible(headerId, contentId) {
@@ -823,7 +877,6 @@ Doğum günün kutlu olsun.
         setTimeout(() => a.style.display = "none", 4000);
     }
     
-    masterSymbolsList = [...defaultSymbols];
     renderFontList(); syncHexFromInputs(); applyCanvasSize(); updateColorDots(); renderSymbolPanel();
     setupCollapsible("fontPanelHeader", "fontPanelContent");
     setupCollapsible("customFontPanelHeader", "customFontPanelContent");
