@@ -68,7 +68,7 @@
         .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #c084fc; }
         .custom-font-item { background: #f0eaff; border-color: #c084fc; }
 
-        /* GELİŞMİŞ RENK SEÇİCİ POPUP - TÜM TARAYICILAR İÇİN */
+        /* RENK SEÇİCİ POPUP - TÜM TARAYICILAR İÇİN */
         .color-spectrum-overlay {
             position: fixed;
             top: 0;
@@ -244,7 +244,7 @@
         
         .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
         .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
-        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; }
+        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; vertical-align: middle; }
         .resize-handle {
             position: absolute;
             width: 18px;
@@ -386,8 +386,28 @@
             cursor: pointer;
             margin-right: 8px;
             margin-bottom: 6px;
+            transition: all 0.2s;
         }
+        .compact-palette-btn:hover { background: #e9deff; transform: translateY(-2px); }
         .color-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        
+        .gradient-color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .gradient-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .gradient-swatch:hover { transform: scale(1.05); border-color: #c084fc; }
         
         @media (max-width: 800px) { .glass-ultimate { padding: 20px; } }
     </style>
@@ -444,9 +464,19 @@
 
                 <div class="position-control" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
                     <label>🌈 Gradien Aktif:</label><input type="checkbox" id="gradientToggle" checked>
-                    <div id="gradientControls" style="display: flex; gap: 8px;">
-                        <input type="color" id="gradColor1" value="#f9e5ff"><input type="color" id="gradColor2" value="#ffffff">
-                        <select id="gradAngle"><option value="0">→ 0°</option><option value="45">↗ 45°</option><option value="90">↓ 90°</option><option value="135">↙ 135°</option></select>
+                    <div id="gradientControls" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-top: 8px;">
+                        <div class="gradient-color-row">
+                            <span>Renk 1:</span>
+                            <div id="gradColor1Preview" class="gradient-swatch" style="background:#f9e5ff"></div>
+                            <span>Renk 2:</span>
+                            <div id="gradColor2Preview" class="gradient-swatch" style="background:#ffffff"></div>
+                            <select id="gradAngle" style="padding:8px 12px; border-radius:44px; border:2px solid #eeddff;">
+                                <option value="0">→ 0°</option>
+                                <option value="45">↗ 45°</option>
+                                <option value="90">↓ 90°</option>
+                                <option value="135">↙ 135°</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -479,14 +509,17 @@
                     </div>
                 </div>
 
-                <!-- YENİ: GELİŞMİŞ RENK SEÇİCİ BUTONLARI -->
+                <!-- TÜM RENK SEÇİCİ BUTONLARI -->
                 <div class="palette-shortcuts">
                     <div class="compact-palette-btn" data-target="textColor">🎨 Metin Rengi Seç <span class="color-dot" id="textColorDot"></span></div>
                     <div class="compact-palette-btn" data-target="bgColor">🖌️ Arka Plan Rengi Seç <span class="color-dot" id="bgColorDot"></span></div>
                     <div class="compact-palette-btn" data-target="borderOuterColor">📐 Dış Kenar Seç <span class="color-dot" id="borderOuterDot"></span></div>
                     <div class="compact-palette-btn" data-target="borderInnerColor">📐 İç Kenar Seç <span class="color-dot" id="borderInnerDot"></span></div>
+                    <div class="compact-palette-btn" data-target="gradColor1">🌈 Gradien Renk 1 <span class="color-dot" id="gradColor1Dot"></span></div>
+                    <div class="compact-palette-btn" data-target="gradColor2">🌈 Gradien Renk 2 <span class="color-dot" id="gradColor2Dot"></span></div>
                 </div>
 
+                <!-- ORİJİNAL KAYDIRMALI RENK SEÇİCİLER -->
                 <div class="color-row">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
@@ -494,12 +527,22 @@
                     <label>📐 İç Kenar:</label><input type="color" id="borderInnerColor" value="#D9D6DE">
                     <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="10" value="4" style="width:90px">
                 </div>
+                
+                <div class="color-row">
+                    <label>🌈 Gradien Renk 1:</label><input type="color" id="gradColor1" value="#f9e5ff">
+                    <label>🌈 Gradien Renk 2:</label><input type="color" id="gradColor2" value="#ffffff">
+                </div>
 
                 <div class="custom-hex-row">
                     <div><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7"></div>
                     <div><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7"></div>
                     <div><label>Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7"></div>
                     <div><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7"></div>
+                </div>
+                <div class="custom-hex-row" style="margin-top: 0;">
+                    <div><label>Gradien 1 HEX:</label><input type="text" id="customGrad1Hex" maxlength="7"></div>
+                    <div><label>Gradien 2 HEX:</label><input type="text" id="customGrad2Hex" maxlength="7"></div>
+                    <div></div><div></div>
                 </div>
 
                 <div class="custom-collapsible" id="customIconCollapsible">
@@ -519,7 +562,6 @@
 
                 <div class="symbol-panel" id="symbolPanel"></div>
                 
-                <!-- ORİJİNAL METİN İÇERİĞİ AYNEN KORUNDU -->
                 <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
 Hayatın sana hep güzellikler sunsun,
 Her yeni gün umut ve neşe getirsin.
@@ -553,7 +595,7 @@ Doğum günün kutlu olsun.
     <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | HTML İndir | 🇹🇷</span></div>
 </div>
 
-<!-- GELİŞMİŞ RENK SEÇİCİ POPUP (SPECTRUM) - TÜM TARAYICILAR İÇİN -->
+<!-- GELİŞMİŞ RENK SEÇİCİ POPUP - TÜM TARAYICILAR İÇİN -->
 <div id="spectrumOverlay" class="color-spectrum-overlay">
     <div class="spectrum-card">
         <div class="spectrum-header">
@@ -572,13 +614,12 @@ Doğum günün kutlu olsun.
 </div>
 
 <script>
-    // ---------- KART STÜDYOSU MEVCUT KODLARI ----------
+    // ==================== VARSayILAN IKONLAR ====================
+    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"];
+
     let customFontsList = [];
     let customIconsList = [];
     
-    // Varsayılan ikonlar (sabit)
-    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"];
-
     let fontData = ["Beau Rivage","Great Vibes","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif"];
     
     let currentFont = "Beau Rivage";
@@ -594,8 +635,15 @@ Doğum günün kutlu olsun.
     let resizeStartW = 0, resizeStartH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
     const keepAspectCheck = document.getElementById("keepAspect");
 
-    // Renk seçici değişkenleri
-    let activeColorTarget = null;
+    // Renk inputları
+    const textColorInput = document.getElementById("textColor");
+    const bgColorInput = document.getElementById("bgColor");
+    const borderOuterInput = document.getElementById("borderOuterColor");
+    const borderInnerInput = document.getElementById("borderInnerColor");
+    const gradColor1Input = document.getElementById("gradColor1");
+    const gradColor2Input = document.getElementById("gradColor2");
+    
+    // Popup elementleri
     const spectrumOverlay = document.getElementById("spectrumOverlay");
     const spectrumCanvas = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -607,8 +655,9 @@ Doğum günün kutlu olsun.
     let spectrumCtx = null;
     let currentHue = 271;
     let tempColorHex = "#c084fc";
+    let activeColorTarget = null;
 
-    // Canvas'ı Firefox için düzgün başlat
+    // Spektrum canvas'ı başlat
     function initSpectrum() {
         if(!spectrumCtx) {
             spectrumCtx = spectrumCanvas.getContext("2d");
@@ -692,11 +741,10 @@ Doğum günün kutlu olsun.
         return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) };
     }
 
-    function openSpectrumForTarget(targetId) {
+    function openSpectrumForTarget(targetId, currentColor) {
         initSpectrum();
         activeColorTarget = targetId;
-        const currentVal = document.getElementById(activeColorTarget).value;
-        tempColorHex = currentVal;
+        tempColorHex = currentColor;
         spectrumPreviewBox.style.backgroundColor = tempColorHex;
         spectrumHexInput.value = tempColorHex.toUpperCase();
         const r = parseInt(tempColorHex.slice(1,3),16);
@@ -730,7 +778,7 @@ Doğum günün kutlu olsun.
     spectrumHexInput.addEventListener("change", (e) => {
         let val = e.target.value;
         if(!val.startsWith('#')) val = '#'+val;
-        if(/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        if(/^#[0-9A-Fa-f]{6}$/i.test(val)) {
             tempColorHex = val;
             spectrumPreviewBox.style.backgroundColor = tempColorHex;
             const r = parseInt(val.slice(1,3),16);
@@ -746,11 +794,7 @@ Doğum günün kutlu olsun.
     spectrumSelectBtn.addEventListener("click", () => {
         if(activeColorTarget) {
             document.getElementById(activeColorTarget).value = tempColorHex;
-            if(activeColorTarget === 'textColor') syncHexFromInputs();
-            else if(activeColorTarget === 'bgColor') syncHexFromInputs();
-            else if(activeColorTarget === 'borderOuterColor') syncHexFromInputs();
-            else if(activeColorTarget === 'borderInnerColor') syncHexFromInputs();
-            updateColorDots();
+            updateAllDisplays();
             drawCard();
             showAlert(`Renk seçildi: ${tempColorHex}`);
         }
@@ -767,36 +811,109 @@ Doğum günün kutlu olsun.
         activeColorTarget = null;
     });
 
-    // Renk seçici butonlarını bağla
+    // Renk seçici butonları
     document.querySelectorAll(".compact-palette-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const target = btn.getAttribute("data-target");
-            openSpectrumForTarget(target);
+            let currentColor = "#c084fc";
+            if(target === "textColor") currentColor = textColorInput.value;
+            else if(target === "bgColor") currentColor = bgColorInput.value;
+            else if(target === "borderOuterColor") currentColor = borderOuterInput.value;
+            else if(target === "borderInnerColor") currentColor = borderInnerInput.value;
+            else if(target === "gradColor1") currentColor = gradColor1Input.value;
+            else if(target === "gradColor2") currentColor = gradColor2Input.value;
+            openSpectrumForTarget(target, currentColor);
         });
     });
 
-    // Kart çizim fonksiyonları
-    function roundedRect(ctx, x, y, w, h, r) { 
-        ctx.beginPath(); 
-        ctx.moveTo(x+r, y); 
-        ctx.lineTo(x+w-r, y); 
-        ctx.quadraticCurveTo(x+w, y, x+w, y+r); 
-        ctx.lineTo(x+w, y+h-r); 
-        ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); 
-        ctx.lineTo(x+r, y+h); 
-        ctx.quadraticCurveTo(x, y+h, x, y+h-r); 
-        ctx.lineTo(x, y+r); 
-        ctx.quadraticCurveTo(x, y, x+r, y); 
-        ctx.closePath(); 
+    // Gradient renk önizleme kutularına tıklama
+    document.getElementById("gradColor1Preview").addEventListener("click", () => {
+        openSpectrumForTarget("gradColor1", gradColor1Input.value);
+    });
+    document.getElementById("gradColor2Preview").addEventListener("click", () => {
+        openSpectrumForTarget("gradColor2", gradColor2Input.value);
+    });
+
+    function updateAllDisplays() {
+        document.getElementById("textColorDot").style.backgroundColor = textColorInput.value;
+        document.getElementById("bgColorDot").style.backgroundColor = bgColorInput.value;
+        document.getElementById("borderOuterDot").style.backgroundColor = borderOuterInput.value;
+        document.getElementById("borderInnerDot").style.backgroundColor = borderInnerInput.value;
+        document.getElementById("gradColor1Dot").style.backgroundColor = gradColor1Input.value;
+        document.getElementById("gradColor2Dot").style.backgroundColor = gradColor2Input.value;
+        document.getElementById("gradColor1Preview").style.backgroundColor = gradColor1Input.value;
+        document.getElementById("gradColor2Preview").style.backgroundColor = gradColor2Input.value;
+        
+        document.getElementById("customTextHex").value = textColorInput.value.toUpperCase();
+        document.getElementById("customBgHex").value = bgColorInput.value.toUpperCase();
+        document.getElementById("customBorderOuterHex").value = borderOuterInput.value.toUpperCase();
+        document.getElementById("customBorderInnerHex").value = borderInnerInput.value.toUpperCase();
+        document.getElementById("customGrad1Hex").value = gradColor1Input.value.toUpperCase();
+        document.getElementById("customGrad2Hex").value = gradColor2Input.value.toUpperCase();
     }
+
+    function syncHexFromInputs() {
+        const textHex = document.getElementById("customTextHex").value.trim();
+        const bgHex = document.getElementById("customBgHex").value.trim();
+        const borderOuterHex = document.getElementById("customBorderOuterHex").value.trim();
+        const borderInnerHex = document.getElementById("customBorderInnerHex").value.trim();
+        const grad1Hex = document.getElementById("customGrad1Hex").value.trim();
+        const grad2Hex = document.getElementById("customGrad2Hex").value.trim();
+        
+        if(textHex && /^#?[0-9A-Fa-f]{6}$/i.test(textHex.replace(/^#/, ''))) {
+            textColorInput.value = textHex.startsWith('#') ? textHex.toUpperCase() : '#' + textHex.toUpperCase();
+        }
+        if(bgHex && /^#?[0-9A-Fa-f]{6}$/i.test(bgHex.replace(/^#/, ''))) {
+            bgColorInput.value = bgHex.startsWith('#') ? bgHex.toUpperCase() : '#' + bgHex.toUpperCase();
+        }
+        if(borderOuterHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderOuterHex.replace(/^#/, ''))) {
+            borderOuterInput.value = borderOuterHex.startsWith('#') ? borderOuterHex.toUpperCase() : '#' + borderOuterHex.toUpperCase();
+        }
+        if(borderInnerHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderInnerHex.replace(/^#/, ''))) {
+            borderInnerInput.value = borderInnerHex.startsWith('#') ? borderInnerHex.toUpperCase() : '#' + borderInnerHex.toUpperCase();
+        }
+        if(grad1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad1Hex.replace(/^#/, ''))) {
+            gradColor1Input.value = grad1Hex.startsWith('#') ? grad1Hex.toUpperCase() : '#' + grad1Hex.toUpperCase();
+        }
+        if(grad2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad2Hex.replace(/^#/, ''))) {
+            gradColor2Input.value = grad2Hex.startsWith('#') ? grad2Hex.toUpperCase() : '#' + grad2Hex.toUpperCase();
+        }
+        updateAllDisplays();
+        drawCard();
+    }
+
+    document.getElementById("customTextHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBgHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBorderOuterHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBorderInnerHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customGrad1Hex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customGrad2Hex").addEventListener("change", syncHexFromInputs);
+
+    textColorInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    bgColorInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    borderOuterInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    borderInnerInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    gradColor1Input.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    gradColor2Input.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+
+    const gradToggle = document.getElementById("gradientToggle");
+    const gradientControls = document.getElementById("gradientControls");
+    const gradAngle = document.getElementById("gradAngle");
+    gradToggle.addEventListener("change", () => { gradientControls.style.display = gradToggle.checked ? "flex" : "none"; drawCard(); });
+    gradAngle.addEventListener("change", drawCard);
+    
+    const textShadowCheck = document.getElementById("textShadow");
+    const borderWidthSlider = document.getElementById("borderWidth");
+    
+    function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
     
     function wrapText(ctx, text, maxWidth) { 
         let lines = [], paragraphs = text.split("\n"); 
         for(let p of paragraphs) { 
-            if(p==="") { lines.push(""); continue; } 
+            if(p === "") { lines.push(""); continue; } 
             let words = p.split(" "), current = ""; 
             for(let w of words) { 
-                let test = current + (current?" ":"") + w; 
+                let test = current + (current ? " " : "") + w; 
                 if(ctx.measureText(test).width > maxWidth && current) { 
                     lines.push(current); 
                     current = w; 
@@ -820,25 +937,25 @@ Doğum günün kutlu olsun.
             ctx.drawImage(bgImage,0,0,canvasWidth,canvasHeight); 
             ctx.restore(); 
         } else { 
-            if(document.getElementById("gradientToggle").checked) { 
-                let angle = parseInt(document.getElementById("gradAngle").value), rad = angle*Math.PI/180, x1 = Math.cos(rad)*0.5+0.5, y1 = Math.sin(rad)*0.5+0.5; 
+            if(gradToggle.checked) { 
+                let angle = parseInt(gradAngle.value), rad = angle*Math.PI/180, x1 = Math.cos(rad)*0.5+0.5, y1 = Math.sin(rad)*0.5+0.5; 
                 let grad = ctx.createLinearGradient(x1*canvasWidth, y1*canvasHeight, (1-x1)*canvasWidth, (1-y1)*canvasHeight); 
-                grad.addColorStop(0, document.getElementById("gradColor1").value); 
-                grad.addColorStop(1, document.getElementById("gradColor2").value); 
+                grad.addColorStop(0, gradColor1Input.value); 
+                grad.addColorStop(1, gradColor2Input.value); 
                 ctx.fillStyle = grad; 
             } else { 
-                ctx.fillStyle = document.getElementById("bgColor").value; 
+                ctx.fillStyle = bgColorInput.value; 
             } 
             roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); 
             ctx.fill(); 
         } 
-        let bw = parseInt(document.getElementById("borderWidth").value); 
+        let bw = parseInt(borderWidthSlider.value); 
         roundedRect(ctx,6,6,canvasWidth-12,canvasHeight-12,radius-4); 
-        ctx.strokeStyle = document.getElementById("borderOuterColor").value; 
+        ctx.strokeStyle = borderOuterInput.value; 
         ctx.lineWidth = bw; 
         ctx.stroke(); 
         roundedRect(ctx,14,14,canvasWidth-28,canvasHeight-28,radius-8); 
-        ctx.strokeStyle = document.getElementById("borderInnerColor").value; 
+        ctx.strokeStyle = borderInnerInput.value; 
         ctx.lineWidth = bw*0.6; 
         ctx.stroke(); 
         if(overlayImage) { 
@@ -848,10 +965,10 @@ Doğum günün kutlu olsun.
         let raw = document.getElementById("cardText").value; 
         if(raw.trim()) { 
             let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; 
-            ctx.font = `${fontWeight} ${fontSize}px '${currentFont}', cursive`; 
-            ctx.fillStyle = document.getElementById("textColor").value; 
+            ctx.font = fontWeight + " " + fontSize + "px '" + currentFont + "', cursive"; 
+            ctx.fillStyle = textColorInput.value; 
             ctx.textAlign = align; 
-            if(document.getElementById("textShadow").checked) { 
+            if(textShadowCheck.checked) { 
                 ctx.shadowColor = "rgba(0,0,0,0.3)"; 
                 ctx.shadowBlur = 4; 
                 ctx.shadowOffsetX = 2; 
@@ -868,123 +985,276 @@ Doğum günün kutlu olsun.
         updateResizeHandlePosition(); 
     }
     
-    function updateResizeHandlePosition() { 
-        let handle = document.getElementById("resizeHandle"); 
-        if(!overlayImage) { handle.style.display = "none"; return; } 
-        handle.style.display = "block"; 
-        let canvasRect = canvas.getBoundingClientRect(), containerRect = document.getElementById("canvasContainer").getBoundingClientRect(); 
-        let logoRightX = overlayX + overlayWidth/2, logoBottomY = overlayY + overlayHeight/2; 
-        let handleX = canvasRect.left + (logoRightX * (canvasRect.width/canvas.width)) - 12; 
-        let handleY = canvasRect.top + (logoBottomY * (canvasRect.height/canvas.height)) - 12; 
-        handle.style.left = (handleX - containerRect.left) + "px"; 
-        handle.style.top = (handleY - containerRect.top) + "px"; 
+    function updateResizeHandlePosition() {
+        const handle = document.getElementById("resizeHandle");
+        if(!overlayImage) { handle.style.display = "none"; return; }
+        handle.style.display = "block";
+        const canvasRect = canvas.getBoundingClientRect();
+        const containerRect = document.getElementById("canvasContainer").getBoundingClientRect();
+        const logoRightX = overlayX + overlayWidth/2;
+        const logoBottomY = overlayY + overlayHeight/2;
+        const handleX = canvasRect.left + (logoRightX * (canvasRect.width/canvas.width)) - 12;
+        const handleY = canvasRect.top + (logoBottomY * (canvasRect.height/canvas.height)) - 12;
+        handle.style.left = (handleX - containerRect.left) + "px";
+        handle.style.top = (handleY - containerRect.top) + "px";
     }
     
-    function applyCanvasSize() { 
-        let newW = parseInt(document.getElementById("canvasWidthInput").value), newH = parseInt(document.getElementById("canvasHeightInput").value); 
-        if(isNaN(newW)) newW = 640; if(isNaN(newH)) newH = 580; 
-        newW = Math.min(Math.max(newW,400),1000); newH = Math.min(Math.max(newH,400),900); 
-        canvasWidth = newW; canvasHeight = newH; 
-        overlayX = canvasWidth/2; overlayY = canvasHeight/2; 
-        textPosX = canvasWidth/2; textPosY = canvasHeight/2; 
-        document.getElementById("logoX").value = Math.round(overlayX); 
-        document.getElementById("logoY").value = Math.round(overlayY); 
-        document.getElementById("textX").value = Math.round(textPosX); 
-        document.getElementById("textY").value = Math.round(textPosY); 
+    function applyCanvasSize() {
+        let newWidth = parseInt(document.getElementById("canvasWidthInput").value);
+        let newHeight = parseInt(document.getElementById("canvasHeightInput").value);
+        if (isNaN(newWidth)) newWidth = 640;
+        if (isNaN(newHeight)) newHeight = 580;
+        newWidth = Math.min(Math.max(newWidth, 400), 1000);
+        newHeight = Math.min(Math.max(newHeight, 400), 900);
+        canvasWidth = newWidth;
+        canvasHeight = newHeight;
+        document.getElementById("canvasWidthInput").value = canvasWidth;
+        document.getElementById("canvasHeightInput").value = canvasHeight;
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        drawCard();
+        showAlert("Kart boyutu " + canvasWidth + "x" + canvasHeight + " olarak değiştirildi");
+    }
+    
+    function resetCanvasSize() {
+        canvasWidth = 640;
+        canvasHeight = 580;
+        document.getElementById("canvasWidthInput").value = 640;
+        document.getElementById("canvasHeightInput").value = 580;
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        drawCard();
+        showAlert("Kart boyutu varsayılana (640x580) sıfırlandı");
+    }
+    
+    const logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight");
+    function updateLogoSizeFromWidth(w) { 
+        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+            let newH = Math.round(w * (originalImgH/originalImgW)); 
+            newH = Math.min(Math.max(newH, 10), 2000); 
+            overlayWidth = w; 
+            overlayHeight = newH; 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+        } else { overlayWidth = w; } 
+        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
         drawCard(); 
-        showAlert(`Kart boyutu ${canvasWidth}x${canvasHeight} olarak değiştirildi`); 
     }
-    
-    function resetCanvasSize() { 
-        canvasWidth = 640; canvasHeight = 580; 
-        document.getElementById("canvasWidthInput").value = 640; 
-        document.getElementById("canvasHeightInput").value = 580; 
-        overlayX = 320; overlayY = 290; 
-        textPosX = 320; textPosY = 290; 
-        document.getElementById("logoX").value = 320; 
-        document.getElementById("logoY").value = 290; 
-        document.getElementById("textX").value = 320; 
-        document.getElementById("textY").value = 290; 
+    function updateLogoSizeFromHeight(h) { 
+        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+            let newW = Math.round(h * (originalImgW/originalImgH)); 
+            newW = Math.min(Math.max(newW, 10), 2000); 
+            overlayHeight = h; 
+            overlayWidth = newW; 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+        } else { overlayHeight = h; } 
+        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
         drawCard(); 
-        showAlert("Kart boyutu varsayılana (640x580) sıfırlandı"); 
     }
+    logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); 
+    logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
     
-    function updateColorDots() { 
-        document.getElementById("textColorDot").style.backgroundColor = document.getElementById("textColor").value; 
-        document.getElementById("bgColorDot").style.backgroundColor = document.getElementById("bgColor").value; 
-        document.getElementById("borderOuterDot").style.backgroundColor = document.getElementById("borderOuterColor").value; 
-        document.getElementById("borderInnerDot").style.backgroundColor = document.getElementById("borderInnerColor").value; 
+    const resizeHandle = document.getElementById("resizeHandle");
+    function getMouseCoordCanvas(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else { cx=e.clientX; cy=e.clientY; }
+        return { mx: (cx - rect.left) * scaleX, my: (cy - rect.top) * scaleY };
     }
-    
-    function syncHexFromInputs() { 
-        document.getElementById("customTextHex").value = document.getElementById("textColor").value.toUpperCase(); 
-        document.getElementById("customBgHex").value = document.getElementById("bgColor").value.toUpperCase(); 
-        document.getElementById("customBorderOuterHex").value = document.getElementById("borderOuterColor").value.toUpperCase(); 
-        document.getElementById("customBorderInnerHex").value = document.getElementById("borderInnerColor").value.toUpperCase(); 
-        updateColorDots(); 
+    function isOverResizeHandle(e) {
+        if(!overlayImage) return false;
+        const rect = resizeHandle.getBoundingClientRect();
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
+        return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
     }
-    
-    function showAlert(msg) { 
-        let a = document.getElementById("alertMsg"); 
-        a.textContent = msg; 
-        a.style.display = "block"; 
-        setTimeout(() => a.style.display = "none", 3000); 
+    function onMouseDown(e) {
+        if(isOverResizeHandle(e)) { 
+            isResizing = true; 
+            resizeStartW = overlayWidth; 
+            resizeStartH = overlayHeight; 
+            let {mx,my} = getMouseCoordCanvas(e); 
+            resizeStartMouseX = mx; 
+            resizeStartMouseY = my; 
+            canvas.style.cursor = "nw-resize"; 
+            e.preventDefault(); 
+            return; 
+        }
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(overlayImage) { 
+            let left = overlayX - overlayWidth/2, right = overlayX + overlayWidth/2, top = overlayY - overlayHeight/2, bottom = overlayY + overlayHeight/2; 
+            if(mx>=left-15 && mx<=right+15 && my>=top-15 && my<=bottom+15) { 
+                isDraggingOverlay = true; 
+                dragStartX = mx - overlayX; 
+                dragStartY = my - overlayY; 
+                canvas.style.cursor = "grabbing"; 
+                e.preventDefault(); 
+                return; 
+            } 
+        }
+        let fontSize = parseInt(document.getElementById("fontSize").value); 
+        ctx.font = fontSize + "px '" + currentFont + "', cursive"; 
+        let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; 
+        if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { 
+            isDraggingText = true; 
+            textDragStartX = mx - textPosX; 
+            textDragStartY = my - textPosY; 
+            canvas.style.cursor = "grabbing"; 
+        }
     }
+    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
+    function onMouseMove(e) {
+        if(isResizing && overlayImage) {
+            let {mx,my} = getMouseCoordCanvas(e); let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
+            let newW = Math.min(Math.max(resizeStartW + deltaX, 10), 2000); 
+            let newH = Math.min(Math.max(resizeStartH + deltaY, 10), 2000);
+            if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+                let ratio = originalImgW/originalImgH; 
+                newH = newW / ratio; 
+                if(newH<10) { newH = 10; newW = newH * ratio; } 
+                if(newH>2000) { newH = 2000; newW = newH * ratio; } 
+                if(newW<10) { newW = 10; newH = newW / ratio; } 
+                if(newW>2000) { newW = 2000; newH = newW / ratio; } 
+            }
+            overlayWidth = Math.min(Math.max(newW,10),2000); 
+            overlayHeight = Math.min(Math.max(newH,10),2000); 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+            document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+            document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
+            drawCard(); 
+            return;
+        }
+        if(!isDraggingOverlay && !isDraggingText) return;
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(isDraggingOverlay && overlayImage) { 
+            let nx = Math.min(Math.max(mx - dragStartX, 20), canvas.width-20), ny = Math.min(Math.max(my - dragStartY, 20), canvas.height-20); 
+            overlayX = nx; overlayY = ny; 
+            document.getElementById("logoX").value = Math.round(overlayX); 
+            document.getElementById("logoY").value = Math.round(overlayY); 
+            drawCard(); 
+        }
+        else if(isDraggingText) { 
+            let nx = Math.min(Math.max(mx - textDragStartX, 50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY, 40), canvas.height-40); 
+            textPosX = nx; textPosY = ny; 
+            document.getElementById("textX").value = Math.round(textPosX); 
+            document.getElementById("textY").value = Math.round(textPosY); 
+            drawCard(); 
+        }
+    }
+    function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
+    canvas.addEventListener("mousedown",onMouseDown); window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); canvas.addEventListener("touchstart",onMouseDown); window.addEventListener("touchmove",onMouseMove); window.addEventListener("touchend",onMouseUp);
     
-    // Event listeners
     document.getElementById("applyCanvasSizeBtn").addEventListener("click", applyCanvasSize);
     document.getElementById("resetCanvasSizeBtn").addEventListener("click", resetCanvasSize);
     document.getElementById("logoX").addEventListener("input",(e)=>{overlayX=parseInt(e.target.value); drawCard();});
     document.getElementById("logoY").addEventListener("input",(e)=>{overlayY=parseInt(e.target.value); drawCard();});
+    document.getElementById("resetLogoPosBtn").addEventListener("click",()=>{overlayX=canvasWidth/2; overlayY=canvasHeight/2; document.getElementById("logoX").value=overlayX; document.getElementById("logoY").value=overlayY; drawCard(); showAlert("Logo konumu sıfırlandı");});
+    document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{if(overlayImage && originalImgW){ let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard();} else {overlayWidth=80; overlayHeight=80; logoWSlider.value=80; logoHSlider.value=80; drawCard();} showAlert("Logo boyutu sıfırlandı (80px)");});
     document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();});
     document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();});
-    document.getElementById("logoWidth").addEventListener("input",(e)=>{let w=parseInt(e.target.value); if(keepAspectCheck.checked && originalImgW>0){ let newH=Math.round(w*(originalImgH/originalImgW)); overlayHeight=Math.min(Math.max(newH,10),2000); overlayWidth=w; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; } else { overlayWidth=w; } document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; drawCard(); });
-    document.getElementById("logoHeight").addEventListener("input",(e)=>{let h=parseInt(e.target.value); if(keepAspectCheck.checked && originalImgW>0){ let newW=Math.round(h*(originalImgW/originalImgH)); overlayWidth=Math.min(Math.max(newW,10),2000); overlayHeight=h; document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; } else { overlayHeight=h; } document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard(); });
-    document.getElementById("resetLogoPosBtn").addEventListener("click",()=>{ overlayX=canvasWidth/2; overlayY=canvasHeight/2; document.getElementById("logoX").value=overlayX; document.getElementById("logoY").value=overlayY; drawCard(); showAlert("Logo konumu sıfırlandı"); });
-    document.getElementById("resetTextPosBtn").addEventListener("click",()=>{ textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı"); });
-    document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{ if(overlayImage && originalImgW){ let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard(); } else { overlayWidth=80; overlayHeight=80; document.getElementById("logoWidth").value=80; document.getElementById("logoHeight").value=80; drawCard(); } showAlert("Logo boyutu sıfırlandı (80px)"); });
-    document.getElementById("cardText").addEventListener("input", drawCard);
-    document.getElementById("fontSize").addEventListener("input", drawCard);
-    document.getElementById("fontWeight").addEventListener("change", drawCard);
-    document.getElementById("textAlign").addEventListener("change", drawCard);
-    document.getElementById("borderWidth").addEventListener("input", drawCard);
+    document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
+    document.getElementById("cardText").addEventListener("input",drawCard);
+    document.getElementById("fontSize").addEventListener("input",drawCard);
+    document.getElementById("fontWeight").addEventListener("change",drawCard);
+    document.getElementById("textAlign").addEventListener("change",drawCard);
+    borderWidthSlider.addEventListener("input",drawCard);
     document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");});
-    document.getElementById("textShadow").addEventListener("change", drawCard);
-    document.getElementById("gradientToggle").addEventListener("change",()=>{document.getElementById("gradientControls").style.display=document.getElementById("gradientToggle").checked?"flex":"none"; drawCard();});
-    document.getElementById("gradColor1").addEventListener("input", drawCard);
-    document.getElementById("gradColor2").addEventListener("input", drawCard);
-    document.getElementById("gradAngle").addEventListener("change", drawCard);
-    document.getElementById("textColor").addEventListener("input",()=>{syncHexFromInputs(); drawCard();});
-    document.getElementById("bgColor").addEventListener("input",()=>{syncHexFromInputs(); drawCard();});
-    document.getElementById("borderOuterColor").addEventListener("input",()=>{syncHexFromInputs(); drawCard();});
-    document.getElementById("borderInnerColor").addEventListener("input",()=>{syncHexFromInputs(); drawCard();});
+    textShadowCheck.addEventListener("change",drawCard);
     
-    function downloadImage(format){ let link=document.createElement("a"); link.download=format==="png"?"kutlama_karti.png":"kutlama_karti.jpg"; link.href=canvas.toDataURL(format==="png"?"image/png":"image/jpeg",0.95); link.click(); showAlert(`${format.toUpperCase()} indirildi!`); }
-    document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png"));
+    function downloadImage(format) { 
+        let link = document.createElement("a"); 
+        link.download = format==="png" ? "kutlama_karti.png" : "kutlama_karti.jpg"; 
+        link.href = canvas.toDataURL(format==="png" ? "image/png" : "image/jpeg", 0.95); 
+        link.click(); 
+        showAlert(format.toUpperCase() + " indirildi!"); 
+    }
+    document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); 
     document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
     
-    function loadBg(file){ if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
-    function loadOverlay(file){ if(!file.type.match("image.*")) return; let r=new FileReader(); r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; r.readAsDataURL(file);}
+    function updateCustomFontsFooter() {
+        const footerDiv = document.getElementById("customFontsListDisplay");
+        if (!footerDiv) return;
+        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
+        else { footerDiv.innerHTML = customFontsList.map(font => "<span>⭐ " + font + "</span>").join(''); }
+    }
     
-    const dropZone = document.getElementById("dropZone"), bgInput = document.getElementById("bgImageInput");
-    dropZone.addEventListener("click",()=>bgInput.click());
-    dropZone.addEventListener("dragover",e=>{e.preventDefault(); dropZone.classList.add("dragover");});
-    dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("dragover"));
-    dropZone.addEventListener("drop",e=>{e.preventDefault(); dropZone.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);});
-    bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);});
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+        let htmlContent = document.documentElement.outerHTML;
+        const ozelIkonlar = customIconsList.join(',');
+        const ozelFontlar = customFontsList.join(',');
+        const yuklemeScripti = '<scr' + 'ipt>' +
+            'window.addEventListener("DOMContentLoaded",function(){' +
+            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
+            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
+            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
+            'var dizi=ikonlar.split(",");' +
+            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
+            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
+            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
+            'var dizi2=fontlar.split(",");' +
+            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
+            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
+            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
+            '</scr' + 'ipt>';
+        if (htmlContent.indexOf('</head>') > -1) {
+            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
+        }
+        const blob = new Blob([htmlContent], {type: "text/html"});
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "kutlama_karti.html";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.');
+    });
+    
+    function loadBg(file) { 
+        if(!file.type.match("image.*")) return; 
+        let r=new FileReader(); 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; 
+        r.readAsDataURL(file);
+    }
+    function loadOverlay(file) { 
+        if(!file.type.match("image.*")) return; 
+        let r=new FileReader(); 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; 
+        r.readAsDataURL(file);
+    }
+    const dropZone=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
+    dropZone.addEventListener("click",()=>bgInput.click()); 
+    dropZone.addEventListener("dragover",e=>{e.preventDefault(); dropZone.classList.add("dragover");}); 
+    dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("dragover")); 
+    dropZone.addEventListener("drop",e=>{e.preventDefault(); dropZone.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); 
+    bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); 
     document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
     
-    const overlayDrop = document.getElementById("overlayDropZone"), overlayInput = document.getElementById("overlayImageInput");
-    overlayDrop.addEventListener("click",()=>overlayInput.click());
-    overlayDrop.addEventListener("dragover",e=>{e.preventDefault(); overlayDrop.classList.add("dragover");});
-    overlayDrop.addEventListener("dragleave",()=>overlayDrop.classList.remove("dragover"));
-    overlayDrop.addEventListener("drop",e=>{e.preventDefault(); overlayDrop.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadOverlay(e.dataTransfer.files[0]);});
-    overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);});
+    const overlayDrop=document.getElementById("overlayDropZone"), overlayInput=document.getElementById("overlayImageInput"); 
+    overlayDrop.addEventListener("click",()=>overlayInput.click()); 
+    overlayDrop.addEventListener("dragover",e=>{e.preventDefault(); overlayDrop.classList.add("dragover");}); 
+    overlayDrop.addEventListener("dragleave",()=>overlayDrop.classList.remove("dragover")); 
+    overlayDrop.addEventListener("drop",e=>{e.preventDefault(); overlayDrop.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadOverlay(e.dataTransfer.files[0]);}); 
+    overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);}); 
     document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
     
-    function preloadFonts(){ fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,"+")}:wght@300;400;600;700&display=swap`; document.head.appendChild(l);});} preloadFonts();
+    function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family=" + f.replace(/ /g,"+") + ":wght@300;400;600;700&display=swap"; document.head.appendChild(l);});} 
+    preloadFonts();
     
-    function renderFontList(){ 
+    function renderFontList() { 
         let term=document.getElementById("searchInput").value.toLowerCase(); 
         let cont=document.getElementById("fontList"); 
         cont.innerHTML=""; 
@@ -993,17 +1263,11 @@ Doğum günün kutlu olsun.
             if(term && !f.toLowerCase().includes(term)) return; 
             let div=document.createElement("div"); 
             div.className="font-item" + (customFontsList.includes(f) ? " custom-font-item" : ""); 
-            div.onclick=()=>{currentFont=f; drawCard(); showAlert(`Font: ${f}`);}; 
-            div.innerHTML=`<span class="font-name" style="font-family: '${f}', cursive;">${f}</span><span class="font-badge">${customFontsList.includes(f) ? '⭐' : '🖊️'}</span>`; 
+            div.onclick=()=>{currentFont=f; drawCard(); showAlert("Font: " + f);}; 
+            div.innerHTML="<span class='font-name' style='font-family: \"" + f + "\", cursive;'>" + f + "</span><span class='font-badge'>" + (customFontsList.includes(f) ? "⭐" : "🖊️") + "</span>"; 
             cont.appendChild(div);
         });
         updateCustomFontsFooter();
-    }
-    
-    function updateCustomFontsFooter() { 
-        let footer = document.getElementById("customFontsListDisplay"); 
-        if(customFontsList.length === 0) footer.innerHTML = "Henüz özel font eklenmedi"; 
-        else footer.innerHTML = customFontsList.map(f => `<span>⭐ ${f}</span>`).join(''); 
     }
     
     document.getElementById("addCustomFontBtn").addEventListener("click", () => {
@@ -1012,8 +1276,8 @@ Doğum günün kutlu olsun.
         if (!fontUrl || !fontName) { showAlert("❌ Lütfen hem font URL'sini hem de font adını girin!", "error"); return; }
         if (!fontUrl.includes('fonts.googleapis.com')) { showAlert("⚠️ Lütfen geçerli bir Google Fonts URL'si girin!", "error"); return; }
         const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontUrl; document.head.appendChild(link);
-        if (!customFontsList.includes(fontName)) { customFontsList.push(fontName); renderFontList(); showAlert(`✅ "${fontName}" fontu başarıyla EKLENDI!`, "success"); } 
-        else { showAlert(`⚠️ "${fontName}" fontu zaten mevcut!`, "warning"); }
+        if (!customFontsList.includes(fontName)) { customFontsList.push(fontName); renderFontList(); showAlert("✅ \"" + fontName + "\" fontu başarıyla EKLENDI!", "success"); } 
+        else { showAlert("⚠️ \"" + fontName + "\" fontu zaten mevcut!", "warning"); }
         document.getElementById("customFontUrl").value = ""; document.getElementById("customFontName").value = "";
     });
     
@@ -1045,10 +1309,10 @@ Doğum günün kutlu olsun.
         if (addedCount > 0) {
             renderSymbolPanel();
             updateIconPreview(validIcons);
-            showAlert(`✨ ${addedCount} yeni özel ikon EKLENDI! Toplam özel ikon: ${customIconsList.length}`, "success");
+            showAlert("✨ " + addedCount + " yeni özel ikon EKLENDI! Toplam özel ikon: " + customIconsList.length, "success");
             document.getElementById("customIconsInput").value = "";
         } else {
-            showAlert(`ℹ️ Tüm ikonlar zaten mevcut. (${validIcons.length} adet)`, "info");
+            showAlert("ℹ️ Tüm ikonlar zaten mevcut. (" + validIcons.length + " adet)", "info");
             updateIconPreview(validIcons);
         }
     }
@@ -1059,22 +1323,22 @@ Doğum günün kutlu olsun.
         previewDiv.innerHTML = "";
         icons.slice(0, 30).forEach(icon => {
             const span = document.createElement("span"); span.className = "preview-icon-mini"; span.textContent = icon;
-            span.title = `"${icon}" eklemek için tıkla`;
-            span.onclick = () => { document.getElementById("cardText").value += icon; drawCard(); showAlert(`✨ "${icon}" eklendi`); };
+            span.title = "\"" + icon + "\" eklemek için tıkla";
+            span.onclick = () => { document.getElementById("cardText").value += icon; drawCard(); showAlert("✨ \"" + icon + "\" eklendi"); };
             previewDiv.appendChild(span);
         });
-        if (icons.length > 30) { const moreSpan = document.createElement("span"); moreSpan.textContent = `+${icons.length - 30}`; moreSpan.style.fontSize = "11px"; moreSpan.style.padding = "4px 8px"; previewDiv.appendChild(moreSpan); }
+        if (icons.length > 30) { const moreSpan = document.createElement("span"); moreSpan.textContent = "+" + (icons.length - 30); moreSpan.style.fontSize = "11px"; moreSpan.style.padding = "4px 8px"; previewDiv.appendChild(moreSpan); }
     }
     
     function renderSymbolPanel() {
         const panel = document.getElementById("symbolPanel");
         const allSymbols = [...DEFAULT_SYMBOLS, ...customIconsList];
-        panel.innerHTML = `<span style="font-size:12px; font-weight:600;">✨ ${allSymbols.length} Sembol & Emoji (${customIconsList.length} özel): </span>`;
+        panel.innerHTML = "<span style='font-size:12px; font-weight:600;'>✨ " + allSymbols.length + " Sembol & Emoji (" + customIconsList.length + " özel): </span>";
         allSymbols.forEach(sym => {
             if (sym && typeof sym === "string" && sym.length > 0 && sym.charCodeAt(0) !== 65533) {
                 const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym;
-                btn.title = `"${sym}" eklemek için tıkla`;
-                btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert(`✨ "${sym}" eklendi`); document.getElementById("cardText").focus(); };
+                btn.title = "\"" + sym + "\" eklemek için tıkla";
+                btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert("✨ \"" + sym + "\" eklendi"); document.getElementById("cardText").focus(); };
                 panel.appendChild(btn);
             }
         });
@@ -1086,7 +1350,7 @@ Doğum günün kutlu olsun.
         renderSymbolPanel();
         document.getElementById("customIconsPreview").innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>';
         document.getElementById("customIconsInput").value = "";
-        showAlert(`🗑️ Tüm özel ikonlar temizlendi. Sadece varsayılan ${DEFAULT_SYMBOLS.length} sembol kaldı.`, "info");
+        showAlert("🗑️ Tüm özel ikonlar temizlendi. Sadece varsayılan " + DEFAULT_SYMBOLS.length + " sembol kaldı.", "info");
     });
     
     function setupCollapsible(headerId, contentId) {
@@ -1096,138 +1360,25 @@ Doğum günün kutlu olsun.
         content.classList.remove("open"); header.classList.remove("open");
     }
     
-    // Mouse drag işlemleri (logo ve metin için)
-    function getMouseCoordCanvas(e){
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-        let cx, cy; 
-        if(e.touches){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; e.preventDefault(); } 
-        else { cx = e.clientX; cy = e.clientY; }
-        return { mx: (cx - rect.left) * scaleX, my: (cy - rect.top) * scaleY };
+    function showAlert(msg, type) {
+        const a = document.getElementById("alertMsg");
+        a.textContent = msg; a.style.display = "block";
+        if (type === "error") a.style.background = "#ffe6e6";
+        else if (type === "success") a.style.background = "#e6ffe6";
+        else if (type === "warning") a.style.background = "#fff3e6";
+        else a.style.background = "#efe6ff";
+        setTimeout(() => a.style.display = "none", 4000);
     }
     
-    function isOverResizeHandle(e){
-        if(!overlayImage) return false;
-        const rect = document.getElementById("resizeHandle").getBoundingClientRect();
-        let cx, cy; 
-        if(e.touches){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; } 
-        else { cx = e.clientX; cy = e.clientY; }
-        return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
-    }
-    
-    function onMouseDown(e){
-        if(isOverResizeHandle(e)){ 
-            isResizing = true; 
-            resizeStartW = overlayWidth; 
-            resizeStartH = overlayHeight; 
-            let {mx,my} = getMouseCoordCanvas(e); 
-            resizeStartMouseX = mx; 
-            resizeStartMouseY = my; 
-            canvas.style.cursor = "nw-resize"; 
-            e.preventDefault(); 
-            return; 
-        }
-        let {mx,my} = getMouseCoordCanvas(e);
-        if(overlayImage){
-            let left = overlayX - overlayWidth/2, right = overlayX + overlayWidth/2, top = overlayY - overlayHeight/2, bottom = overlayY + overlayHeight/2;
-            if(mx >= left-15 && mx <= right+15 && my >= top-15 && my <= bottom+15){ 
-                isDraggingOverlay = true; 
-                dragStartX = mx - overlayX; 
-                dragStartY = my - overlayY; 
-                canvas.style.cursor = "grabbing"; 
-                e.preventDefault(); 
-                return; 
-            }
-        }
-        let fontSize = parseInt(document.getElementById("fontSize").value); 
-        ctx.font = `${fontSize}px '${currentFont}', cursive`; 
-        let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; 
-        if(mx >= left-40 && mx <= right+40 && my >= top-40 && my <= bottom+40){ 
-            isDraggingText = true; 
-            textDragStartX = mx - textPosX; 
-            textDragStartY = my - textPosY; 
-            canvas.style.cursor = "grabbing"; 
-        }
-    }
-    
-    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
-    
-    function onMouseMove(e){
-        if(isResizing && overlayImage){
-            let {mx,my} = getMouseCoordCanvas(e); 
-            let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
-            let newW = Math.min(Math.max(resizeStartW + deltaX, 10), 2000); 
-            let newH = Math.min(Math.max(resizeStartH + deltaY, 10), 2000);
-            if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0){ 
-                let ratio = originalImgW/originalImgH; 
-                newH = newW / ratio; 
-                if(newH<10){ newH = 10; newW = newH * ratio; } 
-                if(newH>2000){ newH = 2000; newW = newH * ratio; } 
-                if(newW<10){ newW = 10; newH = newW / ratio; } 
-                if(newW>2000){ newW = 2000; newH = newW / ratio; } 
-            }
-            overlayWidth = Math.min(Math.max(newW,10),2000); 
-            overlayHeight = Math.min(Math.max(newH,10),2000); 
-            document.getElementById("logoWidth").value = overlayWidth; 
-            document.getElementById("logoHeight").value = overlayHeight; 
-            document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
-            document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
-            drawCard(); 
-            return;
-        }
-        if(!isDraggingOverlay && !isDraggingText) return;
-        let {mx,my} = getMouseCoordCanvas(e);
-        if(isDraggingOverlay && overlayImage){ 
-            let nx = Math.min(Math.max(mx - dragStartX, 20), canvas.width-20), ny = Math.min(Math.max(my - dragStartY, 20), canvas.height-20); 
-            overlayX = nx; overlayY = ny; 
-            document.getElementById("logoX").value = Math.round(overlayX); 
-            document.getElementById("logoY").value = Math.round(overlayY); 
-            drawCard(); 
-        }
-        else if(isDraggingText){ 
-            let nx = Math.min(Math.max(mx - textDragStartX, 50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY, 40), canvas.height-40); 
-            textPosX = nx; textPosY = ny; 
-            document.getElementById("textX").value = Math.round(textPosX); 
-            document.getElementById("textY").value = Math.round(textPosY); 
-            drawCard(); 
-        }
-    }
-    
-    function onMouseUp(){ 
-        isDraggingOverlay = false; 
-        isDraggingText = false; 
-        isResizing = false; 
-        canvas.style.cursor = "default"; 
-    }
-    
-    canvas.addEventListener("mousedown", onMouseDown); 
-    window.addEventListener("mousemove", onMouseMove); 
-    window.addEventListener("mouseup", onMouseUp); 
-    canvas.addEventListener("touchstart", onMouseDown); 
-    window.addEventListener("touchmove", onMouseMove); 
-    window.addEventListener("touchend", onMouseUp);
-    
-    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
-        let html = document.documentElement.outerHTML;
-        let blob = new Blob([html], {type: "text/html"});
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "kutlama_karti.html";
-        a.click();
-        URL.revokeObjectURL(a.href);
-        showAlert("HTML dosyası indirildi!");
-    });
-    
-    renderFontList(); 
-    syncHexFromInputs(); 
-    applyCanvasSize(); 
-    updateColorDots(); 
+    updateAllDisplays();
+    renderFontList();
+    applyCanvasSize();
     renderSymbolPanel();
     setupCollapsible("fontPanelHeader", "fontPanelContent");
     setupCollapsible("customFontPanelHeader", "customFontPanelContent");
     setupCollapsible("customIconPanelHeader", "customIconPanelContent");
-    if(document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
-    window.addEventListener("resize", () => drawCard());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
+    window.addEventListener("resize", () => { drawCard(); });
 </script>
 </body>
 </html>
