@@ -1,0 +1,1016 @@
+[
+  {
+    "focusGlowEnabled": false,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.88328",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86751",
+            "type": "series"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "netflix_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "netflix_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://www.nuvioapp.space/uploads/covers/0696cf9a-3612-4d9b-bb65-72c6c5a060ba.gif",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://i.pinimg.com/originals/bb/74/04/bb74046420c4c992b8cabc6e667abe40.gif",
+        "hideTitle": false,
+        "id": "folder-229bc31b",
+        "tileShape": "LANDSCAPE",
+        "title": "Netflix"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86755",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86753",
+            "type": "series"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "amazon_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "amazon_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://www.nuvioapp.space/uploads/covers/a6f99245-c1af-4502-866c-2339ca831597.png",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://media1.tenor.com/m/T7L_NCdPIvAAAAAC/prime-video.gif",
+        "hideTitle": false,
+        "id": "folder-73b01cea",
+        "tileShape": "LANDSCAPE",
+        "title": "Prime Video"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "apple_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "apple_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://www.nuvioapp.space/uploads/covers/1a8c8f2c-c51d-47c6-835e-bee6bbf5da0e.jpg",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://media1.tenor.com/m/1FiEEnGTgUcAAAAC/apple-appletv.gif",
+        "hideTitle": false,
+        "id": "folder-620bf4dc",
+        "tileShape": "LANDSCAPE",
+        "title": "Apple TV"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "disney_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "disney_series",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86759",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86758",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://www.nuvioapp.space/uploads/covers/ce7f8d04-5399-4456-8a0d-7deb9fcec096.png",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://image2url.com/r2/default/gifs/1775853307569-71b9019d-4620-4a71-8b92-7eb045843b1a.gif",
+        "hideTitle": false,
+        "id": "folder-5c1da038",
+        "tileShape": "LANDSCAPE",
+        "title": "Disney"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86762",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86761",
+            "type": "series"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "paramount_movies",
+            "type": "movie"
+          }
+        ],
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://ingeniousguru.com/wp-content/uploads/2022/10/Paramount.gif",
+        "hideTitle": false,
+        "id": "folder-ae4503c2",
+        "tileShape": "LANDSCAPE",
+        "title": "Paramount +"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.89647",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.89649",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://media1.tenor.com/m/pjHZN-n1kvkAAAAC/hbo-max.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-def9d8f5",
+        "tileShape": "LANDSCAPE",
+        "title": "HBO Max"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.88327",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.88327",
+            "type": "series"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "hulu_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "hulu_series",
+            "type": "series"
+          }
+        ],
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://nuvioapp.space/uploads/covers/c237c4b2-875e-4d54-802a-42a4316ff7ab.gif",
+        "hideTitle": false,
+        "id": "folder-784f953c",
+        "tileShape": "LANDSCAPE",
+        "title": "Hulu"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "shudder_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "shudder_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/9a804000-5337-4031-9669-7be45c213f6a.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-d0d00205",
+        "tileShape": "LANDSCAPE",
+        "title": "Shudder"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "community.bharatbinge",
+            "catalogId": "flixpatrol-netflix-movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "community.bharatbinge",
+            "catalogId": "flixpatrol-netflix-series",
+            "type": "series"
+          },
+          {
+            "addonId": "org.hilay.tv.maldivesnet",
+            "catalogId": "hilay_catalog",
+            "type": "tv"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/Pr4XcqRq/ezgif-com-video-to-gif-converter.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-19410393",
+        "tileShape": "LANDSCAPE",
+        "title": "JioHotstar"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "community.bharatbinge",
+            "catalogId": "provider-sonyliv-movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "community.bharatbinge",
+            "catalogId": "provider-sonyliv-series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://cdn.postimage.me/2026/04/11/1000046089.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-14aec6d4",
+        "tileShape": "LANDSCAPE",
+        "title": "SonyLiv"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.38516",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.74627",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/be914269-f8c5-4c51-8aa5-86581074c10f.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-96114624",
+        "tileShape": "LANDSCAPE",
+        "title": "Sky"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "streaming.cru_movie",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "streaming.cru_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://ingeniousguru.com/wp-content/uploads/2022/10/creeky-roll.gif",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://images.squarespace-cdn.com/content/v1/538a8686e4b09c3b669dd717/1612143922667-WBK881CYC5VHIAFM649B/CR+Logos-high.gif?format=1500w",
+        "hideTitle": false,
+        "id": "folder-a2e0750d",
+        "tileShape": "LANDSCAPE",
+        "title": "Crunchy Roll"
+      }
+    ],
+    "id": "collection-70f61646",
+    "pinToTop": true,
+    "showAllTab": false,
+    "title": "Streaming Services",
+    "viewMode": "TABBED_GRID"
+  },
+  {
+    "focusGlowEnabled": true,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.102972",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://comicbook.com/wp-content/uploads/sites/4/2024/10/Harry-Potter-logo-Wizarding-World-logo.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-f6c393d3",
+        "tileShape": "LANDSCAPE",
+        "title": "Wizarding World"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.3021",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.140370",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/zGMpg1RJ/DC-Universe.jpg",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://i.ibb.co/chw2zR64/dc-superhero-films-opening-introduction-t9kpwalz3ep57s9i.gif",
+        "hideTitle": false,
+        "id": "folder-4fdf9783",
+        "tileShape": "LANDSCAPE",
+        "title": "DC Universe"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.31959",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.ibb.co/zHbdGxHT/marvel-studios.gif",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://giffiles.alphacoders.com/127/12700.gif",
+        "hideTitle": false,
+        "id": "folder-d2a520bc",
+        "tileShape": "LANDSCAPE",
+        "title": "MCU Universe"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.155546",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/RC2Ny8Ds/X-Men.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-8847a4cb",
+        "tileShape": "LANDSCAPE",
+        "title": "X-MEN"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.155432",
+            "type": "all"
+          }
+        ],
+        "coverEmoji": "https://i.pinimg.com/originals/d0/45/6e/d0456e80877753487e03deaab16c3d26.gif",
+        "coverImageUrl": "https://i.pinimg.com/originals/d0/45/6e/d0456e80877753487e03deaab16c3d26.gif",
+        "focusGifEnabled": false,
+        "focusGifUrl": "https://i.postimg.cc/Wz08p7rv/Star-Wars.jpg",
+        "hideTitle": true,
+        "id": "folder-7a9d5b25",
+        "tileShape": "LANDSCAPE",
+        "title": "Star Wars"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.94304",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/d1bnKfh6/Lordoftherings.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-d626f131",
+        "tileShape": "LANDSCAPE",
+        "title": "Lord Of The Rings & Hobbit"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.82145",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/Gmwdxn5R/Pirates.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-82b84797",
+        "tileShape": "LANDSCAPE",
+        "title": "Pirates Of The Caribbean"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.46500",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/FzfKsZ29/Hunger-Games.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-a37e2afb",
+        "tileShape": "LANDSCAPE",
+        "title": "Hunger Games"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.102982",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/hjJDMNJn/JWorld.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-afc923c0",
+        "tileShape": "LANDSCAPE",
+        "title": "Jurassic World"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.29466",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/nLSV4nhT/AVATAR.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-ac3d9592",
+        "tileShape": "LANDSCAPE",
+        "title": "Avatar"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.115466",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/HnrT6frm/Dune.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-fc84cf19",
+        "tileShape": "LANDSCAPE",
+        "title": "Dune"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.20714",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/tCbrtFwS/Indiana-Jo.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-af6055e1",
+        "tileShape": "LANDSCAPE",
+        "title": "Indiana Jones"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.7947",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/L5LHFfB0/007.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-3d66c705",
+        "tileShape": "LANDSCAPE",
+        "title": "007"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.31309",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/sfpWfstZ/MI.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-ea502e9b",
+        "tileShape": "LANDSCAPE",
+        "title": "Mission Impossible"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.119155",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/X7YwbzbT/The-Godfather.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-b26870ca",
+        "tileShape": "LANDSCAPE",
+        "title": "The Godfather"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.143882",
+            "type": "all"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/W14q7rtM/JW.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-48c319e6",
+        "tileShape": "LANDSCAPE",
+        "title": "John Wick"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.152315",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://i.postimg.cc/CLw3Lyhx/Transformers.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-1dfa03c2",
+        "tileShape": "LANDSCAPE",
+        "title": "Transformers"
+      }
+    ],
+    "id": "collection-b42a856b",
+    "pinToTop": true,
+    "showAllTab": false,
+    "title": "Collection",
+    "viewMode": "TABBED_GRID"
+  },
+  {
+    "focusGlowEnabled": false,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "action_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "action_series",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.91211",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/action-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-f866080b",
+        "tileShape": "LANDSCAPE",
+        "title": "New"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "scifi_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "scifi_series",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.91220",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.91221",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/sci-fi-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-fbc2956a",
+        "tileShape": "LANDSCAPE",
+        "title": "Sci-Fi"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "horror_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.91215",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/horror-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-758fceaa",
+        "tileShape": "LANDSCAPE",
+        "title": "Horror"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "thriller_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "thriller_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/thriller-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-a2c10dc0",
+        "tileShape": "LANDSCAPE",
+        "title": "Thriller"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "fantasy_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "fantasy_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/fantasy-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-5b9f8525",
+        "tileShape": "LANDSCAPE",
+        "title": "Fantasy"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "animation_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "animation_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/animation-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-22305fcd",
+        "tileShape": "LANDSCAPE",
+        "title": "Animation"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.123222",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/adventure-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-378d9f2e",
+        "tileShape": "LANDSCAPE",
+        "title": "Adventure"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "comedy_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "comedy_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/comedy-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-25867f20",
+        "tileShape": "LANDSCAPE",
+        "title": "Comedy"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "family_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "family_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/family-movie-night-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-1193eb5c",
+        "tileShape": "LANDSCAPE",
+        "title": "Family Movie Night"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "theme_superhero",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/superheroes-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-44e122b8",
+        "tileShape": "LANDSCAPE",
+        "title": "Superhero & Villains"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "theme_serialkiller",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "crime_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "crime_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://raw.githubusercontent.com/itsrenoria/fusion-starter-kit/refs/heads/main/resources/widgets/genres/wide/dannyrutledge/crime-wide.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-b7faf4d2",
+        "tileShape": "LANDSCAPE",
+        "title": "Crime"
+      }
+    ],
+    "id": "collection-fd30f5c0",
+    "pinToTop": true,
+    "showAllTab": true,
+    "title": "Genre",
+    "viewMode": "TABBED_GRID"
+  },
+  {
+    "focusGlowEnabled": false,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.3928",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/882cf7a8-9aa6-4673-81c1-d3ed7a859e95.jpg",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-cfb76791",
+        "tileShape": "LANDSCAPE",
+        "title": "DreamWorks"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.2636",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/aba80c00-dc90-481f-b477-a91c7ce337e3.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-8960fe75",
+        "tileShape": "LANDSCAPE",
+        "title": "Pixar"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.47292",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/2b02632a-f50a-454f-abe4-11187b0fe15d.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-1846c946",
+        "tileShape": "LANDSCAPE",
+        "title": "Walt Disney Animation"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.125997",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXhmZWh3ZDRsZGI1MDRqMWFqbzdmNmh4em8wcTVxdHNmeXR5ajV0ZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/khKHUbMYTXLb2/giphy.gif",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-70556a34",
+        "tileShape": "LANDSCAPE",
+        "title": "Walt Disney Pictures"
+      }
+    ],
+    "id": "collection-8ca9b2fb",
+    "pinToTop": true,
+    "showAllTab": true,
+    "title": "Picture Houses",
+    "viewMode": "TABBED_GRID"
+  },
+  {
+    "focusGlowEnabled": false,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86710",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86934",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "now_movies",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/4cdb935c-1402-4882-9290-9b8215ee7b33.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-dfb41028",
+        "tileShape": "POSTER",
+        "title": "New"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.14",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "top_movies",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/0d2090c9-99b2-49c2-af19-afa3e7d7f77d.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-102063a8",
+        "tileShape": "POSTER",
+        "title": "Top All Time"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "trending_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "trending_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/3ef72465-8d38-4248-9924-61302f2708e0.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-9ecbf7ad",
+        "tileShape": "POSTER",
+        "title": "Trending"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.58378",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.58378",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86934",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "popular_movies",
+            "type": "movie"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/4b0f32ff-6f5d-402d-839d-2c6ac4f5877c.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-cfea5919",
+        "tileShape": "POSTER",
+        "title": "Popular"
+      },
+      {
+        "catalogSources": [
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "now_movies",
+            "type": "movie"
+          },
+          {
+            "addonId": "org.kris.ultra.max.all.v5",
+            "catalogId": "top_series",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://nuvioapp.space/uploads/covers/1c13e25d-9adb-48f0-b589-3cf2907792ab.png",
+        "focusGifEnabled": false,
+        "hideTitle": false,
+        "id": "folder-a6ad9c64",
+        "tileShape": "POSTER",
+        "title": "Favourites"
+      }
+    ],
+    "id": "collection-a1c8ff48",
+    "pinToTop": true,
+    "showAllTab": true,
+    "title": "Picks",
+    "viewMode": "TABBED_GRID"
+  }
+]
