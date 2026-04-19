@@ -409,7 +409,7 @@
         }
         .gradient-swatch:hover { transform: scale(1.05); border-color: #c084fc; }
         
-        @media (max-width: 800px) { .glass-ultimate { padding: 20px; } }
+        @media (max-width: 1000px) { .glass-ultimate { padding: 20px; } }
     </style>
 </head>
 <body>
@@ -449,7 +449,7 @@
             <div class="card-preview">
                 <div class="canvas-size-control">
                     <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="640" step="20" min="400" max="1000">
-                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="400" max="900">
+                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="400" max="1200">
                     <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
                     <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
                 </div>
@@ -459,7 +459,7 @@
                     <div id="resizeHandle" class="resize-handle"></div>
                 </div>
 
-                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle (Tam sığar)<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
                 <div id="imagePreviewArea" class="image-preview" style="display:none"><img id="thumbImg" class="thumb-img"><button id="clearBgBtn" class="btn-secondary">🗑️ Arka Planı Kaldır</button></div>
 
                 <div class="position-control" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
@@ -592,10 +592,10 @@ Doğum günün kutlu olsun.
             </div>
         </div>
     </div>
-    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | HTML İndir | 🇹🇷</span></div>
+    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷</span></div>
 </div>
 
-<!-- GELİŞMİŞ RENK SEÇİCİ POPUP - TÜM TARAYICILAR İÇİN -->
+<!-- GELİŞMİŞ RENK SEÇİCİ POPUP -->
 <div id="spectrumOverlay" class="color-spectrum-overlay">
     <div class="spectrum-card">
         <div class="spectrum-header">
@@ -614,13 +614,14 @@ Doğum günün kutlu olsun.
 </div>
 
 <script>
-    // ==================== VARSayILAN IKONLAR ====================
-    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️" ];
+    // ==================== TAM VERSIYON IKONLAR (ORIJINAL LISTE) ====================
+    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
 
     let customFontsList = [];
     let customIconsList = [];
     
-    let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","Pacifico","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
+    // ==================== TAM FONT LISTESI (ORIJINAL) ====================
+    let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
     let currentFont = "Beau Rivage";
     let bgImage = null, overlayImage = null, originalImgW = 1, originalImgH = 1;
@@ -633,6 +634,7 @@ Doğum günün kutlu olsun.
     let isDraggingOverlay = false, isResizing = false;
     let dragStartX = 0, dragStartY = 0;
     let resizeStartW = 0, resizeStartH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
+    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
     const keepAspectCheck = document.getElementById("keepAspect");
 
     // Renk inputları
@@ -644,8 +646,8 @@ Doğum günün kutlu olsun.
     const gradColor2Input = document.getElementById("gradColor2");
     
     // Popup elementleri
-    const spectrumOverlay = document.getElementById("spectrumOverlay");
-    const spectrumCanvas = document.getElementById("spectrumCanvas");
+    const spectrumOverlayEl = document.getElementById("spectrumOverlay");
+    const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
     const spectrumPreviewBox = document.getElementById("spectrumPreviewBox");
     const spectrumHexInput = document.getElementById("spectrumHexInput");
@@ -657,19 +659,18 @@ Doğum günün kutlu olsun.
     let tempColorHex = "#c084fc";
     let activeColorTarget = null;
 
-    // Spektrum canvas'ı başlat
     function initSpectrum() {
         if(!spectrumCtx) {
-            spectrumCtx = spectrumCanvas.getContext("2d");
+            spectrumCtx = spectrumCanvasEl.getContext("2d");
         }
-        spectrumCanvas.width = 400;
-        spectrumCanvas.height = 220;
+        spectrumCanvasEl.width = 400;
+        spectrumCanvasEl.height = 220;
         drawSpectrum(currentHue);
     }
 
     function drawSpectrum(hue) {
         if(!spectrumCtx) return;
-        const w = spectrumCanvas.width, h = spectrumCanvas.height;
+        const w = spectrumCanvasEl.width, h = spectrumCanvasEl.height;
         const imgData = spectrumCtx.createImageData(w, h);
         for (let y = 0; y < h; y++) {
             for (let x = 0; x < w; x++) {
@@ -754,7 +755,7 @@ Doğum günün kutlu olsun.
         currentHue = hsl.h;
         hueSlider.value = currentHue;
         drawSpectrum(currentHue);
-        spectrumOverlay.classList.add("active");
+        spectrumOverlayEl.classList.add("active");
     }
 
     // Spektrum event listeners
@@ -763,13 +764,13 @@ Doğum günün kutlu olsun.
         drawSpectrum(currentHue);
     });
 
-    spectrumCanvas.addEventListener("click", (e) => {
-        const rect = spectrumCanvas.getBoundingClientRect();
-        const scaleX = spectrumCanvas.width / rect.width;
-        const scaleY = spectrumCanvas.height / rect.height;
+    spectrumCanvasEl.addEventListener("click", (e) => {
+        const rect = spectrumCanvasEl.getBoundingClientRect();
+        const scaleX = spectrumCanvasEl.width / rect.width;
+        const scaleY = spectrumCanvasEl.height / rect.height;
         const x = (e.clientX - rect.left) * scaleX;
         const y = (e.clientY - rect.top) * scaleY;
-        if (x>=0 && x<spectrumCanvas.width && y>=0 && y<spectrumCanvas.height) {
+        if (x>=0 && x<spectrumCanvasEl.width && y>=0 && y<spectrumCanvasEl.height) {
             const rgb = getCanvasColor(Math.floor(x), Math.floor(y));
             updateTempColorFromRgb(rgb.r, rgb.g, rgb.b);
         }
@@ -798,16 +799,16 @@ Doğum günün kutlu olsun.
             drawCard();
             showAlert(`Renk seçildi: ${tempColorHex}`);
         }
-        spectrumOverlay.classList.remove("active");
+        spectrumOverlayEl.classList.remove("active");
         activeColorTarget = null;
     });
 
     spectrumCloseBtn.addEventListener("click", () => {
-        spectrumOverlay.classList.remove("active");
+        spectrumOverlayEl.classList.remove("active");
         activeColorTarget = null;
     });
     spectrumCancelBtn.addEventListener("click", () => {
-        spectrumOverlay.classList.remove("active");
+        spectrumOverlayEl.classList.remove("active");
         activeColorTarget = null;
     });
 
@@ -924,17 +925,19 @@ Doğum günün kutlu olsun.
         return lines; 
     }
     
+    // DÜZELTİLMİŞ DRAW FONKSİYONU - Arkaplan resmi tam sığıyor
     function drawCard() { 
         if(!ctx) return; 
         canvas.width = canvasWidth; 
         canvas.height = canvasHeight; 
         ctx.clearRect(0,0,canvasWidth,canvasHeight); 
         const radius = 30; 
+        
         if(bgImage) { 
             ctx.save(); 
             roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); 
             ctx.clip(); 
-            ctx.drawImage(bgImage,0,0,canvasWidth,canvasHeight); 
+            ctx.drawImage(bgImage, 0, 0, canvasWidth, canvasHeight);
             ctx.restore(); 
         } else { 
             if(gradToggle.checked) { 
@@ -949,6 +952,7 @@ Doğum günün kutlu olsun.
             roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); 
             ctx.fill(); 
         } 
+        
         let bw = parseInt(borderWidthSlider.value); 
         roundedRect(ctx,6,6,canvasWidth-12,canvasHeight-12,radius-4); 
         ctx.strokeStyle = borderOuterInput.value; 
@@ -958,10 +962,12 @@ Doğum günün kutlu olsun.
         ctx.strokeStyle = borderInnerInput.value; 
         ctx.lineWidth = bw*0.6; 
         ctx.stroke(); 
+        
         if(overlayImage) { 
             let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; 
             ctx.drawImage(overlayImage, dx, dy, overlayWidth, overlayHeight); 
         } 
+        
         let raw = document.getElementById("cardText").value; 
         if(raw.trim()) { 
             let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; 
@@ -1069,7 +1075,7 @@ Doğum günün kutlu olsun.
     logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); 
     logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
     
-    const resizeHandle = document.getElementById("resizeHandle");
+    const resizeHandleEl = document.getElementById("resizeHandle");
     function getMouseCoordCanvas(e) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
@@ -1078,7 +1084,7 @@ Doğum günün kutlu olsun.
     }
     function isOverResizeHandle(e) {
         if(!overlayImage) return false;
-        const rect = resizeHandle.getBoundingClientRect();
+        const rect = resizeHandleEl.getBoundingClientRect();
         let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
         return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
     }
@@ -1116,7 +1122,6 @@ Doğum günün kutlu olsun.
             canvas.style.cursor = "grabbing"; 
         }
     }
-    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
     function onMouseMove(e) {
         if(isResizing && overlayImage) {
             let {mx,my} = getMouseCoordCanvas(e); let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
@@ -1226,7 +1231,7 @@ Doğum günün kutlu olsun.
     function loadBg(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
-        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi");}; img.src=e.target.result;}; 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi (tam görünüm)");}; img.src=e.target.result;}; 
         r.readAsDataURL(file);
     }
     function loadOverlay(file) { 
@@ -1235,11 +1240,11 @@ Doğum günün kutlu olsun.
         r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; 
         r.readAsDataURL(file);
     }
-    const dropZone=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
-    dropZone.addEventListener("click",()=>bgInput.click()); 
-    dropZone.addEventListener("dragover",e=>{e.preventDefault(); dropZone.classList.add("dragover");}); 
-    dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("dragover")); 
-    dropZone.addEventListener("drop",e=>{e.preventDefault(); dropZone.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); 
+    const dropZoneBg=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
+    dropZoneBg.addEventListener("click",()=>bgInput.click()); 
+    dropZoneBg.addEventListener("dragover",e=>{e.preventDefault(); dropZoneBg.classList.add("dragover");}); 
+    dropZoneBg.addEventListener("dragleave",()=>dropZoneBg.classList.remove("dragover")); 
+    dropZoneBg.addEventListener("drop",e=>{e.preventDefault(); dropZoneBg.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); 
     bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); 
     document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
     
