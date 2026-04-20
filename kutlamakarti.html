@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu | Ultimate</title>
+    <title>Kutlama Kartı Stüdyosu | Ultimate + Çok Katmanlı Kenarlık + Kesik Çizgi</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -68,7 +68,6 @@
         .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #c084fc; }
         .custom-font-item { background: #f0eaff; border-color: #c084fc; }
 
-        /* RENK SEÇİCİ POPUP - TÜM TARAYICILAR İÇİN */
         .color-spectrum-overlay {
             position: fixed;
             top: 0;
@@ -244,7 +243,7 @@
         
         .custom-hex-row { background: #faf5ff; border-radius: 28px; padding: 12px 18px; margin: 14px 0 10px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
         .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
-        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; vertical-align: middle; }
+        .color-dot { width: 20px; height: 20px; border-radius: 30px; display: inline-block; border: 1px solid #ddd; vertical-align: middle; cursor: pointer; }
         .resize-handle {
             position: absolute;
             width: 18px;
@@ -409,6 +408,33 @@
         }
         .gradient-swatch:hover { transform: scale(1.05); border-color: #c084fc; }
         
+        .multi-border-panel {
+            background: #faf5ff;
+            border-radius: 28px;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #eeddff;
+        }
+        .layer-color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding: 6px 0;
+            border-top: 1px dashed #e2ceff;
+        }
+        .layer-color-row:first-child { border-top: none; }
+        .layer-color-row .color-dot { cursor: pointer; }
+        .layer-style-select {
+            padding: 4px 8px;
+            border-radius: 30px;
+            border: 1px solid #c084fc;
+            background: white;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
         @media (max-width: 1000px) { .glass-ultimate { padding: 20px; } }
     </style>
 </head>
@@ -416,7 +442,7 @@
 <div class="glass-ultimate">
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
-        <h1>🎈 Kutlama Kartı Stüdyosu | Ultimate</h1>
+        <h1>🎈 Kutlama Kartı Stüdyosu</h1>
     </div>
 
     <div class="two-columns">
@@ -517,6 +543,9 @@
                     <div class="compact-palette-btn" data-target="borderInnerColor">📐 İç Kenar Seç <span class="color-dot" id="borderInnerDot"></span></div>
                     <div class="compact-palette-btn" data-target="gradColor1">🌈 Gradien Renk 1 <span class="color-dot" id="gradColor1Dot"></span></div>
                     <div class="compact-palette-btn" data-target="gradColor2">🌈 Gradien Renk 2 <span class="color-dot" id="gradColor2Dot"></span></div>
+                    <div class="compact-palette-btn" data-target="borderThirdColor">🎨 3. Katman Rengi <span class="color-dot" id="borderThirdColorDot"></span></div>
+                    <div class="compact-palette-btn" data-target="borderFourthColor">🎨 4. Katman Rengi <span class="color-dot" id="borderFourthColorDot"></span></div>
+                    <div class="compact-palette-btn" data-target="borderFifthColor">🎨 5. Katman Rengi <span class="color-dot" id="borderFifthColorDot"></span></div>
                 </div>
 
                 <!-- ORİJİNAL KAYDIRMALI RENK SEÇİCİLER -->
@@ -533,6 +562,61 @@
                     <label>🌈 Gradien Renk 2:</label><input type="color" id="gradColor2" value="#ffffff">
                 </div>
 
+                <!-- ÇOK KATMANLI KENARLIK + KESİK ÇİZGİ SEÇENEKLERİ -->
+                <div class="multi-border-panel">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+                        <label>🔲 Kenarlık Katman Sayısı:</label>
+                        <select id="borderLayerCount" style="padding: 6px 12px; border-radius: 44px; border: 2px solid #eeddff;">
+                            <option value="2">2 Katman (Klasik)</option>
+                            <option value="3">3 Katman</option>
+                            <option value="4">4 Katman</option>
+                            <option value="5">5 Katman (Süslü)</option>
+                        </select>
+                        <button id="applyBorderStyleBtn" class="btn-secondary" style="padding: 6px 16px;">✨ Uygula</button>
+                    </div>
+                    
+                    <!-- 3. Katman -->
+                    <div class="layer-color-row" data-layer="3">
+                        <span>🎨 3. Katman:</span>
+                        <input type="color" id="borderThirdColor" value="#c084fc">
+                        <select id="borderThirdStyle" class="layer-style-select">
+                            <option value="solid">━━ Düz çizgi</option>
+                            <option value="dashed">- - - Kesik çizgi</option>
+                            <option value="dotted">··· Noktalı çizgi</option>
+                            <option value="dashdot">-·-· Çizgi-nokta</option>
+                        </select>
+                        <span class="color-dot" id="borderThirdColorDotInline" style="background:#c084fc;"></span>
+                    </div>
+                    
+                    <!-- 4. Katman -->
+                    <div class="layer-color-row" data-layer="4">
+                        <span>🎨 4. Katman:</span>
+                        <input type="color" id="borderFourthColor" value="#e9d5ff">
+                        <select id="borderFourthStyle" class="layer-style-select">
+                            <option value="solid">━━ Düz çizgi</option>
+                            <option value="dashed">- - - Kesik çizgi</option>
+                            <option value="dotted">··· Noktalı çizgi</option>
+                            <option value="dashdot">-·-· Çizgi-nokta</option>
+                        </select>
+                        <span class="color-dot" id="borderFourthColorDotInline" style="background:#e9d5ff;"></span>
+                    </div>
+                    
+                    <!-- 5. Katman -->
+                    <div class="layer-color-row" data-layer="5">
+                        <span>🎨 5. Katman:</span>
+                        <input type="color" id="borderFifthColor" value="#f3e8ff">
+                        <select id="borderFifthStyle" class="layer-style-select">
+                            <option value="solid">━━ Düz çizgi</option>
+                            <option value="dashed">- - - Kesik çizgi</option>
+                            <option value="dotted">··· Noktalı çizgi</option>
+                            <option value="dashdot">-·-· Çizgi-nokta</option>
+                        </select>
+                        <span class="color-dot" id="borderFifthColorDotInline" style="background:#f3e8ff;"></span>
+                    </div>
+                    
+                    <div class="info-text" style="margin-top:8px; font-size:11px;">💡 İpucu: Her katman için farklı çizgi stili seçebilirsiniz! Kesik çizgili katmanlar kartınıza hareket katar.</div>
+                </div>
+
                 <div class="custom-hex-row">
                     <div><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7"></div>
                     <div><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7"></div>
@@ -542,7 +626,12 @@
                 <div class="custom-hex-row" style="margin-top: 0;">
                     <div><label>Gradien 1 HEX:</label><input type="text" id="customGrad1Hex" maxlength="7"></div>
                     <div><label>Gradien 2 HEX:</label><input type="text" id="customGrad2Hex" maxlength="7"></div>
-                    <div></div><div></div>
+                    <div><label>3. Katman HEX:</label><input type="text" id="customBorderThirdHex" maxlength="7"></div>
+                    <div><label>4. Katman HEX:</label><input type="text" id="customBorderFourthHex" maxlength="7"></div>
+                </div>
+                <div class="custom-hex-row" style="margin-top: 0;">
+                    <div><label>5. Katman HEX:</label><input type="text" id="customBorderFifthHex" maxlength="7"></div>
+                    <div></div><div></div><div></div>
                 </div>
 
                 <div class="custom-collapsible" id="customIconCollapsible">
@@ -592,7 +681,7 @@ Doğum günün kutlu olsun.
             </div>
         </div>
     </div>
-    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷</span></div>
+    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷 | 🎨 2-5 Katmanlı Kenarlık + Kesik Çizgi Seçenekleri</span></div>
 </div>
 
 <!-- GELİŞMİŞ RENK SEÇİCİ POPUP -->
@@ -620,7 +709,6 @@ Doğum günün kutlu olsun.
     let customFontsList = [];
     let customIconsList = [];
     
-    // ==================== TAM FONT LISTESI (ORIJINAL) ====================
     let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
     let currentFont = "Beau Rivage";
@@ -637,7 +725,6 @@ Doğum günün kutlu olsun.
     let textDragStartX=0, textDragStartY=0, isDraggingText=false;
     const keepAspectCheck = document.getElementById("keepAspect");
 
-    // Renk inputları
     const textColorInput = document.getElementById("textColor");
     const bgColorInput = document.getElementById("bgColor");
     const borderOuterInput = document.getElementById("borderOuterColor");
@@ -645,7 +732,14 @@ Doğum günün kutlu olsun.
     const gradColor1Input = document.getElementById("gradColor1");
     const gradColor2Input = document.getElementById("gradColor2");
     
-    // Popup elementleri
+    const borderThirdInput = document.getElementById("borderThirdColor");
+    const borderFourthInput = document.getElementById("borderFourthColor");
+    const borderFifthInput = document.getElementById("borderFifthColor");
+    const borderThirdStyle = document.getElementById("borderThirdStyle");
+    const borderFourthStyle = document.getElementById("borderFourthStyle");
+    const borderFifthStyle = document.getElementById("borderFifthStyle");
+    const borderLayerSelect = document.getElementById("borderLayerCount");
+    
     const spectrumOverlayEl = document.getElementById("spectrumOverlay");
     const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -758,7 +852,6 @@ Doğum günün kutlu olsun.
         spectrumOverlayEl.classList.add("active");
     }
 
-    // Spektrum event listeners
     hueSlider.addEventListener("input", (e) => {
         currentHue = parseInt(e.target.value);
         drawSpectrum(currentHue);
@@ -812,7 +905,6 @@ Doğum günün kutlu olsun.
         activeColorTarget = null;
     });
 
-    // Renk seçici butonları
     document.querySelectorAll(".compact-palette-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const target = btn.getAttribute("data-target");
@@ -823,11 +915,42 @@ Doğum günün kutlu olsun.
             else if(target === "borderInnerColor") currentColor = borderInnerInput.value;
             else if(target === "gradColor1") currentColor = gradColor1Input.value;
             else if(target === "gradColor2") currentColor = gradColor2Input.value;
+            else if(target === "borderThirdColor") currentColor = borderThirdInput.value;
+            else if(target === "borderFourthColor") currentColor = borderFourthInput.value;
+            else if(target === "borderFifthColor") currentColor = borderFifthInput.value;
             openSpectrumForTarget(target, currentColor);
         });
     });
 
-    // Gradient renk önizleme kutularına tıklama
+    document.querySelectorAll(".color-dot").forEach(dot => {
+        dot.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const parent = dot.closest(".compact-palette-btn");
+            if(parent) {
+                const target = parent.getAttribute("data-target");
+                let currentColor = "#c084fc";
+                if(target === "textColor") currentColor = textColorInput.value;
+                else if(target === "bgColor") currentColor = bgColorInput.value;
+                else if(target === "borderOuterColor") currentColor = borderOuterInput.value;
+                else if(target === "borderInnerColor") currentColor = borderInnerInput.value;
+                else if(target === "gradColor1") currentColor = gradColor1Input.value;
+                else if(target === "gradColor2") currentColor = gradColor2Input.value;
+                else if(target === "borderThirdColor") currentColor = borderThirdInput.value;
+                else if(target === "borderFourthColor") currentColor = borderFourthInput.value;
+                else if(target === "borderFifthColor") currentColor = borderFifthInput.value;
+                openSpectrumForTarget(target, currentColor);
+            } else {
+                const row = dot.closest(".layer-color-row");
+                if(row) {
+                    const layer = row.getAttribute("data-layer");
+                    if(layer === "3") openSpectrumForTarget("borderThirdColor", borderThirdInput.value);
+                    else if(layer === "4") openSpectrumForTarget("borderFourthColor", borderFourthInput.value);
+                    else if(layer === "5") openSpectrumForTarget("borderFifthColor", borderFifthInput.value);
+                }
+            }
+        });
+    });
+
     document.getElementById("gradColor1Preview").addEventListener("click", () => {
         openSpectrumForTarget("gradColor1", gradColor1Input.value);
     });
@@ -842,6 +965,12 @@ Doğum günün kutlu olsun.
         document.getElementById("borderInnerDot").style.backgroundColor = borderInnerInput.value;
         document.getElementById("gradColor1Dot").style.backgroundColor = gradColor1Input.value;
         document.getElementById("gradColor2Dot").style.backgroundColor = gradColor2Input.value;
+        if(document.getElementById("borderThirdColorDot")) document.getElementById("borderThirdColorDot").style.backgroundColor = borderThirdInput.value;
+        if(document.getElementById("borderFourthColorDot")) document.getElementById("borderFourthColorDot").style.backgroundColor = borderFourthInput.value;
+        if(document.getElementById("borderFifthColorDot")) document.getElementById("borderFifthColorDot").style.backgroundColor = borderFifthInput.value;
+        if(document.getElementById("borderThirdColorDotInline")) document.getElementById("borderThirdColorDotInline").style.backgroundColor = borderThirdInput.value;
+        if(document.getElementById("borderFourthColorDotInline")) document.getElementById("borderFourthColorDotInline").style.backgroundColor = borderFourthInput.value;
+        if(document.getElementById("borderFifthColorDotInline")) document.getElementById("borderFifthColorDotInline").style.backgroundColor = borderFifthInput.value;
         document.getElementById("gradColor1Preview").style.backgroundColor = gradColor1Input.value;
         document.getElementById("gradColor2Preview").style.backgroundColor = gradColor2Input.value;
         
@@ -851,6 +980,9 @@ Doğum günün kutlu olsun.
         document.getElementById("customBorderInnerHex").value = borderInnerInput.value.toUpperCase();
         document.getElementById("customGrad1Hex").value = gradColor1Input.value.toUpperCase();
         document.getElementById("customGrad2Hex").value = gradColor2Input.value.toUpperCase();
+        if(document.getElementById("customBorderThirdHex")) document.getElementById("customBorderThirdHex").value = borderThirdInput.value.toUpperCase();
+        if(document.getElementById("customBorderFourthHex")) document.getElementById("customBorderFourthHex").value = borderFourthInput.value.toUpperCase();
+        if(document.getElementById("customBorderFifthHex")) document.getElementById("customBorderFifthHex").value = borderFifthInput.value.toUpperCase();
     }
 
     function syncHexFromInputs() {
@@ -860,6 +992,9 @@ Doğum günün kutlu olsun.
         const borderInnerHex = document.getElementById("customBorderInnerHex").value.trim();
         const grad1Hex = document.getElementById("customGrad1Hex").value.trim();
         const grad2Hex = document.getElementById("customGrad2Hex").value.trim();
+        const borderThirdHex = document.getElementById("customBorderThirdHex")?.value.trim();
+        const borderFourthHex = document.getElementById("customBorderFourthHex")?.value.trim();
+        const borderFifthHex = document.getElementById("customBorderFifthHex")?.value.trim();
         
         if(textHex && /^#?[0-9A-Fa-f]{6}$/i.test(textHex.replace(/^#/, ''))) {
             textColorInput.value = textHex.startsWith('#') ? textHex.toUpperCase() : '#' + textHex.toUpperCase();
@@ -879,6 +1014,15 @@ Doğum günün kutlu olsun.
         if(grad2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad2Hex.replace(/^#/, ''))) {
             gradColor2Input.value = grad2Hex.startsWith('#') ? grad2Hex.toUpperCase() : '#' + grad2Hex.toUpperCase();
         }
+        if(borderThirdHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderThirdHex.replace(/^#/, ''))) {
+            borderThirdInput.value = borderThirdHex.startsWith('#') ? borderThirdHex.toUpperCase() : '#' + borderThirdHex.toUpperCase();
+        }
+        if(borderFourthHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderFourthHex.replace(/^#/, ''))) {
+            borderFourthInput.value = borderFourthHex.startsWith('#') ? borderFourthHex.toUpperCase() : '#' + borderFourthHex.toUpperCase();
+        }
+        if(borderFifthHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderFifthHex.replace(/^#/, ''))) {
+            borderFifthInput.value = borderFifthHex.startsWith('#') ? borderFifthHex.toUpperCase() : '#' + borderFifthHex.toUpperCase();
+        }
         updateAllDisplays();
         drawCard();
     }
@@ -889,6 +1033,9 @@ Doğum günün kutlu olsun.
     document.getElementById("customBorderInnerHex").addEventListener("change", syncHexFromInputs);
     document.getElementById("customGrad1Hex").addEventListener("change", syncHexFromInputs);
     document.getElementById("customGrad2Hex").addEventListener("change", syncHexFromInputs);
+    if(document.getElementById("customBorderThirdHex")) document.getElementById("customBorderThirdHex").addEventListener("change", syncHexFromInputs);
+    if(document.getElementById("customBorderFourthHex")) document.getElementById("customBorderFourthHex").addEventListener("change", syncHexFromInputs);
+    if(document.getElementById("customBorderFifthHex")) document.getElementById("customBorderFifthHex").addEventListener("change", syncHexFromInputs);
 
     textColorInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
     bgColorInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
@@ -896,6 +1043,12 @@ Doğum günün kutlu olsun.
     borderInnerInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
     gradColor1Input.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
     gradColor2Input.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    if(borderThirdInput) borderThirdInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    if(borderFourthInput) borderFourthInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    if(borderFifthInput) borderFifthInput.addEventListener("input", () => { updateAllDisplays(); drawCard(); });
+    if(borderThirdStyle) borderThirdStyle.addEventListener("change", drawCard);
+    if(borderFourthStyle) borderFourthStyle.addEventListener("change", drawCard);
+    if(borderFifthStyle) borderFifthStyle.addEventListener("change", drawCard);
 
     const gradToggle = document.getElementById("gradientToggle");
     const gradientControls = document.getElementById("gradientControls");
@@ -925,7 +1078,16 @@ Doğum günün kutlu olsun.
         return lines; 
     }
     
-    // DÜZELTİLMİŞ DRAW FONKSİYONU - Arkaplan resmi tam sığıyor
+    // KESİK ÇİZGİ STİLLERİNİ ÇEVİREN FONKSİYON
+    function getLineDash(style, lineWidth) {
+        switch(style) {
+            case "dashed": return [12, 8];
+            case "dotted": return [3, 5];
+            case "dashdot": return [10, 6, 3, 6];
+            default: return [];
+        }
+    }
+    
     function drawCard() { 
         if(!ctx) return; 
         canvas.width = canvasWidth; 
@@ -953,15 +1115,43 @@ Doğum günün kutlu olsun.
             ctx.fill(); 
         } 
         
-        let bw = parseInt(borderWidthSlider.value); 
-        roundedRect(ctx,6,6,canvasWidth-12,canvasHeight-12,radius-4); 
-        ctx.strokeStyle = borderOuterInput.value; 
-        ctx.lineWidth = bw; 
-        ctx.stroke(); 
-        roundedRect(ctx,14,14,canvasWidth-28,canvasHeight-28,radius-8); 
-        ctx.strokeStyle = borderInnerInput.value; 
-        ctx.lineWidth = bw*0.6; 
-        ctx.stroke(); 
+        let bw = parseInt(borderWidthSlider.value);
+        let layerCount = parseInt(borderLayerSelect ? borderLayerSelect.value : 2);
+        let thirdColor = borderThirdInput ? borderThirdInput.value : "#c084fc";
+        let fourthColor = borderFourthInput ? borderFourthInput.value : "#e9d5ff";
+        let fifthColor = borderFifthInput ? borderFifthInput.value : "#f3e8ff";
+        let thirdStyle = borderThirdStyle ? borderThirdStyle.value : "solid";
+        let fourthStyle = borderFourthStyle ? borderFourthStyle.value : "solid";
+        let fifthStyle = borderFifthStyle ? borderFifthStyle.value : "solid";
+        
+        const layerDefs = [
+            { offset: 6,  widthMult: 1.0,  color: borderOuterInput.value, radiusReduce: 4,  style: "solid" },
+            { offset: 14, widthMult: 0.7,  color: borderInnerInput.value, radiusReduce: 8,  style: "solid" },
+            { offset: 22, widthMult: 0.55, color: thirdColor,              radiusReduce: 12, style: thirdStyle },
+            { offset: 30, widthMult: 0.45, color: fourthColor,             radiusReduce: 16, style: fourthStyle },
+            { offset: 38, widthMult: 0.35, color: fifthColor,              radiusReduce: 20, style: fifthStyle }
+        ];
+        
+        for(let i = 0; i < layerCount && i < layerDefs.length; i++) {
+            let layer = layerDefs[i];
+            let off = layer.offset;
+            let radReduce = layer.radiusReduce;
+            let currentRadius = Math.max(radius - radReduce, 5);
+            
+            ctx.save();
+            let dash = getLineDash(layer.style, bw * layer.widthMult);
+            if(dash.length > 0) {
+                ctx.setLineDash(dash);
+            } else {
+                ctx.setLineDash([]);
+            }
+            
+            roundedRect(ctx, off, off, canvasWidth - (off * 2), canvasHeight - (off * 2), currentRadius);
+            ctx.strokeStyle = layer.color;
+            ctx.lineWidth = Math.max(1, bw * layer.widthMult);
+            ctx.stroke();
+            ctx.restore();
+        }
         
         if(overlayImage) { 
             let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; 
@@ -1180,6 +1370,13 @@ Doğum günün kutlu olsun.
     borderWidthSlider.addEventListener("input",drawCard);
     document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");});
     textShadowCheck.addEventListener("change",drawCard);
+    
+    if(document.getElementById("applyBorderStyleBtn")) {
+        document.getElementById("applyBorderStyleBtn").addEventListener("click", () => {
+            drawCard();
+            showAlert("✅ Kenarlık stili güncellendi! " + borderLayerSelect.value + " katman aktif.", "success");
+        });
+    }
     
     function downloadImage(format) { 
         let link = document.createElement("a"); 
