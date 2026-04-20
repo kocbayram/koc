@@ -141,14 +141,6 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-        .spectrum-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid #c084fc;
-            cursor: pointer;
-        }
         .spectrum-preview-area {
             display: flex;
             gap: 15px;
@@ -535,7 +527,6 @@
                     </div>
                 </div>
 
-                <!-- TÜM RENK SEÇİCİ BUTONLARI - 3. KATMAN İÇİN DE EKLENDİ -->
                 <div class="palette-shortcuts">
                     <div class="compact-palette-btn" data-target="textColor">🎨 Metin Rengi Seç <span class="color-dot" id="textColorDot"></span></div>
                     <div class="compact-palette-btn" data-target="bgColor">🖌️ Arka Plan Rengi Seç <span class="color-dot" id="bgColorDot"></span></div>
@@ -546,7 +537,6 @@
                     <div class="compact-palette-btn" data-target="borderThirdColor">🎨 3. Katman Rengi <span class="color-dot" id="borderThirdColorDot"></span></div>
                 </div>
 
-                <!-- ORİJİNAL KAYDIRMALI RENK SEÇİCİLER -->
                 <div class="color-row">
                     <label>🎨 Metin:</label><input type="color" id="textColor" value="#4a2e6b">
                     <label>🖌️ Arka Plan:</label><input type="color" id="bgColor" value="#faf5ff">
@@ -561,7 +551,6 @@
                     <label>🎨 3. Katman Rengi:</label><input type="color" id="borderThirdColor" value="#c084fc">
                 </div>
 
-                <!-- 3 KATMANLI KENARLIK (4. ve 5. KALDIRILDI) -->
                 <div class="multi-border-panel">
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
                         <label>🔲 Kenarlık Katman Sayısı:</label>
@@ -572,7 +561,6 @@
                         <button id="applyBorderStyleBtn" class="btn-secondary" style="padding: 6px 16px;">✨ Uygula</button>
                     </div>
                     
-                    <!-- 3. Katman -->
                     <div class="layer-color-row" data-layer="3">
                         <span>🎨 3. Katman:</span>
                         <input type="color" id="borderThirdColor2" value="#c084fc">
@@ -653,7 +641,6 @@ Doğum günün kutlu olsun.
     <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷</span></div>
 </div>
 
-<!-- GELİŞMİŞ RENK SEÇİCİ POPUP -->
 <div id="spectrumOverlay" class="color-spectrum-overlay">
     <div class="spectrum-card">
         <div class="spectrum-header">
@@ -695,7 +682,6 @@ Doğum günün kutlu olsun.
     let textDragStartX=0, textDragStartY=0, isDraggingText=false;
     const keepAspectCheck = document.getElementById("keepAspect");
 
-    // Renk inputları
     const textColorInput = document.getElementById("textColor");
     const bgColorInput = document.getElementById("bgColor");
     const borderOuterInput = document.getElementById("borderOuterColor");
@@ -705,7 +691,6 @@ Doğum günün kutlu olsun.
     const borderThirdInput = document.getElementById("borderThirdColor");
     const borderThirdInput2 = document.getElementById("borderThirdColor2");
     
-    // Popup elementleri
     const spectrumOverlayEl = document.getElementById("spectrumOverlay");
     const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -720,9 +705,7 @@ Doğum günün kutlu olsun.
     let activeColorTarget = null;
 
     function initSpectrum() {
-        if(!spectrumCtx) {
-            spectrumCtx = spectrumCanvasEl.getContext("2d");
-        }
+        if(!spectrumCtx) spectrumCtx = spectrumCanvasEl.getContext("2d");
         spectrumCanvasEl.width = 400;
         spectrumCanvasEl.height = 220;
         drawSpectrum(currentHue);
@@ -731,20 +714,15 @@ Doğum günün kutlu olsun.
     function drawSpectrum(hue) {
         if(!spectrumCtx) return;
         const w = spectrumCanvasEl.width, h = spectrumCanvasEl.height;
-        const imgData = spectrumCtx.createImageData(w, h);
         for (let y = 0; y < h; y++) {
             for (let x = 0; x < w; x++) {
                 const sat = x / w;
                 const light = 1 - (y / h);
                 const rgb = hslToRgb(hue, sat, light);
-                const idx = (y * w + x) * 4;
-                imgData.data[idx] = rgb.r;
-                imgData.data[idx+1] = rgb.g;
-                imgData.data[idx+2] = rgb.b;
-                imgData.data[idx+3] = 255;
+                spectrumCtx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+                spectrumCtx.fillRect(x, y, 1, 1);
             }
         }
-        spectrumCtx.putImageData(imgData, 0, 0);
     }
 
     function hslToRgb(h, s, l) {
@@ -818,7 +796,6 @@ Doğum günün kutlu olsun.
         spectrumOverlayEl.classList.add("active");
     }
 
-    // Spektrum event listeners
     hueSlider.addEventListener("input", (e) => {
         currentHue = parseInt(e.target.value);
         drawSpectrum(currentHue);
@@ -855,7 +832,6 @@ Doğum günün kutlu olsun.
     spectrumSelectBtn.addEventListener("click", () => {
         if(activeColorTarget) {
             document.getElementById(activeColorTarget).value = tempColorHex;
-            // Eğer borderThirdColor ise borderThirdInput2'yi de güncelle
             if(activeColorTarget === "borderThirdColor") {
                 borderThirdInput2.value = tempColorHex;
             }
@@ -876,7 +852,6 @@ Doğum günün kutlu olsun.
         activeColorTarget = null;
     });
 
-    // Renk seçici butonları
     document.querySelectorAll(".compact-palette-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const target = btn.getAttribute("data-target");
@@ -892,7 +867,6 @@ Doğum günün kutlu olsun.
         });
     });
 
-    // Gradient renk önizleme kutularına tıklama
     document.getElementById("gradColor1Preview").addEventListener("click", () => {
         openSpectrumForTarget("gradColor1", gradColor1Input.value);
     });
@@ -1051,7 +1025,6 @@ Doğum günün kutlu olsun.
         let layerCount = parseInt(borderLayerCountSelect.value);
         let thirdStyle = borderThirdStyleSelect.value;
         
-        // 1. Katman (Dış Kenar)
         ctx.save();
         ctx.strokeStyle = borderOuterInput.value;
         ctx.lineWidth = bw;
@@ -1059,7 +1032,6 @@ Doğum günün kutlu olsun.
         ctx.stroke();
         ctx.restore();
         
-        // 2. Katman (İç Kenar)
         ctx.save();
         ctx.strokeStyle = borderInnerInput.value;
         ctx.lineWidth = bw * 0.7;
@@ -1067,13 +1039,10 @@ Doğum günün kutlu olsun.
         ctx.stroke();
         ctx.restore();
         
-        // 3. Katman
         if(layerCount >= 3) {
             ctx.save();
             let dash = getLineDash(thirdStyle);
-            if(dash.length > 0) {
-                ctx.setLineDash(dash);
-            }
+            if(dash.length > 0) ctx.setLineDash(dash);
             ctx.strokeStyle = borderThirdInput.value;
             ctx.lineWidth = Math.max(1, bw * 0.55);
             roundedRect(ctx, 22, 22, canvasWidth-44, canvasHeight-44, radius-12);
@@ -1302,7 +1271,6 @@ Doğum günün kutlu olsun.
     textShadowCheck.addEventListener("change",drawCard);
     document.getElementById("applyBorderStyleBtn").addEventListener("click", () => { drawCard(); showAlert("Kenarlık stili güncellendi"); });
     
-    // ==================== PROJE KAYDETME / YÜKLEME ====================
     document.getElementById("saveProjectBtn").addEventListener("click", () => {
         const projectData = {
             canvasWidth, canvasHeight,
@@ -1329,7 +1297,6 @@ Doğum günün kutlu olsun.
             customFontsList: customFontsList,
             customIconsList: customIconsList
         };
-        
         const dataStr = JSON.stringify(projectData, null, 2);
         const blob = new Blob([dataStr], {type: "application/json"});
         const url = URL.createObjectURL(blob);
@@ -1338,7 +1305,7 @@ Doğum günün kutlu olsun.
         a.download = "kart_projesi.json";
         a.click();
         URL.revokeObjectURL(url);
-        showAlert("Proje başarıyla kaydedildi!");
+        showAlert("✅ Proje başarıyla kaydedildi!", "success");
     });
     
     document.getElementById("loadProjectBtn").addEventListener("click", () => {
@@ -1369,7 +1336,8 @@ Doğum günün kutlu olsun.
                     borderInnerInput.value = data.borderInnerColor || "#D9D6DE";
                     borderThirdInput.value = data.borderThirdColor || "#c084fc";
                     borderThirdInput2.value = borderThirdInput.value;
-                    borderWidthSlider.value = data.borderWidth || 4;
+                    
+                    borderWidthSlider.value = parseInt(data.borderWidth) || 4;
                     borderThirdStyleSelect.value = data.borderThirdStyle || "solid";
                     borderLayerCountSelect.value = data.borderLayerCount || "3";
                     textShadowCheck.checked = data.textShadow || false;
@@ -1377,6 +1345,7 @@ Doğum günün kutlu olsun.
                     gradColor1Input.value = data.gradColor1 || "#f9e5ff";
                     gradColor2Input.value = data.gradColor2 || "#ffffff";
                     gradAngle.value = data.gradAngle || "0";
+                    
                     document.getElementById("fontSize").value = data.fontSize || 40;
                     document.getElementById("fontWeight").value = data.fontWeight || "700";
                     document.getElementById("textAlign").value = data.textAlign || "center";
@@ -1391,20 +1360,34 @@ Doğum günün kutlu olsun.
                     document.getElementById("logoY").value = Math.round(overlayY);
                     document.getElementById("logoWidth").value = overlayWidth;
                     document.getElementById("logoHeight").value = overlayHeight;
-                    document.getElementById("logoWidthVal").innerText = overlayWidth+"px";
-                    document.getElementById("logoHeightVal").innerText = overlayHeight+"px";
+                    document.getElementById("logoWidthVal").innerText = overlayWidth + "px";
+                    document.getElementById("logoHeightVal").innerText = overlayHeight + "px";
                     document.getElementById("textX").value = Math.round(textPosX);
                     document.getElementById("textY").value = Math.round(textPosY);
+                    
+                    logoWSlider.value = overlayWidth;
+                    logoHSlider.value = overlayHeight;
                     
                     gradientControls.style.display = gradToggle.checked ? "flex" : "none";
                     
                     updateAllDisplays();
                     renderFontList();
                     renderSymbolPanel();
+                    updateCustomFontsFooter();
+                    
+                    if(customIconsList.length > 0) {
+                        updateIconPreview(customIconsList);
+                    }
+                    
                     drawCard();
-                    showAlert("Proje başarıyla yüklendi!");
+                    showAlert("✅ Proje başarıyla yüklendi! (" + 
+                        (data.cardText ? "Metin var" : "Metin yok") + 
+                        (customFontsList.length ? ", " + customFontsList.length + " özel font" : "") + 
+                        (customIconsList.length ? ", " + customIconsList.length + " özel ikon" : "") + ")", "success");
+                        
                 } catch(err) {
-                    showAlert("Hata: Geçersiz proje dosyası!");
+                    console.error(err);
+                    showAlert("❌ Hata: Geçersiz proje dosyası! " + err.message, "error");
                 }
             };
             reader.readAsText(file);
@@ -1417,7 +1400,7 @@ Doğum günün kutlu olsun.
         link.download = format==="png" ? "kutlama_karti.png" : "kutlama_karti.jpg"; 
         link.href = canvas.toDataURL(format==="png" ? "image/png" : "image/jpeg", 0.95); 
         link.click(); 
-        showAlert(format.toUpperCase() + " indirildi!"); 
+        showAlert(format.toUpperCase() + " indirildi!", "success"); 
     }
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); 
     document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
@@ -1456,19 +1439,19 @@ Doğum günün kutlu olsun.
         link.download = "kutlama_karti.html";
         link.click();
         URL.revokeObjectURL(link.href);
-        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.');
+        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
     });
     
     function loadBg(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
-        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi (tam görünüm)");}; img.src=e.target.result;}; 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi (tam görünüm)", "success");}; img.src=e.target.result;}; 
         r.readAsDataURL(file);
     }
     function loadOverlay(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
-        r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi");}; img.src=e.target.result;}; 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi", "success");}; img.src=e.target.result;}; 
         r.readAsDataURL(file);
     }
     const dropZoneBg=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
@@ -1603,7 +1586,7 @@ Doğum günün kutlu olsun.
         else if (type === "success") a.style.background = "#e6ffe6";
         else if (type === "warning") a.style.background = "#fff3e6";
         else a.style.background = "#efe6ff";
-        setTimeout(() => a.style.display = "none", 4000);
+        setTimeout(() => a.style.display = "none", 5000);
     }
     
     updateAllDisplays();
