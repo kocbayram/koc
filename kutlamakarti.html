@@ -65,8 +65,8 @@
         .search-box { width: calc(100% - 32px); margin: 16px; padding: 12px 16px; border-radius: 50px; border: 2px solid #eeddff; }
         .font-list { padding: 0 12px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
         .font-item { display: flex; justify-content: space-between; padding: 10px 14px; border-radius: 30px; background: white; cursor: pointer; border: 1px solid #f5e6d4; }
-        .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #c084fc; }
-        .custom-font-item { background: #f0eaff; border-color: #c084fc; }
+        .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #B9B4BF; }
+        .custom-font-item { background: #f0eaff; border-color: #B9B4BF; }
 
         /* Renk seçme butonları - uzun ve eşit boyutta */
         .color-picker-buttons {
@@ -91,14 +91,14 @@
             transition: all 0.2s ease;
             width: 100%;
         }
-        .compact-palette-btn:hover { background: #e9deff; transform: translateY(-2px); border-color: #c084fc; }
+        .compact-palette-btn:hover { background: #e9deff; transform: translateY(-2px); border-color: #B9B4BF; }
         .color-preview-rect {
             width: 48px;
             height: 28px;
             border-radius: 12px;
             border: 2px solid white;
             box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-            background-color: #c084fc;
+            background-color: #B9B4BF;
             transition: background 0.1s;
         }
 
@@ -106,10 +106,10 @@
         .canvas-container { background: #f3ede5; border-radius: 28px; padding: 14px; display: flex; justify-content: center; position: relative; }
         canvas { border-radius: 28px; box-shadow: 0 18px 32px -10px rgba(0,0,0,0.2); max-width: 100%; height: auto; background: white; cursor: default; display: block; }
 
-        .drop-zone { border: 2px dashed #c084fc; border-radius: 24px; padding: 16px; text-align: center; margin: 14px 0; background: #fffaf2; cursor: pointer; font-size: 13px; }
+        .drop-zone { border: 2px dashed #B9B4BF; border-radius: 24px; padding: 16px; text-align: center; margin: 14px 0; background: #fffaf2; cursor: pointer; font-size: 13px; }
         .drop-zone.dragover { background: #f0eaff; border-color: #a855f7; }
         .image-preview { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
-        .thumb-img { width: 50px; height: 50px; border-radius: 14px; object-fit: cover; border: 2px solid #c084fc; }
+        .thumb-img { width: 50px; height: 50px; border-radius: 14px; object-fit: cover; border: 2px solid #B9B4BF; }
 
         .controls { display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0; }
         .controls input, .controls select { flex: 1; padding: 10px 14px; border-radius: 44px; border: 2px solid #eeddff; }
@@ -157,7 +157,7 @@
             position: absolute;
             width: 18px;
             height: 18px;
-            background: #c084fc;
+            background: #B9B4BF;
             border: 2px solid white;
             border-radius: 50%;
             cursor: nw-resize;
@@ -171,7 +171,7 @@
             background: #faf5ff;
             border-radius: 28px;
             margin: 16px 0;
-            border: 2px dashed #c084fc;
+            border: 2px dashed #B9B4BF;
             overflow: hidden;
         }
         .custom-collapsible .panel-header {
@@ -247,7 +247,7 @@
             justify-content: center;
         }
         .canvas-size-control label { font-weight: 600; color: #6b3ea5; font-size: 12px; }
-        .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #c084fc; text-align: center; }
+        .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #B9B4BF; text-align: center; }
         .canvas-size-control button { padding: 6px 14px; font-size: 12px; }
         
         .font-link-area {
@@ -269,7 +269,7 @@
             font-weight: 700;
             font-size: 15px;
             color: #8b5ccf;
-            border: 1px solid #c084fc;
+            border: 1px solid #B9B4BF;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
@@ -301,7 +301,7 @@
         .layer-style-select {
             padding: 4px 8px;
             border-radius: 30px;
-            border: 1px solid #c084fc;
+            border: 1px solid #B9B4BF;
             background: white;
             font-size: 11px;
             cursor: pointer;
@@ -322,7 +322,7 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .gradient-swatch:hover { transform: scale(1.05); border-color: #c084fc; }
+        .gradient-swatch:hover { transform: scale(1.05); border-color: #B9B4BF; }
 
         /* HEX alanları */
         .custom-hex-row {
@@ -400,7 +400,7 @@
             height: 220px;
             border-radius: 24px;
             cursor: crosshair;
-            border: 3px solid #c084fc;
+            border: 3px solid #B9B4BF;
             display: block;
         }
         .spectrum-slider {
@@ -418,7 +418,7 @@
             height: 20px;
             border-radius: 50%;
             background: white;
-            border: 2px solid #c084fc;
+            border: 2px solid #B9B4BF;
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
@@ -534,7 +534,7 @@
                     <div><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7" placeholder="#D9D6DE"></div>
                 </div>
                 <div class="custom-hex-row" style="margin-top: 0;">
-                    <div><label>3. Katman HEX:</label><input type="text" id="customBorderThirdHex" maxlength="7" placeholder="#c084fc"></div>
+                    <div><label>3. Katman HEX:</label><input type="text" id="customBorderThirdHex" maxlength="7" placeholder="#B9B4BF"></div>
                     <div><label>Gradien 1 HEX:</label><input type="text" id="customGrad1Hex" maxlength="7" placeholder="#f9e5ff"></div>
                     <div><label>Gradien 2 HEX:</label><input type="text" id="customGrad2Hex" maxlength="7" placeholder="#ffffff"></div>
                     <div></div>
@@ -662,8 +662,8 @@ Doğum günün kutlu olsun.
         <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="220"></canvas>
         <input type="range" id="hueSlider" class="spectrum-slider" min="0" max="360" value="271">
         <div class="spectrum-preview-area">
-            <div id="spectrumPreviewBox" class="spectrum-preview-box" style="background:#c084fc"></div>
-            <input type="text" id="spectrumHexInput" class="spectrum-hex-input" value="#c084fc">
+            <div id="spectrumPreviewBox" class="spectrum-preview-box" style="background:#B9B4BF"></div>
+            <input type="text" id="spectrumHexInput" class="spectrum-hex-input" value="#B9B4BF">
             <button id="spectrumSelectBtn" class="spectrum-select-btn">✓ Seç</button>
             <button id="spectrumCancelBtn" class="spectrum-cancel-btn">İptal</button>
         </div>
@@ -702,7 +702,7 @@ Doğum günün kutlu olsun.
             inp = document.createElement("input"); inp.type="color"; inp.id="borderInnerColor"; inp.style.display="none"; inp.value="#D9D6DE"; document.body.appendChild(inp);
             inp = document.createElement("input"); inp.type="color"; inp.id="gradColor1"; inp.style.display="none"; inp.value="#f9e5ff"; document.body.appendChild(inp);
             inp = document.createElement("input"); inp.type="color"; inp.id="gradColor2"; inp.style.display="none"; inp.value="#ffffff"; document.body.appendChild(inp);
-            inp = document.createElement("input"); inp.type="color"; inp.id="borderThirdColor"; inp.style.display="none"; inp.value="#c084fc"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderThirdColor"; inp.style.display="none"; inp.value="#B9B4BF"; document.body.appendChild(inp);
         }
     }
     createHiddenInputs();
@@ -794,7 +794,7 @@ Doğum günün kutlu olsun.
     const spectrumCancelBtn = document.getElementById("spectrumCancelBtn");
     let spectrumCtx = null;
     let currentHue = 271;
-    let tempColorHex = "#c084fc";
+    let tempColorHex = "#B9B4BF";
     let activeColorTarget = null;
 
     function initSpectrum() {
@@ -951,7 +951,7 @@ Doğum günün kutlu olsun.
     document.querySelectorAll(".compact-palette-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const target = btn.getAttribute("data-target");
-            let currentColor = "#c084fc";
+            let currentColor = "#B9B4BF";
             if(target === "textColor") currentColor = textColorHidden.value;
             else if(target === "bgColor") currentColor = bgColorHidden.value;
             else if(target === "borderOuterColor") currentColor = borderOuterHidden.value;
@@ -1355,7 +1355,7 @@ Doğum günün kutlu olsun.
                     bgColorHidden.value = data.bgColor || "#faf5ff";
                     borderOuterHidden.value = data.borderOuterColor || "#81778A";
                     borderInnerHidden.value = data.borderInnerColor || "#D9D6DE";
-                    borderThirdHidden.value = data.borderThirdColor || "#c084fc";
+                    borderThirdHidden.value = data.borderThirdColor || "#B9B4BF";
                     
                     borderWidthSlider.value = parseInt(data.borderWidth) || 4;
                     borderThirdStyleSelect.value = data.borderThirdStyle || "solid";
