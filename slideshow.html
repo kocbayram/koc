@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Slideshow Video Oluşturucu | Profesyonel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #e94560;
+            margin-bottom: 4px;
+            font-size: 22px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        .two-columns {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .left-panel {
+            flex: 1;
+            min-width: 280px;
+        }
+        .right-panel {
+            flex: 1.2;
+            min-width: 300px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #e94560;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            background: #fff5f5;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: 0.2s;
+        }
+        .upload-area:hover {
+            background: #ffe0e0;
+            border-color: #c73e54;
+        }
+        .upload-area.dragover {
+            background: #e0f0ff;
+            border-color: #e94560;
+        }
+        .section-title {
+            font-weight: bold;
+            margin: 16px 0 10px 0;
+            padding-left: 10px;
+            border-left: 4px solid #e94560;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .image-list {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 12px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-item {
+            position: relative;
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: 0.1s;
+        }
+        .image-item:hover {
+            border-color: #e94560;
+            transform: scale(1.02);
+        }
+        .image-item.selected {
+            border-color: #e94560;
+            box-shadow: 0 0 0 2px #e94560;
+        }
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .image-item .remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 20px;
+            height: 20px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .preview-container {
+            background: #0f0f1a;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            position: relative;
+        }
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+        .canvas-tip {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.6);
+            background: rgba(0,0,0,0.5);
+            padding: 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .control-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+        input[type="range"] {
+            padding: 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 13px;
+            flex: 1;
+            text-align: center;
+        }
+        .btn-primary {
+            background: #e94560;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #c73e54;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .effect-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .effect-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            background: white;
+            cursor: pointer;
+            font-size: 11px;
+            transition: 0.1s;
+        }
+        .effect-btn.active {
+            background: #e94560;
+            color: white;
+            border-color: #e94560;
+        }
+        
+        .progress-container {
+            margin-top: 12px;
+        }
+        .progress-item {
+            margin-bottom: 10px;
+        }
+        .progress-label {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #e94560;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        .progress-fill.current {
+            background: #28a745;
+        }
+        .status-text {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 6px;
+        }
+        
+        hr {
+            margin: 12px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+        .value-display {
+            font-size: 12px;
+            color: #e94560;
+            font-weight: bold;
+        }
+        .aspect-info {
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .text-settings {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        .slide-text {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 5px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .coord-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .coord-input input {
+            width: 70px;
+            padding: 6px;
+            text-align: center;
+        }
+        .music-info-panel {
+            background: #e8f4fd;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        .music-info-panel .duration {
+            font-weight: bold;
+            color: #e94560;
+        }
+        .warning-badge {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-top: 8px;
+            display: none;
+        }
+        .loop-badge {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .locked-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .locked-control input[type="range"] {
+            flex: 1;
+        }
+        .lock-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 65px;
+        }
+        .lock-btn.unlocked {
+            background: #6c757d;
+        }
+        .lock-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .collapsible-panel {
+            background: #fffdf9;
+            border-radius: 20px;
+            border: 1px solid #f3e5d5;
+            margin-top: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+            color: #6b3ea5;
+            border-bottom: 1px solid #f3e5d5;
+            font-size: 13px;
+        }
+        .panel-header .toggle-icon { font-size: 16px; transition: transform 0.2s; }
+        .panel-header.open .toggle-icon { transform: rotate(180deg); }
+        .panel-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-out;
+        }
+        .panel-content.open { max-height: 300px; overflow-y: auto; }
+        .search-box { width: calc(100% - 24px); margin: 12px; padding: 8px 12px; border-radius: 40px; border: 2px solid #eeddff; font-size: 12px; }
+        .font-list { padding: 0 12px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
+        .font-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 12px; 
+            border-radius: 30px; 
+            background: white; 
+            cursor: pointer; 
+            border: 1px solid #f5e6d4;
+            transition: 0.1s;
+            font-size: 12px;
+        }
+        .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #B9B4BF; }
+        .font-name { font-size: 13px; }
+        
+        .color-spectrum-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s ease;
+        }
+        .color-spectrum-overlay.active { visibility: visible; opacity: 1; }
+        .spectrum-card {
+            background: white;
+            border-radius: 48px;
+            max-width: 90vw;
+            width: 500px;
+            padding: 24px;
+            box-shadow: 0 40px 70px rgba(0,0,0,0.3);
+            border: 1px solid #e9d5ff;
+        }
+        .spectrum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: 800;
+            font-size: 18px;
+            color: #8b5ccf;
+        }
+        .spectrum-close {
+            background: #f3ecff;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .spectrum-close:hover { background: #e9deff; transform: scale(1.05); }
+        .spectrum-canvas {
+            width: 100%;
+            height: 200px;
+            border-radius: 24px;
+            cursor: crosshair;
+            border: 3px solid #B9B4BF;
+            display: block;
+        }
+        .spectrum-slider {
+            width: 100%;
+            margin: 16px 0;
+            height: 8px;
+            border-radius: 10px;
+            background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .spectrum-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #B9B4BF;
+            cursor: pointer;
+        }
+        .spectrum-preview-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .spectrum-preview-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .spectrum-hex-input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 50px;
+            border: 2px solid #eeddff;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .spectrum-select-btn, .spectrum-cancel-btn {
+            padding: 8px 18px;
+            border-radius: 44px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .spectrum-select-btn {
+            background: linear-gradient(115deg, #b77bff, #a855f7);
+            color: white;
+        }
+        .spectrum-cancel-btn {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            color: #b77bff;
+        }
+        .color-preview-rect {
+            width: 40px;
+            height: 28px;
+            border-radius: 10px;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .compact-palette-btn {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            border-radius: 60px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #5a2d9c;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .compact-palette-btn:hover {
+            background: #e9deff;
+            transform: translateY(-2px);
+            border-color: #B9B4BF;
+        }
+        
+        /* Müzik döngüsü checkbox stili */
+        .music-loop-option {
+            background: #f0f8ff;
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .music-loop-option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .music-loop-option label {
+            margin: 0;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        @media (max-width: 700px) {
+            .card { padding: 16px; }
+            .two-columns { flex-direction: column; }
+            .image-list { max-height: 140px; }
+            .spectrum-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>🎬 Slideshow Video Oluşturucu</h1>
+        <div class="subtitle">Resimlerinizden müzikli video hazırlayın - Yazıları sürükleyin!</div>
+        
+        <div class="two-columns">
+            <div class="left-panel">
+                <div class="section-title">📸 1. Resimler</div>
+                <div class="upload-area" id="imageUploadArea">
+                    🖼️ Resim eklemek için tıkla veya sürükle<br>
+                    <small>(JPG, PNG, WebP - Çoklu seçim)</small>
+                    <input type="file" id="imageInput" multiple accept="image/jpeg,image/png,image/webp" style="display:none">
+                </div>
+                
+                <div class="image-list" id="imageList">
+                    <div style="color:#aaa; text-align:center; width:100%; padding:20px;">Henüz resim eklenmedi</div>
+                </div>
+                
+                <div class="section-title">✍️ Slayt Yazıları</div>
+                <div id="textInputsArea" style="max-height: 200px; overflow-y: auto; background: #f8f9fa; border-radius: 16px; padding: 12px;">
+                    <div style="color:#aaa; text-align:center;">Resim ekledikten sonra her slayta yazı ekleyebilirsiniz</div>
+                </div>
+                
+                <div class="collapsible-panel" id="fontCollapsible">
+                    <div class="panel-header" id="fontPanelHeader">
+                        <span>🔤 Yazı Tipleri (200+ Font)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="panel-content" id="fontPanelContent">
+                        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Font ara...">
+                        <div class="font-list" id="fontList"></div>
+                    </div>
+                </div>
+                
+                <div class="section-title">🎵 2. Müzik</div>
+                <div class="upload-area" id="musicUploadArea">
+                    🎵 Müzik eklemek için tıkla veya sürükle<br>
+                    <small>(MP3)</small>
+                    <input type="file" id="musicInput" accept="audio/mp3,audio/*" style="display:none">
+                </div>
+                <div id="musicInfo" style="display:none;">
+                    <div id="musicDetail" class="music-info-panel"></div>
+                    <div id="warningMessage" class="warning-badge">⚠️ Uyarı: Video süresi müzikten uzun! İkinci bir müzik ekleyebilirsiniz.</div>
+                    <div id="loopMessage" class="loop-badge">🔄 Müzik videodan kısa, slaytlar bittiğinde müzik döngüye girecek!</div>
+                    
+                    <!-- MÜZİK DÖNGÜSÜ SEÇENEĞİ -->
+                    <div class="music-loop-option">
+                        <input type="checkbox" id="musicLoopCheckbox" checked>
+                        <label for="musicLoopCheckbox">🔄 Müzik Döngüsü (video bitince müzik tekrar başlasın)</label>
+                    </div>
+                </div>
+                
+                <div class="section-title">⚙️ 3. Ayarlar</div>
+                
+                <div class="control-group">
+                    <label>Video Boyutu: <span id="widthVal" class="value-display">640</span> x <span id="heightVal" class="value-display">480</span></label>
+                    <div class="locked-control">
+                        <input type="range" id="videoWidth" min="480" max="1280" value="640" step="20" style="flex:1" disabled>
+                        <button id="unlockWidthBtn" class="lock-btn unlocked" data-target="width">🔒 Kilitli</button>
+                    </div>
+                    <div class="locked-control" style="margin-top:8px;">
+                        <input type="range" id="videoHeight" min="360" max="720" value="480" step="20" style="flex:1" disabled>
+                        <button id="unlockHeightBtn" class="lock-btn unlocked" data-target="height">🔒 Kilitli</button>
+                    </div>
+                    <div class="aspect-info">💡 16:9 için 854x480, 4:3 için 640x480 önerilir</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Slayt Süresi: <span id="durationVal" class="value-display">3</span> saniye</label>
+                    <div class="locked-control">
+                        <input type="range" id="slideDuration" min="1" max="8" value="3" step="0.5" style="flex:1" disabled>
+                        <button id="unlockDurationBtn" class="lock-btn unlocked" data-target="duration">🔒 Kilitli</button>
+                    </div>
+                </div>
+                
+                <div class="text-settings">
+                    <label>✍️ Yazı Ayarları</label>
+                    
+                    <div class="compact-palette-btn" id="openColorPicker">
+                        🎨 Yazı Rengi Seç 
+                        <div class="color-preview-rect" id="textColorRect" style="background-color:#ffffff"></div>
+                    </div>
+                    
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <div class="coord-input" style="flex:1">
+                            <span>📍 X:</span>
+                            <input type="number" id="textPosX" step="5" value="320">
+                            <span>Y:</span>
+                            <input type="number" id="textPosY" step="5" value="400">
+                            <button id="resetTextPosBtn" class="btn-secondary" style="padding:4px 8px; font-size:11px;">Sıfırla</button>
+                        </div>
+                    </div>
+                    
+                    <label>Yazı Boyutu: <span id="textSizeVal">28</span>px</label>
+                    <div class="locked-control">
+                        <input type="range" id="textSize" min="16" max="60" value="28" step="2" style="flex:1" disabled>
+                        <button id="unlockTextSizeBtn" class="lock-btn unlocked" data-target="textSize">🔒 Kilitli</button>
+                    </div>
+                    
+                    <label><input type="checkbox" id="textShadow" checked> ✨ Gölge efekti</label>
+                    <div class="aspect-info" style="margin-top:8px;">💡 İpucu: Yazıyı önizleme ekranında SÜRÜKLEYEREK taşıyabilirsiniz!</div>
+                </div>
+                
+                <div class="control-group">
+                    <label>✨ Geçiş Efekti</label>
+                    <div class="effect-buttons" id="effectButtons">
+                        <button data-effect="fade" class="effect-btn active">Fade</button>
+                        <button data-effect="slide" class="effect-btn">Slide</button>
+                        <button data-effect="zoom" class="effect-btn">Zoom</button>
+                        <button data-effect="none" class="effect-btn">Hiçbiri</button>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="btn-group">
+                    <button id="previewBtn" class="btn btn-primary">▶ Önizleme</button>
+                    <button id="stopPreviewBtn" class="btn btn-secondary">⏹ Durdur</button>
+                </div>
+                <div class="btn-group">
+                    <button id="createVideoBtn" class="btn btn-success">🎬 MP4 Video Oluştur</button>
+                </div>
+                
+                <div class="progress-container" id="progressContainer" style="display:none;">
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>📸 Mevcut Slayt İlerlemesi</span>
+                            <span id="currentProgressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="currentProgressFill" class="progress-fill current" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>🎬 Toplam Video İlerlemesi</span>
+                            <span id="totalProgressPercent">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="totalProgressFill" class="progress-fill" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="statusText" class="status-text"></div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="section-title">👁️ Önizleme (Yazıyı sürükleyin!)</div>
+                <div class="preview-container">
+                    <div class="canvas-wrapper" id="canvasWrapper">
+                        <canvas id="previewCanvas"></canvas>
+                        <div class="canvas-tip">✋ Yazıyı fare ile sürükleyerek taşıyabilirsiniz</div>
+                    </div>
+                </div>
+                <div class="status-text" style="margin-top:10px;">
+                    💡 Resim ekleyin, her slayta yazı ekleyin, yazıyı sürükleyerek konumlandırın, font ve renk seçin, müzik yükleyin, ardından "MP4 Video Oluştur" butonuna basın<br>
+                    🔒 Tüm ayarlar varsayılan olarak kilitlidir. Değiştirmek için kilit butonuna tıklayın.<br>
+                    🎵 "Müzik Döngüsü" seçeneği ile müziğin video bitince tekrar başlamasını sağlayabilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="spectrumOverlay" class="color-spectrum-overlay">
+    <div class="spectrum-card">
+        <div class="spectrum-header">
+            <span>🎨 Gelişmiş Renk Seçici</span>
+            <button id="spectrumCloseBtn" class="spectrum-close">✕</button>
+        </div>
+        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="200"></canvas>
+        <input type="range" id="hueSlider" class="spectrum-slider" min="0" max="360" value="0">
+        <div class="spectrum-preview-area">
+            <div id="spectrumPreviewBox" class="spectrum-preview-box"></div>
+            <input type="text" id="spectrumHexInput" class="spectrum-hex-input" value="#ffffff">
+            <button id="spectrumSelectBtn" class="spectrum-select-btn">✓ Seç</button>
+            <button id="spectrumCancelBtn" class="spectrum-cancel-btn">İptal</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ============ KİLİT SİSTEMİ ============
+        let locks = {
+            width: true,
+            height: true,
+            duration: true,
+            textSize: true
+        };
+        
+        function updateLockUI() {
+            document.getElementById('videoWidth').disabled = locks.width;
+            document.getElementById('unlockWidthBtn').innerHTML = locks.width ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            document.getElementById('unlockWidthBtn').className = `lock-btn ${locks.width ? 'unlocked' : ''}`;
+            
+            document.getElementById('videoHeight').disabled = locks.height;
+            document.getElementById('unlockHeightBtn').innerHTML = locks.height ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            document.getElementById('unlockHeightBtn').className = `lock-btn ${locks.height ? 'unlocked' : ''}`;
+            
+            document.getElementById('slideDuration').disabled = locks.duration;
+            document.getElementById('unlockDurationBtn').innerHTML = locks.duration ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            document.getElementById('unlockDurationBtn').className = `lock-btn ${locks.duration ? 'unlocked' : ''}`;
+            
+            document.getElementById('textSize').disabled = locks.textSize;
+            document.getElementById('unlockTextSizeBtn').innerHTML = locks.textSize ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            document.getElementById('unlockTextSizeBtn').className = `lock-btn ${locks.textSize ? 'unlocked' : ''}`;
+        }
+        
+        document.getElementById('unlockWidthBtn').addEventListener('click', () => { locks.width = !locks.width; updateLockUI(); });
+        document.getElementById('unlockHeightBtn').addEventListener('click', () => { locks.height = !locks.height; updateLockUI(); });
+        document.getElementById('unlockDurationBtn').addEventListener('click', () => { locks.duration = !locks.duration; updateLockUI(); });
+        document.getElementById('unlockTextSizeBtn').addEventListener('click', () => { locks.textSize = !locks.textSize; updateLockUI(); });
+        
+        // ============ FONT LİSTESİ ============
+        const fontData = [
+            "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond",
+            "Courier New", "Brush Script MT", "Comic Sans MS", "Impact", "Lucida Console", "Monaco",
+            "Segoe UI", "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins", "Nunito", "Raleway",
+            "Playfair Display", "Merriweather", "Oswald", "Anton", "Bebas Neue", "Pacifico", "Lobster",
+            "Dancing Script", "Great Vibes", "Satisfy", "Indie Flower", "Caveat", "Amatic SC",
+            "Courgette", "Kaushan Script", "Shadows Into Light", "Allura", "Parisienne", "Cookie",
+            "Handlee", "Kristi", "Yellowtail", "Sacramento", "Merienda", "Gloria Hallelujah"
+        ];
+        
+        let currentFont = "Arial";
+        
+        function renderFontList() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('fontList');
+            container.innerHTML = '';
+            const filteredFonts = fontData.filter(f => f.toLowerCase().includes(searchTerm));
+            filteredFonts.forEach(font => {
+                const div = document.createElement('div');
+                div.className = 'font-item';
+                div.innerHTML = `<span class="font-name" style="font-family: '${font}', sans-serif;">${font}</span><span>🖊️</span>`;
+                div.onclick = () => { currentFont = font; if (!isPreviewing && imageElements.length > 0) drawSlide(currentPreviewIndex); };
+                container.appendChild(div);
+            });
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', renderFontList);
+        
+        function setupCollapsible(headerId, contentId) {
+            const header = document.getElementById(headerId);
+            const content = document.getElementById(contentId);
+            if (!header || !content) return;
+            header.addEventListener('click', () => { content.classList.toggle('open'); header.classList.toggle('open'); });
+        }
+        
+        // ============ SPEKTRUM RENK SEÇİCİ ============
+        const spectrumOverlay = document.getElementById('spectrumOverlay');
+        const spectrumCanvas = document.getElementById('spectrumCanvas');
+        const spectrumHueSlider = document.getElementById('hueSlider');
+        const spectrumPreviewBox = document.getElementById('spectrumPreviewBox');
+        const spectrumHexInput = document.getElementById('spectrumHexInput');
+        const spectrumSelectBtn = document.getElementById('spectrumSelectBtn');
+        const spectrumCloseBtn = document.getElementById('spectrumCloseBtn');
+        const spectrumCancelBtn = document.getElementById('spectrumCancelBtn');
+        let spectrumCtx = null;
+        let currentHue = 0;
+        let tempColor = '#ffffff';
+        
+        function initSpectrum() {
+            if (!spectrumCtx) spectrumCtx = spectrumCanvas.getContext('2d');
+            spectrumCanvas.width = 400;
+            spectrumCanvas.height = 200;
+            drawSpectrum(currentHue);
+        }
+        function drawSpectrum(hue) { if (!spectrumCtx) return; const w = spectrumCanvas.width, h = spectrumCanvas.height; for (let y = 0; y < h; y++) { for (let x = 0; x < w; x++) { const sat = x / w, light = 1 - (y / h); const rgb = hslToRgb(hue, sat, light); spectrumCtx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`; spectrumCtx.fillRect(x, y, 1, 1); } } }
+        function hslToRgb(h, s, l) { h = (h % 360) / 360; let r, g, b; if (s === 0) r = g = b = l; else { const hue2rgb = (p, q, t) => { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1/6) return p + (q - p) * 6 * t; if (t < 1/2) return q; if (t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; }; const q = l < 0.5 ? l * (1 + s) : l + s - l * s; const p = 2 * l - q; r = hue2rgb(p, q, h + 1/3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1/3); } return { r: Math.round(r*255), g: Math.round(g*255), b: Math.round(b*255) }; }
+        function rgbToHex(r,g,b) { return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join(''); }
+        function getCanvasColor(x,y) { const px = spectrumCtx.getImageData(x,y,1,1).data; return { r: px[0], g: px[1], b: px[2] }; }
+        function rgbToHsl(r,g,b) { r/=255; g/=255; b/=255; const max = Math.max(r,g,b), min = Math.min(r,g,b); let h,s,l = (max+min)/2; if(max===min) h=s=0; else { const d = max-min; s = l>0.5 ? d/(2-max-min) : d/(max+min); switch(max){ case r: h = (g-b)/d + (g<b?6:0); break; case g: h = (b-r)/d + 2; break; case b: h = (r-g)/d + 4; break; } h/=6; } return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) }; }
+        function openSpectrum() { initSpectrum(); tempColor = textColor; spectrumPreviewBox.style.backgroundColor = tempColor; spectrumHexInput.value = tempColor.toUpperCase(); const r = parseInt(tempColor.slice(1,3),16); const g = parseInt(tempColor.slice(3,5),16); const b = parseInt(tempColor.slice(5,7),16); const hsl = rgbToHsl(r,g,b); currentHue = hsl.h; spectrumHueSlider.value = currentHue; drawSpectrum(currentHue); spectrumOverlay.classList.add('active'); }
+        spectrumHueSlider.addEventListener('input', (e) => { currentHue = parseInt(e.target.value); drawSpectrum(currentHue); });
+        spectrumCanvas.addEventListener('click', (e) => { const rect = spectrumCanvas.getBoundingClientRect(); const scaleX = spectrumCanvas.width / rect.width; const scaleY = spectrumCanvas.height / rect.height; const x = (e.clientX - rect.left) * scaleX; const y = (e.clientY - rect.top) * scaleY; if (x>=0 && x<spectrumCanvas.width && y>=0 && y<spectrumCanvas.height) { const rgb = getCanvasColor(Math.floor(x), Math.floor(y)); tempColor = rgbToHex(rgb.r, rgb.g, rgb.b); spectrumPreviewBox.style.backgroundColor = tempColor; spectrumHexInput.value = tempColor.toUpperCase(); } });
+        spectrumHexInput.addEventListener('change', (e) => { let val = e.target.value; if(!val.startsWith('#')) val = '#'+val; if(/^#[0-9A-Fa-f]{6}$/i.test(val)) { tempColor = val; spectrumPreviewBox.style.backgroundColor = tempColor; const r = parseInt(val.slice(1,3),16); const g = parseInt(val.slice(3,5),16); const b = parseInt(val.slice(5,7),16); const hsl = rgbToHsl(r,g,b); currentHue = hsl.h; spectrumHueSlider.value = currentHue; drawSpectrum(currentHue); } else { spectrumHexInput.value = tempColor; } });
+        spectrumSelectBtn.addEventListener('click', () => { textColor = tempColor; document.getElementById('textColorRect').style.backgroundColor = textColor; if (!isPreviewing && imageElements.length > 0) drawSlide(currentPreviewIndex); spectrumOverlay.classList.remove('active'); });
+        spectrumCloseBtn.addEventListener('click', () => { spectrumOverlay.classList.remove('active'); });
+        spectrumCancelBtn.addEventListener('click', () => { spectrumOverlay.classList.remove('active'); });
+        document.getElementById('openColorPicker').addEventListener('click', openSpectrum);
+        
+        // ============ MÜZİK DÖNGÜSÜ DEĞİŞKENİ ============
+        let musicLoopEnabled = true;
+        const musicLoopCheckbox = document.getElementById('musicLoopCheckbox');
+        musicLoopCheckbox.addEventListener('change', () => {
+            musicLoopEnabled = musicLoopCheckbox.checked;
+        });
+        
+        // ============ DEĞİŞKENLER ============
+        let images = [];
+        let imageElements = [];
+        let slideTexts = [];
+        let slideTextPositions = [];
+        let musicFile = null;
+        let musicUrl = null;
+        let audioContext = null;
+        let audioBuffer = null;
+        let musicDuration = 0;
+        
+        let currentEffect = 'fade';
+        let slideDuration = 3;
+        let videoWidth = 640;
+        let videoHeight = 480;
+        let isPreviewing = false;
+        let previewAnimationId = null;
+        let currentPreviewIndex = 0;
+        let previewCanvas = document.getElementById('previewCanvas');
+        let previewCtx = previewCanvas.getContext('2d');
+        
+        let textColor = '#ffffff';
+        let textSize = 28;
+        let textShadow = true;
+        
+        let defaultTextX = videoWidth / 2;
+        let defaultTextY = videoHeight - 60;
+        
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        
+        let isDraggingText = false;
+        let dragStartX = 0, dragStartY = 0;
+        
+        let currentProgress = 0;
+        let totalProgress = 0;
+        
+        // ============ DOM ELEMANLARI ============
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imageListDiv = document.getElementById('imageList');
+        const textInputsArea = document.getElementById('textInputsArea');
+        const musicUploadArea = document.getElementById('musicUploadArea');
+        const musicInput = document.getElementById('musicInput');
+        const musicDetail = document.getElementById('musicDetail');
+        const warningMessage = document.getElementById('warningMessage');
+        const loopMessage = document.getElementById('loopMessage');
+        
+        const videoWidthSlider = document.getElementById('videoWidth');
+        const videoHeightSlider = document.getElementById('videoHeight');
+        const widthVal = document.getElementById('widthVal');
+        const heightVal = document.getElementById('heightVal');
+        const slideDurationSlider = document.getElementById('slideDuration');
+        const durationVal = document.getElementById('durationVal');
+        const effectBtns = document.querySelectorAll('.effect-btn');
+        
+        const textSizeSlider = document.getElementById('textSize');
+        const textSizeVal = document.getElementById('textSizeVal');
+        const textShadowCheck = document.getElementById('textShadow');
+        const textPosXInput = document.getElementById('textPosX');
+        const textPosYInput = document.getElementById('textPosY');
+        const resetTextPosBtn = document.getElementById('resetTextPosBtn');
+        
+        const previewBtn = document.getElementById('previewBtn');
+        const stopPreviewBtn = document.getElementById('stopPreviewBtn');
+        const createVideoBtn = document.getElementById('createVideoBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const currentProgressFill = document.getElementById('currentProgressFill');
+        const totalProgressFill = document.getElementById('totalProgressFill');
+        const currentProgressPercent = document.getElementById('currentProgressPercent');
+        const totalProgressPercent = document.getElementById('totalProgressPercent');
+        const statusTextDiv = document.getElementById('statusText');
+        
+        // ============ AYAR EVENTLERİ ============
+        videoWidthSlider.addEventListener('input', () => { if (!locks.width) { videoWidth = parseInt(videoWidthSlider.value); widthVal.innerText = videoWidth; defaultTextX = videoWidth / 2; defaultTextY = videoHeight - 60; updateCanvasSize(); } });
+        videoHeightSlider.addEventListener('input', () => { if (!locks.height) { videoHeight = parseInt(videoHeightSlider.value); heightVal.innerText = videoHeight; defaultTextX = videoWidth / 2; defaultTextY = videoHeight - 60; updateCanvasSize(); } });
+        slideDurationSlider.addEventListener('input', () => { if (!locks.duration) { slideDuration = parseFloat(slideDurationSlider.value); durationVal.innerText = slideDuration; if (audioBuffer) updateMusicDuration(); } });
+        textSizeSlider.addEventListener('input', () => { if (!locks.textSize) { textSize = parseInt(textSizeSlider.value); textSizeVal.innerText = textSize; if (!isPreviewing && imageElements.length > 0) drawSlide(currentPreviewIndex); } });
+        
+        function updateMusicDuration() {
+            if (!audioBuffer) return;
+            musicDuration = audioBuffer.duration;
+            const totalSlideTime = imageElements.length * slideDuration;
+            const transitionTime = (imageElements.length - 1) * 0.5;
+            const totalVideoTime = totalSlideTime + transitionTime;
+            const minutes = Math.floor(musicDuration / 60);
+            const seconds = Math.floor(musicDuration % 60);
+            musicDetail.innerHTML = `🎵 Müzik süresi: ${minutes}:${seconds.toString().padStart(2,'0')}<br>📊 Video süresi: ${Math.floor(totalVideoTime/60)}:${Math.floor(totalVideoTime%60).toString().padStart(2,'0')}`;
+            if (totalVideoTime > musicDuration) { warningMessage.style.display = 'block'; loopMessage.style.display = 'none'; }
+            else { warningMessage.style.display = 'none'; if (musicDuration > totalVideoTime + 1) loopMessage.style.display = 'block'; else loopMessage.style.display = 'none'; }
+        }
+        
+        textShadowCheck.addEventListener('change', () => { textShadow = textShadowCheck.checked; if (!isPreviewing && imageElements.length > 0) drawSlide(currentPreviewIndex); });
+        textPosXInput.addEventListener('input', () => { if (imageElements.length > 0 && slideTextPositions[currentPreviewIndex]) { slideTextPositions[currentPreviewIndex].x = parseInt(textPosXInput.value); if (!isPreviewing) drawSlide(currentPreviewIndex); } });
+        textPosYInput.addEventListener('input', () => { if (imageElements.length > 0 && slideTextPositions[currentPreviewIndex]) { slideTextPositions[currentPreviewIndex].y = parseInt(textPosYInput.value); if (!isPreviewing) drawSlide(currentPreviewIndex); } });
+        resetTextPosBtn.addEventListener('click', () => { if (imageElements.length > 0 && slideTextPositions[currentPreviewIndex]) { slideTextPositions[currentPreviewIndex].x = defaultTextX; slideTextPositions[currentPreviewIndex].y = defaultTextY; textPosXInput.value = defaultTextX; textPosYInput.value = defaultTextY; if (!isPreviewing) drawSlide(currentPreviewIndex); } });
+        
+        effectBtns.forEach(btn => { btn.addEventListener('click', () => { effectBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentEffect = btn.getAttribute('data-effect'); }); });
+        
+        function updateCanvasSize() {
+            previewCanvas.width = videoWidth;
+            previewCanvas.height = videoHeight;
+            defaultTextX = videoWidth / 2;
+            defaultTextY = videoHeight - 60;
+            if (imageElements.length > 0 && !isPreviewing) drawSlide(currentPreviewIndex);
+            else if (imageElements.length === 0) { previewCtx.fillStyle = '#1a1a2e'; previewCtx.fillRect(0, 0, videoWidth, videoHeight); previewCtx.fillStyle = 'white'; previewCtx.font = `${Math.min(videoWidth/20, 24)}px "Segoe UI"`; previewCtx.textAlign = 'center'; previewCtx.fillText('📸 Resim ekleyin', videoWidth/2, videoHeight/2); }
+            if (audioBuffer) updateMusicDuration();
+        }
+        
+        // ============ RESİM YÜKLEME ============
+        function loadImages(files) {
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    images.push(file);
+                    slideTexts.push('');
+                    slideTextPositions.push({ x: defaultTextX, y: defaultTextY });
+                    const img = new Image();
+                    const url = URL.createObjectURL(file);
+                    img.onload = () => {
+                        imageElements.push(img);
+                        renderImageList();
+                        renderTextInputs();
+                        if (imageElements.length === 1 && !isPreviewing) { updateCanvasSize(); drawSlide(0); currentPreviewIndex = 0; }
+                        if (audioBuffer) updateMusicDuration();
+                    };
+                    img.src = url;
+                }
+            }
+        }
+        
+        function renderImageList() {
+            if (imageElements.length === 0) { imageListDiv.innerHTML = '<div style="color:#aaa; text-align:center; width:100%; padding:20px;">Henüz resim eklenmedi</div>'; return; }
+            imageListDiv.innerHTML = '';
+            imageElements.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-item';
+                if (index === currentPreviewIndex) div.classList.add('selected');
+                div.onclick = () => {
+                    currentPreviewIndex = index;
+                    document.querySelectorAll('.image-item').forEach((item, i) => { if (i === index) item.classList.add('selected'); else item.classList.remove('selected'); });
+                    if (!isPreviewing) drawSlide(index);
+                    if (slideTextPositions[index]) { textPosXInput.value = slideTextPositions[index].x; textPosYInput.value = slideTextPositions[index].y; }
+                };
+                div.innerHTML = `<img src="${img.src}" alt="resim"><div class="remove-btn" data-index="${index}">×</div>`;
+                div.querySelector('.remove-btn').onclick = (e) => { e.stopPropagation(); removeImage(index); };
+                imageListDiv.appendChild(div);
+            });
+        }
+        
+        function renderTextInputs() {
+            if (imageElements.length === 0) { textInputsArea.innerHTML = '<div style="color:#aaa; text-align:center;">Resim ekledikten sonra her slayta yazı ekleyebilirsiniz</div>'; return; }
+            textInputsArea.innerHTML = '';
+            imageElements.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.style.marginBottom = '12px';
+                div.style.padding = '8px';
+                div.style.background = 'white';
+                div.style.borderRadius = '12px';
+                div.style.border = '1px solid #ddd';
+                div.innerHTML = `<div style="font-size:11px; color:#e94560; margin-bottom:4px;">📷 Slayt ${index + 1}</div>
+                    <textarea class="slide-text" rows="2" placeholder="Bu slayta yazı ekleyin... (Enter ile satır atlayabilirsiniz)" data-index="${index}">${slideTexts[index] || ''}</textarea>`;
+                const textarea = div.querySelector('textarea');
+                textarea.addEventListener('input', (e) => { slideTexts[index] = e.target.value; if (!isPreviewing && currentPreviewIndex === index) drawSlide(index); });
+                textInputsArea.appendChild(div);
+            });
+        }
+        
+        function removeImage(index) {
+            URL.revokeObjectURL(imageElements[index].src);
+            images.splice(index, 1);
+            imageElements.splice(index, 1);
+            slideTexts.splice(index, 1);
+            slideTextPositions.splice(index, 1);
+            if (currentPreviewIndex >= imageElements.length) currentPreviewIndex = Math.max(0, imageElements.length - 1);
+            renderImageList();
+            renderTextInputs();
+            if (imageElements.length > 0 && !isPreviewing) {
+                drawSlide(currentPreviewIndex);
+                if (slideTextPositions[currentPreviewIndex]) { textPosXInput.value = slideTextPositions[currentPreviewIndex].x; textPosYInput.value = slideTextPositions[currentPreviewIndex].y; }
+            } else if (imageElements.length === 0) { previewCtx.fillStyle = '#1a1a2e'; previewCtx.fillRect(0, 0, videoWidth, videoHeight); previewCtx.fillStyle = 'white'; previewCtx.font = `${Math.min(videoWidth/20, 24)}px "Segoe UI"`; previewCtx.textAlign = 'center'; previewCtx.fillText('📸 Resim ekleyin', videoWidth/2, videoHeight/2); }
+            if (audioBuffer) updateMusicDuration();
+        }
+        
+        // ============ MÜZİK YÜKLEME ============
+        function loadMusic(file) {
+            if (!file.type.startsWith('audio/')) return;
+            musicFile = file;
+            if (musicUrl) URL.revokeObjectURL(musicUrl);
+            musicUrl = URL.createObjectURL(file);
+            document.getElementById('musicInfo').style.display = 'block';
+            if (audioContext) audioContext.close();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const reader = new FileReader();
+            reader.onload = (e) => { audioContext.decodeAudioData(e.target.result, (buffer) => { audioBuffer = buffer; musicDuration = buffer.duration; updateMusicDuration(); }); };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // ============ RESİM ÇİZİM ============
+        function drawImageFullscreen(img, ctx, w, h) {
+            const imgW = img.width, imgH = img.height;
+            const imgRatio = imgW / imgH, canvasRatio = w / h;
+            let drawW, drawH, drawX, drawY;
+            if (imgRatio > canvasRatio) { drawW = w; drawH = w / imgRatio; drawX = 0; drawY = (h - drawH) / 2; }
+            else { drawH = h; drawW = h * imgRatio; drawX = (w - drawW) / 2; drawY = 0; }
+            ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        }
+        
+        function drawTextOnSlide(ctx, w, h, text, posX, posY) {
+            if (!text || text.trim() === '') return;
+            ctx.font = `bold ${textSize}px "${currentFont}", "Segoe UI", "Arial"`;
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            if (textShadow) { ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; }
+            const lines = text.split('\n');
+            const lineHeight = textSize * 1.3;
+            const totalHeight = lines.length * lineHeight;
+            let startY = posY - totalHeight / 2 + lineHeight / 2;
+            for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], posX, startY + i * lineHeight);
+            ctx.shadowColor = 'transparent';
+        }
+        
+        function drawSlide(index, progress = 1, nextIndex = null) {
+            if (imageElements.length === 0) return;
+            const img = imageElements[index];
+            if (!img) return;
+            const w = videoWidth, h = videoHeight;
+            previewCtx.clearRect(0, 0, w, h);
+            if (currentEffect === 'fade' && nextIndex !== null && progress < 1) {
+                const nextImg = imageElements[nextIndex];
+                if (nextImg) {
+                    previewCtx.globalAlpha = 1 - progress;
+                    drawImageFullscreen(img, previewCtx, w, h);
+                    previewCtx.globalAlpha = progress;
+                    drawImageFullscreen(nextImg, previewCtx, w, h);
+                    previewCtx.globalAlpha = 1;
+                } else drawImageFullscreen(img, previewCtx, w, h);
+            } else if (currentEffect === 'slide' && nextIndex !== null && progress < 1) {
+                const nextImg = imageElements[nextIndex];
+                if (nextImg) {
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = w; tempCanvas.height = h;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    drawImageFullscreen(nextImg, tempCtx, w, h);
+                    drawImageFullscreen(img, previewCtx, w, h);
+                    previewCtx.drawImage(tempCanvas, -w * (1 - progress), 0, w, h);
+                } else drawImageFullscreen(img, previewCtx, w, h);
+            } else if (currentEffect === 'zoom' && nextIndex !== null && progress < 1) {
+                const scale = 1 + progress * 0.15;
+                previewCtx.save(); previewCtx.translate(w/2, h/2); previewCtx.scale(scale, scale); previewCtx.translate(-w/2, -h/2); drawImageFullscreen(img, previewCtx, w, h); previewCtx.restore();
+            } else drawImageFullscreen(img, previewCtx, w, h);
+            if (slideTexts[index] && slideTextPositions[index]) drawTextOnSlide(previewCtx, w, h, slideTexts[index], slideTextPositions[index].x, slideTextPositions[index].y);
+        }
+        
+        // ============ YAZI SÜRÜKLEME ============
+        function getCanvasMouse(e) {
+            const rect = previewCanvas.getBoundingClientRect();
+            const scaleX = previewCanvas.width / rect.width;
+            const scaleY = previewCanvas.height / rect.height;
+            let clientX, clientY;
+            if (e.touches) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; e.preventDefault(); }
+            else { clientX = e.clientX; clientY = e.clientY; }
+            let canvasX = (clientX - rect.left) * scaleX;
+            let canvasY = (clientY - rect.top) * scaleY;
+            canvasX = Math.min(Math.max(canvasX, 0), videoWidth);
+            canvasY = Math.min(Math.max(canvasY, 0), videoHeight);
+            return { x: canvasX, y: canvasY };
+        }
+        
+        function isOverText(mx, my, index) {
+            if (!slideTexts[index] || slideTexts[index].trim() === '') return false;
+            if (!slideTextPositions[index]) return false;
+            const pos = slideTextPositions[index];
+            const lines = slideTexts[index].split('\n');
+            const lineHeight = textSize * 1.3;
+            const totalHeight = lines.length * lineHeight;
+            let maxWidth = 0;
+            previewCtx.font = `bold ${textSize}px "${currentFont}"`;
+            lines.forEach(l => { maxWidth = Math.max(maxWidth, previewCtx.measureText(l).width); });
+            const startY = pos.y - totalHeight / 2;
+            return (mx >= pos.x - maxWidth/2 - 20 && mx <= pos.x + maxWidth/2 + 20 && my >= startY - 20 && my <= startY + totalHeight + 20);
+        }
+        
+        function onMouseDown(e) { if (imageElements.length === 0 || isPreviewing) return; const { x, y } = getCanvasMouse(e); if (isOverText(x, y, currentPreviewIndex)) { isDraggingText = true; dragStartX = x - slideTextPositions[currentPreviewIndex].x; dragStartY = y - slideTextPositions[currentPreviewIndex].y; previewCanvas.style.cursor = 'grabbing'; e.preventDefault(); } }
+        function onMouseMove(e) { if (!isDraggingText) return; const { x, y } = getCanvasMouse(e); let newX = x - dragStartX; let newY = y - dragStartY; newX = Math.min(Math.max(newX, 40), videoWidth - 40); newY = Math.min(Math.max(newY, 40), videoHeight - 40); slideTextPositions[currentPreviewIndex].x = newX; slideTextPositions[currentPreviewIndex].y = newY; textPosXInput.value = Math.round(newX); textPosYInput.value = Math.round(newY); drawSlide(currentPreviewIndex); }
+        function onMouseUp() { isDraggingText = false; previewCanvas.style.cursor = 'default'; }
+        previewCanvas.addEventListener('mousedown', onMouseDown);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+        previewCanvas.addEventListener('touchstart', onMouseDown);
+        window.addEventListener('touchmove', onMouseMove);
+        window.addEventListener('touchend', onMouseUp);
+        
+        // ============ ÖNİZLEME ============
+        function startPreview() {
+            if (imageElements.length === 0) { alert('Lütfen önce resim ekleyin!'); return; }
+            stopPreview();
+            isPreviewing = true;
+            let startTime = performance.now();
+            let nextTransition = false;
+            let transitionProgress = 0;
+            let transitionStart = 0;
+            function animatePreview(now) {
+                if (!isPreviewing) return;
+                const elapsed = (now - startTime) / 1000;
+                if (!nextTransition && elapsed >= slideDuration) { nextTransition = true; transitionStart = now; transitionProgress = 0; }
+                if (nextTransition) {
+                    transitionProgress = Math.min((now - transitionStart) / 500, 1);
+                    const nextIndex = (currentPreviewIndex + 1) % imageElements.length;
+                    drawSlide(currentPreviewIndex, transitionProgress, nextIndex);
+                    if (transitionProgress >= 1) {
+                        currentPreviewIndex = nextIndex;
+                        if (slideTextPositions[currentPreviewIndex]) { textPosXInput.value = slideTextPositions[currentPreviewIndex].x; textPosYInput.value = slideTextPositions[currentPreviewIndex].y; }
+                        document.querySelectorAll('.image-item').forEach((item, i) => { if (i === currentPreviewIndex) item.classList.add('selected'); else item.classList.remove('selected'); });
+                        startTime = now;
+                        nextTransition = false;
+                    }
+                } else drawSlide(currentPreviewIndex);
+                previewAnimationId = requestAnimationFrame(animatePreview);
+            }
+            previewAnimationId = requestAnimationFrame(animatePreview);
+        }
+        function stopPreview() { isPreviewing = false; if (previewAnimationId) { cancelAnimationFrame(previewAnimationId); previewAnimationId = null; } if (imageElements.length > 0) drawSlide(currentPreviewIndex); }
+        previewBtn.addEventListener('click', startPreview);
+        stopPreviewBtn.addEventListener('click', stopPreview);
+        
+        // ============ MP4 VİDEO OLUŞTUR (DÖNGÜ SEÇENEĞİ EKLENDİ) ============
+        async function createVideo() {
+            if (imageElements.length === 0) { alert('Lütfen en az 1 resim ekleyin!'); return; }
+            if (isRecording) { alert('Video oluşturma devam ediyor!'); return; }
+            
+            progressContainer.style.display = 'block';
+            statusTextDiv.innerText = 'Video hazırlanıyor...';
+            currentProgressFill.style.width = '0%';
+            totalProgressFill.style.width = '0%';
+            currentProgressPercent.innerText = '0%';
+            totalProgressPercent.innerText = '0%';
+            
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = videoWidth;
+            tempCanvas.height = videoHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            let audioStream = null;
+            let audioSource = null;
+            if (audioBuffer) {
+                const tempAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                audioSource = tempAudioContext.createBufferSource();
+                audioSource.buffer = audioBuffer;
+                // MÜZİK DÖNGÜSÜ - Checkbox değerine göre ayarlandı!
+                audioSource.loop = musicLoopEnabled;
+                const destination = tempAudioContext.createMediaStreamDestination();
+                audioSource.connect(destination);
+                audioSource.start();
+                audioStream = destination.stream;
+                await tempAudioContext.resume();
+            }
+            
+            const canvasStream = tempCanvas.captureStream(30);
+            let finalStream = canvasStream;
+            if (audioStream) finalStream = new MediaStream([...canvasStream.getVideoTracks(), ...audioStream.getAudioTracks()]);
+            
+            mediaRecorder = new MediaRecorder(finalStream, { mimeType: 'video/webm' });
+            recordedChunks = [];
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const now = new Date();
+                a.download = `slideshow_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}_${now.getHours()}_${now.getMinutes()}.mp4`;
+                a.href = url;
+                a.click();
+                URL.revokeObjectURL(url);
+                isRecording = false;
+                progressContainer.style.display = 'none';
+                statusTextDiv.innerText = '✅ Video oluşturuldu!';
+                setTimeout(() => { statusTextDiv.innerText = ''; }, 3000);
+            };
+            mediaRecorder.start();
+            isRecording = true;
+            statusTextDiv.innerText = 'Video oluşturuluyor...';
+            
+            const totalSlides = imageElements.length;
+            let currentSlide = 0;
+            let slideStartTime = performance.now();
+            let transitionActive = false;
+            let transitionStartTime = 0;
+            let transitionProgress = 0;
+            let totalElapsed = 0;
+            let totalDuration = totalSlides * slideDuration + (totalSlides - 1) * 0.5;
+            
+            function drawOnCanvas(ctx, index, progress = 1, nextIndex = null) {
+                const img = imageElements[index];
+                if (!img) return;
+                const w = videoWidth, h = videoHeight;
+                ctx.clearRect(0, 0, w, h);
+                if (currentEffect === 'fade' && nextIndex !== null && progress < 1) {
+                    const nextImg = imageElements[nextIndex];
+                    if (nextImg) {
+                        ctx.globalAlpha = 1 - progress;
+                        drawImageFullscreen(img, ctx, w, h);
+                        ctx.globalAlpha = progress;
+                        drawImageFullscreen(nextImg, ctx, w, h);
+                        ctx.globalAlpha = 1;
+                    } else drawImageFullscreen(img, ctx, w, h);
+                } else if (currentEffect === 'slide' && nextIndex !== null && progress < 1) {
+                    const nextImg = imageElements[nextIndex];
+                    if (nextImg) {
+                        const tempCanvas2 = document.createElement('canvas');
+                        tempCanvas2.width = w; tempCanvas2.height = h;
+                        const tempCtx2 = tempCanvas2.getContext('2d');
+                        drawImageFullscreen(nextImg, tempCtx2, w, h);
+                        drawImageFullscreen(img, ctx, w, h);
+                        ctx.drawImage(tempCanvas2, -w * (1 - progress), 0, w, h);
+                    } else drawImageFullscreen(img, ctx, w, h);
+                } else if (currentEffect === 'zoom' && nextIndex !== null && progress < 1) {
+                    const scale = 1 + progress * 0.15;
+                    ctx.save(); ctx.translate(w/2, h/2); ctx.scale(scale, scale); ctx.translate(-w/2, -h/2); drawImageFullscreen(img, ctx, w, h); ctx.restore();
+                } else drawImageFullscreen(img, ctx, w, h);
+                if (slideTexts[index] && slideTextPositions[index]) {
+                    drawTextOnCanvas(ctx, w, h, slideTexts[index], slideTextPositions[index].x, slideTextPositions[index].y);
+                }
+            }
+            
+            function drawTextOnCanvas(ctx, w, h, text, posX, posY) {
+                if (!text || text.trim() === '') return;
+                ctx.font = `bold ${textSize}px "${currentFont}", "Segoe UI", "Arial"`;
+                ctx.fillStyle = textColor;
+                ctx.textAlign = 'center';
+                if (textShadow) { ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; }
+                const lines = text.split('\n');
+                const lineHeight = textSize * 1.3;
+                const totalHeight = lines.length * lineHeight;
+                let startY = posY - totalHeight / 2 + lineHeight / 2;
+                for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], posX, startY + i * lineHeight);
+                ctx.shadowColor = 'transparent';
+            }
+            
+            function renderFrame(now) {
+                if (!isRecording) return;
+                totalElapsed = (now - slideStartTime) / 1000;
+                let currentSlideProgress = 0;
+                if (!transitionActive) currentSlideProgress = Math.min(totalElapsed / slideDuration, 1);
+                else currentSlideProgress = 1;
+                const currentPercent = Math.round(currentSlideProgress * 100);
+                currentProgressFill.style.width = `${currentPercent}%`;
+                currentProgressPercent.innerText = `${currentPercent}%`;
+                const totalPercent = Math.min(Math.round((totalElapsed / totalDuration) * 100), 100);
+                totalProgressFill.style.width = `${totalPercent}%`;
+                totalProgressPercent.innerText = `${totalPercent}%`;
+                const elapsed = totalElapsed;
+                if (!transitionActive && elapsed >= slideDuration) { transitionActive = true; transitionStartTime = now; transitionProgress = 0; }
+                if (transitionActive) {
+                    transitionProgress = Math.min((now - transitionStartTime) / 500, 1);
+                    const nextSlide = (currentSlide + 1) % totalSlides;
+                    drawOnCanvas(tempCtx, currentSlide, transitionProgress, nextSlide);
+                    if (transitionProgress >= 1) {
+                        currentSlide = nextSlide;
+                        slideStartTime = now;
+                        transitionActive = false;
+                        if (currentSlide === 0 && transitionProgress >= 1) { mediaRecorder.stop(); return; }
+                    }
+                } else drawOnCanvas(tempCtx, currentSlide);
+                requestAnimationFrame(renderFrame);
+            }
+            requestAnimationFrame(renderFrame);
+            setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, totalDuration * 1000 + 1000);
+        }
+        
+        createVideoBtn.addEventListener('click', createVideo);
+        
+        // ============ YÜKLEME EVENTLERİ ============
+        imageUploadArea.addEventListener('click', () => imageInput.click());
+        imageUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); imageUploadArea.classList.add('dragover'); });
+        imageUploadArea.addEventListener('dragleave', () => { imageUploadArea.classList.remove('dragover'); });
+        imageUploadArea.addEventListener('drop', (e) => { e.preventDefault(); imageUploadArea.classList.remove('dragover'); loadImages(Array.from(e.dataTransfer.files)); });
+        imageInput.addEventListener('change', (e) => { if (e.target.files) loadImages(Array.from(e.target.files)); imageInput.value = ''; });
+        
+        musicUploadArea.addEventListener('click', () => musicInput.click());
+        musicUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); musicUploadArea.classList.add('dragover'); });
+        musicUploadArea.addEventListener('dragleave', () => { musicUploadArea.classList.remove('dragover'); });
+        musicUploadArea.addEventListener('drop', (e) => { e.preventDefault(); musicUploadArea.classList.remove('dragover'); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('audio/')) loadMusic(file); });
+        musicInput.addEventListener('change', (e) => { if (e.target.files[0]) loadMusic(e.target.files[0]); musicInput.value = ''; });
+        
+        // ============ BAŞLANGIÇ ============
+        renderFontList();
+        setupCollapsible('fontPanelHeader', 'fontPanelContent');
+        updateLockUI();
+        updateCanvasSize();
+        previewCtx.fillStyle = '#1a1a2e';
+        previewCtx.fillRect(0, 0, videoWidth, videoHeight);
+        previewCtx.fillStyle = 'white';
+        previewCtx.font = `${Math.min(videoWidth/20, 24)}px "Segoe UI"`;
+        previewCtx.textAlign = 'center';
+        previewCtx.fillText('📸 Resim ekleyin', videoWidth/2, videoHeight/2);
+        
+        console.log('Slideshow Video Oluşturucu hazır! Müzik döngüsü seçeneği eklendi!');
+    })();
+</script>
+</body>
+</html>
