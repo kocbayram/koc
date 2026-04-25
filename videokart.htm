@@ -172,6 +172,7 @@
             font-size: 12px;
             cursor: pointer;
             transition: 0.2s;
+            min-width: 70px;
         }
         .lock-btn.active {
             background: #764ba2;
@@ -435,6 +436,16 @@
             display: none;
             pointer-events: auto;
         }
+        
+        /* Kilitli ayar çubukları stili */
+        .locked-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .locked-control input[type="range"] {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -447,16 +458,22 @@
             <div id="resizeHandle" class="resize-handle"></div>
         </div>
         
-        <!-- Canvas Boyut Ayarları -->
+        <!-- Canvas Boyut Ayarları - KİLİTLİ -->
         <div class="section-title">📐 Canvas Boyutu</div>
         <div class="size-control">
             <div>
                 <label>Genişlik: <span id="widthVal">600</span>px</label>
-                <input type="range" id="canvasWidth" min="400" max="900" value="600" step="10">
+                <div class="locked-control">
+                    <input type="range" id="canvasWidth" min="400" max="900" value="600" step="10" disabled>
+                    <button id="unlockWidthBtn" class="lock-btn active">🔒 Kilitli</button>
+                </div>
             </div>
             <div>
                 <label>Yükseklik: <span id="heightVal">720</span>px</label>
-                <input type="range" id="canvasHeight" min="500" max="900" value="720" step="10">
+                <div class="locked-control">
+                    <input type="range" id="canvasHeight" min="500" max="900" value="720" step="10" disabled>
+                    <button id="unlockHeightBtn" class="lock-btn active">🔒 Kilitli</button>
+                </div>
             </div>
         </div>
         
@@ -501,8 +518,18 @@
                 <button id="resetLogoPosBtn" class="btn-gray" style="padding:4px 12px;">Konum Sıfırla</button>
             </div>
             <div style="margin-top: 12px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                <label>📏 Genişlik:</label><input type="range" id="logoWidth" min="20" max="300" value="80" step="2" style="width:160px;"><span id="logoWidthVal">80px</span>
-                <label>📐 Yükseklik:</label><input type="range" id="logoHeight" min="20" max="300" value="80" step="2" style="width:160px;"><span id="logoHeightVal">80px</span>
+                <label>📏 Genişlik:</label>
+                <div class="locked-control" style="flex:1">
+                    <input type="range" id="logoWidth" min="20" max="300" value="80" step="2" style="width:160px;" disabled>
+                    <button id="unlockLogoWidthBtn" class="lock-btn active" style="padding:4px 8px;">🔒</button>
+                </div>
+                <span id="logoWidthVal">80px</span>
+                <label>📐 Yükseklik:</label>
+                <div class="locked-control" style="flex:1">
+                    <input type="range" id="logoHeight" min="20" max="300" value="80" step="2" style="width:160px;" disabled>
+                    <button id="unlockLogoHeightBtn" class="lock-btn active" style="padding:4px 8px;">🔒</button>
+                </div>
+                <span id="logoHeightVal">80px</span>
                 <label><input type="checkbox" id="keepAspect" checked> 🔒 Oranı Koru</label>
                 <button id="resetLogoSizeBtn" class="btn-gray" style="padding:4px 12px;">Boyut Sıfırla</button>
             </div>
@@ -547,8 +574,8 @@ Bayram KOÇ</textarea>
         
         <label>📏 Yazı Boyutu: <span id="textSizeVal">36</span>px</label>
         <div class="font-lock">
-            <input type="range" id="textSizeSlider" min="20" max="80" value="36" step="1" style="flex:1">
-            <button id="lockFontBtn" class="lock-btn">🔓 Kilit Açık</button>
+            <input type="range" id="textSizeSlider" min="20" max="80" value="36" step="1" style="flex:1" disabled>
+            <button id="lockFontBtn" class="lock-btn active">🔒 Kilitli</button>
         </div>
         
         <label><input type="checkbox" id="shadowToggle" checked> ✨ Gölge efekti</label>
@@ -574,7 +601,9 @@ Bayram KOÇ</textarea>
             <button id="saveJpg" class="btn-purple">🖼️ JPG</button>
         </div>
         <div style="font-size: 11px; color: #888; text-align: center; margin-top: 15px;">
-            💡 Video yükle → "Kaydı Başlat"a bas → Video bitince MP4 otomatik inecek
+            💡 Video yükle → "Kaydı Başlat"a bas → Video bitince MP4 otomatik inecek<br>
+            🔒 Tüm ayarlar varsayılan olarak kilitlidir. Değiştirmek için kilit butonuna tıklayın.<br><br>
+                <h4>Bayram KOÇ</h4>
         </div>
     </div>
 </div>
@@ -599,6 +628,69 @@ Bayram KOÇ</textarea>
 
 <script>
     (function() {
+        // ==================== KİLİT SİSTEMİ (TÜM AYARLAR İÇİN) ====================
+        let locks = {
+            canvasWidth: true,
+            canvasHeight: true,
+            logoWidth: true,
+            logoHeight: true,
+            textSize: true
+        };
+        
+        function updateLockUI() {
+            // Canvas genişlik
+            document.getElementById('canvasWidth').disabled = locks.canvasWidth;
+            const widthBtn = document.getElementById('unlockWidthBtn');
+            widthBtn.innerHTML = locks.canvasWidth ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            widthBtn.className = `lock-btn ${locks.canvasWidth ? 'active' : ''}`;
+            
+            // Canvas yükseklik
+            document.getElementById('canvasHeight').disabled = locks.canvasHeight;
+            const heightBtn = document.getElementById('unlockHeightBtn');
+            heightBtn.innerHTML = locks.canvasHeight ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            heightBtn.className = `lock-btn ${locks.canvasHeight ? 'active' : ''}`;
+            
+            // Logo genişlik
+            document.getElementById('logoWidth').disabled = locks.logoWidth;
+            const logoWidthBtn = document.getElementById('unlockLogoWidthBtn');
+            logoWidthBtn.innerHTML = locks.logoWidth ? '🔒' : '🔓';
+            logoWidthBtn.className = `lock-btn ${locks.logoWidth ? 'active' : ''}`;
+            
+            // Logo yükseklik
+            document.getElementById('logoHeight').disabled = locks.logoHeight;
+            const logoHeightBtn = document.getElementById('unlockLogoHeightBtn');
+            logoHeightBtn.innerHTML = locks.logoHeight ? '🔒' : '🔓';
+            logoHeightBtn.className = `lock-btn ${locks.logoHeight ? 'active' : ''}`;
+            
+            // Yazı boyutu
+            document.getElementById('textSizeSlider').disabled = locks.textSize;
+            const textSizeBtn = document.getElementById('lockFontBtn');
+            textSizeBtn.innerHTML = locks.textSize ? '🔒 Kilitli' : '🔓 Kilit Açık';
+            textSizeBtn.className = `lock-btn ${locks.textSize ? 'active' : ''}`;
+        }
+        
+        // Kilit butonları
+        document.getElementById('unlockWidthBtn').addEventListener('click', () => {
+            locks.canvasWidth = !locks.canvasWidth;
+            updateLockUI();
+        });
+        document.getElementById('unlockHeightBtn').addEventListener('click', () => {
+            locks.canvasHeight = !locks.canvasHeight;
+            updateLockUI();
+        });
+        document.getElementById('unlockLogoWidthBtn').addEventListener('click', () => {
+            locks.logoWidth = !locks.logoWidth;
+            updateLockUI();
+        });
+        document.getElementById('unlockLogoHeightBtn').addEventListener('click', () => {
+            locks.logoHeight = !locks.logoHeight;
+            updateLockUI();
+        });
+        document.getElementById('lockFontBtn').addEventListener('click', () => {
+            locks.textSize = !locks.textSize;
+            updateLockUI();
+        });
+        
         // ==================== FONT LİSTESİ ====================
         const fontData = [
             "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond",
@@ -656,15 +748,19 @@ Bayram KOÇ</textarea>
         canvas.style.width = '100%';
         canvas.style.height = 'auto';
         
-        // Canvas boyut kontrolü
+        // Canvas boyut kontrolü (kilitli ise çalışmaz)
         const widthSlider = document.getElementById('canvasWidth');
         const heightSlider = document.getElementById('canvasHeight');
         const widthVal = document.getElementById('widthVal');
         const heightVal = document.getElementById('heightVal');
         
         function updateCanvasSize() {
-            W = parseInt(widthSlider.value);
-            H = parseInt(heightSlider.value);
+            if (!locks.canvasWidth) {
+                W = parseInt(widthSlider.value);
+            }
+            if (!locks.canvasHeight) {
+                H = parseInt(heightSlider.value);
+            }
             canvas.width = W;
             canvas.height = H;
             widthVal.innerText = W;
@@ -684,8 +780,12 @@ Bayram KOÇ</textarea>
             updateResizeHandlePosition();
         }
         
-        widthSlider.addEventListener('input', updateCanvasSize);
-        heightSlider.addEventListener('input', updateCanvasSize);
+        widthSlider.addEventListener('input', () => {
+            if (!locks.canvasWidth) updateCanvasSize();
+        });
+        heightSlider.addEventListener('input', () => {
+            if (!locks.canvasHeight) updateCanvasSize();
+        });
         
         // ==================== SÜSLEME İKONLARI ====================
         const symbols = [
@@ -741,7 +841,6 @@ Bayram KOÇ</textarea>
         let textX = W/2, textY = H/2;
         let isDraggingText = false;
         let dragTextStartX = 0, dragTextStartY = 0;
-        let fontLocked = false;
         
         // ==================== DOM ELEMANLARI ====================
         const uploadZone = document.getElementById('uploadZone');
@@ -775,7 +874,6 @@ Bayram KOÇ</textarea>
         const textXInput = document.getElementById('messageX');
         const textYInput = document.getElementById('messageY');
         const resetPosBtn = document.getElementById('resetPositionBtn');
-        const lockFontBtn = document.getElementById('lockFontBtn');
         
         // ==================== PROJE KAYDET / YÜKLE ====================
         document.getElementById('saveProjectBtn').addEventListener('click', () => {
@@ -868,7 +966,7 @@ Bayram KOÇ</textarea>
             input.click();
         });
         
-        // ==================== RENK SEÇİCİ ====================
+        // ==================== RENK SEÇİCİ (ORİJİNAL) ====================
         const spectrumOverlay = document.getElementById('spectrumOverlay');
         const spectrumCanvas = document.getElementById('spectrumCanvas');
         const spectrumHueSlider = document.getElementById('hueSlider');
@@ -1029,22 +1127,6 @@ Bayram KOÇ</textarea>
             openSpectrum('textColor', currentColor);
         });
         
-        // ==================== FONT KİLİT ====================
-        lockFontBtn.addEventListener('click', () => {
-            fontLocked = !fontLocked;
-            if (fontLocked) {
-                lockFontBtn.innerHTML = '🔒 Kilitli';
-                lockFontBtn.classList.add('active');
-                fontSizeSlider.disabled = true;
-                fontSizeSlider.style.opacity = '0.5';
-            } else {
-                lockFontBtn.innerHTML = '🔓 Kilit Açık';
-                lockFontBtn.classList.remove('active');
-                fontSizeSlider.disabled = false;
-                fontSizeSlider.style.opacity = '1';
-            }
-        });
-        
         // ==================== METİN EVENTLERİ ====================
         messageField.addEventListener('input', () => {
             currentMessage = messageField.value;
@@ -1058,7 +1140,7 @@ Bayram KOÇ</textarea>
         });
         
         fontSizeSlider.addEventListener('input', (e) => {
-            if (!fontLocked) {
+            if (!locks.textSize) {
                 currentFontSize = parseInt(e.target.value);
                 fontSizeSpan.innerText = currentFontSize;
                 drawCanvas();
@@ -1175,37 +1257,41 @@ Bayram KOÇ</textarea>
         }
         
         function updateLogoSizeFromWidth(w) {
-            if (keepAspectCheck.checked && originalImgW > 0 && originalImgH > 0) {
-                let newH = Math.round(w * (originalImgH / originalImgW));
-                newH = Math.min(Math.max(newH, 20), 300);
-                logoWidth = w;
-                logoHeight = newH;
-                logoWidthSlider.value = logoWidth;
-                logoHeightSlider.value = logoHeight;
-            } else {
-                logoWidth = w;
+            if (!locks.logoWidth) {
+                if (keepAspectCheck.checked && originalImgW > 0 && originalImgH > 0) {
+                    let newH = Math.round(w * (originalImgH / originalImgW));
+                    newH = Math.min(Math.max(newH, 20), 300);
+                    logoWidth = w;
+                    logoHeight = newH;
+                    logoWidthSlider.value = logoWidth;
+                    logoHeightSlider.value = logoHeight;
+                } else {
+                    logoWidth = w;
+                }
+                logoWidthVal.innerText = logoWidth + "px";
+                logoHeightVal.innerText = logoHeight + "px";
+                drawCanvas();
+                updateResizeHandlePosition();
             }
-            logoWidthVal.innerText = logoWidth + "px";
-            logoHeightVal.innerText = logoHeight + "px";
-            drawCanvas();
-            updateResizeHandlePosition();
         }
         
         function updateLogoSizeFromHeight(h) {
-            if (keepAspectCheck.checked && originalImgW > 0 && originalImgH > 0) {
-                let newW = Math.round(h * (originalImgW / originalImgH));
-                newW = Math.min(Math.max(newW, 20), 300);
-                logoHeight = h;
-                logoWidth = newW;
-                logoWidthSlider.value = logoWidth;
-                logoHeightSlider.value = logoHeight;
-            } else {
-                logoHeight = h;
+            if (!locks.logoHeight) {
+                if (keepAspectCheck.checked && originalImgW > 0 && originalImgH > 0) {
+                    let newW = Math.round(h * (originalImgW / originalImgH));
+                    newW = Math.min(Math.max(newW, 20), 300);
+                    logoHeight = h;
+                    logoWidth = newW;
+                    logoWidthSlider.value = logoWidth;
+                    logoHeightSlider.value = logoHeight;
+                } else {
+                    logoHeight = h;
+                }
+                logoWidthVal.innerText = logoWidth + "px";
+                logoHeightVal.innerText = logoHeight + "px";
+                drawCanvas();
+                updateResizeHandlePosition();
             }
-            logoWidthVal.innerText = logoWidth + "px";
-            logoHeightVal.innerText = logoHeight + "px";
-            drawCanvas();
-            updateResizeHandlePosition();
         }
         
         function isOverResizeHandle(e) {
@@ -1704,11 +1790,11 @@ Bayram KOÇ</textarea>
         textYInput.value = textY;
         logoXInput.value = logoX;
         logoYInput.value = logoY;
-        fontSizeSlider.value = 36;
-        fontSizeSpan.innerText = 36;
         
         renderFontList();
         setupCollapsible('fontPanelHeader', 'fontPanelContent');
+        updateLockUI();
+        updateCanvasSize();
         
         drawCanvas();
         
@@ -1717,7 +1803,7 @@ Bayram KOÇ</textarea>
             updateResizeHandlePosition();
         }, 100);
         
-        console.log('Videolu Kart Oluşturucu hazır!');
+        console.log('Videolu Kart Oluşturucu hazır! Tüm ayarlar varsayılan olarak kilitlidir.');
     })();
 </script>
 </body>
