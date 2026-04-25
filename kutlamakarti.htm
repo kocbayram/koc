@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kutlama Kartı Stüdyosu | Ultimate</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background: linear-gradient(145deg, #fef9ff 0%, #f4edff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .glass-ultimate {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 56px;
+            box-shadow: 0 35px 60px -20px rgba(110, 70, 180, 0.3);
+            padding: 32px;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            border: 1px solid rgba(200, 180, 255, 0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 12px; }
+        .icon { width: 70px; height: 70px; background: linear-gradient(145deg, #e9dcff, #dbc9ff); border-radius: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .icon svg { width: 36px; height: 36px; stroke: #9b6bdf; stroke-width: 1.5; fill: none; }
+        h1 { font-size: 30px; font-weight: 800; background: linear-gradient(125deg, #b87eff, #a755f7, #c28bff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: glowMove 8s ease infinite; }
+        @keyframes glowMove { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        .two-columns { display: flex; gap: 28px; flex-wrap: wrap; }
+        .column { flex: 1; min-width: 280px; }
+
+        .collapsible-panel {
+            background: #fffdf9;
+            border-radius: 32px;
+            border: 1px solid #f3e5d5;
+            margin-top: 20px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+            color: #6b3ea5;
+            border-bottom: 1px solid #f3e5d5;
+        }
+        .panel-header .toggle-icon { font-size: 18px; transition: transform 0.2s; }
+        .panel-header.open .toggle-icon { transform: rotate(180deg); }
+        .panel-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-out;
+        }
+        .panel-content.open { max-height: 580px; overflow-y: auto; }
+        .search-box { width: calc(100% - 32px); margin: 16px; padding: 12px 16px; border-radius: 50px; border: 2px solid #eeddff; }
+        .font-list { padding: 0 12px 16px 12px; display: flex; flex-direction: column; gap: 6px; }
+        .font-item { display: flex; justify-content: space-between; padding: 10px 14px; border-radius: 30px; background: white; cursor: pointer; border: 1px solid #f5e6d4; }
+        .font-item:hover { background: #fff5e8; transform: translateX(6px); border-color: #B9B4BF; }
+        .custom-font-item { background: #f0eaff; border-color: #B9B4BF; }
+
+        .color-picker-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .compact-palette-btn {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #5a2d9c;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .compact-palette-btn:hover { background: #e9deff; transform: translateY(-2px); border-color: #B9B4BF; }
+        .color-preview-rect {
+            width: 48px;
+            height: 28px;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            background-color: #B9B4BF;
+            transition: background 0.1s;
+        }
+
+        .card-preview { background: #ffffffea; border-radius: 36px; padding: 20px; border: 1px solid #ffefdb; margin-bottom: 20px; }
+        .canvas-container { background: #f3ede5; border-radius: 28px; padding: 14px; display: flex; justify-content: center; position: relative; }
+        canvas { border-radius: 28px; box-shadow: 0 18px 32px -10px rgba(0,0,0,0.2); max-width: 100%; height: auto; background: white; cursor: default; display: block; }
+
+        .drop-zone { border: 2px dashed #B9B4BF; border-radius: 24px; padding: 16px; text-align: center; margin: 14px 0; background: #fffaf2; cursor: pointer; font-size: 13px; }
+        .drop-zone.dragover { background: #f0eaff; border-color: #a855f7; }
+        .image-preview { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+        .thumb-img { width: 50px; height: 50px; border-radius: 14px; object-fit: cover; border: 2px solid #B9B4BF; }
+
+        .controls { display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0; }
+        .controls input, .controls select { flex: 1; padding: 10px 14px; border-radius: 44px; border: 2px solid #eeddff; }
+
+        .position-control { background: #faf5ff; border-radius: 28px; padding: 14px; margin: 12px 0; border: 1px solid #eeddff; }
+        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+        .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .btn-success { background: linear-gradient(115deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .btn-jpg {
+            background: linear-gradient(115deg, #f97316, #ea580c);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-jpg:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(234, 88, 12, 0.3); }
+        
+        .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { transform: translateY(-2px); }
+
+        .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; overflow-y: auto; border: 1px solid #f5e0c0; }
+        .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: all 0.1s; }
+        .symbol-btn:hover { background: #ffe0b5; transform: scale(1.05); }
+
+        textarea { 
+            font-family: inherit; 
+            resize: vertical; 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 28px; 
+            border: 2px solid #eeddff; 
+            margin: 12px 0; 
+            font-size: 15px; 
+            line-height: 1.5; 
+            min-height: 280px; 
+        }
+        
+        .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
+        .resize-handle {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #B9B4BF;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: nw-resize;
+            z-index: 200;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            display: none;
+            pointer-events: auto;
+        }
+        
+        .custom-collapsible {
+            background: #faf5ff;
+            border-radius: 28px;
+            margin: 16px 0;
+            border: 2px dashed #B9B4BF;
+            overflow: hidden;
+        }
+        .custom-collapsible .panel-header {
+            background: #faf5ff;
+            border-bottom: none;
+            padding: 12px 18px;
+        }
+        .custom-collapsible .panel-content {
+            padding: 0 16px 16px 16px;
+        }
+        .custom-collapsible .panel-content input,
+        .custom-collapsible .panel-content textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 44px;
+            border: 2px solid #eeddff;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .custom-collapsible .panel-content textarea {
+            font-family: monospace;
+            font-size: 18px;
+            min-height: 80px;
+        }
+        .icon-preview-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 20px;
+            min-height: 50px;
+        }
+        .preview-icon-mini {
+            font-size: 24px;
+            padding: 4px 8px;
+            background: #f5eaff;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .preview-icon-mini:hover { background: #e9d5ff; transform: scale(1.1); }
+        
+        .custom-fonts-list-footer {
+            background: #f0eaff;
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+            border: 1px solid #e2ceff;
+        }
+        .custom-fonts-list-footer span {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin: 4px 6px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #6b3ea5;
+        }
+        
+        .canvas-size-control {
+            background: #e9deff;
+            border-radius: 28px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        .canvas-size-control label { font-weight: 600; color: #6b3ea5; font-size: 12px; }
+        .canvas-size-control input { width: 70px; padding: 6px 10px; border-radius: 30px; border: 2px solid #B9B4BF; text-align: center; }
+        .canvas-size-control button { padding: 6px 14px; font-size: 12px; }
+        
+        .font-link-area {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f9f5ff, #f0e8ff);
+            border-radius: 48px;
+            text-align: center;
+            border: 1px solid #e2ceff;
+        }
+        .google-fonts-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            color: #8b5ccf;
+            border: 1px solid #B9B4BF;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .google-fonts-link:hover {
+            background: #8b5ccf;
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 18px rgba(139, 92, 207, 0.3);
+            border-color: #8b5ccf;
+        }
+        
+        .multi-border-panel {
+            background: #faf5ff;
+            border-radius: 28px;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #eeddff;
+        }
+        .layer-color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding: 6px 0;
+            border-top: 1px dashed #e2ceff;
+        }
+        .layer-color-row:first-child { border-top: none; }
+        .layer-style-select {
+            padding: 4px 8px;
+            border-radius: 30px;
+            border: 1px solid #B9B4BF;
+            background: white;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .gradient-control-row {
+            background: #faf5ff;
+            border-radius: 28px;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #eeddff;
+        }
+        .gradient-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .gradient-swatch:hover { transform: scale(1.05); border-color: #B9B4BF; }
+
+        .custom-hex-row {
+            background: #faf5ff;
+            border-radius: 28px;
+            padding: 12px 18px;
+            margin: 14px 0 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .custom-hex-row input {
+            width: 100px;
+            padding: 8px 12px;
+            border-radius: 44px;
+            border: 2px solid #eeddff;
+            font-family: monospace;
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        @media (max-width: 1000px) { .glass-ultimate { padding: 20px; } }
+        
+        .color-spectrum-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s ease;
+        }
+        .color-spectrum-overlay.active { visibility: visible; opacity: 1; }
+        .spectrum-card {
+            background: white;
+            border-radius: 48px;
+            max-width: 90vw;
+            width: 500px;
+            padding: 28px;
+            box-shadow: 0 40px 70px rgba(0,0,0,0.3);
+            border: 1px solid #e9d5ff;
+        }
+        .spectrum-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: 800;
+            font-size: 20px;
+            color: #8b5ccf;
+        }
+        .spectrum-close {
+            background: #f3ecff;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .spectrum-close:hover { background: #e9deff; transform: scale(1.05); }
+        .spectrum-canvas {
+            width: 100%;
+            height: 220px;
+            border-radius: 24px;
+            cursor: crosshair;
+            border: 3px solid #B9B4BF;
+            display: block;
+        }
+        .spectrum-slider {
+            width: 100%;
+            margin: 18px 0;
+            height: 8px;
+            border-radius: 10px;
+            background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .spectrum-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #B9B4BF;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .spectrum-preview-area {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .spectrum-preview-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .spectrum-hex-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 50px;
+            border: 2px solid #eeddff;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .spectrum-select-btn, .spectrum-cancel-btn {
+            padding: 10px 22px;
+            border-radius: 44px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .spectrum-select-btn {
+            background: linear-gradient(115deg, #b77bff, #a855f7);
+            color: white;
+        }
+        .spectrum-cancel-btn {
+            background: #f3ecff;
+            border: 1.5px solid #e2ceff;
+            color: #b77bff;
+        }
+    </style>
+</head>
+<body>
+<div class="glass-ultimate">
+    <div class="header">
+        <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
+        <h1>🎈 Kutlama Kartı Stüdyosu | Premium</h1>
+    </div>
+
+    <div class="two-columns">
+        <div class="column">
+            <div class="collapsible-panel" id="fontCollapsible">
+                <div class="panel-header" id="fontPanelHeader"><span>🔤 Yazı Tipleri (200+)</span><span class="toggle-icon">▼</span></div>
+                <div class="panel-content" id="fontPanelContent">
+                    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Font ara...">
+                    <div class="font-list" id="fontList"></div>
+                </div>
+            </div>
+            
+            <div class="custom-collapsible" id="customFontCollapsible">
+                <div class="panel-header" id="customFontPanelHeader">
+                    <span>➕ Özel Font Ekle (Google Fonts)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="panel-content" id="customFontPanelContent">
+                    <input type="text" id="customFontUrl" placeholder="Google Fonts URL (örnek: https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap)">
+                    <input type="text" id="customFontName" placeholder="Font Adı (örnek: Roboto)">
+                    <button id="addCustomFontBtn" class="btn-secondary" style="width:100%; margin: 8px 0;">➕ Font Ekle</button>
+                    <div class="font-link-area">
+                        <a href="https://fonts.google.com" target="_blank" class="google-fonts-link">🔗 Google Fonts'u Keşfet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card-preview">
+                <div class="canvas-size-control">
+                    <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="640" step="20" min="400" max="2000">
+                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="400" max="2000">
+                    <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
+                    <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
+                </div>
+
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="cardCanvas"></canvas>
+                    <div id="resizeHandle" class="resize-handle"></div>
+                </div>
+
+                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle (Tam sığar)<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div id="imagePreviewArea" class="image-preview" style="display:none"><img id="thumbImg" class="thumb-img"><button id="clearBgBtn" class="btn-secondary">🗑️ Arka Planı Kaldır</button></div>
+
+                <div class="color-picker-buttons">
+                    <div class="compact-palette-btn" data-target="textColor">🎨 Metin Rengi Seç <div class="color-preview-rect" id="textColorRect"></div></div>
+                    <div class="compact-palette-btn" data-target="bgColor">🖌️ Arka Plan Rengi Seç <div class="color-preview-rect" id="bgColorRect"></div></div>
+                    <div class="compact-palette-btn" data-target="borderOuterColor">📐 Dış Kenar Seç <div class="color-preview-rect" id="borderOuterRect"></div></div>
+                    <div class="compact-palette-btn" data-target="borderInnerColor">📐 İç Kenar Seç <div class="color-preview-rect" id="borderInnerRect"></div></div>
+                    <div class="compact-palette-btn" data-target="borderThirdColor">🎨 3. Katman Rengi <div class="color-preview-rect" id="borderThirdRect"></div></div>
+                    <div class="compact-palette-btn" data-target="gradColor1">🌈 Gradien Renk 1 <div class="color-preview-rect" id="gradColor1Rect"></div></div>
+                    <div class="compact-palette-btn" data-target="gradColor2">🌈 Gradien Renk 2 <div class="color-preview-rect" id="gradColor2Rect"></div></div>
+                </div>
+
+                <!-- YENİ: Çift renkli kesik çizgi için renk seçiciler -->
+                <div class="color-picker-buttons" style="margin-top: -8px;">
+                    <div class="compact-palette-btn" data-target="borderDoubleColor1">🎨 Çift Renkli Çizgi Renk 1 <div class="color-preview-rect" id="borderDoubleColor1Rect"></div></div>
+                    <div class="compact-palette-btn" data-target="borderDoubleColor2">🎨 Çift Renkli Çizgi Renk 2 <div class="color-preview-rect" id="borderDoubleColor2Rect"></div></div>
+                </div>
+
+                <div class="custom-hex-row">
+                    <div><label>Metin HEX:</label><input type="text" id="customTextHex" maxlength="7" placeholder="#4a2e6b"></div>
+                    <div><label>Arka Plan HEX:</label><input type="text" id="customBgHex" maxlength="7" placeholder="#faf5ff"></div>
+                    <div><label>Dış Kenar HEX:</label><input type="text" id="customBorderOuterHex" maxlength="7" placeholder="#81778A"></div>
+                    <div><label>İç Kenar HEX:</label><input type="text" id="customBorderInnerHex" maxlength="7" placeholder="#D9D6DE"></div>
+                </div>
+                <div class="custom-hex-row" style="margin-top: 0;">
+                    <div><label>3. Katman HEX:</label><input type="text" id="customBorderThirdHex" maxlength="7" placeholder="#B9B4BF"></div>
+                    <div><label>Gradien 1 HEX:</label><input type="text" id="customGrad1Hex" maxlength="7" placeholder="#f9e5ff"></div>
+                    <div><label>Gradien 2 HEX:</label><input type="text" id="customGrad2Hex" maxlength="7" placeholder="#ffffff"></div>
+                    <div></div>
+                </div>
+                <!-- YENİ: Çift renk HEX alanları -->
+                <div class="custom-hex-row" style="margin-top: 0;">
+                    <div><label>Çift Renk 1 HEX:</label><input type="text" id="customDoubleColor1Hex" maxlength="7" placeholder="#FFD700"></div>
+                    <div><label>Çift Renk 2 HEX:</label><input type="text" id="customDoubleColor2Hex" maxlength="7" placeholder="#FF4500"></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
+                <div class="gradient-control-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px;">
+                    <label>🌈 Gradien Aktif:</label><input type="checkbox" id="gradientToggle" checked>
+                    <select id="gradAngle" style="padding:8px 12px; border-radius:44px; border:2px solid #eeddff;">
+                        <option value="0">→ 0°</option>
+                        <option value="45">↗ 45°</option>
+                        <option value="90">↓ 90°</option>
+                        <option value="135">↙ 135°</option>
+                    </select>
+                </div>
+
+                <div class="drop-zone" id="overlayDropZone" style="border-color:#f5a623;">🦁 Logo / Resim Yükle (Sürükle & Bırak) - SINIRSIZ BÜYÜTME/KÜÇÜLTME!<input type="file" id="overlayImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div id="overlayPreviewArea" class="image-preview" style="display:none"><img id="overlayThumb" class="thumb-img"><button id="clearOverlayBtn" class="btn-secondary">🗑️ Logoyu Kaldır</button></div>
+
+                <div class="position-control">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>🖱️ Logo Konumu:</label>
+                        <label>X:</label><input type="number" id="logoX" step="5" style="width:70px;"> 
+                        <label>Y:</label><input type="number" id="logoY" step="5" style="width:70px;">
+                        <button id="resetLogoPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>📏 Genişlik:</label><input type="range" id="logoWidth" min="10" max="2000" value="80" step="2" style="width:160px;"><span id="logoWidthVal">80px</span>
+                        <label>📐 Yükseklik:</label><input type="range" id="logoHeight" min="10" max="2000" value="80" step="2" style="width:160px;"><span id="logoHeightVal">80px</span>
+                        <label><input type="checkbox" id="keepAspect" checked> 🔒 Oranı Koru</label>
+                        <button id="resetLogoSizeBtn" class="btn-secondary" style="padding:4px 12px;">Boyut Sıfırla</button>
+                    </div>
+                    <div class="info-text" style="margin-top:10px;">💡 İpucu: Logonun SAĞ ALT KÖŞESİNDEKİ mor tutamaçtan sürükleyerek boyutlandırma yapabilirsiniz!</div>
+                </div>
+
+                <div class="position-control">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                        <label>✍️ Metin Konumu:</label>
+                        <label>X:</label><input type="number" id="textX" step="5" style="width:70px;">
+                        <label>Y:</label><input type="number" id="textY" step="5" style="width:70px;">
+                        <button id="resetTextPosBtn" class="btn-secondary" style="padding:4px 12px;">Konum Sıfırla</button>
+                        <label><input type="checkbox" id="textShadow"> ✨ Metin Gölgesi</label>
+                    </div>
+                </div>
+
+                <div class="multi-border-panel">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+                        <label>🔲 Kenarlık Katman Sayısı:</label>
+                        <select id="borderLayerCount" style="padding: 6px 12px; border-radius: 44px; border: 2px solid #eeddff;">
+                            <option value="2">2 Katman (Klasik)</option>
+                            <option value="3" selected>3 Katman</option>
+                        </select>
+                        <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="10" value="4" style="width:90px">
+                        <button id="applyBorderStyleBtn" class="btn-secondary" style="padding: 6px 16px;">✨ Uygula</button>
+                    </div>
+                    
+                    <div class="layer-color-row" data-layer="3">
+                        <span>🎨 3. Katman Stili:</span>
+                        <select id="borderThirdStyle" class="layer-style-select">
+                            <option value="solid">━━ Düz çizgi</option>
+                            <option value="dashed">- - - Kesik çizgi</option>
+                            <option value="dotted">··· Noktalı çizgi</option>
+                            <option value="dashdot">-·-· Çizgi-nokta</option>
+                            <option value="doublecolor" selected>🌈 Çift Renkli Kesik Çizgi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="custom-collapsible" id="customIconCollapsible">
+                    <div class="panel-header" id="customIconPanelHeader">
+                        <span>🎨 Süsleme İkonu Ekle (Kopyala-Yapıştır)</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="panel-content" id="customIconPanelContent">
+                        <textarea id="customIconsInput" rows="2" placeholder="İkonlarınızı buraya yapıştırın...&#10;Örnek: 🌟 🎈 🎉 💝 ⭐ 🦁 🇹🇷"></textarea>
+                        <button id="addCustomIconsBtn" class="btn-primary" style="width:100%; margin-top:8px;">✨ İkonları Denetle & Ekle</button>
+                        <button id="clearCustomIconsBtn" class="btn-secondary" style="width:100%; margin-top:6px;">🗑️ Tüm Özel İkonları Temizle</button>
+                        <div class="icon-preview-mini" id="customIconsPreview">
+                            <span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="symbol-panel" id="symbolPanel"></div>
+                
+                <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
+Hayatın sana hep güzellikler sunsun,
+Her yeni gün umut ve neşe getirsin.
+Doğum günün kutlu olsun. 
+
+🎁 Nice mutlu yıllara! 🎁
+
+💝 Sevgilerle, Bayram Koç 💝</textarea>
+
+                <div class="controls">
+                    <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
+                    <select id="fontWeight"><option value="300">Light</option><option value="400">Regular</option><option value="600">SemiBold</option><option value="700" selected>Bold</option></select>
+                    <select id="textAlign"><option value="center">Merkez</option><option value="left">Sola</option><option value="right">Sağa</option></select>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="saveProjectBtn" class="btn-secondary">💾 Projeyi Kaydet</button>
+                    <button id="loadProjectBtn" class="btn-secondary">📂 Proje Yükle</button>
+                    <button id="clearTextBtn" class="btn-secondary">🧹 Metni Temizle</button>
+                    <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
+                    <button id="downloadJpgBtn" class="btn-jpg">🖼️ JPG İndir</button>
+                    <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir (Özel İkon & Fontlarla)</button>
+                </div>
+            </div>
+            <div id="alertMsg" class="alert" style="display:none; background:#efe6ff; padding:10px; border-radius:40px; text-align:center; margin-top:10px;"></div>
+            
+            <div class="custom-fonts-list-footer" id="customFontsFooter">
+                <strong>📌 Eklenen Özel Fontlar:</strong>
+                <span id="customFontsListDisplay" style="display:inline-block; background:transparent; padding:0;">Henüz özel font eklenmedi</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷<br><br>
+                <h4>Bayram KOÇ</h4></span></div>
+</div>
+
+<div id="spectrumOverlay" class="color-spectrum-overlay">
+    <div class="spectrum-card">
+        <div class="spectrum-header">
+            <span>🎨 Gelişmiş Renk Seçici</span>
+            <button id="spectrumCloseBtn" class="spectrum-close">✕</button>
+        </div>
+        <canvas id="spectrumCanvas" class="spectrum-canvas" width="400" height="220"></canvas>
+        <input type="range" id="hueSlider" class="spectrum-slider" min="0" max="360" value="271">
+        <div class="spectrum-preview-area">
+            <div id="spectrumPreviewBox" class="spectrum-preview-box" style="background:#B9B4BF"></div>
+            <input type="text" id="spectrumHexInput" class="spectrum-hex-input" value="#B9B4BF">
+            <button id="spectrumSelectBtn" class="spectrum-select-btn">✓ Seç</button>
+            <button id="spectrumCancelBtn" class="spectrum-cancel-btn">İptal</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== TAM FONT LISTESI (ORIJINAL) ====================
+    let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
+    
+    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
+
+    let customFontsList = [];
+    let customIconsList = [];
+    let currentFont = "Beau Rivage";
+    let bgImage = null, overlayImage = null, originalImgW = 1, originalImgH = 1;
+    let overlayX = 320, overlayY = 290, overlayWidth = 80, overlayHeight = 80;
+    let textPosX = 320, textPosY = 290;
+    let canvasWidth = 640, canvasHeight = 580;
+    const canvas = document.getElementById("cardCanvas");
+    let ctx = canvas.getContext("2d");
+
+    let isDraggingOverlay = false, isResizing = false;
+    let dragStartX = 0, dragStartY = 0;
+    let resizeStartW = 0, resizeStartH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
+    let textDragStartX=0, textDragStartY=0, isDraggingText=false;
+    const keepAspectCheck = document.getElementById("keepAspect");
+
+    // YENİ: Çift renkli çizgi için renk değişkenleri
+    let borderDoubleColor1 = "#FFD700";
+    let borderDoubleColor2 = "#FF4500";
+
+    function createHiddenInputs() {
+        if(!document.getElementById("textColor")) {
+            let inp = document.createElement("input"); inp.type="color"; inp.id="textColor"; inp.style.display="none"; inp.value="#4a2e6b"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="bgColor"; inp.style.display="none"; inp.value="#faf5ff"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderOuterColor"; inp.style.display="none"; inp.value="#81778A"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderInnerColor"; inp.style.display="none"; inp.value="#D9D6DE"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="gradColor1"; inp.style.display="none"; inp.value="#f9e5ff"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="gradColor2"; inp.style.display="none"; inp.value="#ffffff"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderThirdColor"; inp.style.display="none"; inp.value="#B9B4BF"; document.body.appendChild(inp);
+            // YENİ: Çift renk inputları
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderDoubleColor1"; inp.style.display="none"; inp.value="#FFD700"; document.body.appendChild(inp);
+            inp = document.createElement("input"); inp.type="color"; inp.id="borderDoubleColor2"; inp.style.display="none"; inp.value="#FF4500"; document.body.appendChild(inp);
+        }
+    }
+    createHiddenInputs();
+    
+    const textColorHidden = document.getElementById("textColor");
+    const bgColorHidden = document.getElementById("bgColor");
+    const borderOuterHidden = document.getElementById("borderOuterColor");
+    const borderInnerHidden = document.getElementById("borderInnerColor");
+    const gradColor1Hidden = document.getElementById("gradColor1");
+    const gradColor2Hidden = document.getElementById("gradColor2");
+    const borderThirdHidden = document.getElementById("borderThirdColor");
+    const borderDoubleColor1Hidden = document.getElementById("borderDoubleColor1");
+    const borderDoubleColor2Hidden = document.getElementById("borderDoubleColor2");
+    
+    function updateAllPreviews() {
+        document.getElementById("textColorRect").style.backgroundColor = textColorHidden.value;
+        document.getElementById("bgColorRect").style.backgroundColor = bgColorHidden.value;
+        document.getElementById("borderOuterRect").style.backgroundColor = borderOuterHidden.value;
+        document.getElementById("borderInnerRect").style.backgroundColor = borderInnerHidden.value;
+        document.getElementById("borderThirdRect").style.backgroundColor = borderThirdHidden.value;
+        document.getElementById("gradColor1Rect").style.backgroundColor = gradColor1Hidden.value;
+        document.getElementById("gradColor2Rect").style.backgroundColor = gradColor2Hidden.value;
+        document.getElementById("borderDoubleColor1Rect").style.backgroundColor = borderDoubleColor1Hidden.value;
+        document.getElementById("borderDoubleColor2Rect").style.backgroundColor = borderDoubleColor2Hidden.value;
+        
+        document.getElementById("customTextHex").value = textColorHidden.value.toUpperCase();
+        document.getElementById("customBgHex").value = bgColorHidden.value.toUpperCase();
+        document.getElementById("customBorderOuterHex").value = borderOuterHidden.value.toUpperCase();
+        document.getElementById("customBorderInnerHex").value = borderInnerHidden.value.toUpperCase();
+        document.getElementById("customGrad1Hex").value = gradColor1Hidden.value.toUpperCase();
+        document.getElementById("customGrad2Hex").value = gradColor2Hidden.value.toUpperCase();
+        document.getElementById("customBorderThirdHex").value = borderThirdHidden.value.toUpperCase();
+        document.getElementById("customDoubleColor1Hex").value = borderDoubleColor1Hidden.value.toUpperCase();
+        document.getElementById("customDoubleColor2Hex").value = borderDoubleColor2Hidden.value.toUpperCase();
+        
+        borderDoubleColor1 = borderDoubleColor1Hidden.value;
+        borderDoubleColor2 = borderDoubleColor2Hidden.value;
+    }
+    
+    function syncHexFromInputs() {
+        const textHex = document.getElementById("customTextHex").value.trim();
+        const bgHex = document.getElementById("customBgHex").value.trim();
+        const borderOuterHex = document.getElementById("customBorderOuterHex").value.trim();
+        const borderInnerHex = document.getElementById("customBorderInnerHex").value.trim();
+        const grad1Hex = document.getElementById("customGrad1Hex").value.trim();
+        const grad2Hex = document.getElementById("customGrad2Hex").value.trim();
+        const borderThirdHex = document.getElementById("customBorderThirdHex")?.value.trim();
+        const double1Hex = document.getElementById("customDoubleColor1Hex")?.value.trim();
+        const double2Hex = document.getElementById("customDoubleColor2Hex")?.value.trim();
+        
+        if(textHex && /^#?[0-9A-Fa-f]{6}$/i.test(textHex.replace(/^#/, ''))) {
+            textColorHidden.value = textHex.startsWith('#') ? textHex.toUpperCase() : '#' + textHex.toUpperCase();
+        }
+        if(bgHex && /^#?[0-9A-Fa-f]{6}$/i.test(bgHex.replace(/^#/, ''))) {
+            bgColorHidden.value = bgHex.startsWith('#') ? bgHex.toUpperCase() : '#' + bgHex.toUpperCase();
+        }
+        if(borderOuterHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderOuterHex.replace(/^#/, ''))) {
+            borderOuterHidden.value = borderOuterHex.startsWith('#') ? borderOuterHex.toUpperCase() : '#' + borderOuterHex.toUpperCase();
+        }
+        if(borderInnerHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderInnerHex.replace(/^#/, ''))) {
+            borderInnerHidden.value = borderInnerHex.startsWith('#') ? borderInnerHex.toUpperCase() : '#' + borderInnerHex.toUpperCase();
+        }
+        if(grad1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad1Hex.replace(/^#/, ''))) {
+            gradColor1Hidden.value = grad1Hex.startsWith('#') ? grad1Hex.toUpperCase() : '#' + grad1Hex.toUpperCase();
+        }
+        if(grad2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad2Hex.replace(/^#/, ''))) {
+            gradColor2Hidden.value = grad2Hex.startsWith('#') ? grad2Hex.toUpperCase() : '#' + grad2Hex.toUpperCase();
+        }
+        if(borderThirdHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderThirdHex.replace(/^#/, ''))) {
+            borderThirdHidden.value = borderThirdHex.startsWith('#') ? borderThirdHex.toUpperCase() : '#' + borderThirdHex.toUpperCase();
+        }
+        if(double1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double1Hex.replace(/^#/, ''))) {
+            borderDoubleColor1Hidden.value = double1Hex.startsWith('#') ? double1Hex.toUpperCase() : '#' + double1Hex.toUpperCase();
+            borderDoubleColor1 = borderDoubleColor1Hidden.value;
+        }
+        if(double2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double2Hex.replace(/^#/, ''))) {
+            borderDoubleColor2Hidden.value = double2Hex.startsWith('#') ? double2Hex.toUpperCase() : '#' + double2Hex.toUpperCase();
+            borderDoubleColor2 = borderDoubleColor2Hidden.value;
+        }
+        updateAllPreviews();
+        drawCard();
+    }
+    
+    textColorHidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    bgColorHidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    borderOuterHidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    borderInnerHidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    gradColor1Hidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    gradColor2Hidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    borderThirdHidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    borderDoubleColor1Hidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    borderDoubleColor2Hidden.addEventListener("input", () => { updateAllPreviews(); drawCard(); });
+    
+    document.getElementById("customTextHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBgHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBorderOuterHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBorderInnerHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customGrad1Hex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customGrad2Hex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customBorderThirdHex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customDoubleColor1Hex").addEventListener("change", syncHexFromInputs);
+    document.getElementById("customDoubleColor2Hex").addEventListener("change", syncHexFromInputs);
+    
+    // Spektrum renk seçici (tamamen aynı)
+    const spectrumOverlayEl = document.getElementById("spectrumOverlay");
+    const spectrumCanvasEl = document.getElementById("spectrumCanvas");
+    const hueSlider = document.getElementById("hueSlider");
+    const spectrumPreviewBox = document.getElementById("spectrumPreviewBox");
+    const spectrumHexInput = document.getElementById("spectrumHexInput");
+    const spectrumSelectBtn = document.getElementById("spectrumSelectBtn");
+    const spectrumCloseBtn = document.getElementById("spectrumCloseBtn");
+    const spectrumCancelBtn = document.getElementById("spectrumCancelBtn");
+    let spectrumCtx = null;
+    let currentHue = 271;
+    let tempColorHex = "#B9B4BF";
+    let activeColorTarget = null;
+
+    function initSpectrum() { if(!spectrumCtx) spectrumCtx = spectrumCanvasEl.getContext("2d"); spectrumCanvasEl.width = 400; spectrumCanvasEl.height = 220; drawSpectrum(currentHue); }
+    function drawSpectrum(hue) { if(!spectrumCtx) return; const w=spectrumCanvasEl.width, h=spectrumCanvasEl.height; for(let y=0;y<h;y++){for(let x=0;x<w;x++){const sat=x/w; const light=1-(y/h); const rgb=hslToRgb(hue,sat,light); spectrumCtx.fillStyle=`rgb(${rgb.r},${rgb.g},${rgb.b})`; spectrumCtx.fillRect(x,y,1,1);}}}
+    function hslToRgb(h,s,l){h=(h%360)/360; let r,g,b; if(s===0)r=g=b=l; else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}; const q=l<0.5?l*(1+s):l+s-l*s; const p=2*l-q; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};}
+    function rgbToHex(r,g,b){return'#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');}
+    function getCanvasColor(x,y){const px=spectrumCtx.getImageData(x,y,1,1).data;return{r:px[0],g:px[1],b:px[2]};}
+    function updateTempColorFromRgb(r,g,b){tempColorHex=rgbToHex(r,g,b);spectrumPreviewBox.style.backgroundColor=tempColorHex;spectrumHexInput.value=tempColorHex.toUpperCase();}
+    function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min)h=s=0;else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
+    function openSpectrumForTarget(targetId,currentColor){initSpectrum();activeColorTarget=targetId;tempColorHex=currentColor;spectrumPreviewBox.style.backgroundColor=tempColorHex;spectrumHexInput.value=tempColorHex.toUpperCase();const r=parseInt(tempColorHex.slice(1,3),16);const g=parseInt(tempColorHex.slice(3,5),16);const b=parseInt(tempColorHex.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);spectrumOverlayEl.classList.add("active");}
+    hueSlider.addEventListener("input",(e)=>{currentHue=parseInt(e.target.value);drawSpectrum(currentHue);});
+    spectrumCanvasEl.addEventListener("click",(e)=>{const rect=spectrumCanvasEl.getBoundingClientRect();const scaleX=spectrumCanvasEl.width/rect.width;const scaleY=spectrumCanvasEl.height/rect.height;const x=(e.clientX-rect.left)*scaleX;const y=(e.clientY-rect.top)*scaleY;if(x>=0&&x<spectrumCanvasEl.width&&y>=0&&y<spectrumCanvasEl.height){const rgb=getCanvasColor(Math.floor(x),Math.floor(y));updateTempColorFromRgb(rgb.r,rgb.g,rgb.b);}});
+    spectrumHexInput.addEventListener("change",(e)=>{let val=e.target.value;if(!val.startsWith('#'))val='#'+val;if(/^#[0-9A-Fa-f]{6}$/i.test(val)){tempColorHex=val;spectrumPreviewBox.style.backgroundColor=tempColorHex;const r=parseInt(val.slice(1,3),16);const g=parseInt(val.slice(3,5),16);const b=parseInt(val.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);}else{spectrumHexInput.value=tempColorHex;}});
+    spectrumSelectBtn.addEventListener("click",()=>{if(activeColorTarget){if(activeColorTarget==="textColor")textColorHidden.value=tempColorHex;else if(activeColorTarget==="bgColor")bgColorHidden.value=tempColorHex;else if(activeColorTarget==="borderOuterColor")borderOuterHidden.value=tempColorHex;else if(activeColorTarget==="borderInnerColor")borderInnerHidden.value=tempColorHex;else if(activeColorTarget==="gradColor1")gradColor1Hidden.value=tempColorHex;else if(activeColorTarget==="gradColor2")gradColor2Hidden.value=tempColorHex;else if(activeColorTarget==="borderThirdColor")borderThirdHidden.value=tempColorHex;else if(activeColorTarget==="borderDoubleColor1")borderDoubleColor1Hidden.value=tempColorHex;else if(activeColorTarget==="borderDoubleColor2")borderDoubleColor2Hidden.value=tempColorHex;updateAllPreviews();drawCard();showAlert(`Renk seçildi: ${tempColorHex}`);}spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
+    spectrumCloseBtn.addEventListener("click",()=>{spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
+    spectrumCancelBtn.addEventListener("click",()=>{spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
+
+    document.querySelectorAll(".compact-palette-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = btn.getAttribute("data-target");
+            let currentColor = "#B9B4BF";
+            if(target === "textColor") currentColor = textColorHidden.value;
+            else if(target === "bgColor") currentColor = bgColorHidden.value;
+            else if(target === "borderOuterColor") currentColor = borderOuterHidden.value;
+            else if(target === "borderInnerColor") currentColor = borderInnerHidden.value;
+            else if(target === "gradColor1") currentColor = gradColor1Hidden.value;
+            else if(target === "gradColor2") currentColor = gradColor2Hidden.value;
+            else if(target === "borderThirdColor") currentColor = borderThirdHidden.value;
+            else if(target === "borderDoubleColor1") currentColor = borderDoubleColor1Hidden.value;
+            else if(target === "borderDoubleColor2") currentColor = borderDoubleColor2Hidden.value;
+            openSpectrumForTarget(target, currentColor);
+        });
+    });
+
+    const gradToggle = document.getElementById("gradientToggle");
+    const gradAngle = document.getElementById("gradAngle");
+    gradToggle.addEventListener("change", drawCard);
+    gradAngle.addEventListener("change", drawCard);
+    
+    const textShadowCheck = document.getElementById("textShadow");
+    const borderWidthSlider = document.getElementById("borderWidth");
+    const borderThirdStyleSelect = document.getElementById("borderThirdStyle");
+    const borderLayerCountSelect = document.getElementById("borderLayerCount");
+    
+    function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
+    
+    function wrapText(ctx, text, maxWidth) { 
+        let lines = [], paragraphs = text.split("\n"); 
+        for(let p of paragraphs) { 
+            if(p === "") { lines.push(""); continue; } 
+            let words = p.split(" "), current = ""; 
+            for(let w of words) { 
+                let test = current + (current ? " " : "") + w; 
+                if(ctx.measureText(test).width > maxWidth && current) { 
+                    lines.push(current); 
+                    current = w; 
+                } else current = test; 
+            } 
+            if(current) lines.push(current); 
+        } 
+        return lines; 
+    }
+    
+    function getLineDash(style) {
+        switch(style) {
+            case "dashed": return [12, 8];
+            case "dotted": return [3, 5];
+            case "dashdot": return [10, 6, 3, 6];
+            default: return [];
+        }
+    }
+    
+    // YENİ: Çift renkli kesik çizgi için yardımcı fonksiyon
+    function drawDoubleColorDashedBorder(x, y, w, h, r, lineWidth, color1, color2, dashPattern) {
+        let perimeter = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
+        let totalDashLength = dashPattern[0] + dashPattern[1];
+        let points = [];
+        let step = 2;
+        for(let t = 0; t <= perimeter; t += step) {
+            let point = getPointOnRoundedRect(x, y, w, h, r, t / perimeter);
+            points.push(point);
+        }
+        
+        let dashIndex = 0;
+        let dashRemaining = dashPattern[0];
+        let currentColor = color1;
+        let segmentPoints = [];
+        
+        for(let i = 0; i < points.length - 1; i++) {
+            let p1 = points[i];
+            let p2 = points[i+1];
+            let dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            let remaining = dist;
+            let start = p1;
+            
+            while(remaining > 0) {
+                if(dashRemaining <= remaining) {
+                    let end = {
+                        x: start.x + (p2.x - p1.x) * (dashRemaining / dist),
+                        y: start.y + (p2.y - p1.y) * (dashRemaining / dist)
+                    };
+                    segmentPoints.push({ start, end, color: currentColor });
+                    start = end;
+                    remaining -= dashRemaining;
+                    dashIndex = (dashIndex + 1) % 2;
+                    dashRemaining = dashPattern[dashIndex];
+                    currentColor = (dashIndex === 0) ? color1 : color2;
+                } else {
+                    let end = {
+                        x: start.x + (p2.x - p1.x) * (remaining / dist),
+                        y: start.y + (p2.y - p1.y) * (remaining / dist)
+                    };
+                    segmentPoints.push({ start, end, color: currentColor });
+                    dashRemaining -= remaining;
+                    remaining = 0;
+                    start = end;
+                }
+            }
+        }
+        
+        ctx.save();
+        ctx.lineWidth = lineWidth;
+        for(let seg of segmentPoints) {
+            ctx.beginPath();
+            ctx.moveTo(seg.start.x, seg.start.y);
+            ctx.lineTo(seg.end.x, seg.end.y);
+            ctx.strokeStyle = seg.color;
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    
+    function getPointOnRoundedRect(x, y, w, h, r, t) {
+        let top = y, bottom = y + h, left = x, right = x + w;
+        let topLen = w - 2*r, rightLen = h - 2*r, bottomLen = w - 2*r, leftLen = h - 2*r;
+        let cornerLen = (Math.PI * r) / 2;
+        let total = topLen + rightLen + bottomLen + leftLen + 4 * cornerLen;
+        let pos = t * total;
+        
+        if(pos < topLen) return { x: left + r + pos, y: top };
+        pos -= topLen;
+        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: right - r + r * Math.sin(angle), y: top + r - r * Math.cos(angle) }; }
+        pos -= cornerLen;
+        if(pos < rightLen) return { x: right, y: top + r + pos };
+        pos -= rightLen;
+        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: right - r + r * Math.cos(angle), y: bottom - r + r * Math.sin(angle) }; }
+        pos -= cornerLen;
+        if(pos < bottomLen) return { x: right - r - pos, y: bottom };
+        pos -= bottomLen;
+        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: left + r - r * Math.sin(angle), y: bottom - r + r * Math.cos(angle) }; }
+        pos -= cornerLen;
+        if(pos < leftLen) return { x: left, y: bottom - r - pos };
+        pos -= leftLen;
+        let angle = Math.PI/2 * (pos / cornerLen);
+        return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
+    }
+    
+    // DÜZELTİLMİŞ drawCard - ORİJİNAL YAPI KORUNDU, SADECE 3. KATMANA ÇİFT RENK EKLENDİ
+    function drawCard() { 
+        if(!ctx) return; 
+        canvas.width = canvasWidth; 
+        canvas.height = canvasHeight; 
+        ctx.clearRect(0,0,canvasWidth,canvasHeight); 
+        const radius = 30; 
+        
+        if(bgImage) { 
+            ctx.save(); 
+            roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); 
+            ctx.clip(); 
+            ctx.drawImage(bgImage, 0, 0, canvasWidth, canvasHeight);
+            ctx.restore(); 
+        } else { 
+            if(gradToggle.checked) { 
+                let angle = parseInt(gradAngle.value), rad = angle*Math.PI/180, x1 = Math.cos(rad)*0.5+0.5, y1 = Math.sin(rad)*0.5+0.5; 
+                let grad = ctx.createLinearGradient(x1*canvasWidth, y1*canvasHeight, (1-x1)*canvasWidth, (1-y1)*canvasHeight); 
+                grad.addColorStop(0, gradColor1Hidden.value); 
+                grad.addColorStop(1, gradColor2Hidden.value); 
+                ctx.fillStyle = grad; 
+            } else { 
+                ctx.fillStyle = bgColorHidden.value; 
+            } 
+            roundedRect(ctx,0,0,canvasWidth,canvasHeight,radius); 
+            ctx.fill(); 
+        } 
+        
+        let bw = parseInt(borderWidthSlider.value);
+        let layerCount = parseInt(borderLayerCountSelect.value);
+        let thirdStyle = borderThirdStyleSelect.value;
+        
+        // Dış kenarlık (1. katman)
+        ctx.save();
+        ctx.strokeStyle = borderOuterHidden.value;
+        ctx.lineWidth = bw;
+        roundedRect(ctx, bw/2, bw/2, canvasWidth - bw, canvasHeight - bw, radius-4);
+        ctx.stroke();
+        ctx.restore();
+        
+        // İç kenarlık (2. katman)
+        ctx.save();
+        ctx.strokeStyle = borderInnerHidden.value;
+        ctx.lineWidth = bw * 0.7;
+        let innerOffset = bw + 4;
+        roundedRect(ctx, innerOffset, innerOffset, canvasWidth - innerOffset*2, canvasHeight - innerOffset*2, radius-8);
+        ctx.stroke();
+        ctx.restore();
+        
+        // 3. katman - YENİ: ÇİFT RENKLİ DESTEĞİ
+        if(layerCount >= 3) {
+            let thirdOffset = innerOffset + bw + 2;
+            let rectW = canvasWidth - thirdOffset * 2;
+            let rectH = canvasHeight - thirdOffset * 2;
+            let lineW = Math.max(1, bw * 0.55);
+            
+            if(thirdStyle === "doublecolor") {
+                // Ardışık çift renkli kesik çizgi (15px çizgi, 10px boşluk)
+                drawDoubleColorDashedBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderDoubleColor1, borderDoubleColor2, [15, 10]);
+            } else {
+                ctx.save();
+                let dash = getLineDash(thirdStyle);
+                if(dash.length > 0) ctx.setLineDash(dash);
+                ctx.strokeStyle = borderThirdHidden.value;
+                ctx.lineWidth = lineW;
+                roundedRect(ctx, thirdOffset, thirdOffset, rectW, rectH, radius-12);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+        
+        if(overlayImage) { 
+            let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; 
+            ctx.drawImage(overlayImage, dx, dy, overlayWidth, overlayHeight); 
+        } 
+        
+        let raw = document.getElementById("cardText").value; 
+        if(raw && raw.trim()) { 
+            let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; 
+            ctx.font = fontWeight + " " + fontSize + "px '" + currentFont + "', cursive"; 
+            ctx.fillStyle = textColorHidden.value; 
+            ctx.textAlign = align; 
+            if(textShadowCheck.checked) { 
+                ctx.shadowColor = "rgba(0,0,0,0.3)"; 
+                ctx.shadowBlur = 4; 
+                ctx.shadowOffsetX = 2; 
+                ctx.shadowOffsetY = 2; 
+            } else ctx.shadowColor = "transparent"; 
+            let maxW = canvasWidth - 80, lines = wrapText(ctx, raw, maxW), lineH = fontSize * 1.35, totalH = lines.length * lineH; 
+            let startX = textPosX, startY = textPosY - totalH/2; 
+            if(align === "center") startX = textPosX; 
+            else if(align === "left") startX = textPosX - maxW/2; 
+            else startX = textPosX + maxW/2; 
+            for(let i=0; i<lines.length; i++) ctx.fillText(lines[i], startX, startY + i*lineH); 
+            ctx.shadowColor = "transparent"; 
+        } 
+        updateResizeHandlePosition(); 
+    }
+    
+    function updateResizeHandlePosition() {
+        const handle = document.getElementById("resizeHandle");
+        if(!overlayImage) { handle.style.display = "none"; return; }
+        handle.style.display = "block";
+        const canvasRect = canvas.getBoundingClientRect();
+        const containerRect = document.getElementById("canvasContainer").getBoundingClientRect();
+        const logoRightX = overlayX + overlayWidth/2;
+        const logoBottomY = overlayY + overlayHeight/2;
+        const handleX = canvasRect.left + (logoRightX * (canvasRect.width/canvas.width)) - 12;
+        const handleY = canvasRect.top + (logoBottomY * (canvasRect.height/canvas.height)) - 12;
+        handle.style.left = (handleX - containerRect.left) + "px";
+        handle.style.top = (handleY - containerRect.top) + "px";
+    }
+    
+    function applyCanvasSize() {
+        let newWidth = parseInt(document.getElementById("canvasWidthInput").value);
+        let newHeight = parseInt(document.getElementById("canvasHeightInput").value);
+        if (isNaN(newWidth)) newWidth = 640;
+        if (isNaN(newHeight)) newHeight = 580;
+        newWidth = Math.min(Math.max(newWidth, 400), 2000);
+        newHeight = Math.min(Math.max(newHeight, 400), 2000);
+        
+        canvasWidth = newWidth;
+        canvasHeight = newHeight;
+        
+        document.getElementById("canvasWidthInput").value = canvasWidth;
+        document.getElementById("canvasHeightInput").value = canvasHeight;
+        
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        
+        drawCard();
+        showAlert("Kart boyutu " + canvasWidth + "x" + canvasHeight + " olarak değiştirildi");
+    }
+    
+    function resetCanvasSize() {
+        canvasWidth = 640;
+        canvasHeight = 580;
+        document.getElementById("canvasWidthInput").value = 640;
+        document.getElementById("canvasHeightInput").value = 580;
+        overlayX = canvasWidth / 2;
+        overlayY = canvasHeight / 2;
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        drawCard();
+        showAlert("Kart boyutu varsayılana (640x580) sıfırlandı");
+    }
+    
+    const logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight");
+    function updateLogoSizeFromWidth(w) { 
+        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+            let newH = Math.round(w * (originalImgH/originalImgW)); 
+            newH = Math.min(Math.max(newH, 10), 2000); 
+            overlayWidth = w; 
+            overlayHeight = newH; 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+        } else { overlayWidth = w; } 
+        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
+        drawCard(); 
+    }
+    function updateLogoSizeFromHeight(h) { 
+        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+            let newW = Math.round(h * (originalImgW/originalImgH)); 
+            newW = Math.min(Math.max(newW, 10), 2000); 
+            overlayHeight = h; 
+            overlayWidth = newW; 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+        } else { overlayHeight = h; } 
+        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
+        drawCard(); 
+    }
+    logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); 
+    logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
+    
+    const resizeHandleEl = document.getElementById("resizeHandle");
+    function getMouseCoordCanvas(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else { cx=e.clientX; cy=e.clientY; }
+        return { mx: (cx - rect.left) * scaleX, my: (cy - rect.top) * scaleY };
+    }
+    function isOverResizeHandle(e) {
+        if(!overlayImage) return false;
+        const rect = resizeHandleEl.getBoundingClientRect();
+        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
+        return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
+    }
+    function onMouseDown(e) {
+        if(isOverResizeHandle(e)) { 
+            isResizing = true; 
+            resizeStartW = overlayWidth; 
+            resizeStartH = overlayHeight; 
+            let {mx,my} = getMouseCoordCanvas(e); 
+            resizeStartMouseX = mx; 
+            resizeStartMouseY = my; 
+            canvas.style.cursor = "nw-resize"; 
+            e.preventDefault(); 
+            return; 
+        }
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(overlayImage) { 
+            let left = overlayX - overlayWidth/2, right = overlayX + overlayWidth/2, top = overlayY - overlayHeight/2, bottom = overlayY + overlayHeight/2; 
+            if(mx>=left-15 && mx<=right+15 && my>=top-15 && my<=bottom+15) { 
+                isDraggingOverlay = true; 
+                dragStartX = mx - overlayX; 
+                dragStartY = my - overlayY; 
+                canvas.style.cursor = "grabbing"; 
+                e.preventDefault(); 
+                return; 
+            } 
+        }
+        let fontSize = parseInt(document.getElementById("fontSize").value); 
+        ctx.font = fontSize + "px '" + currentFont + "', cursive"; 
+        let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; 
+        if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { 
+            isDraggingText = true; 
+            textDragStartX = mx - textPosX; 
+            textDragStartY = my - textPosY; 
+            canvas.style.cursor = "grabbing"; 
+        }
+    }
+    function onMouseMove(e) {
+        if(isResizing && overlayImage) {
+            let {mx,my} = getMouseCoordCanvas(e); let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
+            let newW = Math.min(Math.max(resizeStartW + deltaX, 10), 2000); 
+            let newH = Math.min(Math.max(resizeStartH + deltaY, 10), 2000);
+            if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
+                let ratio = originalImgW/originalImgH; 
+                newH = newW / ratio; 
+                if(newH<10) { newH = 10; newW = newH * ratio; } 
+                if(newH>2000) { newH = 2000; newW = newH * ratio; } 
+                if(newW<10) { newW = 10; newH = newW / ratio; } 
+                if(newW>2000) { newW = 2000; newH = newW / ratio; } 
+            }
+            overlayWidth = Math.min(Math.max(newW,10),2000); 
+            overlayHeight = Math.min(Math.max(newH,10),2000); 
+            logoWSlider.value = overlayWidth; 
+            logoHSlider.value = overlayHeight; 
+            document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
+            document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
+            drawCard(); 
+            return;
+        }
+        if(!isDraggingOverlay && !isDraggingText) return;
+        let {mx,my} = getMouseCoordCanvas(e);
+        if(isDraggingOverlay && overlayImage) { 
+            let nx = Math.min(Math.max(mx - dragStartX, 20), canvas.width-20), ny = Math.min(Math.max(my - dragStartY, 20), canvas.height-20); 
+            overlayX = nx; overlayY = ny; 
+            document.getElementById("logoX").value = Math.round(overlayX); 
+            document.getElementById("logoY").value = Math.round(overlayY); 
+            drawCard(); 
+        }
+        else if(isDraggingText) { 
+            let nx = Math.min(Math.max(mx - textDragStartX, 50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY, 40), canvas.height-40); 
+            textPosX = nx; textPosY = ny; 
+            document.getElementById("textX").value = Math.round(textPosX); 
+            document.getElementById("textY").value = Math.round(textPosY); 
+            drawCard(); 
+        }
+    }
+    function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
+    canvas.addEventListener("mousedown",onMouseDown); window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); canvas.addEventListener("touchstart",onMouseDown); window.addEventListener("touchmove",onMouseMove); window.addEventListener("touchend",onMouseUp);
+    
+    document.getElementById("applyCanvasSizeBtn").addEventListener("click", applyCanvasSize);
+    document.getElementById("resetCanvasSizeBtn").addEventListener("click", resetCanvasSize);
+    document.getElementById("logoX").addEventListener("input",(e)=>{overlayX=parseInt(e.target.value); drawCard();});
+    document.getElementById("logoY").addEventListener("input",(e)=>{overlayY=parseInt(e.target.value); drawCard();});
+    document.getElementById("resetLogoPosBtn").addEventListener("click",()=>{overlayX=canvasWidth/2; overlayY=canvasHeight/2; document.getElementById("logoX").value=overlayX; document.getElementById("logoY").value=overlayY; drawCard(); showAlert("Logo konumu sıfırlandı");});
+    document.getElementById("resetLogoSizeBtn").addEventListener("click",()=>{if(overlayImage && originalImgW){ let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard();} else {overlayWidth=80; overlayHeight=80; logoWSlider.value=80; logoHSlider.value=80; drawCard();} showAlert("Logo boyutu sıfırlandı (80px)");});
+    document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();});
+    document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();});
+    document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
+    document.getElementById("cardText").addEventListener("input",drawCard);
+    document.getElementById("fontSize").addEventListener("input",drawCard);
+    document.getElementById("fontWeight").addEventListener("change",drawCard);
+    document.getElementById("textAlign").addEventListener("change",drawCard);
+    borderWidthSlider.addEventListener("input",drawCard);
+    borderThirdStyleSelect.addEventListener("change",drawCard);
+    borderLayerCountSelect.addEventListener("change",drawCard);
+    document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");});
+    textShadowCheck.addEventListener("change",drawCard);
+    document.getElementById("applyBorderStyleBtn").addEventListener("click", () => { drawCard(); showAlert("Kenarlık stili güncellendi"); });
+    
+    document.getElementById("saveProjectBtn").addEventListener("click", () => {
+        const projectData = {
+            canvasWidth, canvasHeight,
+            textPosX, textPosY,
+            overlayX, overlayY, overlayWidth, overlayHeight,
+            currentFont,
+            textColor: textColorHidden.value,
+            bgColor: bgColorHidden.value,
+            borderOuterColor: borderOuterHidden.value,
+            borderInnerColor: borderInnerHidden.value,
+            borderThirdColor: borderThirdHidden.value,
+            borderDoubleColor1: borderDoubleColor1Hidden.value,
+            borderDoubleColor2: borderDoubleColor2Hidden.value,
+            borderWidth: borderWidthSlider.value,
+            borderThirdStyle: borderThirdStyleSelect.value,
+            borderLayerCount: borderLayerCountSelect.value,
+            textShadow: textShadowCheck.checked,
+            gradientToggle: gradToggle.checked,
+            gradColor1: gradColor1Hidden.value,
+            gradColor2: gradColor2Hidden.value,
+            gradAngle: gradAngle.value,
+            fontSize: document.getElementById("fontSize").value,
+            fontWeight: document.getElementById("fontWeight").value,
+            textAlign: document.getElementById("textAlign").value,
+            cardText: document.getElementById("cardText").value,
+            customFontsList: customFontsList,
+            customIconsList: customIconsList
+        };
+        const dataStr = JSON.stringify(projectData, null, 2);
+        const blob = new Blob([dataStr], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kart_projesi.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        showAlert("✅ Proje başarıyla kaydedildi!", "success");
+    });
+    
+    document.getElementById("loadProjectBtn").addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/json";
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    
+                    canvasWidth = data.canvasWidth || 640;
+                    canvasHeight = data.canvasHeight || 580;
+                    textPosX = data.textPosX || 320;
+                    textPosY = data.textPosY || 290;
+                    overlayX = data.overlayX || 320;
+                    overlayY = data.overlayY || 290;
+                    overlayWidth = data.overlayWidth || 80;
+                    overlayHeight = data.overlayHeight || 80;
+                    currentFont = data.currentFont || "Beau Rivage";
+                    
+                    textColorHidden.value = data.textColor || "#4a2e6b";
+                    bgColorHidden.value = data.bgColor || "#faf5ff";
+                    borderOuterHidden.value = data.borderOuterColor || "#81778A";
+                    borderInnerHidden.value = data.borderInnerColor || "#D9D6DE";
+                    borderThirdHidden.value = data.borderThirdColor || "#B9B4BF";
+                    if(data.borderDoubleColor1) borderDoubleColor1Hidden.value = data.borderDoubleColor1;
+                    if(data.borderDoubleColor2) borderDoubleColor2Hidden.value = data.borderDoubleColor2;
+                    
+                    borderWidthSlider.value = parseInt(data.borderWidth) || 4;
+                    borderThirdStyleSelect.value = data.borderThirdStyle || "doublecolor";
+                    borderLayerCountSelect.value = data.borderLayerCount || "3";
+                    textShadowCheck.checked = data.textShadow || false;
+                    gradToggle.checked = data.gradientToggle !== undefined ? data.gradientToggle : true;
+                    gradColor1Hidden.value = data.gradColor1 || "#f9e5ff";
+                    gradColor2Hidden.value = data.gradColor2 || "#ffffff";
+                    gradAngle.value = data.gradAngle || "0";
+                    
+                    document.getElementById("fontSize").value = data.fontSize || 40;
+                    document.getElementById("fontWeight").value = data.fontWeight || "700";
+                    document.getElementById("textAlign").value = data.textAlign || "center";
+                    document.getElementById("cardText").value = data.cardText || "";
+                    
+                    if(data.customFontsList) customFontsList = data.customFontsList;
+                    if(data.customIconsList) customIconsList = data.customIconsList;
+                    
+                    document.getElementById("canvasWidthInput").value = canvasWidth;
+                    document.getElementById("canvasHeightInput").value = canvasHeight;
+                    document.getElementById("logoX").value = Math.round(overlayX);
+                    document.getElementById("logoY").value = Math.round(overlayY);
+                    document.getElementById("logoWidth").value = overlayWidth;
+                    document.getElementById("logoHeight").value = overlayHeight;
+                    document.getElementById("logoWidthVal").innerText = overlayWidth + "px";
+                    document.getElementById("logoHeightVal").innerText = overlayHeight + "px";
+                    document.getElementById("textX").value = Math.round(textPosX);
+                    document.getElementById("textY").value = Math.round(textPosY);
+                    
+                    logoWSlider.value = overlayWidth;
+                    logoHSlider.value = overlayHeight;
+                    
+                    updateAllPreviews();
+                    renderFontList();
+                    renderSymbolPanel();
+                    updateCustomFontsFooter();
+                    
+                    if(customIconsList.length > 0) {
+                        updateIconPreview(customIconsList);
+                    }
+                    
+                    drawCard();
+                    showAlert("✅ Proje başarıyla yüklendi!", "success");
+                        
+                } catch(err) {
+                    console.error(err);
+                    showAlert("❌ Hata: Geçersiz proje dosyası!", "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    });
+    
+    function downloadImage(format) { 
+        let link = document.createElement("a"); 
+        link.download = format==="png" ? "kutlama_karti.png" : "kutlama_karti.jpg"; 
+        link.href = canvas.toDataURL(format==="png" ? "image/png" : "image/jpeg", 0.95); 
+        link.click(); 
+        showAlert(format.toUpperCase() + " indirildi!", "success"); 
+    }
+    document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); 
+    document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
+    
+    function updateCustomFontsFooter() {
+        const footerDiv = document.getElementById("customFontsListDisplay");
+        if (!footerDiv) return;
+        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
+        else { footerDiv.innerHTML = customFontsList.map(font => "<span>⭐ " + font + "</span>").join(''); }
+    }
+    
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+        let htmlContent = document.documentElement.outerHTML;
+        const ozelIkonlar = customIconsList.join(',');
+        const ozelFontlar = customFontsList.join(',');
+        const yuklemeScripti = '<scr' + 'ipt>' +
+            'window.addEventListener("DOMContentLoaded",function(){' +
+            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
+            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
+            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
+            'var dizi=ikonlar.split(",");' +
+            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
+            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
+            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
+            'var dizi2=fontlar.split(",");' +
+            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
+            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
+            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
+            '</scr' + 'ipt>';
+        if (htmlContent.indexOf('</head>') > -1) {
+            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
+        }
+        const blob = new Blob([htmlContent], {type: "text/html"});
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "kutlama_karti.html";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
+    });
+    
+    function loadBg(file) { 
+        if(!file.type.match("image.*")) return; 
+        let r=new FileReader(); 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi (tam görünüm)", "success");}; img.src=e.target.result;}; 
+        r.readAsDataURL(file);
+    }
+    function loadOverlay(file) { 
+        if(!file.type.match("image.*")) return; 
+        let r=new FileReader(); 
+        r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi", "success");}; img.src=e.target.result;}; 
+        r.readAsDataURL(file);
+    }
+    const dropZoneBg=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
+    dropZoneBg.addEventListener("click",()=>bgInput.click()); 
+    dropZoneBg.addEventListener("dragover",e=>{e.preventDefault(); dropZoneBg.classList.add("dragover");}); 
+    dropZoneBg.addEventListener("dragleave",()=>dropZoneBg.classList.remove("dragover")); 
+    dropZoneBg.addEventListener("drop",e=>{e.preventDefault(); dropZoneBg.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); 
+    bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); 
+    document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
+    
+    const overlayDrop=document.getElementById("overlayDropZone"), overlayInput=document.getElementById("overlayImageInput"); 
+    overlayDrop.addEventListener("click",()=>overlayInput.click()); 
+    overlayDrop.addEventListener("dragover",e=>{e.preventDefault(); overlayDrop.classList.add("dragover");}); 
+    overlayDrop.addEventListener("dragleave",()=>overlayDrop.classList.remove("dragover")); 
+    overlayDrop.addEventListener("drop",e=>{e.preventDefault(); overlayDrop.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadOverlay(e.dataTransfer.files[0]);}); 
+    overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);}); 
+    document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
+    
+    function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family=" + f.replace(/ /g,"+") + ":wght@300;400;600;700&display=swap"; document.head.appendChild(l);});} 
+    preloadFonts();
+    
+    function renderFontList() { 
+        let term=document.getElementById("searchInput").value.toLowerCase(); 
+        let cont=document.getElementById("fontList"); 
+        cont.innerHTML=""; 
+        let allFonts = [...fontData, ...customFontsList];
+        allFonts.forEach(f=>{
+            if(term && !f.toLowerCase().includes(term)) return; 
+            let div=document.createElement("div"); 
+            div.className="font-item" + (customFontsList.includes(f) ? " custom-font-item" : ""); 
+            div.onclick=()=>{currentFont=f; drawCard(); showAlert("Font: " + f);}; 
+            div.innerHTML="<span class='font-name' style='font-family: \"" + f + "\", cursive;'>" + f + "</span><span class='font-badge'>" + (customFontsList.includes(f) ? "⭐" : "🖊️") + "</span>"; 
+            cont.appendChild(div);
+        });
+        updateCustomFontsFooter();
+    }
+    
+    document.getElementById("addCustomFontBtn").addEventListener("click", () => {
+        const fontUrl = document.getElementById("customFontUrl").value.trim();
+        const fontName = document.getElementById("customFontName").value.trim();
+        if (!fontUrl || !fontName) { showAlert("❌ Lütfen hem font URL'sini hem de font adını girin!", "error"); return; }
+        if (!fontUrl.includes('fonts.googleapis.com')) { showAlert("⚠️ Lütfen geçerli bir Google Fonts URL'si girin!", "error"); return; }
+        const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontUrl; document.head.appendChild(link);
+        if (!customFontsList.includes(fontName)) { customFontsList.push(fontName); renderFontList(); showAlert("✅ \"" + fontName + "\" fontu başarıyla EKLENDI!", "success"); } 
+        else { showAlert("⚠️ \"" + fontName + "\" fontu zaten mevcut!", "warning"); }
+        document.getElementById("customFontUrl").value = ""; document.getElementById("customFontName").value = "";
+    });
+    
+    function extractValidIcons(text) {
+        const validIcons = [];
+        const chars = [...text];
+        for (let char of chars) {
+            if (char && char.length > 0 && char.charCodeAt(0) !== 65533 && char.trim() !== "") {
+                if (!/[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/.test(char) || /[⭐✨🌟💫⚡🔥💥❤️💛💚💙💜🎉🎊🎈🎁🎀🎂🍰🥳]/.test(char)) {
+                    if (!validIcons.includes(char)) validIcons.push(char);
+                }
+            }
+        }
+        return validIcons;
+    }
+    
+    function addCustomIcons() {
+        const inputText = document.getElementById("customIconsInput").value;
+        if (!inputText.trim()) { showAlert("📝 Lütfen önce ikonları yapıştırın!", "info"); return; }
+        const validIcons = extractValidIcons(inputText);
+        if (validIcons.length === 0) { showAlert("⚠️ Geçerli ikon bulunamadı!", "error"); return; }
+        let addedCount = 0;
+        for (let icon of validIcons) {
+            if (!customIconsList.includes(icon)) {
+                customIconsList.push(icon);
+                addedCount++;
+            }
+        }
+        if (addedCount > 0) {
+            renderSymbolPanel();
+            updateIconPreview(validIcons);
+            showAlert("✨ " + addedCount + " yeni özel ikon EKLENDI! Toplam özel ikon: " + customIconsList.length, "success");
+            document.getElementById("customIconsInput").value = "";
+        } else {
+            showAlert("ℹ️ Tüm ikonlar zaten mevcut. (" + validIcons.length + " adet)", "info");
+            updateIconPreview(validIcons);
+        }
+    }
+    
+    function updateIconPreview(icons) {
+        const previewDiv = document.getElementById("customIconsPreview");
+        if (icons.length === 0) { previewDiv.innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>'; return; }
+        previewDiv.innerHTML = "";
+        icons.slice(0, 30).forEach(icon => {
+            const span = document.createElement("span"); span.className = "preview-icon-mini"; span.textContent = icon;
+            span.title = "\"" + icon + "\" eklemek için tıkla";
+            span.onclick = () => { document.getElementById("cardText").value += icon; drawCard(); showAlert("✨ \"" + icon + "\" eklendi"); };
+            previewDiv.appendChild(span);
+        });
+        if (icons.length > 30) { const moreSpan = document.createElement("span"); moreSpan.textContent = "+" + (icons.length - 30); moreSpan.style.fontSize = "11px"; moreSpan.style.padding = "4px 8px"; previewDiv.appendChild(moreSpan); }
+    }
+    
+    function renderSymbolPanel() {
+        const panel = document.getElementById("symbolPanel");
+        const allSymbols = [...DEFAULT_SYMBOLS, ...customIconsList];
+        panel.innerHTML = "<span style='font-size:12px; font-weight:600;'>✨ " + allSymbols.length + " Sembol & Emoji (" + customIconsList.length + " özel): </span>";
+        allSymbols.forEach(sym => {
+            if (sym && typeof sym === "string" && sym.length > 0 && sym.charCodeAt(0) !== 65533) {
+                const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym;
+                btn.title = "\"" + sym + "\" eklemek için tıkla";
+                btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert("✨ \"" + sym + "\" eklendi"); document.getElementById("cardText").focus(); };
+                panel.appendChild(btn);
+            }
+        });
+    }
+    
+    document.getElementById("addCustomIconsBtn").addEventListener("click", addCustomIcons);
+    document.getElementById("clearCustomIconsBtn").addEventListener("click", () => {
+        customIconsList = [];
+        renderSymbolPanel();
+        document.getElementById("customIconsPreview").innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>';
+        document.getElementById("customIconsInput").value = "";
+        showAlert("🗑️ Tüm özel ikonlar temizlendi. Sadece varsayılan " + DEFAULT_SYMBOLS.length + " sembol kaldı.", "info");
+    });
+    
+    function setupCollapsible(headerId, contentId) {
+        const header = document.getElementById(headerId); const content = document.getElementById(contentId);
+        if (!header || !content) return;
+        header.addEventListener("click", () => { content.classList.toggle("open"); header.classList.toggle("open"); });
+        content.classList.remove("open"); header.classList.remove("open");
+    }
+    
+    function showAlert(msg, type) {
+        const a = document.getElementById("alertMsg");
+        a.textContent = msg; a.style.display = "block";
+        if (type === "error") a.style.background = "#ffe6e6";
+        else if (type === "success") a.style.background = "#e6ffe6";
+        else if (type === "warning") a.style.background = "#fff3e6";
+        else a.style.background = "#efe6ff";
+        setTimeout(() => a.style.display = "none", 5000);
+    }
+    
+    updateAllPreviews();
+    renderFontList();
+    applyCanvasSize();
+    renderSymbolPanel();
+    setupCollapsible("fontPanelHeader", "fontPanelContent");
+    setupCollapsible("customFontPanelHeader", "customFontPanelContent");
+    setupCollapsible("customIconPanelHeader", "customIconPanelContent");
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
+    window.addEventListener("resize", () => { drawCard(); });
+</script>
+</body>
+</html>
