@@ -157,54 +157,53 @@
         .btn-gri { background: #6c757d; color: white; }
         .btn-turuncu { background: #ff9800; color: white; }
         .btn-mavi { background: #17a2b8; color: white; }
-        .katlanir-panel {
-            border: 1px solid #f3e5d5;
-            border-radius: 20px;
-            margin: 16px 0;
-            overflow: hidden;
+        
+        /* Araç butonları - görünür grid */
+        .tools-container {
+            background: #f6f2fe;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin: 12px 0 20px;
+            border: 1px solid #e3d6fc;
         }
-        .panel-baslik {
+        .tools-title {
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: #5a2d9c;
+            margin-bottom: 12px;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .tool-btn {
             background: white;
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
+            border: 1px solid #ddd0f0;
+            border-radius: 60px;
+            padding: 8px 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 700;
-            color: #6b3ea5;
+            text-align: center;
+            color: #1f2b48;
+            transition: 0.08s linear;
         }
-        .panel-icerik {
-            max-height: 0;
-            overflow: hidden;
-            transition: 0.3s;
+        .tool-btn.active-tool {
+            background: #e94560;
+            color: white;
+            border-color: #e94560;
+            box-shadow: 0 4px 8px rgba(233,69,96,0.3);
         }
-        .panel-icerik.acik {
-            max-height: 220px;
-            overflow-y: auto;
+        .tool-btn[data-tool="select"] {
+            background: #2d2f6e;
+            border-color: #c084fc;
+            color: #f0e9ff;
         }
-        .arama {
-            width: calc(100% - 24px);
-            margin: 12px;
-            padding: 8px 12px;
-            border-radius: 40px;
-            border: 2px solid #eeddff;
+        .tool-btn[data-tool="select"].active-tool {
+            background: #e94560;
         }
-        .font-listesi {
-            padding: 0 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .font-oge {
-            padding: 8px 12px;
-            border-radius: 30px;
-            background: white;
-            border: 1px solid #f5e6d4;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .font-oge:hover {
-            background: #fff5e8;
-        }
+        
         .canvas-alani {
             background: #0f0f1a;
             border-radius: 24px;
@@ -224,6 +223,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             cursor: crosshair;
             display: block;
+            margin: 0 auto;
         }
         .zoom-info {
             position: absolute;
@@ -244,35 +244,6 @@
             text-align: center;
             font-size: 11px;
             color: #495057;
-        }
-        .popup-menu {
-            position: fixed;
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 12px;
-            z-index: 1000;
-            display: none;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            min-width: 260px;
-            width: auto;
-            max-width: 90vw;
-            border: 1px solid #e2ceff;
-        }
-        .popup-menu button {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 40px;
-            background: white;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .popup-menu button:hover {
-            background: #e94560;
-            color: white;
-            border-color: #e94560;
         }
         .renk-overlay {
             position: fixed;
@@ -384,7 +355,6 @@
             z-index: 20001;
             box-shadow: 0 12px 28px rgba(0,0,0,0.4);
             border: 1px solid rgba(233, 69, 96, 0.3);
-            transition: all 0.1s ease;
         }
         .text-input-panel input {
             background: #FFF9F0;
@@ -396,13 +366,6 @@
             font-family: inherit;
             outline: none;
             min-width: 180px;
-            width: auto;
-            letter-spacing: 0.5px;
-        }
-        .text-input-panel input::placeholder {
-            color: #8b7a5c;
-            font-style: italic;
-            font-size: 16px;
         }
         .text-input-panel button {
             background: #e94560;
@@ -413,11 +376,6 @@
             border-radius: 40px;
             font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: 0.1s;
-        }
-        .text-input-panel button:active {
-            transform: scale(0.96);
         }
         .logo-kontrol {
             background: #fff5e8;
@@ -463,7 +421,6 @@
             width: 120px;
             margin: 0 6px;
         }
-        /* MOR TUTAMAÇ STİLLERİ */
         .resize-handle {
             position: absolute;
             width: 20px;
@@ -476,11 +433,6 @@
             z-index: 200;
             display: none;
             pointer-events: auto;
-            transition: transform 0.05s;
-        }
-        .resize-handle:hover {
-            transform: scale(1.1);
-            background-color: #a855f7;
         }
         @media (max-width: 600px) {
             .text-input-panel {
@@ -498,6 +450,8 @@
                 font-size: 14px;
             }
             .resize-handle { width: 16px; height: 16px; }
+            .tools-grid { gap: 6px; }
+            .tool-btn { font-size: 0.7rem; padding: 6px 2px; }
         }
     </style>
 </head>
@@ -566,21 +520,24 @@
                 </div>
             </div>
             
-            <div class="btn-grup">
-                <button id="araclarBtn" class="btn-mavi">🛠️ Araçlar</button>
-                <button id="secDuzenleBtn" class="btn-mavi">🖱️ Seç/Düzenle</button>
-                <button id="geriAlBtn" class="btn-gri">↩️ Geri Al</button>
+            <!-- ARAÇLAR - GÖRÜNÜR GRID (popup yok, font panel yok) -->
+            <div class="tools-container">
+                <div class="tools-title">🛠️ Çizim Araçları</div>
+                <div class="tools-grid" id="toolsGrid">
+                    <button data-tool="arrow" class="tool-btn">➡️ Ok</button>
+                    <button data-tool="circle" class="tool-btn">⚪ Daire</button>
+                    <button data-tool="rect" class="tool-btn">⬛ Dikdörtgen</button>
+                    <button data-tool="highlight" class="tool-btn">🔆 Vurgu</button>
+                    <button data-tool="text" class="tool-btn">✍️ Metin</button>
+                    <button data-tool="pen" class="tool-btn">✏️ Kalem</button>
+                    <button data-tool="eraser" class="tool-btn">🧽 Silgi</button>
+                    <button data-tool="select" class="tool-btn">🖱️ Seç/Düzenle</button>
+                </div>
             </div>
             
-            <div class="katlanir-panel" id="fontPanel">
-                <div class="panel-baslik" id="fontPanelBaslik">
-                    <span>🔤 Yazı Tipleri</span>
-                    <span>▼</span>
-                </div>
-                <div class="panel-icerik" id="fontPanelIcerik">
-                    <input type="text" id="fontArama" class="arama" placeholder="🔍 Font ara...">
-                    <div class="font-listesi" id="fontListesi"></div>
-                </div>
+            <div class="btn-grup">
+                <button id="geriAlBtn" class="btn-gri">↩️ Geri Al</button>
+                <button id="temizleBtn" class="btn-gri">🗑️ Temizle</button>
             </div>
             
             <div id="duzenlemePaneli" class="duzenle-panel">
@@ -594,13 +551,14 @@
             <hr>
             
             <div class="btn-grup">
-                <button id="temizleBtn" class="btn-gri">🗑️ Temizle</button>
-            </div>
-            <div class="btn-grup">
                 <button id="projeKaydet" class="btn-yesil">💾 Proje Kaydet</button>
                 <button id="projeYukle" class="btn-yesil">📂 Proje Yükle</button>
                 <button id="pngIndir" class="btn-kirmizi">📸 PNG</button>
                 <button id="jpgIndir" class="btn-kirmizi">🖼️ JPG</button>
+            </div>
+            <div class="btn-grup">
+                <button id="paylasResim" class="btn-turuncu">📱 Paylaş (Resim)</button>
+                <button id="paylasProje" class="btn-turuncu">📱 Paylaş (Proje)</button>
             </div>
         </div>
         
@@ -614,13 +572,8 @@
                 <div class="zoom-info" id="zoomInfo">🔍 %100</div>
             </div>
             
-            <div class="btn-grup" style="margin-top: 8px;">
-                <button id="paylasResim" class="btn-turuncu">📱 Paylaş (Resim)</button>
-                <button id="paylasProje" class="btn-turuncu">📱 Paylaş (Proje)</button>
-            </div>
-            
             <div class="aciklama">
-                💡 "Araçlar" ile popup menüden tüm araçları seçin.<br>
+                💡 Araçları üstteki butonlardan seçin. Ok / Daire / Dikdörtgen / Vurgu / Metin / Kalem / Silgi / Seç/Düzenle.<br>
                 ✏️ Metin aracı → canvas üzerine tıklayın → açılan panelde yazın, "Tamam" veya Enter.<br>
                 🖌️ Logo ekleyin, sürükleyerek taşıyın, SAĞ ALT KÖŞEDEKİ MOR TUTAMAÇTAN boyutlandırın.<br>
                 🖱️ Seç/Düzenle modunda şekli seçip sürükleyin, sağ alt köşedeki tutamaçla (kırmızı) yeniden boyutlandırın.<br>
@@ -629,18 +582,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Popup Menü -->
-<div id="popupMenu" class="popup-menu">
-    <button data-tool="arrow">➡️ Ok</button>
-    <button data-tool="circle">⚪ Daire</button>
-    <button data-tool="rect">⬛ Dikdörtgen</button>
-    <button data-tool="highlight">🔆 Vurgu</button>
-    <button data-tool="text">✍️ Metin</button>
-    <button data-tool="pen">✏️ Kalem</button>
-    <button data-tool="eraser">🧽 Silgi</button>
-    <button data-tool="select">🖱️ Seç/Düzenle</button>
 </div>
 
 <!-- Renk seçici overlay -->
@@ -677,30 +618,6 @@
         }
         document.getElementById('kalinlikKilitBtn').onclick = () => { kilitler.kalinlik = !kilitler.kalinlik; kilitGuncelle(); };
         document.getElementById('metinBoyutKilitBtn').onclick = () => { kilitler.metinBoyutu = !kilitler.metinBoyutu; kilitGuncelle(); };
-        
-        // ---------- FONTLAR ----------
-        const fontlar = ["Arial","Verdana","Times New Roman","Georgia","Courier New","Segoe UI","Roboto","Open Sans","Lato","Montserrat","Poppins","Pacifico"];
-        let mevcutFont = "Arial";
-        function fontListesiniGoster() {
-            const terim = document.getElementById('fontArama').value.toLowerCase();
-            const liste = document.getElementById('fontListesi');
-            liste.innerHTML = '';
-            fontlar.filter(f => f.toLowerCase().includes(terim)).forEach(f => {
-                const oge = document.createElement('div');
-                oge.className = 'font-oge';
-                oge.innerHTML = `<span style="font-family:'${f}'">${f}</span><span>🖊️</span>`;
-                oge.onclick = () => { mevcutFont = f; };
-                liste.appendChild(oge);
-            });
-        }
-        document.getElementById('fontArama').addEventListener('input', fontListesiniGoster);
-        const fontPanelBaslik = document.getElementById('fontPanelBaslik');
-        const fontPanelIcerik = document.getElementById('fontPanelIcerik');
-        fontPanelBaslik.addEventListener('click', () => {
-            fontPanelIcerik.classList.toggle('acik');
-            fontPanelBaslik.classList.toggle('acik');
-        });
-        fontListesiniGoster();
         
         // ---------- SPEKTRUMLU RENK SEÇİCİ ----------
         const renkOverlay = document.getElementById('renkOverlay');
@@ -743,26 +660,20 @@
         let metinRengi = '#e94560';
         let cizgiKaliniigi = 10, metinBoyutu = 48;
         let resimVar = false;
-        let geciciCizim = null, beklemeTimer = null, kalemNoktalari = [];
+        let geciciCizim = null, kalemNoktalari = [];
         let duzenlemeModuAktif = false, seciliCizimIndex = -1, seciliCizimOriginal = null;
         let surukleAktif = false, surukleBaslangic = {x:0,y:0}, surukleBaslangicPoz = {x:0,y:0};
         let textInputAktif = false;
         let cizimAktif = false, baslangicNoktasi = {x:0,y:0};
         
-        // ---------- LOGO DEĞİŞKENLERİ (YENİ) ----------
+        // LOGO DEĞİŞKENLERİ
         let logoImage = null;
         let logoX = 400, logoY = 300, logoWidth = 80, logoHeight = 80;
         let originalLogoW = 1, originalLogoH = 1;
         let isDraggingLogo = false, dragLogoStartX = 0, dragLogoStartY = 0;
         let keepAspectLogo = true;
+        let isResizingLogo = false, resizeStartLogoW = 0, resizeStartLogoH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
         
-        // ---------- LOGO RESIZE HANDLE (YENİ - MOR TUTAMAÇ) ----------
-        let isResizingLogo = false;
-        let resizeStartLogoW = 0, resizeStartLogoH = 0;
-        let resizeStartMouseX = 0, resizeStartMouseY = 0;
-        let keepAspectLogoState = true;
-        
-        // DOM elementleri
         const durumMetni = document.getElementById('durumMetni');
         const zoomInfo = document.getElementById('zoomInfo');
         let currentZoom = 1;
@@ -772,38 +683,33 @@
         const boyutCarpanDeger = document.getElementById('boyutCarpanDeger');
         const uygulaBoyutBtn = document.getElementById('uygulaBoyutBtn');
         const iptalDuzenleBtn = document.getElementById('iptalDuzenleBtn');
-        const secDuzenleBtn = document.getElementById('secDuzenleBtn');
-        secDuzenleBtn.onclick = () => { aktifArac = 'select'; durumMetni.innerHTML = '🖱️ Seç/Düzenle modu aktif.'; setTimeout(() => { if(resimVar) durumMetni.innerHTML = '✅ Hazır'; }, 1200); };
-        
-        // ---------- TUTAMAÇ KONUM GÜNCELLEME (ZOOM'A Duyarlı) ----------
         const resizeHandle = document.getElementById('resizeHandle');
-        function updateResizeHandlePosition() {
-            if (!logoImage) {
-                resizeHandle.style.display = 'none';
-                return;
-            }
-            resizeHandle.style.display = 'block';
-            const canvasRect = canvas.getBoundingClientRect();
-            const containerRect = document.getElementById('canvasKaydir').getBoundingClientRect();
-            // Logonun sağ alt köşesinin canvas içindeki koordinatları (piksel cinsinden)
-            const logoRight = logoX + logoWidth/2;
-            const logoBottom = logoY + logoHeight/2;
-            // Canvas üzerinde ekran koordinatlarına çevir (zoom faktörüne göre)
-            const scaleX = canvasRect.width / canvas.width;
-            const scaleY = canvasRect.height / canvas.height;
-            const handleScreenX = canvasRect.left + (logoRight * scaleX);
-            const handleScreenY = canvasRect.top + (logoBottom * scaleY);
-            // Container içindeki göreceli konum
-            let left = handleScreenX - containerRect.left - 12;
-            let top = handleScreenY - containerRect.top - 12;
-            // Sınırları aşmasın
-            left = Math.min(Math.max(left, 0), containerRect.width - 24);
-            top = Math.min(Math.max(top, 0), containerRect.height - 24);
-            resizeHandle.style.left = left + 'px';
-            resizeHandle.style.top = top + 'px';
-        }
         
-        // ---------- ÇİZİM FONKSİYONLARI ----------
+        // Araç butonları (görünür grid)
+        const toolButtons = document.querySelectorAll('.tool-btn');
+        function setActiveTool(tool) {
+            aktifArac = tool;
+            toolButtons.forEach(btn => {
+                if(btn.dataset.tool === tool) btn.classList.add('active-tool');
+                else btn.classList.remove('active-tool');
+            });
+            if(duzenlemeModuAktif) {
+                duzenlemeModuAktif = false; seciliCizimIndex = -1;
+                duzenlemePaneli.style.display = 'none'; geciciCizim = null;
+                tumunuCiz();
+            }
+            durumMetni.innerHTML = `🛠️ ${tool} seçildi`;
+            setTimeout(() => { if(resimVar) durumMetni.innerHTML = '✅ Hazır'; }, 1000);
+        }
+        toolButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setActiveTool(btn.dataset.tool);
+            });
+        });
+        setActiveTool('arrow');
+        
+        // Çizim fonksiyonları
         function cizimCiz(d) {
             ctx.save();
             if (d.tip === 'eraser') { ctx.strokeStyle = '#ffffff'; ctx.fillStyle = '#ffffff'; ctx.lineWidth = d.cizgiKaliniigi * 1.5; } 
@@ -816,7 +722,7 @@
             } else if (d.tip === 'circle') { const r = Math.hypot(d.x2-d.x1, d.y2-d.y1); ctx.beginPath(); ctx.arc(d.x1,d.y1,r,0,2*Math.PI); ctx.stroke(); }
             else if (d.tip === 'rect') { ctx.beginPath(); ctx.rect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1); ctx.stroke(); }
             else if (d.tip === 'highlight') { ctx.fillRect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1); }
-            else if (d.tip === 'text') { ctx.fillStyle = d.metinRengi; ctx.font = `${d.metinBoyutu}px "${d.font}"`; ctx.textAlign = 'center'; ctx.fillText(d.metin, d.x, d.y); }
+            else if (d.tip === 'text') { ctx.fillStyle = d.metinRengi; ctx.font = `${d.metinBoyutu}px 'Segoe UI', 'Arial', system-ui`; ctx.textAlign = 'center'; ctx.fillText(d.metin, d.x, d.y); }
             else if ((d.tip === 'pen' || d.tip === 'eraser') && d.noktalar?.length > 1) { ctx.beginPath(); ctx.moveTo(d.noktalar[0].x,d.noktalar[0].y); for(let i=1;i<d.noktalar.length;i++) ctx.lineTo(d.noktalar[i].x,d.noktalar[i].y); ctx.stroke(); }
             ctx.restore();
         }
@@ -825,16 +731,14 @@
             ctx.clearRect(0,0,resimW,resimH); 
             if(resim) ctx.drawImage(resim,0,0,resimW,resimH); 
             cizimler.forEach(d=>cizimCiz(d)); 
-            if(logoImage) {
-                ctx.drawImage(logoImage, logoX - logoWidth/2, logoY - logoHeight/2, logoWidth, logoHeight);
-            }
+            if(logoImage) ctx.drawImage(logoImage, logoX - logoWidth/2, logoY - logoHeight/2, logoWidth, logoHeight);
             if(geciciCizim) cizimCiz(geciciCizim); 
-            updateResizeHandlePosition(); // Tutamaç konumunu güncelle
+            updateResizeHandlePosition();
         }
         
         function durumKaydet() { geriYigini.push(JSON.parse(JSON.stringify(cizimler))); if(geriYigini.length>50) geriYigini.shift(); }
         function cizimiEkle(d) { durumKaydet(); cizimler.push(d); tumunuCiz(); durumMetni.innerHTML = '✓ Çizim eklendi'; setTimeout(()=>{if(resimVar) durumMetni.innerHTML='✅ Hazır';},1500); }
-        function geriAl() { if(geriYigini.length===0) return; cizimler = JSON.parse(JSON.stringify(geriYigini.pop())); tumunuCiz(); durumMetni.innerHTML='↩️ Geri alındı'; setTimeout(()=>{if(resimVar) durumMetni.innerHTML='✅ Hazır';},1200); }
+        function geriAl() { if(geriYigini.length===0) return; cizimler = JSON.parse(JSON.stringify(geriYigini.pop())); tumunuCiz(); durumMetni.innerHTML='↩️ Geri alındı'; }
         function temizle() { if(cizimler.length===0) return; durumKaydet(); cizimler=[]; tumunuCiz(); durumMetni.innerHTML='🧹 Tüm çizimler temizlendi'; }
         
         // Metin giriş paneli
@@ -867,32 +771,20 @@
             panel.style.top = top + 'px';
             updatePosition();
             input.focus();
-            input.style.fontFamily = mevcutFont;
             const finish = (metin) => {
                 if (!panel.parentNode) return;
                 panel.remove();
                 textInputAktif = false;
                 if (metin && metin.trim() !== '') {
-                    cizimiEkle({
-                        tip: 'text',
-                        x: canvasX,
-                        y: canvasY,
-                        metin: metin.trim(),
-                        metinRengi: metinRengi,
-                        metinBoyutu: metinBoyutu,
-                        font: mevcutFont
-                    });
+                    cizimiEkle({ tip: 'text', x: canvasX, y: canvasY, metin: metin.trim(), metinRengi: metinRengi, metinBoyutu: metinBoyutu });
                 }
             };
             input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); finish(input.value); } else if (e.key === 'Escape') { finish(null); } };
             okBtn.onclick = () => finish(input.value);
             const outsideClickHandler = (e) => { if (!panel.contains(e.target)) { finish(null); document.removeEventListener('click', outsideClickHandler); document.removeEventListener('touchstart', outsideClickHandler); } };
             setTimeout(() => { document.addEventListener('click', outsideClickHandler); document.addEventListener('touchstart', outsideClickHandler); }, 10);
-            window.addEventListener('resize', updatePosition);
-            panel._cleanup = () => window.removeEventListener('resize', updatePosition);
         }
         
-        // canvas koordinat dönüşümü
         function canvasKoordinat(e) {
             const rect = canvas.getBoundingClientRect();
             const olcekX = canvas.width / rect.width;
@@ -922,7 +814,6 @@
             return -1;
         }
         
-        // Fare ile tutamaç üzerinde mi kontrolü
         function isOverResizeHandle(e) {
             if (!logoImage) return false;
             const rect = resizeHandle.getBoundingClientRect();
@@ -932,12 +823,9 @@
             return (cx >= rect.left - 8 && cx <= rect.right + 8 && cy >= rect.top - 8 && cy <= rect.bottom + 8);
         }
         
-        // Olay yöneticileri (logo sürükleme + resize handle)
         function baslangicOlayi(e) {
             if (!resimVar && aktifArac !== 'text') { alert('Önce resim yükleyin'); return; }
             if (textInputAktif) return;
-            
-            // Öncelikle resize handle kontrolü
             if (isOverResizeHandle(e)) {
                 e.preventDefault();
                 isResizingLogo = true;
@@ -946,14 +834,10 @@
                 resizeStartLogoH = logoHeight;
                 resizeStartMouseX = x;
                 resizeStartMouseY = y;
-                keepAspectLogoState = keepAspectLogo;
                 canvas.style.cursor = 'nw-resize';
                 return;
             }
-            
             const { x, y, clientX, clientY } = canvasKoordinat(e);
-            
-            // Logo sürükleme kontrolü (resize değilse)
             if (logoImage && !duzenlemeModuAktif && !isResizingLogo) {
                 let left = logoX - logoWidth/2, right = logoX + logoWidth/2;
                 let top = logoY - logoHeight/2, bottom = logoY + logoHeight/2;
@@ -965,7 +849,6 @@
                     return;
                 }
             }
-            
             if (aktifArac === 'select') {
                 const idx = sekilSec(x,y);
                 if (idx !== -1) {
@@ -1002,14 +885,12 @@
         function hareketOlayi(e) {
             if (textInputAktif) return;
             const { x, y } = canvasKoordinat(e);
-            
-            // Logo yeniden boyutlandırma
             if (isResizingLogo && logoImage) {
                 let deltaX = x - resizeStartMouseX;
                 let deltaY = y - resizeStartMouseY;
                 let newW = Math.min(Math.max(resizeStartLogoW + deltaX, 10), 500);
                 let newH = Math.min(Math.max(resizeStartLogoH + deltaY, 10), 500);
-                if (keepAspectLogoState && originalLogoW > 0 && originalLogoH > 0) {
+                if (keepAspectLogo && originalLogoW > 0 && originalLogoH > 0) {
                     const ratio = originalLogoW / originalLogoH;
                     newH = newW / ratio;
                     if (newH < 10) { newH = 10; newW = newH * ratio; }
@@ -1019,7 +900,6 @@
                 }
                 logoWidth = Math.min(Math.max(newW, 10), 500);
                 logoHeight = Math.min(Math.max(newH, 10), 500);
-                // Sliderları güncelle
                 document.getElementById('logoGenislik').value = logoWidth;
                 document.getElementById('logoYukseklik').value = logoHeight;
                 document.getElementById('logoGW').innerText = Math.round(logoWidth)+'px';
@@ -1027,7 +907,6 @@
                 tumunuCiz();
                 return;
             }
-            
             if (isDraggingLogo && logoImage) {
                 logoX = Math.min(Math.max(x - dragLogoStartX, 20), canvas.width - 20);
                 logoY = Math.min(Math.max(y - dragLogoStartY, 20), canvas.height - 20);
@@ -1036,7 +915,6 @@
                 tumunuCiz();
                 return;
             }
-            
             if (duzenlemeModuAktif && surukleAktif && seciliCizimIndex !== -1) {
                 const deltaX = x - surukleBaslangic.x, deltaY = y - surukleBaslangic.y;
                 const original = seciliCizimOriginal;
@@ -1071,23 +949,19 @@
                 surukleAktif = false; geciciCizim = null;
                 seciliCizimOriginal = JSON.parse(JSON.stringify(cizimler[seciliCizimIndex]));
                 surukleBaslangicPoz = (cizimler[seciliCizimIndex].tip === 'text') ? {x: cizimler[seciliCizimIndex].x, y: cizimler[seciliCizimIndex].y} : {x: cizimler[seciliCizimIndex].x1, y: cizimler[seciliCizimIndex].y1};
-                setTimeout(()=>{if(resimVar) durumMetni.innerHTML='✅ Hazır';},1200);
                 return;
             }
             if (!cizimAktif) return;
-            if (aktifArac === 'pen' || aktifArac === 'eraser') {
-                if(geciciCizim && geciciCizim.noktalar?.length>1) beklemeTimer = setTimeout(()=>{ cizimiOtomatikSabitle(); beklemeTimer=null; },200);
-                else { geciciCizim=null; tumunuCiz(); }
-            } else { if(geciciCizim) beklemeTimer = setTimeout(()=>{ cizimiOtomatikSabitle(); beklemeTimer=null; },200); }
+            if (geciciCizim) {
+                if (aktifArac === 'pen' || aktifArac === 'eraser') {
+                    if(geciciCizim.noktalar?.length>1) cizimiEkle({ tip:geciciCizim.tip, noktalar:[...geciciCizim.noktalar], renk:geciciCizim.renk, cizgiKaliniigi:geciciCizim.cizgiKaliniigi });
+                } else {
+                    const mesafe = Math.hypot(geciciCizim.x2-geciciCizim.x1, geciciCizim.y2-geciciCizim.y1);
+                    if(mesafe>5) cizimiEkle({ tip:geciciCizim.tip, x1:geciciCizim.x1,y1:geciciCizim.y1,x2:geciciCizim.x2,y2:geciciCizim.y2, renk:geciciCizim.renk, cizgiKaliniigi:geciciCizim.cizgiKaliniigi });
+                }
+                geciciCizim = null; tumunuCiz();
+            }
             cizimAktif = false;
-        }
-        
-        function cizimiOtomatikSabitle() {
-            if(!geciciCizim) return;
-            const d = geciciCizim;
-            if(d.tip === 'pen' || d.tip === 'eraser') { if(d.noktalar?.length>1) cizimiEkle({ tip:d.tip, noktalar:[...d.noktalar], renk:d.renk, cizgiKaliniigi:d.cizgiKaliniigi }); }
-            else { const mesafe = Math.hypot(d.x2-d.x1, d.y2-d.y1); if(mesafe>5) cizimiEkle({ tip:d.tip, x1:d.x1, y1:d.y1, x2:d.x2, y2:d.y2, renk:d.renk, cizgiKaliniigi:d.cizgiKaliniigi }); }
-            geciciCizim=null; tumunuCiz();
         }
         
         canvas.addEventListener('mousedown', baslangicOlayi);
@@ -1097,7 +971,6 @@
         window.addEventListener('touchmove', hareketOlayi);
         window.addEventListener('touchend', bitisOlayi);
         
-        // Boyutlandırma (seçili şekil)
         function boyutCarpanGuncelle() {
             const carpan = parseFloat(boyutCarpanSlider.value);
             boyutCarpanDeger.innerText = carpan.toFixed(2);
@@ -1125,193 +998,68 @@
             }
             duzenlemeModuAktif=false; seciliCizimIndex=-1; duzenlemePaneli.style.display='none'; geciciCizim=null; surukleAktif=false; tumunuCiz();
         }
-        function iptalDuzenle() { duzenlemeModuAktif=false; seciliCizimIndex=-1; duzenlemePaneli.style.display='none'; geciciCizim=null; surukleAktif=false; tumunuCiz(); durumMetni.innerHTML='Düzenleme iptal'; }
+        function iptalDuzenle() { duzenlemeModuAktif=false; seciliCizimIndex=-1; duzenlemePaneli.style.display='none'; geciciCizim=null; surukleAktif=false; tumunuCiz(); }
         boyutCarpanSlider.addEventListener('input', boyutCarpanGuncelle);
         uygulaBoyutBtn.onclick = uygulaBoyutDegisikligi;
         iptalDuzenleBtn.onclick = iptalDuzenle;
         
-        // Zoom
         function zoom(olay) { olay.preventDefault(); let yeniZoom = currentZoom + (olay.deltaY>0 ? -0.1 : 0.1); if(yeniZoom<0.5) yeniZoom=0.5; if(yeniZoom>3) yeniZoom=3; if(yeniZoom===currentZoom) return; currentZoom = yeniZoom; canvas.style.transform = `scale(${currentZoom})`; canvas.style.transformOrigin = 'top left'; canvasKaydir.scrollLeft = (canvasKaydir.scrollWidth * (currentZoom-1)/2); canvasKaydir.scrollTop = (canvasKaydir.scrollHeight * (currentZoom-1)/2); zoomInfo.innerHTML = `🔍 ${Math.round(currentZoom*100)}%`; updateResizeHandlePosition(); }
         canvas.addEventListener('wheel', zoom, { passive: false });
+        
+        function updateResizeHandlePosition() {
+            if (!logoImage) { resizeHandle.style.display = 'none'; return; }
+            resizeHandle.style.display = 'block';
+            const canvasRect = canvas.getBoundingClientRect();
+            const containerRect = canvasKaydir.getBoundingClientRect();
+            const logoRight = logoX + logoWidth/2;
+            const logoBottom = logoY + logoHeight/2;
+            const scaleX = canvasRect.width / canvas.width;
+            const scaleY = canvasRect.height / canvas.height;
+            let left = canvasRect.left + (logoRight * scaleX) - containerRect.left - 12;
+            let top = canvasRect.top + (logoBottom * scaleY) - containerRect.top - 12;
+            left = Math.min(Math.max(left, 0), containerRect.width - 24);
+            top = Math.min(Math.max(top, 0), containerRect.height - 24);
+            resizeHandle.style.left = left + 'px';
+            resizeHandle.style.top = top + 'px';
+        }
+        window.addEventListener('resize', updateResizeHandlePosition);
+        canvasKaydir.addEventListener('scroll', updateResizeHandlePosition);
         
         // Resim yükleme
         const yuklemeAlani = document.getElementById('yuklemeAlani'), resimDosya = document.getElementById('resimDosya');
         function resimYukle(dosya) { if(!dosya.type.match('image.*')) return; const okuyucu = new FileReader(); okuyucu.onload = (e) => { const img = new Image(); img.onload = () => { resim = img; resimW = img.width; resimH = img.height; canvas.width = resimW; canvas.height = resimH; cizimler=[]; geriYigini=[]; resimVar=true; logoX = resimW/2; logoY = resimH/2; document.getElementById('logoX').value = Math.round(logoX); document.getElementById('logoY').value = Math.round(logoY); tumunuCiz(); durumMetni.innerHTML='✅ Resim yüklendi!'; }; img.src = e.target.result; }; okuyucu.readAsDataURL(dosya); }
         yuklemeAlani.onclick = () => resimDosya.click(); resimDosya.onchange = (e) => { if(e.target.files[0]) resimYukle(e.target.files[0]); };
-        yuklemeAlani.ondragover = e => e.preventDefault(); yuklemeAlani.ondrop = e => { e.preventDefault(); if(e.dataTransfer.files[0]) resimYukle(e.dataTransfer.files[0]); };
         
-        // ---------- LOGO FONKSİYONLARI ----------
-        const logoYuklemeAlani = document.getElementById('logoYuklemeAlani');
-        const logoDosya = document.getElementById('logoDosya');
-        const logoAlan = document.getElementById('logoAlan');
-        const logoThumb = document.getElementById('logoThumb');
-        const logoKaldirBtn = document.getElementById('logoKaldirBtn');
-        const logoXInput = document.getElementById('logoX');
-        const logoYInput = document.getElementById('logoY');
-        const logoKonumSifirla = document.getElementById('logoKonumSifirla');
-        const logoGenislik = document.getElementById('logoGenislik');
-        const logoYukseklik = document.getElementById('logoYukseklik');
-        const logoGW = document.getElementById('logoGW');
-        const logoGH = document.getElementById('logoGH');
-        const logoOranKoru = document.getElementById('logoOranKoru');
-        const logoBoyutSifirla = document.getElementById('logoBoyutSifirla');
-        
+        // LOGO işlemleri
+        const logoYuklemeAlani = document.getElementById('logoYuklemeAlani'), logoDosya = document.getElementById('logoDosya'), logoAlan = document.getElementById('logoAlan'), logoThumb = document.getElementById('logoThumb'), logoKaldirBtn = document.getElementById('logoKaldirBtn'), logoXInput = document.getElementById('logoX'), logoYInput = document.getElementById('logoY'), logoKonumSifirla = document.getElementById('logoKonumSifirla'), logoGenislik = document.getElementById('logoGenislik'), logoYukseklik = document.getElementById('logoYukseklik'), logoGW = document.getElementById('logoGW'), logoGH = document.getElementById('logoGH'), logoOranKoru = document.getElementById('logoOranKoru'), logoBoyutSifirla = document.getElementById('logoBoyutSifirla');
         keepAspectLogo = logoOranKoru.checked;
         logoOranKoru.addEventListener('change', () => { keepAspectLogo = logoOranKoru.checked; });
-        
         function logoYukle(dosya) {
             if(!dosya.type.match('image.*')) return;
             const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    logoImage = img;
-                    originalLogoW = img.width;
-                    originalLogoH = img.height;
-                    logoWidth = Math.min(120, resimW/3);
-                    logoHeight = logoWidth * (originalLogoH / originalLogoW);
-                    logoGenislik.value = logoWidth;
-                    logoYukseklik.value = logoHeight;
-                    logoGW.innerText = Math.round(logoWidth)+'px';
-                    logoGH.innerText = Math.round(logoHeight)+'px';
-                    logoX = resimW/2;
-                    logoY = resimH/2;
-                    logoXInput.value = Math.round(logoX);
-                    logoYInput.value = Math.round(logoY);
-                    logoAlan.style.display = 'block';
-                    logoThumb.src = e.target.result;
-                    tumunuCiz();
-                    durumMetni.innerHTML = '✅ Logo eklendi! Sürükleyip taşıyabilir, mor tutamaçtan boyutlandırabilirsiniz.';
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(dosya);
+            reader.onload = (e) => { const img = new Image(); img.onload = () => { logoImage = img; originalLogoW = img.width; originalLogoH = img.height; logoWidth = Math.min(120, resimW/3); logoHeight = logoWidth * (originalLogoH / originalLogoW); logoGenislik.value = logoWidth; logoYukseklik.value = logoHeight; logoGW.innerText = Math.round(logoWidth)+'px'; logoGH.innerText = Math.round(logoHeight)+'px'; logoX = resimW/2; logoY = resimH/2; logoXInput.value = Math.round(logoX); logoYInput.value = Math.round(logoY); logoAlan.style.display = 'block'; logoThumb.src = e.target.result; tumunuCiz(); durumMetni.innerHTML = '✅ Logo eklendi! Sürükleyip taşıyabilir, mor tutamaçtan boyutlandırabilirsiniz.'; }; img.src = e.target.result; }; reader.readAsDataURL(dosya);
         }
-        
         logoYuklemeAlani.onclick = () => logoDosya.click();
         logoDosya.onchange = (e) => { if(e.target.files[0]) logoYukle(e.target.files[0]); };
-        logoYuklemeAlani.ondragover = e => e.preventDefault();
-        logoYuklemeAlani.ondrop = e => { e.preventDefault(); if(e.dataTransfer.files[0]) logoYukle(e.dataTransfer.files[0]); };
-        
         logoKaldirBtn.onclick = () => { logoImage = null; logoAlan.style.display = 'none'; resizeHandle.style.display = 'none'; tumunuCiz(); durumMetni.innerHTML = 'Logo kaldırıldı.'; };
         logoXInput.addEventListener('input', () => { logoX = parseInt(logoXInput.value); tumunuCiz(); });
         logoYInput.addEventListener('input', () => { logoY = parseInt(logoYInput.value); tumunuCiz(); });
         logoKonumSifirla.onclick = () => { logoX = resimW/2; logoY = resimH/2; logoXInput.value = Math.round(logoX); logoYInput.value = Math.round(logoY); tumunuCiz(); };
-        
-        function updateLogoSizeFromWidth(w) {
-            if(logoOranKoru.checked && originalLogoW>0) {
-                let newH = Math.round(w * (originalLogoH / originalLogoW));
-                logoWidth = w; logoHeight = newH;
-                logoYukseklik.value = newH;
-                logoGH.innerText = newH+'px';
-            } else { logoWidth = w; }
-            logoGW.innerText = w+'px';
-            tumunuCiz();
-        }
-        function updateLogoSizeFromHeight(h) {
-            if(logoOranKoru.checked && originalLogoW>0) {
-                let newW = Math.round(h * (originalLogoW / originalLogoH));
-                logoHeight = h; logoWidth = newW;
-                logoGenislik.value = newW;
-                logoGW.innerText = newW+'px';
-            } else { logoHeight = h; }
-            logoGH.innerText = h+'px';
-            tumunuCiz();
-        }
+        function updateLogoSizeFromWidth(w) { if(logoOranKoru.checked && originalLogoW>0) { let newH = Math.round(w * (originalLogoH / originalLogoW)); logoWidth = w; logoHeight = newH; logoYukseklik.value = newH; logoGH.innerText = newH+'px'; } else { logoWidth = w; } logoGW.innerText = w+'px'; tumunuCiz(); }
+        function updateLogoSizeFromHeight(h) { if(logoOranKoru.checked && originalLogoW>0) { let newW = Math.round(h * (originalLogoW / originalLogoH)); logoHeight = h; logoWidth = newW; logoGenislik.value = newW; logoGW.innerText = newW+'px'; } else { logoHeight = h; } logoGH.innerText = h+'px'; tumunuCiz(); }
         logoGenislik.addEventListener('input', (e) => updateLogoSizeFromWidth(parseInt(e.target.value)));
         logoYukseklik.addEventListener('input', (e) => updateLogoSizeFromHeight(parseInt(e.target.value)));
-        logoBoyutSifirla.onclick = () => {
-            if(logoImage) {
-                let base = 80;
-                logoWidth = base;
-                logoHeight = base * (originalLogoH/originalLogoW);
-                logoGenislik.value = logoWidth; logoYukseklik.value = logoHeight;
-                logoGW.innerText = Math.round(logoWidth)+'px'; logoGH.innerText = Math.round(logoHeight)+'px';
-                tumunuCiz();
-            }
-        };
-        
-        // Popup menü
-        const araclarBtn = document.getElementById('araclarBtn'), popupMenu = document.getElementById('popupMenu');
-        function popupGoster(e) { const rect = araclarBtn.getBoundingClientRect(); let left = rect.right+5, top = rect.top; if(left+280 > window.innerWidth-10) left = rect.left-285; if(left<10) left=10; if(top+popupMenu.scrollHeight>window.innerHeight-10) top = window.innerHeight - popupMenu.scrollHeight -10; if(top<10) top=10; popupMenu.style.display='grid'; popupMenu.style.left=left+'px'; popupMenu.style.top=top+'px'; }
-        function popupGizle() { popupMenu.style.display='none'; }
-        araclarBtn.addEventListener('click', popupGoster);
-        document.addEventListener('click', (e) => { if(!araclarBtn.contains(e.target) && !popupMenu.contains(e.target)) popupGizle(); });
-        popupMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const yeniArac = btn.dataset.tool; if(duzenlemeModuAktif) { duzenlemeModuAktif=false; seciliCizimIndex=-1; duzenlemePaneli.style.display='none'; geciciCizim=null; tumunuCiz(); } aktifArac = yeniArac; durumMetni.innerHTML = `🛠️ ${btn.innerText} seçildi`; setTimeout(()=>{if(resimVar) durumMetni.innerHTML='✅ Hazır';},1000); popupGizle(); }); });
+        logoBoyutSifirla.onclick = () => { if(logoImage) { let base = 80; logoWidth = base; logoHeight = base * (originalLogoH/originalLogoW); logoGenislik.value = logoWidth; logoYukseklik.value = logoHeight; logoGW.innerText = Math.round(logoWidth)+'px'; logoGH.innerText = Math.round(logoHeight)+'px'; tumunuCiz(); } };
         
         document.getElementById('geriAlBtn').onclick = geriAl;
         document.getElementById('temizleBtn').onclick = () => { if(confirm('Tüm çizimler silinsin?')) temizle(); };
         document.getElementById('projeKaydet').onclick = () => { if(!resimVar) { alert('Resim yükleyin'); return; } const veri={cizimler, resimVerisi: resim.src, logo: logoImage ? { src: logoImage.src, x: logoX, y: logoY, w: logoWidth, h: logoHeight } : null }; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(veri)],{type:'application/json'})); a.download=`proje_${Date.now()}.json`; a.click(); alert('Proje kaydedildi'); };
-        document.getElementById('projeYukle').onclick = () => { const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=(e)=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ try{ const data=JSON.parse(ev.target.result); if(data.resimVerisi){ const img=new Image(); img.onload=()=>{ resim=img; resimW=img.width; resimH=img.height; canvas.width=resimW; canvas.height=resimH; cizimler=data.cizimler||[]; geriYigini=[]; resimVar=true; if(data.logo && data.logo.src){ const logImg=new Image(); logImg.onload=()=>{ logoImage=logImg; logoX=data.logo.x||resimW/2; logoY=data.logo.y||resimH/2; logoWidth=data.logo.w||80; logoHeight=data.logo.h||80; logoGenislik.value=logoWidth; logoYukseklik.value=logoHeight; logoGW.innerText=logoWidth+'px'; logoGH.innerText=logoHeight+'px'; logoXInput.value=logoX; logoYInput.value=logoY; logoAlan.style.display='block'; logoThumb.src=data.logo.src; tumunuCiz(); }; logImg.src=data.logo.src; } else { tumunuCiz(); } }; img.src=data.resimVerisi; } else { cizimler=data.cizimler||[]; tumunuCiz(); } } catch(err){ alert('Hatalı dosya'); } }; r.readAsText(f); }; inp.click(); };
+        document.getElementById('projeYukle').onclick = () => { const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=(e)=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ try{ const data=JSON.parse(ev.target.result); if(data.resimVerisi){ const img=new Image(); img.onload=()=>{ resim=img; resimW=img.width; resimH=img.height; canvas.width=resimW; canvas.height=resimH; cizimler=data.cizimler||[]; geriYigini=[]; resimVar=true; if(data.logo && data.logo.src){ const logImg=new Image(); logImg.onload=()=>{ logoImage=logImg; logoX=data.logo.x||resimW/2; logoY=data.logo.y||resimH/2; logoWidth=data.logo.w||80; logoHeight=data.logo.h||80; logoGenislik.value=logoWidth; logoYukseklik.value=logoHeight; logoGW.innerText=logoWidth+'px'; logoGH.innerText=logoHeight+'px'; logoXInput.value=logoX; logoYInput.value=logoY; logoAlan.style.display='block'; logoThumb.src=data.logo.src; tumunuCiz(); }; logImg.src=data.logo.src; } else tumunuCiz(); }; img.src=data.resimVerisi; } else { cizimler=data.cizimler||[]; tumunuCiz(); } } catch(err){ alert('Hatalı dosya'); } }; r.readAsText(f); }; inp.click(); };
         document.getElementById('pngIndir').onclick = () => { if(resimVar){ const a=document.createElement('a'); a.download='isaretli.png'; a.href=canvas.toDataURL('image/png'); a.click(); } else alert('Resim yükleyin'); };
         document.getElementById('jpgIndir').onclick = () => { if(resimVar){ const a=document.createElement('a'); a.download='isaretli.jpg'; a.href=canvas.toDataURL('image/jpeg',0.95); a.click(); } else alert('Resim yükleyin'); };
         
-        // ---------- GELİŞMİŞ PAYLAŞIM (FIREFOX DESTEKLİ) ----------
-        async function paylasResimFn() {
-            if(!resimVar) { alert('Önce bir resim yükleyin!'); return; }
-            try {
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-                const file = new File([blob], 'isaretli_resim.png', { type: 'image/png' });
-                // Paylaşım API'sini dene (Chrome, Firefox, Edge, Safari)
-                if (navigator.share) {
-                    await navigator.share({ title: 'İşaretli Resim', files: [file] });
-                    durumMetni.innerHTML = '✅ Paylaşıldı!';
-                } else {
-                    // Paylaşım desteklenmiyorsa indir
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'isaretli_resim.png';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    alert('Tarayıcınız paylaşımı desteklemiyor, resim indirildi.');
-                }
-            } catch(err) {
-                console.warn('Paylaşım hatası:', err);
-                // Hata durumunda indirme yap
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'isaretli_resim.png';
-                a.click();
-                URL.revokeObjectURL(url);
-                alert('Paylaşım başarısız, resim indirildi.');
-            }
-        }
-        
-        async function paylasProjeFn() {
-            if(!resimVar) { alert('Önce resim yükleyin!'); return; }
-            try {
-                const projeVerisi = { cizimler, resimVerisi: resim.src, logo: logoImage ? { src: logoImage.src, x: logoX, y: logoY, w: logoWidth, h: logoHeight } : null };
-                const blob = new Blob([JSON.stringify(projeVerisi)], { type: 'application/json' });
-                const file = new File([blob], 'proje.json', { type: 'application/json' });
-                if (navigator.share) {
-                    await navigator.share({ title: 'İşaretleme Projesi', files: [file] });
-                    durumMetni.innerHTML = '✅ Proje paylaşıldı!';
-                } else {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'proje.json';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    alert('Tarayıcınız paylaşımı desteklemiyor, proje indirildi.');
-                }
-            } catch(err) {
-                console.warn('Proje paylaşım hatası:', err);
-                const projeVerisi = { cizimler, resimVerisi: resim.src, logo: logoImage ? { src: logoImage.src, x: logoX, y: logoY, w: logoWidth, h: logoHeight } : null };
-                const blob = new Blob([JSON.stringify(projeVerisi)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'proje.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                alert('Proje paylaşılamadı, dosya indirildi.');
-            }
-        }
-        
+        async function paylasResimFn() { if(!resimVar) { alert('Önce bir resim yükleyin!'); return; } try { const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png')); const file = new File([blob], 'isaretli_resim.png', { type: 'image/png' }); if (navigator.share) await navigator.share({ title: 'İşaretli Resim', files: [file] }); else { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'isaretli_resim.png'; a.click(); URL.revokeObjectURL(url); alert('Paylaşım desteklenmiyor, resim indirildi.'); } } catch(err) { const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png')); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'isaretli_resim.png'; a.click(); URL.revokeObjectURL(url); alert('Paylaşım hatası, resim indirildi.'); } }
+        async function paylasProjeFn() { if(!resimVar) { alert('Önce resim yükleyin!'); return; } try { const projeVerisi = { cizimler, resimVerisi: resim.src, logo: logoImage ? { src: logoImage.src, x: logoX, y: logoY, w: logoWidth, h: logoHeight } : null }; const blob = new Blob([JSON.stringify(projeVerisi)], { type: 'application/json' }); const file = new File([blob], 'proje.json', { type: 'application/json' }); if (navigator.share) await navigator.share({ title: 'İşaretleme Projesi', files: [file] }); else { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'proje.json'; a.click(); URL.revokeObjectURL(url); alert('Paylaşım desteklenmiyor, proje indirildi.'); } } catch(err) { const projeVerisi = { cizimler, resimVerisi: resim.src, logo: logoImage ? { src: logoImage.src, x: logoX, y: logoY, w: logoWidth, h: logoHeight } : null }; const blob = new Blob([JSON.stringify(projeVerisi)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'proje.json'; a.click(); URL.revokeObjectURL(url); alert('Proje paylaşılamadı, dosya indirildi.'); } }
         document.getElementById('paylasResim').onclick = paylasResimFn;
         document.getElementById('paylasProje').onclick = paylasProjeFn;
         
@@ -1320,11 +1068,6 @@
         
         kilitGuncelle();
         ctx.fillStyle='#1a1a2e'; ctx.fillRect(0,0,resimW,resimH); ctx.fillStyle='white'; ctx.font='20px "Segoe UI"'; ctx.fillText('📸 Resim yükleyin', resimW/2, resimH/2);
-        
-        // Pencerenin yeniden boyutlandırılmasında tutamaç konumunu güncelle
-        window.addEventListener('resize', () => { updateResizeHandlePosition(); });
-        // Canvas kaydırma ve zoom sonrası tutamaç konumu güncelle
-        canvasKaydir.addEventListener('scroll', () => { updateResizeHandlePosition(); });
     })();
 </script>
 </body>
