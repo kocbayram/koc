@@ -596,11 +596,74 @@
             color: #333;
         }
         
+        /* Her slayt için özel süre paneli */
+        .slide-durations-panel {
+            background: #fef7e8;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 12px 0 8px 0;
+            border: 1px solid #ffe2b5;
+        }
+        .slide-durations-panel .title {
+            font-weight: bold;
+            font-size: 12px;
+            color: #b95f1a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .durations-list {
+            max-height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .duration-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 40px;
+            border: 1px solid #ffe0b5;
+            gap: 8px;
+        }
+        .duration-label {
+            font-size: 11px;
+            font-weight: bold;
+            background: #e94560;
+            color: white;
+            border-radius: 30px;
+            padding: 2px 10px;
+            min-width: 60px;
+            text-align: center;
+        }
+        .duration-input {
+            flex: 1;
+            padding: 5px 8px;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            text-align: center;
+        }
+        .duration-input:focus {
+            border-color: #e94560;
+            outline: none;
+        }
+        .duration-unit {
+            font-size: 10px;
+            color: #777;
+            min-width: 45px;
+        }
+        
         @media (max-width: 700px) {
             .card { padding: 16px; }
             .two-columns { flex-direction: column; }
             .image-list { max-height: 140px; }
             .spectrum-card { padding: 20px; }
+            .duration-item { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -673,11 +736,18 @@
                 </div>
                 
                 <div class="control-group">
-                    <label>Slayt Süresi: <span id="durationVal" class="value-display">3</span> saniye</label>
+                    <label>Genel Slayt Süresi (varsayılan): <span id="durationVal" class="value-display">3</span> saniye</label>
                     <div class="locked-control">
                         <input type="range" id="slideDuration" min="1" max="8" value="3" step="0.5" style="flex:1" disabled>
                         <button id="unlockDurationBtn" class="lock-btn unlocked" data-target="duration">🔒 Kilitli</button>
                     </div>
+                </div>
+                
+                <!-- YENİ: Her slayt için özel süre paneli (kartın altına) -->
+                <div id="customDurationsPanel" class="slide-durations-panel" style="display: none;">
+                    <div class="title">⏱️ Her Slayt İçin Özel Süreler</div>
+                    <div id="durationsList" class="durations-list"></div>
+                    <div class="aspect-info" style="margin-top:6px;">💡 Her slaytın süresini ayrı ayrı ayarlayabilirsiniz. Boş bırakırsanız genel süre kullanılır.</div>
                 </div>
                 
                 <div class="text-settings">
@@ -762,7 +832,8 @@
                 <div class="status-text" style="margin-top:10px;">
                     💡 Resim ekleyin, her slayta yazı ekleyin, yazıyı sürükleyerek konumlandırın, font ve renk seçin, müzik yükleyin, ardından "MP4 Video Oluştur" butonuna basın<br>
                     🔒 Tüm ayarlar varsayılan olarak kilitlidir. Değiştirmek için kilit butonuna tıklayın.<br>
-                    🎵 "Müzik Döngüsü" seçeneği ile müziğin video bitince tekrar başlamasını sağlayabilirsiniz.<br><br>
+                    🎵 "Müzik Döngüsü" seçeneği ile müziğin video bitince tekrar başlamasını sağlayabilirsiniz.<br>
+                    ⏱️ Her slayt için özel süre ayarlayabilirsiniz (genel süre ayarının altında).<br><br>
                 <h4>Bayram KOÇ</h4>
                 </div>
             </div>
@@ -889,12 +960,62 @@
         spectrumCancelBtn.addEventListener('click', () => { spectrumOverlay.classList.remove('active'); });
         document.getElementById('openColorPicker').addEventListener('click', openSpectrum);
         
+        // ============ HER SLAYT İÇİN ÖZEL SÜRE DESTEĞİ ============
+        let slideDurations = [];      // her slayt için süre (saniye)
+        let globalSlideDuration = 3;
+        
+        // Panel güncelleme
+        function renderCustomDurationsPanel() {
+            const panel = document.getElementById('customDurationsPanel');
+            const container = document.getElementById('durationsList');
+            if (!panel || !container) return;
+            if (imageElements.length === 0) {
+                panel.style.display = 'none';
+                return;
+            }
+            panel.style.display = 'block';
+            container.innerHTML = '';
+            for (let i = 0; i < imageElements.length; i++) {
+                const val = slideDurations[i] !== undefined ? slideDurations[i] : globalSlideDuration;
+                const div = document.createElement('div');
+                div.className = 'duration-item';
+                div.innerHTML = `
+                    <span class="duration-label">Slayt ${i+1}</span>
+                    <input type="number" step="0.5" min="1" max="10" value="${val}" class="duration-input" data-index="${i}">
+                    <span class="duration-unit">saniye</span>
+                `;
+                const input = div.querySelector('.duration-input');
+                input.addEventListener('change', (e) => {
+                    let newVal = parseFloat(e.target.value);
+                    if (isNaN(newVal)) newVal = globalSlideDuration;
+                    newVal = Math.min(10, Math.max(1, newVal));
+                    slideDurations[i] = newVal;
+                    e.target.value = newVal;
+                    if (audioBuffer) updateMusicDuration();
+                });
+                container.appendChild(div);
+            }
+        }
+        
+        // Süre değerini getir (özel varsa onu yoksa global)
+        function getSlideDuration(index) {
+            if (slideDurations && slideDurations[index] !== undefined && slideDurations[index] !== null) return slideDurations[index];
+            return globalSlideDuration;
+        }
+        
+        // Toplam video süresi (geçişler 0.5 sn)
+        function getTotalVideoDuration() {
+            if (imageElements.length === 0) return 0;
+            let total = 0;
+            for (let i = 0; i < imageElements.length; i++) total += getSlideDuration(i);
+            total += (imageElements.length - 1) * 0.5;
+            return total;
+        }
+        
         // ============ MÜZİK DÖNGÜSÜ DEĞİŞKENİ ============
         let musicLoopEnabled = true;
         const musicLoopCheckbox = document.getElementById('musicLoopCheckbox');
-        musicLoopCheckbox.addEventListener('change', () => {
-            musicLoopEnabled = musicLoopCheckbox.checked;
-        });
+        musicLoopCheckbox.addEventListener('change', () => { musicLoopEnabled = musicLoopCheckbox.checked; });
         
         // ============ DEĞİŞKENLER ============
         let images = [];
@@ -908,7 +1029,6 @@
         let musicDuration = 0;
         
         let currentEffect = 'fade';
-        let slideDuration = 3;
         let videoWidth = 640;
         let videoHeight = 480;
         let isPreviewing = false;
@@ -930,9 +1050,6 @@
         
         let isDraggingText = false;
         let dragStartX = 0, dragStartY = 0;
-        
-        let currentProgress = 0;
-        let totalProgress = 0;
         
         // ============ DOM ELEMANLARI ============
         const imageUploadArea = document.getElementById('imageUploadArea');
@@ -973,15 +1090,13 @@
         // ============ AYAR EVENTLERİ ============
         videoWidthSlider.addEventListener('input', () => { if (!locks.width) { videoWidth = parseInt(videoWidthSlider.value); widthVal.innerText = videoWidth; defaultTextX = videoWidth / 2; defaultTextY = videoHeight - 60; updateCanvasSize(); } });
         videoHeightSlider.addEventListener('input', () => { if (!locks.height) { videoHeight = parseInt(videoHeightSlider.value); heightVal.innerText = videoHeight; defaultTextX = videoWidth / 2; defaultTextY = videoHeight - 60; updateCanvasSize(); } });
-        slideDurationSlider.addEventListener('input', () => { if (!locks.duration) { slideDuration = parseFloat(slideDurationSlider.value); durationVal.innerText = slideDuration; if (audioBuffer) updateMusicDuration(); } });
+        slideDurationSlider.addEventListener('input', () => { if (!locks.duration) { globalSlideDuration = parseFloat(slideDurationSlider.value); durationVal.innerText = globalSlideDuration; if (slideDurations.length) { for (let i=0; i<slideDurations.length; i++) if (slideDurations[i] === undefined) slideDurations[i] = globalSlideDuration; renderCustomDurationsPanel(); } if (audioBuffer) updateMusicDuration(); } });
         textSizeSlider.addEventListener('input', () => { if (!locks.textSize) { textSize = parseInt(textSizeSlider.value); textSizeVal.innerText = textSize; if (!isPreviewing && imageElements.length > 0) drawSlide(currentPreviewIndex); } });
         
         function updateMusicDuration() {
             if (!audioBuffer) return;
             musicDuration = audioBuffer.duration;
-            const totalSlideTime = imageElements.length * slideDuration;
-            const transitionTime = (imageElements.length - 1) * 0.5;
-            const totalVideoTime = totalSlideTime + transitionTime;
+            const totalVideoTime = getTotalVideoDuration();
             const minutes = Math.floor(musicDuration / 60);
             const seconds = Math.floor(musicDuration % 60);
             musicDetail.innerHTML = `🎵 Müzik süresi: ${minutes}:${seconds.toString().padStart(2,'0')}<br>📊 Video süresi: ${Math.floor(totalVideoTime/60)}:${Math.floor(totalVideoTime%60).toString().padStart(2,'0')}`;
@@ -1013,12 +1128,14 @@
                     images.push(file);
                     slideTexts.push('');
                     slideTextPositions.push({ x: defaultTextX, y: defaultTextY });
+                    slideDurations.push(globalSlideDuration);
                     const img = new Image();
                     const url = URL.createObjectURL(file);
                     img.onload = () => {
                         imageElements.push(img);
                         renderImageList();
                         renderTextInputs();
+                        renderCustomDurationsPanel();
                         if (imageElements.length === 1 && !isPreviewing) { updateCanvasSize(); drawSlide(0); currentPreviewIndex = 0; }
                         if (audioBuffer) updateMusicDuration();
                     };
@@ -1070,9 +1187,11 @@
             imageElements.splice(index, 1);
             slideTexts.splice(index, 1);
             slideTextPositions.splice(index, 1);
+            slideDurations.splice(index, 1);
             if (currentPreviewIndex >= imageElements.length) currentPreviewIndex = Math.max(0, imageElements.length - 1);
             renderImageList();
             renderTextInputs();
+            renderCustomDurationsPanel();
             if (imageElements.length > 0 && !isPreviewing) {
                 drawSlide(currentPreviewIndex);
                 if (slideTextPositions[currentPreviewIndex]) { textPosXInput.value = slideTextPositions[currentPreviewIndex].x; textPosYInput.value = slideTextPositions[currentPreviewIndex].y; }
@@ -1150,7 +1269,7 @@
             if (slideTexts[index] && slideTextPositions[index]) drawTextOnSlide(previewCtx, w, h, slideTexts[index], slideTextPositions[index].x, slideTextPositions[index].y);
         }
         
-        // ============ YAZI SÜRÜKLEME ============
+        // YAZI SÜRÜKLEME (aynen mevcut)
         function getCanvasMouse(e) {
             const rect = previewCanvas.getBoundingClientRect();
             const scaleX = previewCanvas.width / rect.width;
@@ -1189,40 +1308,49 @@
         window.addEventListener('touchmove', onMouseMove);
         window.addEventListener('touchend', onMouseUp);
         
-        // ============ ÖNİZLEME ============
+        // ============ ÖNİZLEME (her slayt süresi ayrı) ============
         function startPreview() {
             if (imageElements.length === 0) { alert('Lütfen önce resim ekleyin!'); return; }
             stopPreview();
             isPreviewing = true;
             let startTime = performance.now();
-            let nextTransition = false;
-            let transitionProgress = 0;
+            let currentSlide = 0;
+            let currentSlideStart = startTime;
+            let transitionActive = false;
             let transitionStart = 0;
+            
             function animatePreview(now) {
                 if (!isPreviewing) return;
-                const elapsed = (now - startTime) / 1000;
-                if (!nextTransition && elapsed >= slideDuration) { nextTransition = true; transitionStart = now; transitionProgress = 0; }
-                if (nextTransition) {
-                    transitionProgress = Math.min((now - transitionStart) / 500, 1);
-                    const nextIndex = (currentPreviewIndex + 1) % imageElements.length;
-                    drawSlide(currentPreviewIndex, transitionProgress, nextIndex);
-                    if (transitionProgress >= 1) {
-                        currentPreviewIndex = nextIndex;
-                        if (slideTextPositions[currentPreviewIndex]) { textPosXInput.value = slideTextPositions[currentPreviewIndex].x; textPosYInput.value = slideTextPositions[currentPreviewIndex].y; }
-                        document.querySelectorAll('.image-item').forEach((item, i) => { if (i === currentPreviewIndex) item.classList.add('selected'); else item.classList.remove('selected'); });
-                        startTime = now;
-                        nextTransition = false;
+                const elapsed = (now - currentSlideStart) / 1000;
+                const currentDur = getSlideDuration(currentSlide);
+                if (!transitionActive && elapsed >= currentDur) {
+                    transitionActive = true;
+                    transitionStart = now;
+                }
+                if (transitionActive) {
+                    const transElapsed = (now - transitionStart) / 1000;
+                    const transProgress = Math.min(transElapsed / 0.5, 1);
+                    const nextIndex = (currentSlide + 1) % imageElements.length;
+                    drawSlide(currentSlide, transProgress, nextIndex);
+                    if (transProgress >= 1) {
+                        currentSlide = nextIndex;
+                        currentSlideStart = now;
+                        transitionActive = false;
+                        if (currentSlide === 0) { stopPreview(); return; }
                     }
-                } else drawSlide(currentPreviewIndex);
+                } else {
+                    drawSlide(currentSlide);
+                }
                 previewAnimationId = requestAnimationFrame(animatePreview);
             }
             previewAnimationId = requestAnimationFrame(animatePreview);
         }
+        
         function stopPreview() { isPreviewing = false; if (previewAnimationId) { cancelAnimationFrame(previewAnimationId); previewAnimationId = null; } if (imageElements.length > 0) drawSlide(currentPreviewIndex); }
         previewBtn.addEventListener('click', startPreview);
         stopPreviewBtn.addEventListener('click', stopPreview);
         
-        // ============ MP4 VİDEO OLUŞTUR (DÖNGÜ SEÇENEĞİ EKLENDİ) ============
+        // ============ MP4 VİDEO OLUŞTUR (özel süreler destekli) ============
         async function createVideo() {
             if (imageElements.length === 0) { alert('Lütfen en az 1 resim ekleyin!'); return; }
             if (isRecording) { alert('Video oluşturma devam ediyor!'); return; }
@@ -1245,7 +1373,6 @@
                 const tempAudioContext = new (window.AudioContext || window.webkitAudioContext)();
                 audioSource = tempAudioContext.createBufferSource();
                 audioSource.buffer = audioBuffer;
-                // MÜZİK DÖNGÜSÜ - Checkbox değerine göre ayarlandı!
                 audioSource.loop = musicLoopEnabled;
                 const destination = tempAudioContext.createMediaStreamDestination();
                 audioSource.connect(destination);
@@ -1284,9 +1411,7 @@
             let slideStartTime = performance.now();
             let transitionActive = false;
             let transitionStartTime = 0;
-            let transitionProgress = 0;
-            let totalElapsed = 0;
-            let totalDuration = totalSlides * slideDuration + (totalSlides - 1) * 0.5;
+            let totalStart = performance.now();
             
             function drawOnCanvas(ctx, index, progress = 1, nextIndex = null) {
                 const img = imageElements[index];
@@ -1317,53 +1442,59 @@
                     ctx.save(); ctx.translate(w/2, h/2); ctx.scale(scale, scale); ctx.translate(-w/2, -h/2); drawImageFullscreen(img, ctx, w, h); ctx.restore();
                 } else drawImageFullscreen(img, ctx, w, h);
                 if (slideTexts[index] && slideTextPositions[index]) {
-                    drawTextOnCanvas(ctx, w, h, slideTexts[index], slideTextPositions[index].x, slideTextPositions[index].y);
+                    ctx.font = `bold ${textSize}px "${currentFont}", "Segoe UI", "Arial"`;
+                    ctx.fillStyle = textColor;
+                    ctx.textAlign = 'center';
+                    if (textShadow) { ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; }
+                    const lines = slideTexts[index].split('\n');
+                    const lineHeight = textSize * 1.3;
+                    const totalHeight = lines.length * lineHeight;
+                    let startY = slideTextPositions[index].y - totalHeight / 2 + lineHeight / 2;
+                    for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], slideTextPositions[index].x, startY + i * lineHeight);
+                    ctx.shadowColor = 'transparent';
                 }
-            }
-            
-            function drawTextOnCanvas(ctx, w, h, text, posX, posY) {
-                if (!text || text.trim() === '') return;
-                ctx.font = `bold ${textSize}px "${currentFont}", "Segoe UI", "Arial"`;
-                ctx.fillStyle = textColor;
-                ctx.textAlign = 'center';
-                if (textShadow) { ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 5; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; }
-                const lines = text.split('\n');
-                const lineHeight = textSize * 1.3;
-                const totalHeight = lines.length * lineHeight;
-                let startY = posY - totalHeight / 2 + lineHeight / 2;
-                for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], posX, startY + i * lineHeight);
-                ctx.shadowColor = 'transparent';
             }
             
             function renderFrame(now) {
                 if (!isRecording) return;
-                totalElapsed = (now - slideStartTime) / 1000;
-                let currentSlideProgress = 0;
-                if (!transitionActive) currentSlideProgress = Math.min(totalElapsed / slideDuration, 1);
-                else currentSlideProgress = 1;
-                const currentPercent = Math.round(currentSlideProgress * 100);
-                currentProgressFill.style.width = `${currentPercent}%`;
-                currentProgressPercent.innerText = `${currentPercent}%`;
-                const totalPercent = Math.min(Math.round((totalElapsed / totalDuration) * 100), 100);
+                const totalElapsed = (now - totalStart) / 1000;
+                const totalDur = getTotalVideoDuration();
+                const totalPercent = Math.min(Math.round((totalElapsed / totalDur) * 100), 100);
                 totalProgressFill.style.width = `${totalPercent}%`;
                 totalProgressPercent.innerText = `${totalPercent}%`;
-                const elapsed = totalElapsed;
-                if (!transitionActive && elapsed >= slideDuration) { transitionActive = true; transitionStartTime = now; transitionProgress = 0; }
+                
+                if (!transitionActive) {
+                    const slideElapsed = (now - slideStartTime) / 1000;
+                    const currentDur = getSlideDuration(currentSlide);
+                    const slidePercent = Math.min(Math.round((slideElapsed / currentDur) * 100), 100);
+                    currentProgressFill.style.width = `${slidePercent}%`;
+                    currentProgressPercent.innerText = `${slidePercent}%`;
+                    if (slideElapsed >= currentDur) {
+                        transitionActive = true;
+                        transitionStartTime = now;
+                    } else {
+                        drawOnCanvas(tempCtx, currentSlide);
+                    }
+                }
                 if (transitionActive) {
-                    transitionProgress = Math.min((now - transitionStartTime) / 500, 1);
-                    const nextSlide = (currentSlide + 1) % totalSlides;
-                    drawOnCanvas(tempCtx, currentSlide, transitionProgress, nextSlide);
-                    if (transitionProgress >= 1) {
-                        currentSlide = nextSlide;
+                    const transElapsed = (now - transitionStartTime) / 1000;
+                    const transProgress = Math.min(transElapsed / 0.5, 1);
+                    const nextIndex = (currentSlide + 1) % totalSlides;
+                    drawOnCanvas(tempCtx, currentSlide, transProgress, nextIndex);
+                    if (transProgress >= 1) {
+                        currentSlide = nextIndex;
                         slideStartTime = now;
                         transitionActive = false;
-                        if (currentSlide === 0 && transitionProgress >= 1) { mediaRecorder.stop(); return; }
+                        if (currentSlide === 0) { mediaRecorder.stop(); return; }
                     }
-                } else drawOnCanvas(tempCtx, currentSlide);
+                    const slidePercent = 100;
+                    currentProgressFill.style.width = `100%`;
+                    currentProgressPercent.innerText = `100%`;
+                }
                 requestAnimationFrame(renderFrame);
             }
             requestAnimationFrame(renderFrame);
-            setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, totalDuration * 1000 + 1000);
+            setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); }, getTotalVideoDuration() * 1000 + 1000);
         }
         
         createVideoBtn.addEventListener('click', createVideo);
@@ -1393,7 +1524,7 @@
         previewCtx.textAlign = 'center';
         previewCtx.fillText('📸 Resim ekleyin', videoWidth/2, videoHeight/2);
         
-        console.log('Slideshow Video Oluşturucu hazır! Müzik döngüsü seçeneği eklendi!');
+        console.log('Slideshow Video Oluşturucu hazır! Her slayt için özel süre desteği eklendi.');
     })();
 </script>
 </body>
