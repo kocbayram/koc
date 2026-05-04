@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sesten Metin Oluşturucu| Simetrik ve Akıllı Metin Editörü</title>
+    <title>Sesten Metin Oluşturucu | Paylaşımlı Akıllı Editör</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -38,6 +38,7 @@
             padding: 32px 28px;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border);
+            position: relative;
         }
 
         h1 {
@@ -158,6 +159,17 @@
             transform: translateY(-1px);
         }
 
+        .btn-share {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            border: 1px solid #c7d2fe;
+        }
+
+        .btn-share:hover {
+            background-color: #e0e7ff;
+            transform: translateY(-1px);
+        }
+
         .result-stage {
             background: #fefefe;
             border-radius: 24px;
@@ -213,6 +225,70 @@
             text-align: left;
         }
 
+        /* MODAL (POPUP) STİLLERİ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 320px;
+            width: 90%;
+            padding: 24px 20px 28px;
+            text-align: center;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.2s ease;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+        .modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .modal-options button {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            padding: 12px;
+            font-size: 1rem;
+            justify-content: center;
+        }
+        .modal-options button:hover {
+            background: #eef2ff;
+            transform: scale(0.98);
+        }
+        .close-modal {
+            background: #f1f5f9;
+            color: #475569;
+            margin-top: 8px;
+            width: 100%;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media (max-width: 560px) {
             .container {
                 padding: 20px 18px;
@@ -233,7 +309,7 @@
     <h1>Sesten Metin Oluşturucu</h1>
     <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
     
-    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın."></textarea>
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın. Sesli notlarınızı dönüştürüp paylaşın."></textarea>
     
     <div class="toolbar">
         <button class="btn-main" onclick="processText()">✨ DÖNÜŞTÜR</button>
@@ -242,6 +318,7 @@
         <button class="btn-raw" onclick="downloadRawTxt()">📄 DİREKT TXT (HAM)</button>
         <button class="btn-image" onclick="downloadAsImage('png')">🖼️ PNG İndir</button>
         <button class="btn-image" onclick="downloadAsImage('jpeg')">🎨 JPG İndir</button>
+        <button class="btn-share" onclick="openShareModal()">📤 PAYLAŞ</button>
         <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
     </div>
 
@@ -254,12 +331,24 @@
     </div>
 </div>
 
+<!-- PAYLAŞIM MODAL (POPUP) -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <h3>📤 Paylaşım Formatı</h3>
+        <p style="font-size:0.85rem; color:#4b5563;">Düzenlenmiş metni paylaş</p>
+        <div class="modal-options">
+            <button onclick="shareAsText()">📄 Metin (TXT)</button>
+            <button onclick="shareAsImage('png')">🖼️ PNG Görsel</button>
+            <button onclick="shareAsImage('jpeg')">🎨 JPG Görsel</button>
+        </div>
+        <button class="close-modal" onclick="closeShareModal()">Kapat</button>
+    </div>
+</div>
+
 <script>
-    // ========== GELİŞMİŞ RAKAM -> YAZI DÖNÜŞÜMÜ (7 özellikle yedi olacak) ==========
+    // ========== GELİŞMİŞ RAKAM -> YAZI DÖNÜŞÜMÜ ==========
     function convertNumbersToWords(text) {
         let result = text;
-        
-        // Önce sıra bildiren rakamlar (7. -> yedinci)
         result = result.replace(/\b7\./g, 'yedinci');
         result = result.replace(/\b1\./g, 'birinci');
         result = result.replace(/\b2\./g, 'ikinci');
@@ -270,10 +359,6 @@
         result = result.replace(/\b8\./g, 'sekizinci');
         result = result.replace(/\b9\./g, 'dokuzuncu');
         result = result.replace(/\b10\./g, 'onuncu');
-        
-        // Ana sayılar (kelime sınırı + yanında noktalama veya boşluk olabilir)
-        // Rakamdan hemen sonra gelebilecek noktalama işaretlerini de yakalamak için daha keskin regex
-        // 7 -> yedi  (tek başına, noktalı, sorulu, ünlemli, virgüllü vs.)
         result = result.replace(/(?<!\d)7(?!\d)/g, 'yedi');
         result = result.replace(/(?<!\d)0(?!\d)/g, 'sıfır');
         result = result.replace(/(?<!\d)1(?!\d)/g, 'bir');
@@ -285,10 +370,7 @@
         result = result.replace(/(?<!\d)8(?!\d)/g, 'sekiz');
         result = result.replace(/(?<!\d)9(?!\d)/g, 'dokuz');
         result = result.replace(/(?<!\d)10(?!\d)/g, 'on');
-        
-        // Özel durum: "7'nin", "7'ye" gibi kesme işaretli kullanımlar için (nadir)
         result = result.replace(/7('n[iı]|[y])/g, 'yedi$1');
-        
         return result;
     }
 
@@ -418,7 +500,7 @@
         let raw = document.getElementById('input').value;
         if (!raw.trim()) return;
         let text = raw;
-        text = convertNumbersToWords(text);   // 7 -> yedi, 1 -> bir vb.
+        text = convertNumbersToWords(text);
         text = fixCommonTypos(text);
         text = splitDeDa(text);
         text = splitKi(text);
@@ -437,7 +519,7 @@
         alert("✅ Metin panoya kopyalandı.");
     }
     
-    // === UTF-8 BOM ile TXT indirme (Türkçe karakterler için kesin çözüm) ===
+    // UTF-8 BOM ile indirme
     function downloadWithBOM(content, filename) {
         const bom = "\uFEFF";
         const blob = new Blob([bom + content], {type: 'text/plain;charset=utf-8'});
@@ -465,12 +547,11 @@
         document.getElementById('output').value = "";
     }
     
-    // =============== GÖRSEL DIŞA AKTARIM (PNG & JPG) ===============
-    // Büyütülmüş punto ayarları: Okunabilirlik için FONT_SIZE 30'a çıkarıldı
-    const IMAGE_FONT_SIZE = 30;          // eskiden 19'du, şimdi daha büyük
-    const IMAGE_LINE_HEIGHT = 1.42;      // satır aralığı biraz daraltıldı ama ferah
-    const IMAGE_PADDING = 50;            // kenar boşluğu da artırıldı
-    const IMAGE_MAX_WIDTH = 720;         // aynı genişlik
+    // =============== GÖRSEL OLUŞTURMA (PAYLAŞIM & İNDİRME İÇİN ORTAK) ===============
+    const IMAGE_FONT_SIZE = 30;
+    const IMAGE_LINE_HEIGHT = 1.42;
+    const IMAGE_PADDING = 50;
+    const IMAGE_MAX_WIDTH = 720;
     
     function breakLongWord(ctx, word, maxWidth) {
         let chars = word.split('');
@@ -493,10 +574,7 @@
         const paragraphs = text.split(/\r?\n/);
         let allLines = [];
         for (let para of paragraphs) {
-            if (para.trim() === "") {
-                allLines.push("");
-                continue;
-            }
+            if (para.trim() === "") { allLines.push(""); continue; }
             const words = para.split(/\s+/);
             let currentLine = "";
             for (let word of words) {
@@ -507,9 +585,7 @@
                     let wordWidth = ctx.measureText(word).width;
                     if (wordWidth > maxWidth) {
                         let brokenParts = breakLongWord(ctx, word, maxWidth);
-                        for (let i = 0; i < brokenParts.length - 1; i++) {
-                            allLines.push(brokenParts[i]);
-                        }
+                        for (let i = 0; i < brokenParts.length - 1; i++) allLines.push(brokenParts[i]);
                         currentLine = brokenParts[brokenParts.length - 1];
                     } else {
                         currentLine = word;
@@ -523,13 +599,12 @@
         return allLines;
     }
     
-    async function downloadAsImage(format) {
+    async function getImageBlob(format) {
         const text = document.getElementById('output').value;
         if (!text || text.trim() === "") {
-            alert("⚠️ Dönüştürülmüş metin boş. Önce metin girin ve 'Dönüştür' butonuna tıklayın.");
-            return;
+            alert("⚠️ Paylaşılacak metin boş. Önce metin girip Dönüştür butonuna tıklayın.");
+            return null;
         }
-        
         const PADDING = IMAGE_PADDING;
         const MAX_CONTENT_WIDTH = IMAGE_MAX_WIDTH;
         const FONT_SIZE = IMAGE_FONT_SIZE;
@@ -539,18 +614,13 @@
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
-        
         const lines = wrapTextToLines(ctx, text, MAX_CONTENT_WIDTH);
-        if (lines.length === 0) {
-            alert("Görsel oluşturulamadı, metin geçersiz.");
-            return;
-        }
+        if (lines.length === 0) return null;
         
         const lineHeight = FONT_SIZE * LINE_HEIGHT_MULTIPLIER;
         const textHeight = lines.length * lineHeight;
         const canvasWidth = MAX_CONTENT_WIDTH + PADDING * 2;
-        const canvasHeight = textHeight + PADDING * 2 + 28; // alt bilgi için ekstra alan
-        
+        const canvasHeight = textHeight + PADDING * 2 + 28;
         canvas.width = canvasWidth;
         canvas.height = Math.max(320, canvasHeight);
         
@@ -558,75 +628,102 @@
         finalCtx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
         finalCtx.textBaseline = "top";
         finalCtx.textAlign = "left";
-        
-        // Arka plan beyaz
         finalCtx.fillStyle = "#FFFFFF";
         finalCtx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // İnce kenarlık
         finalCtx.strokeStyle = "#e2e8f0";
         finalCtx.lineWidth = 1.5;
         finalCtx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
-        
-        // Metin rengi
         finalCtx.fillStyle = "#1e293b";
         let y = PADDING;
         for (let line of lines) {
             finalCtx.fillText(line, PADDING, y);
             y += lineHeight;
         }
-        
-        // Alt bilgi (tarih) - puntoyu da büyüttük
         finalCtx.font = `14px ${FONT_FAMILY}`;
         finalCtx.fillStyle = "#64748b";
-        const footer = `Oluşturulma: ${new Date().toLocaleString('tr-TR')}`;
-        finalCtx.fillText(footer, PADDING, canvas.height - 22);
+        finalCtx.fillText(`Oluşturulma: ${new Date().toLocaleString('tr-TR')}`, PADDING, canvas.height - 22);
         
-        try {
-            let mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
-            let fileExtension = format === 'png' ? 'png' : 'jpg';
-            let quality = format === 'jpeg' ? 0.92 : undefined;
-            
-            const blob = await new Promise(resolve => {
-                if (format === 'png') {
-                    canvas.toBlob(resolve, mimeType);
-                } else {
-                    canvas.toBlob(resolve, mimeType, quality);
-                }
-            });
-            
-            if (!blob) throw new Error("Blob oluşturulamadı");
-            
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.href = url;
-            link.download = `duzenli_metin.${fileExtension}`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            const notif = document.createElement('div');
-            notif.innerText = `✅ ${format.toUpperCase()} dosyası (büyük punto) oluşturuldu.`;
-            notif.style.position = "fixed";
-            notif.style.bottom = "20px";
-            notif.style.left = "50%";
-            notif.style.transform = "translateX(-50%)";
-            notif.style.backgroundColor = "#2c7a4b";
-            notif.style.color = "white";
-            notif.style.padding = "10px 22px";
-            notif.style.borderRadius = "40px";
-            notif.style.fontSize = "0.9rem";
-            notif.style.zIndex = "999";
-            notif.style.fontWeight = "500";
-            notif.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2000);
-            
-        } catch (err) {
-            console.error(err);
-            alert("Görsel oluşturulurken hata: " + err.message);
+        return new Promise(resolve => {
+            const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+            const quality = format === 'jpeg' ? 0.92 : undefined;
+            canvas.toBlob(blob => resolve(blob), mime, quality);
+        });
+    }
+    
+    async function downloadAsImage(format) {
+        const blob = await getImageBlob(format);
+        if (!blob) return;
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
+        link.click();
+        URL.revokeObjectURL(url);
+        const notif = document.createElement('div');
+        notif.innerText = `✅ ${format.toUpperCase()} dosyası indirildi.`;
+        notif.style.cssText = "position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#2c7a4b; color:white; padding:10px 22px; border-radius:40px; font-size:0.9rem; z-index:999; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 2000);
+    }
+    
+    // =============== PAYLAŞIM MODAL VE PAYLAŞIM FONKSİYONLARI ===============
+    const modal = document.getElementById('shareModal');
+    function openShareModal() {
+        const outputText = document.getElementById('output').value;
+        if (!outputText.trim()) {
+            alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
+            return;
         }
+        modal.style.display = 'flex';
+    }
+    function closeShareModal() {
+        modal.style.display = 'none';
+    }
+    
+    // Paylaşım yardımcısı: önce Web Share API dene, yoksa dosya indir.
+    async function shareFile(blob, fileName, mimeType) {
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
+            try {
+                const file = new File([blob], fileName, { type: mimeType });
+                await navigator.share({ files: [file], title: 'Metin Paylaş', text: 'Düzenlenmiş metin' });
+                return true;
+            } catch (err) {
+                if (err.name !== 'AbortError') console.warn(err);
+                // hata olursa fallback indirme
+            }
+        }
+        // Fallback: dosyayı indir
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
+        return false;
+    }
+    
+    async function shareAsText() {
+        closeShareModal();
+        const text = document.getElementById('output').value;
+        if (!text.trim()) { alert("Paylaşılacak metin yok."); return; }
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + text], {type: 'text/plain;charset=utf-8'});
+        await shareFile(blob, "duzenli_metin.txt", "text/plain");
+    }
+    
+    async function shareAsImage(format) {
+        closeShareModal();
+        const blob = await getImageBlob(format);
+        if (!blob) return;
+        const fileName = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
+        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+        await shareFile(blob, fileName, mime);
+    }
+    
+    // Modal dışarı tıklanınca kapat
+    window.onclick = function(event) {
+        if (event.target === modal) closeShareModal();
     }
     
     document.addEventListener('DOMContentLoaded', () => {
