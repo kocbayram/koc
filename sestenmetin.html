@@ -548,8 +548,8 @@
     }
     
     // =============== GÖRSEL OLUŞTURMA (PAYLAŞIM & İNDİRME İÇİN ORTAK) ===============
-    const IMAGE_FONT_SIZE = 30;
-    const IMAGE_LINE_HEIGHT = 1.42;
+    const IMAGE_FONT_SIZE = 36;
+    const IMAGE_LINE_HEIGHT = 1.40;
     const IMAGE_PADDING = 50;
     const IMAGE_MAX_WIDTH = 720;
     
@@ -685,7 +685,7 @@
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
             try {
                 const file = new File([blob], fileName, { type: mimeType });
-                await navigator.share({ files: [file], title: 'Metin Paylaş', text: '.' });
+                await navigator.share({ files: [file], title: 'Metin Paylaş', text: '' });
                 return true;
             } catch (err) {
                 if (err.name !== 'AbortError') console.warn(err);
