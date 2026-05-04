@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sesten Metin Oluşturucu | Paylaşımlı Akıllı Editör</title>
+    <title>Sesten Metin Oluşturucu | Dörtlükleri Koruyan Akıllı Editör</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -212,6 +212,7 @@
             resize: vertical;
             font-family: inherit;
             text-align: left;
+            white-space: pre-wrap;   /* Satır sonlarını ve boşlukları koru */
         }
 
         #output:focus {
@@ -309,7 +310,7 @@
     <h1>Sesten Metin Oluşturucu</h1>
     <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
     
-    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın. Sesli notlarınızı dönüştürüp paylaşın."></textarea>
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın."></textarea>
     
     <div class="toolbar">
         <button class="btn-main" onclick="processText()">✨ DÖNÜŞTÜR</button>
@@ -331,7 +332,7 @@
     </div>
 </div>
 
-<!-- PAYLAŞIM MODAL (POPUP) -->
+<!-- PAYLAŞIM MODAL (POPUP) - Açıklama metni yok -->
 <div id="shareModal" class="modal">
     <div class="modal-content">
         <h3>📤 Paylaşım Formatı</h3>
@@ -346,9 +347,9 @@
 </div>
 
 <script>
-    // ========== GELİŞMİŞ RAKAM -> YAZI DÖNÜŞÜMÜ ==========
-    function convertNumbersToWords(text) {
-        let result = text;
+    // ========== RAKAM -> YAZI (SATIR BAZLI ÇALIŞACAK) ==========
+    function convertNumbersToWords(line) {
+        let result = line;
         result = result.replace(/\b7\./g, 'yedinci');
         result = result.replace(/\b1\./g, 'birinci');
         result = result.replace(/\b2\./g, 'ikinci');
@@ -374,12 +375,12 @@
         return result;
     }
 
-    function fixCommonTypos(text) {
+    function fixCommonTypos(line) {
         const corrections = {
             "birşey": "bir şey", "herşey": "her şey", "hiçbirşey": "hiçbir şey",
             "birşeyler": "bir şeyler", "herkez": "herkes", "herzaman": "her zaman", "birebir": "bire bir"
         };
-        let result = text;
+        let result = line;
         for (let [wrong, correct] of Object.entries(corrections)) {
             const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
             result = result.replace(regex, correct);
@@ -387,8 +388,8 @@
         return result;
     }
     
-    function splitDeDa(text) {
-        let result = text;
+    function splitDeDa(line) {
+        let result = line;
         const safe = [
             { wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' },
             { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' },
@@ -406,9 +407,9 @@
         return result;
     }
     
-    function splitKi(text) {
+    function splitKi(line) {
         const neverSplit = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
-        let protectedText = text;
+        let protectedText = line;
         const placeholders = [];
         neverSplit.forEach((phrase, idx) => {
             const regex = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
@@ -426,8 +427,8 @@
         return result;
     }
     
-    function splitQuestionParticles(text) {
-        let words = text.split(/(\s+)/);
+    function splitQuestionParticles(line) {
+        let words = line.split(/(\s+)/);
         const particles = ['mı', 'mi', 'mu', 'mü'];
         const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı', 'kalemi', 'dersimi'];
         for (let i = 0; i < words.length; i++) {
@@ -449,8 +450,8 @@
         return words.join('');
     }
     
-    function fixPunctuationSpacing(text) {
-        let fixed = text;
+    function fixPunctuationSpacing(line) {
+        let fixed = line;
         fixed = fixed.replace(/\s+([.,!?;:])/g, '$1');
         fixed = fixed.replace(/([.,!?;:])([^\s])/g, '$1 $2');
         fixed = fixed.replace(/\.{3,}/g, '...');
@@ -458,8 +459,8 @@
         return fixed;
     }
     
-    function addSafeCommas(text) {
-        let result = text;
+    function addSafeCommas(line) {
+        let result = line;
         const conjunctions = ['ama', 'fakat', 'ancak', 'çünkü', 'yani', 'lakin', 'oysa'];
         for (let conj of conjunctions) {
             const regex = new RegExp(`(\\s)(${conj})(\\s)`, 'gi');
@@ -481,35 +482,47 @@
         return result;
     }
     
-    function capitalizeAndFinalize(text) {
-        if (!text.trim()) return text;
-        let sentences = text.split(/(?<=[.!?])\s+/);
-        let processed = sentences.map(s => {
-            s = s.trim();
-            if (s.length === 0) return '';
-            if (/[a-zğüşıöç]/.test(s[0])) s = s[0].toUpperCase() + s.slice(1);
-            return s;
-        });
-        let result = processed.join(' ');
-        if (result.trim().length > 0 && !/[.!?…]$/.test(result.trim())) result = result.trim() + '.';
-        result = result.replace(/\s+/g, ' ').trim();
-        return result;
+    // Satır başı büyük harf (isteğe bağlı, cümle gibi görünmesi için)
+    function capitalizeLineStart(line) {
+        if (line.trim().length === 0) return line;
+        // Sadece harfle başlıyorsa büyüt
+        if (/[a-zğüşıöç]/i.test(line[0])) {
+            return line[0].toLocaleUpperCase('tr-TR') + line.slice(1);
+        }
+        return line;
     }
     
+    // ----- ANA DÖNÜŞTÜRME: SATIRLARI KORU -----
     function processText() {
         let raw = document.getElementById('input').value;
         if (!raw.trim()) return;
-        let text = raw;
-        text = convertNumbersToWords(text);
-        text = fixCommonTypos(text);
-        text = splitDeDa(text);
-        text = splitKi(text);
-        text = splitQuestionParticles(text);
-        text = fixPunctuationSpacing(text);
-        text = addSafeCommas(text);
-        text = capitalizeAndFinalize(text);
-        text = text.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
-        document.getElementById('output').value = text;
+        
+        // Satırları ayır (boş satırlar dahil)
+        let lines = raw.split(/\r?\n/);
+        
+        let processedLines = lines.map(line => {
+            let processed = line;
+            // Sadece boş olmayan satırlara düzeltme uygula
+            if (processed.trim() !== "") {
+                processed = convertNumbersToWords(processed);
+                processed = fixCommonTypos(processed);
+                processed = splitDeDa(processed);
+                processed = splitKi(processed);
+                processed = splitQuestionParticles(processed);
+                processed = fixPunctuationSpacing(processed);
+                processed = addSafeCommas(processed);
+                // İsteğe bağlı: her satırın başını büyük harf yap (şiirde istenebilir)
+                processed = capitalizeLineStart(processed);
+            }
+            return processed;
+        });
+        
+        // Satırları yeniden birleştir (orijinal boşluklar korunur)
+        let finalText = processedLines.join('\n');
+        // "eğer ki" düzeltmesi global
+        finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
+        
+        document.getElementById('output').value = finalText;
     }
     
     function copyOutput() {
@@ -574,7 +587,10 @@
         const paragraphs = text.split(/\r?\n/);
         let allLines = [];
         for (let para of paragraphs) {
-            if (para.trim() === "") { allLines.push(""); continue; }
+            if (para.trim() === "") { 
+                allLines.push(""); 
+                continue; 
+            }
             const words = para.split(/\s+/);
             let currentLine = "";
             for (let word of words) {
@@ -666,7 +682,7 @@
         setTimeout(() => notif.remove(), 2000);
     }
     
-    // =============== PAYLAŞIM MODAL VE PAYLAŞIM FONKSİYONLARI ===============
+    // =============== PAYLAŞIM MODAL (AÇIKLAMA METNİ YOK) ===============
     const modal = document.getElementById('shareModal');
     function openShareModal() {
         const outputText = document.getElementById('output').value;
@@ -680,19 +696,18 @@
         modal.style.display = 'none';
     }
     
-    // Paylaşım yardımcısı: önce Web Share API dene, yoksa dosya indir.
+    // Paylaşım: sadece dosya, açıklama veya başlık yok
     async function shareFile(blob, fileName, mimeType) {
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
             try {
                 const file = new File([blob], fileName, { type: mimeType });
-                await navigator.share({ files: [file], title: 'Metin Paylaş', text: '' });
+                await navigator.share({ files: [file] });  // title ve text göndermiyoruz
                 return true;
             } catch (err) {
                 if (err.name !== 'AbortError') console.warn(err);
-                // hata olursa fallback indirme
             }
         }
-        // Fallback: dosyayı indir
+        // Fallback: indir
         const a = document.createElement('a');
         const url = URL.createObjectURL(blob);
         a.href = url;
