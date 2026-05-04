@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Noktalama Ekleyici | Simetrik ve Akıllı Metin Editörü</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --primary: #4a90e2;
+            --text-dark: #334155;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 780px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 32px 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 0 0 6px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border);
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6px;
+        }
+
+        textarea {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            color: var(--text-dark);
+            font-size: 15px;
+            line-height: 1.55;
+            outline: none;
+            transition: 0.2s;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 28px 0 24px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.02);
+        }
+
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 6px rgba(74,144,226,0.2);
+        }
+
+        .btn-main:hover {
+            background-color: #357abd;
+            transform: translateY(-1px);
+        }
+
+        .btn-util {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .btn-util:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .btn-clear {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+
+        .btn-clear:hover {
+            background-color: #fee2e2;
+        }
+
+        .btn-image {
+            background-color: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .btn-image:hover {
+            background-color: #d1fae5;
+            transform: translateY(-1px);
+        }
+
+        .btn-raw {
+            background-color: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        .btn-raw:hover {
+            background-color: #fef3c7;
+            transform: translateY(-1px);
+        }
+
+        .result-stage {
+            background: #fefefe;
+            border-radius: 24px;
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            margin-top: 12px;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            letter-spacing: 1.2px;
+            text-align: center;
+            display: block;
+        }
+
+        .badge-info {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #eef2ff;
+            color: #2563eb;
+            border-radius: 30px;
+            padding: 3px 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        #output {
+            width: 100%;
+            min-height: 130px;
+            font-size: 1rem;
+            line-height: 1.5;
+            border: none;
+            background: transparent;
+            padding: 10px 8px;
+            color: #0f172a;
+            resize: vertical;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        #output:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        #output::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            text-align: left;
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                padding: 20px 18px;
+            }
+            button {
+                padding: 9px 12px;
+                font-size: 0.72rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Noktalama Ekleyici</h1>
+    <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
+    
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın."></textarea>
+    
+    <div class="toolbar">
+        <button class="btn-main" onclick="processText()">✨ DÖNÜŞTÜR</button>
+        <button class="btn-util" onclick="copyOutput()">📋 KOPYALA</button>
+        <button class="btn-util" onclick="downloadTxt()">📄 TXT İNDİR</button>
+        <button class="btn-raw" onclick="downloadRawTxt()">📄 DİREKT TXT (HAM)</button>
+        <button class="btn-image" onclick="downloadAsImage('png')">🖼️ PNG İndir</button>
+        <button class="btn-image" onclick="downloadAsImage('jpeg')">🎨 JPG İndir</button>
+        <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
+    </div>
+
+    <div class="result-stage">
+        <div class="label">
+            ✨ SONUÇ (DÜZENLENEBİLİR METİN) 
+            <span class="badge-info">resim çıktısı alınabilir</span>
+        </div>
+        <textarea id="output" placeholder="Düzenlenmiş metin burada belirecek..."></textarea>
+    </div>
+</div>
+
+<script>
+    // ========== GELİŞMİŞ RAKAM -> YAZI DÖNÜŞÜMÜ (7 özellikle yedi olacak) ==========
+    function convertNumbersToWords(text) {
+        let result = text;
+        
+        // Önce sıra bildiren rakamlar (7. -> yedinci)
+        result = result.replace(/\b7\./g, 'yedinci');
+        result = result.replace(/\b1\./g, 'birinci');
+        result = result.replace(/\b2\./g, 'ikinci');
+        result = result.replace(/\b3\./g, 'üçüncü');
+        result = result.replace(/\b4\./g, 'dördüncü');
+        result = result.replace(/\b5\./g, 'beşinci');
+        result = result.replace(/\b6\./g, 'altıncı');
+        result = result.replace(/\b8\./g, 'sekizinci');
+        result = result.replace(/\b9\./g, 'dokuzuncu');
+        result = result.replace(/\b10\./g, 'onuncu');
+        
+        // Ana sayılar (kelime sınırı + yanında noktalama veya boşluk olabilir)
+        // Rakamdan hemen sonra gelebilecek noktalama işaretlerini de yakalamak için daha keskin regex
+        // 7 -> yedi  (tek başına, noktalı, sorulu, ünlemli, virgüllü vs.)
+        result = result.replace(/(?<!\d)7(?!\d)/g, 'yedi');
+        result = result.replace(/(?<!\d)0(?!\d)/g, 'sıfır');
+        result = result.replace(/(?<!\d)1(?!\d)/g, 'bir');
+        result = result.replace(/(?<!\d)2(?!\d)/g, 'iki');
+        result = result.replace(/(?<!\d)3(?!\d)/g, 'üç');
+        result = result.replace(/(?<!\d)4(?!\d)/g, 'dört');
+        result = result.replace(/(?<!\d)5(?!\d)/g, 'beş');
+        result = result.replace(/(?<!\d)6(?!\d)/g, 'altı');
+        result = result.replace(/(?<!\d)8(?!\d)/g, 'sekiz');
+        result = result.replace(/(?<!\d)9(?!\d)/g, 'dokuz');
+        result = result.replace(/(?<!\d)10(?!\d)/g, 'on');
+        
+        // Özel durum: "7'nin", "7'ye" gibi kesme işaretli kullanımlar için (nadir)
+        result = result.replace(/7('n[iı]|[y])/g, 'yedi$1');
+        
+        return result;
+    }
+
+    function fixCommonTypos(text) {
+        const corrections = {
+            "birşey": "bir şey", "herşey": "her şey", "hiçbirşey": "hiçbir şey",
+            "birşeyler": "bir şeyler", "herkez": "herkes", "herzaman": "her zaman", "birebir": "bire bir"
+        };
+        let result = text;
+        for (let [wrong, correct] of Object.entries(corrections)) {
+            const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+            result = result.replace(regex, correct);
+        }
+        return result;
+    }
+    
+    function splitDeDa(text) {
+        let result = text;
+        const safe = [
+            { wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' },
+            { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' },
+            { wrong: /\b(sizde)\b/gi, correct: 'siz de' }, { wrong: /\b(onlarda)\b/gi, correct: 'onlar da' }
+        ];
+        for (let item of safe) {
+            result = result.replace(item.wrong, (match) => {
+                if (match[0] === match[0].toUpperCase() && match[0] !== match[0].toLowerCase())
+                    return item.correct.charAt(0).toUpperCase() + item.correct.slice(1);
+                return item.correct;
+            });
+        }
+        result = result.replace(/\b(burda)\b/gi, 'burada');
+        result = result.replace(/\b(orda)\b/gi, 'orada');
+        return result;
+    }
+    
+    function splitKi(text) {
+        const neverSplit = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
+        let protectedText = text;
+        const placeholders = [];
+        neverSplit.forEach((phrase, idx) => {
+            const regex = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
+            protectedText = protectedText.replace(regex, (match) => {
+                placeholders.push(match);
+                return `__NS_${idx}__`;
+            });
+        });
+        let result = protectedText.replace(/\b(\w+?)(ki)\b/gi, (match, root, kiPart) => {
+            const safeRoots = ['yok', 'var', 'demek', 'bilmiyorum', 'bilmez', 'sanmam', 'düşünmüyorum', 'gerek', 'ister'];
+            if (safeRoots.includes(root.toLowerCase()) && root.length > 1) return root + ' ' + kiPart;
+            return match;
+        });
+        for (let i = 0; i < placeholders.length; i++) result = result.replace(`__NS_${i}__`, placeholders[i]);
+        return result;
+    }
+    
+    function splitQuestionParticles(text) {
+        let words = text.split(/(\s+)/);
+        const particles = ['mı', 'mi', 'mu', 'mü'];
+        const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı', 'kalemi', 'dersimi'];
+        for (let i = 0; i < words.length; i++) {
+            let w = words[i];
+            let lower = w.toLowerCase();
+            if (lower.length < 2) continue;
+            for (let p of particles) {
+                if (lower.endsWith(p) && !exceptions.includes(lower)) {
+                    let base = lower.slice(0, -p.length);
+                    if (base.length >= 2 && /[a-zğüşıöç]/.test(base)) {
+                        let newWord = base + ' ' + p + '?';
+                        if (w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) newWord = newWord.charAt(0).toUpperCase() + newWord.slice(1);
+                        words[i] = newWord;
+                        break;
+                    }
+                }
+            }
+        }
+        return words.join('');
+    }
+    
+    function fixPunctuationSpacing(text) {
+        let fixed = text;
+        fixed = fixed.replace(/\s+([.,!?;:])/g, '$1');
+        fixed = fixed.replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        fixed = fixed.replace(/\.{3,}/g, '...');
+        fixed = fixed.replace(/([?!]){2,}/g, '$1');
+        return fixed;
+    }
+    
+    function addSafeCommas(text) {
+        let result = text;
+        const conjunctions = ['ama', 'fakat', 'ancak', 'çünkü', 'yani', 'lakin', 'oysa'];
+        for (let conj of conjunctions) {
+            const regex = new RegExp(`(\\s)(${conj})(\\s)`, 'gi');
+            result = result.replace(regex, (match, space, conjWord, afterSpace) => {
+                const idx = result.indexOf(match);
+                const beforeChar = idx > 0 ? result[idx-1] : '';
+                if (beforeChar !== ',' && beforeChar !== '.' && beforeChar !== '?' && beforeChar !== '!') return `, ${conjWord}${afterSpace}`;
+                return match;
+            });
+        }
+        const intro = ['evet', 'hayır', 'peki', 'mesela', 'örneğin', 'kısacası'];
+        for (let phrase of intro) {
+            const regex = new RegExp(`(^|[.!?]\\s+)(${phrase})(\\s+)`, 'gi');
+            result = result.replace(regex, (match, before, phr, spaces) => {
+                if (!match.includes(',')) return `${before}${phr},${spaces}`;
+                return match;
+            });
+        }
+        return result;
+    }
+    
+    function capitalizeAndFinalize(text) {
+        if (!text.trim()) return text;
+        let sentences = text.split(/(?<=[.!?])\s+/);
+        let processed = sentences.map(s => {
+            s = s.trim();
+            if (s.length === 0) return '';
+            if (/[a-zğüşıöç]/.test(s[0])) s = s[0].toUpperCase() + s.slice(1);
+            return s;
+        });
+        let result = processed.join(' ');
+        if (result.trim().length > 0 && !/[.!?…]$/.test(result.trim())) result = result.trim() + '.';
+        result = result.replace(/\s+/g, ' ').trim();
+        return result;
+    }
+    
+    function processText() {
+        let raw = document.getElementById('input').value;
+        if (!raw.trim()) return;
+        let text = raw;
+        text = convertNumbersToWords(text);   // 7 -> yedi, 1 -> bir vb.
+        text = fixCommonTypos(text);
+        text = splitDeDa(text);
+        text = splitKi(text);
+        text = splitQuestionParticles(text);
+        text = fixPunctuationSpacing(text);
+        text = addSafeCommas(text);
+        text = capitalizeAndFinalize(text);
+        text = text.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
+        document.getElementById('output').value = text;
+    }
+    
+    function copyOutput() {
+        const text = document.getElementById('output').value;
+        if(!text) { alert("Henüz dönüştürülmüş metin yok."); return; }
+        navigator.clipboard.writeText(text);
+        alert("✅ Metin panoya kopyalandı.");
+    }
+    
+    // === UTF-8 BOM ile TXT indirme (Türkçe karakterler için kesin çözüm) ===
+    function downloadWithBOM(content, filename) {
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + content], {type: 'text/plain;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+    
+    function downloadTxt() {
+        const text = document.getElementById('output').value;
+        if(!text) { alert("Dışa aktarılacak dönüştürülmüş metin yok."); return; }
+        downloadWithBOM(text, "Duzenlenmis_Metin.txt");
+    }
+    
+    function downloadRawTxt() {
+        const rawText = document.getElementById('input').value;
+        if(!rawText.trim()) { alert("Kaydedilecek ham metin yok."); return; }
+        downloadWithBOM(rawText, "ham_metin.txt");
+    }
+    
+    function clearAll() {
+        document.getElementById('input').value = "";
+        document.getElementById('output').value = "";
+    }
+    
+    // =============== GÖRSEL DIŞA AKTARIM (PNG & JPG) ===============
+    function breakLongWord(ctx, word, maxWidth) {
+        let chars = word.split('');
+        let lines = [];
+        let currentLine = '';
+        for (let i = 0; i < chars.length; i++) {
+            let testLine = currentLine + chars[i];
+            if (ctx.measureText(testLine).width > maxWidth && currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = chars[i];
+            } else currentLine = testLine;
+        }
+        if (currentLine) lines.push(currentLine);
+        return lines;
+    }
+    
+    function wrapTextToLines(ctx, text, maxWidth) {
+        const paragraphs = text.split(/\r?\n/);
+        let allLines = [];
+        for (let para of paragraphs) {
+            if (para.trim() === "") { allLines.push(""); continue; }
+            const words = para.split(/\s+/);
+            let currentLine = "";
+            for (let word of words) {
+                let testLine = currentLine ? currentLine + " " + word : word;
+                if (ctx.measureText(testLine).width > maxWidth && currentLine !== "") {
+                    allLines.push(currentLine);
+                    let wordWidth = ctx.measureText(word).width;
+                    if (wordWidth > maxWidth) {
+                        let brokenParts = breakLongWord(ctx, word, maxWidth);
+                        for (let i = 0; i < brokenParts.length - 1; i++) allLines.push(brokenParts[i]);
+                        currentLine = brokenParts[brokenParts.length - 1];
+                    } else currentLine = word;
+                } else currentLine = testLine;
+            }
+            if (currentLine) allLines.push(currentLine);
+        }
+        return allLines;
+    }
+    
+    async function downloadAsImage(format) {
+        const text = document.getElementById('output').value;
+        if (!text || text.trim() === "") {
+            alert("⚠️ Dönüştürülmüş metin boş. Önce metin girin ve 'Dönüştür' butonuna tıklayın.");
+            return;
+        }
+        const PADDING = 42, MAX_WIDTH = 720, FONT_SIZE = 19, LINE_MULTI = 1.55;
+        const FONT_FAMILY = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
+        const lines = wrapTextToLines(ctx, text, MAX_WIDTH);
+        if (lines.length === 0) { alert("Görsel oluşturulamadı."); return; }
+        const lineHeight = FONT_SIZE * LINE_MULTI;
+        const textHeight = lines.length * lineHeight;
+        const canvasWidth = MAX_WIDTH + PADDING * 2;
+        const canvasHeight = textHeight + PADDING * 2 + 12;
+        canvas.width = canvasWidth;
+        canvas.height = Math.max(280, canvasHeight);
+        const finalCtx = canvas.getContext('2d');
+        finalCtx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
+        finalCtx.textBaseline = "top";
+        finalCtx.textAlign = "left";
+        finalCtx.fillStyle = "#FFFFFF";
+        finalCtx.fillRect(0, 0, canvas.width, canvas.height);
+        finalCtx.strokeStyle = "#e2e8f0";
+        finalCtx.lineWidth = 1.2;
+        finalCtx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+        finalCtx.fillStyle = "#1e293b";
+        let y = PADDING;
+        for (let line of lines) { finalCtx.fillText(line, PADDING, y); y += lineHeight; }
+        finalCtx.font = `12px ${FONT_FAMILY}`;
+        finalCtx.fillStyle = "#94a3b8";
+        finalCtx.fillText(`Oluşturulma: ${new Date().toLocaleString('tr-TR')}`, PADDING, canvas.height - 16);
+        try {
+            let mime = format === 'png' ? 'image/png' : 'image/jpeg';
+            let ext = format === 'png' ? 'png' : 'jpg';
+            let quality = format === 'jpeg' ? 0.92 : undefined;
+            const blob = await new Promise(resolve => { format === 'png' ? canvas.toBlob(resolve, mime) : canvas.toBlob(resolve, mime, quality); });
+            if (!blob) throw new Error("Blob hatası");
+            const a = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = `duzenli_metin.${ext}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            const notif = document.createElement('div');
+            notif.innerText = `✅ ${format.toUpperCase()} dosyası oluşturuldu.`;
+            notif.style.cssText = "position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#2c7a4b; color:white; padding:10px 22px; border-radius:40px; font-size:0.9rem; z-index:999; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 2000);
+        } catch(err) { alert("Görsel hatası: " + err.message); }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const inp = document.getElementById('input');
+        if (inp) inp.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
+    });
+</script>
+</body>
+</html>
