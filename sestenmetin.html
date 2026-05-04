@@ -685,7 +685,7 @@
         if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
             try {
                 const file = new File([blob], fileName, { type: mimeType });
-                await navigator.share({ files: [file], title: 'Metin Paylaş', text: 'Düzenlenmiş metin' });
+                await navigator.share({ files: [file], title: 'Metin Paylaş', text: '.' });
                 return true;
             } catch (err) {
                 if (err.name !== 'AbortError') console.warn(err);
