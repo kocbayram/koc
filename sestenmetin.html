@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Noktalama Ekleyici | Simetrik ve Akıllı Metin Editörü</title>
+    <title>Sesten Metin Oluşturucu| Simetrik ve Akıllı Metin Editörü</title>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -230,7 +230,7 @@
 <body>
 
 <div class="container">
-    <h1>Noktalama Ekleyici</h1>
+    <h1>Sesten Metin Oluşturucu</h1>
     <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
     
     <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın."></textarea>
@@ -466,6 +466,12 @@
     }
     
     // =============== GÖRSEL DIŞA AKTARIM (PNG & JPG) ===============
+    // Büyütülmüş punto ayarları: Okunabilirlik için FONT_SIZE 30'a çıkarıldı
+    const IMAGE_FONT_SIZE = 30;          // eskiden 19'du, şimdi daha büyük
+    const IMAGE_LINE_HEIGHT = 1.42;      // satır aralığı biraz daraltıldı ama ferah
+    const IMAGE_PADDING = 50;            // kenar boşluğu da artırıldı
+    const IMAGE_MAX_WIDTH = 720;         // aynı genişlik
+    
     function breakLongWord(ctx, word, maxWidth) {
         let chars = word.split('');
         let lines = [];
@@ -475,7 +481,9 @@
             if (ctx.measureText(testLine).width > maxWidth && currentLine.length > 0) {
                 lines.push(currentLine);
                 currentLine = chars[i];
-            } else currentLine = testLine;
+            } else {
+                currentLine = testLine;
+            }
         }
         if (currentLine) lines.push(currentLine);
         return lines;
@@ -485,20 +493,30 @@
         const paragraphs = text.split(/\r?\n/);
         let allLines = [];
         for (let para of paragraphs) {
-            if (para.trim() === "") { allLines.push(""); continue; }
+            if (para.trim() === "") {
+                allLines.push("");
+                continue;
+            }
             const words = para.split(/\s+/);
             let currentLine = "";
             for (let word of words) {
                 let testLine = currentLine ? currentLine + " " + word : word;
-                if (ctx.measureText(testLine).width > maxWidth && currentLine !== "") {
+                let metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && currentLine !== "") {
                     allLines.push(currentLine);
                     let wordWidth = ctx.measureText(word).width;
                     if (wordWidth > maxWidth) {
                         let brokenParts = breakLongWord(ctx, word, maxWidth);
-                        for (let i = 0; i < brokenParts.length - 1; i++) allLines.push(brokenParts[i]);
+                        for (let i = 0; i < brokenParts.length - 1; i++) {
+                            allLines.push(brokenParts[i]);
+                        }
                         currentLine = brokenParts[brokenParts.length - 1];
-                    } else currentLine = word;
-                } else currentLine = testLine;
+                    } else {
+                        currentLine = word;
+                    }
+                } else {
+                    currentLine = testLine;
+                }
             }
             if (currentLine) allLines.push(currentLine);
         }
@@ -511,54 +529,104 @@
             alert("⚠️ Dönüştürülmüş metin boş. Önce metin girin ve 'Dönüştür' butonuna tıklayın.");
             return;
         }
-        const PADDING = 42, MAX_WIDTH = 720, FONT_SIZE = 19, LINE_MULTI = 1.55;
+        
+        const PADDING = IMAGE_PADDING;
+        const MAX_CONTENT_WIDTH = IMAGE_MAX_WIDTH;
+        const FONT_SIZE = IMAGE_FONT_SIZE;
+        const LINE_HEIGHT_MULTIPLIER = IMAGE_LINE_HEIGHT;
         const FONT_FAMILY = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
+        
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
-        const lines = wrapTextToLines(ctx, text, MAX_WIDTH);
-        if (lines.length === 0) { alert("Görsel oluşturulamadı."); return; }
-        const lineHeight = FONT_SIZE * LINE_MULTI;
+        
+        const lines = wrapTextToLines(ctx, text, MAX_CONTENT_WIDTH);
+        if (lines.length === 0) {
+            alert("Görsel oluşturulamadı, metin geçersiz.");
+            return;
+        }
+        
+        const lineHeight = FONT_SIZE * LINE_HEIGHT_MULTIPLIER;
         const textHeight = lines.length * lineHeight;
-        const canvasWidth = MAX_WIDTH + PADDING * 2;
-        const canvasHeight = textHeight + PADDING * 2 + 12;
+        const canvasWidth = MAX_CONTENT_WIDTH + PADDING * 2;
+        const canvasHeight = textHeight + PADDING * 2 + 28; // alt bilgi için ekstra alan
+        
         canvas.width = canvasWidth;
-        canvas.height = Math.max(280, canvasHeight);
+        canvas.height = Math.max(320, canvasHeight);
+        
         const finalCtx = canvas.getContext('2d');
         finalCtx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
         finalCtx.textBaseline = "top";
         finalCtx.textAlign = "left";
+        
+        // Arka plan beyaz
         finalCtx.fillStyle = "#FFFFFF";
         finalCtx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // İnce kenarlık
         finalCtx.strokeStyle = "#e2e8f0";
-        finalCtx.lineWidth = 1.2;
-        finalCtx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+        finalCtx.lineWidth = 1.5;
+        finalCtx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+        
+        // Metin rengi
         finalCtx.fillStyle = "#1e293b";
         let y = PADDING;
-        for (let line of lines) { finalCtx.fillText(line, PADDING, y); y += lineHeight; }
-        finalCtx.font = `12px ${FONT_FAMILY}`;
-        finalCtx.fillStyle = "#94a3b8";
-        finalCtx.fillText(`Oluşturulma: ${new Date().toLocaleString('tr-TR')}`, PADDING, canvas.height - 16);
+        for (let line of lines) {
+            finalCtx.fillText(line, PADDING, y);
+            y += lineHeight;
+        }
+        
+        // Alt bilgi (tarih) - puntoyu da büyüttük
+        finalCtx.font = `14px ${FONT_FAMILY}`;
+        finalCtx.fillStyle = "#64748b";
+        const footer = `Oluşturulma: ${new Date().toLocaleString('tr-TR')}`;
+        finalCtx.fillText(footer, PADDING, canvas.height - 22);
+        
         try {
-            let mime = format === 'png' ? 'image/png' : 'image/jpeg';
-            let ext = format === 'png' ? 'png' : 'jpg';
+            let mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+            let fileExtension = format === 'png' ? 'png' : 'jpg';
             let quality = format === 'jpeg' ? 0.92 : undefined;
-            const blob = await new Promise(resolve => { format === 'png' ? canvas.toBlob(resolve, mime) : canvas.toBlob(resolve, mime, quality); });
-            if (!blob) throw new Error("Blob hatası");
-            const a = document.createElement('a');
+            
+            const blob = await new Promise(resolve => {
+                if (format === 'png') {
+                    canvas.toBlob(resolve, mimeType);
+                } else {
+                    canvas.toBlob(resolve, mimeType, quality);
+                }
+            });
+            
+            if (!blob) throw new Error("Blob oluşturulamadı");
+            
+            const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = `duzenli_metin.${ext}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            link.href = url;
+            link.download = `duzenli_metin.${fileExtension}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             URL.revokeObjectURL(url);
+            
             const notif = document.createElement('div');
-            notif.innerText = `✅ ${format.toUpperCase()} dosyası oluşturuldu.`;
-            notif.style.cssText = "position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#2c7a4b; color:white; padding:10px 22px; border-radius:40px; font-size:0.9rem; z-index:999; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+            notif.innerText = `✅ ${format.toUpperCase()} dosyası (büyük punto) oluşturuldu.`;
+            notif.style.position = "fixed";
+            notif.style.bottom = "20px";
+            notif.style.left = "50%";
+            notif.style.transform = "translateX(-50%)";
+            notif.style.backgroundColor = "#2c7a4b";
+            notif.style.color = "white";
+            notif.style.padding = "10px 22px";
+            notif.style.borderRadius = "40px";
+            notif.style.fontSize = "0.9rem";
+            notif.style.zIndex = "999";
+            notif.style.fontWeight = "500";
+            notif.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
             document.body.appendChild(notif);
             setTimeout(() => notif.remove(), 2000);
-        } catch(err) { alert("Görsel hatası: " + err.message); }
+            
+        } catch (err) {
+            console.error(err);
+            alert("Görsel oluşturulurken hata: " + err.message);
+        }
     }
     
     document.addEventListener('DOMContentLoaded', () => {
