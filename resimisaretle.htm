@@ -655,7 +655,7 @@
         let resimW = 800, resimH = 600;
         canvas.width = resimW; canvas.height = resimH;
         let cizimler = [], geriYigini = [];
-        let aktifArac = 'arrow';
+        let aktifArac = null; // Değiştirildi: Başlangıçta hiçbir araç seçili değil
         let cizimRengi = '#e94560';
         let metinRengi = '#e94560';
         let cizgiKaliniigi = 10, metinBoyutu = 48;
@@ -707,7 +707,7 @@
                 setActiveTool(btn.dataset.tool);
             });
         });
-        setActiveTool('arrow');
+        // Varsayılan olarak hiçbir araç seçilmez (setActiveTool çağrılmaz)
         
         // Çizim fonksiyonları
         function cizimCiz(d) {
