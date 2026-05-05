@@ -630,14 +630,14 @@
         if (!text.trim()) { alert("Paylaşılacak metin yok."); return; }
         const bom = "\uFEFF";
         const blob = new Blob([bom + text], {type: 'text/plain;charset=utf-8'});
-        await shareFile(blob, "duzenli_metin.txt", "text/plain");
+        await shareFile(blob, "metin.txt", "text/plain");
     }
     
     async function shareAsImage(format) {
         closeShareModal();
         const blob = await getImageBlob(format);
         if (!blob) return;
-        const fileName = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
+        const fileName = `metin.${format === 'png' ? 'png' : 'jpg'}`;
         const mime = format === 'png' ? 'image/png' : 'image/jpeg';
         await shareFile(blob, fileName, mime);
     }
