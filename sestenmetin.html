@@ -3,304 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sesten Metin Oluşturucu | Dörtlükleri Koruyan Akıllı Editör</title>
+    <title>Sesten Metin Oluşturucu | Son Versiyon - Kesin Çözüm</title>
     <style>
         :root {
-            --bg-color: #f8fafc;
-            --primary: #4a90e2;
-            --text-dark: #334155;
-            --text-muted: #64748b;
+            --bg-color: #f1f5f9;
+            --primary: #2563eb;
             --card-bg: #ffffff;
-            --border: #e2e8f0;
+            --border: #cbd5e1;
         }
-
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-dark);
             margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
-
         .container {
             width: 100%;
-            max-width: 780px;
+            max-width: 950px;
             background: var(--card-bg);
-            border-radius: 28px;
-            padding: 32px 28px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border);
-            position: relative;
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
-
-        h1 {
-            font-size: 1.8rem;
-            text-align: center;
-            margin: 0 0 6px;
-            color: var(--primary);
-            font-weight: 700;
+        h1 { 
+            font-size: 1.8rem; 
+            text-align: center; 
+            color: var(--primary); 
+            margin: 0 0 6px; 
+            font-weight: 800; 
         }
-
         .subtitle {
             text-align: center;
-            color: var(--text-muted);
+            color: #64748b;
             margin-bottom: 28px;
             font-size: 0.9rem;
-            border-bottom: 1px solid var(--border);
-            display: block;
-            width: fit-content;
+            border-bottom: 2px solid var(--border);
+            display: inline-block;
+            width: auto;
             margin-left: auto;
             margin-right: auto;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
         }
-
         textarea {
             width: 100%;
-            background: #ffffff;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: 20px;
             padding: 18px;
-            color: var(--text-dark);
-            font-size: 15px;
-            line-height: 1.55;
+            font-size: 18px;
+            font-family: inherit;
+            line-height: 1.6;
+            min-height: 200px;
             outline: none;
             transition: 0.2s;
-            font-family: inherit;
             resize: vertical;
+            background: #ffffff;
         }
-
         textarea:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
-
+        
         .toolbar {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin: 28px 0 24px;
-            justify-content: center;
         }
-
         button {
-            padding: 12px 18px;
+            padding: 14px 8px;
             border: none;
-            border-radius: 40px;
-            font-weight: 600;
+            border-radius: 18px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
             font-size: 0.85rem;
+            transition: 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background-color: #f1f5f9;
-            color: #1e293b;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.02);
-        }
-
-        .btn-main {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 2px 6px rgba(74,144,226,0.2);
-        }
-
-        .btn-main:hover {
-            background-color: #357abd;
-            transform: translateY(-1px);
-        }
-
-        .btn-util {
-            background-color: #f1f5f9;
-            color: #1e293b;
-        }
-
-        .btn-util:hover {
-            background-color: #e2e8f0;
-            transform: translateY(-1px);
-        }
-
-        .btn-clear {
-            background-color: #fef2f2;
-            color: #dc2626;
-        }
-
-        .btn-clear:hover {
-            background-color: #fee2e2;
-        }
-
-        .btn-image {
-            background-color: #ecfdf5;
-            color: #047857;
-            border: 1px solid #a7f3d0;
-        }
-
-        .btn-image:hover {
-            background-color: #d1fae5;
-            transform: translateY(-1px);
-        }
-
-        .btn-raw {
-            background-color: #fffbeb;
-            color: #b45309;
-            border: 1px solid #fde68a;
-        }
-
-        .btn-raw:hover {
-            background-color: #fef3c7;
-            transform: translateY(-1px);
-        }
-
-        .btn-share {
-            background-color: #eef2ff;
-            color: #4f46e5;
-            border: 1px solid #c7d2fe;
-        }
-
-        .btn-share:hover {
-            background-color: #e0e7ff;
-            transform: translateY(-1px);
-        }
-
-        .result-stage {
-            background: #fefefe;
-            border-radius: 24px;
-            padding: 18px 20px;
-            border: 1px solid var(--border);
-            margin-top: 12px;
-        }
-
-        .label {
-            font-size: 0.75rem;
-            color: var(--primary);
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            letter-spacing: 1.2px;
-            text-align: center;
-            display: block;
-        }
-
-        .badge-info {
-            display: inline-block;
-            font-size: 0.7rem;
-            background: #eef2ff;
-            color: #2563eb;
-            border-radius: 30px;
-            padding: 3px 10px;
-            margin-left: 8px;
-            vertical-align: middle;
-        }
-
-        #output {
-            width: 100%;
-            min-height: 130px;
-            font-size: 1rem;
-            line-height: 1.5;
-            border: none;
-            background: transparent;
-            padding: 10px 8px;
-            color: #0f172a;
-            resize: vertical;
-            font-family: inherit;
-            text-align: left;
-            white-space: pre-wrap;   /* Satır sonlarını ve boşlukları koru */
-        }
-
-        #output:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        #output::placeholder {
-            color: #94a3b8;
-            font-weight: 400;
-            text-align: left;
-        }
-
-        /* MODAL (POPUP) STİLLERİ */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            max-width: 320px;
-            width: 90%;
-            padding: 24px 20px 28px;
-            text-align: center;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.2s ease;
-        }
-        .modal-content h3 {
-            margin-top: 0;
-            margin-bottom: 16px;
-            font-size: 1.4rem;
-            color: var(--primary);
-        }
-        .modal-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
-        .modal-options button {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 60px;
-            padding: 12px;
-            font-size: 1rem;
-            justify-content: center;
-        }
-        .modal-options button:hover {
-            background: #eef2ff;
-            transform: scale(0.98);
-        }
-        .close-modal {
             background: #f1f5f9;
-            color: #475569;
-            margin-top: 8px;
-            width: 100%;
+            color: #1e293b;
         }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .btn-main { 
+            background: var(--primary); 
+            color: white; 
+            font-size: 1rem; 
+            padding: 16px;
         }
-
-        @media (max-width: 560px) {
-            .container {
-                padding: 20px 18px;
-            }
-            button {
-                padding: 9px 12px;
-                font-size: 0.72rem;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
+        .btn-main:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .btn-util { background: #e2e8f0; }
+        .btn-util:hover { background: #cbd5e1; transform: translateY(-1px); }
+        .btn-image { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .btn-image:hover { background: #bbf7d0; transform: translateY(-1px); }
+        .btn-share { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .btn-share:hover { background: #bfdbfe; transform: translateY(-1px); }
+        .btn-clear { background: #fee2e2; color: #991b1b; }
+        .btn-clear:hover { background: #fecaca; }
+        
+        .full-width {
+            grid-column: span 3;
+        }
+        
+        .label { 
+            font-size: 0.75rem; 
+            color: var(--primary); 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+        }
+        #output {
+            min-height: 180px;
+            white-space: pre-wrap;
+            font-size: 17px;
+            line-height: 1.65;
+        }
+        @media (max-width: 650px) {
+            .container { padding: 20px; }
+            .toolbar { gap: 8px; }
+            button { padding: 10px 5px; font-size: 0.7rem; }
+            .btn-main { font-size: 0.85rem; }
+            textarea, #output { font-size: 15px; }
         }
     </style>
 </head>
@@ -308,139 +137,97 @@
 
 <div class="container">
     <h1>Sesten Metin Oluşturucu</h1>
-    <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
-    
-    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın."></textarea>
+    <div style="text-align: center;">
+        <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
+    </div>
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın. Sesli not, şiir, dörtlük, liste..."></textarea>
     
     <div class="toolbar">
-        <button class="btn-main" onclick="processText()">✨ DÖNÜŞTÜR</button>
+        <button class="btn-main full-width" onclick="processText()">✨ DÖNÜŞTÜR (Noktalama + İmla + Akıllı Girinti)</button>
         <button class="btn-util" onclick="copyOutput()">📋 KOPYALA</button>
         <button class="btn-util" onclick="downloadTxt()">📄 TXT İNDİR</button>
-        <button class="btn-raw" onclick="downloadRawTxt()">📄 DİREKT TXT (HAM)</button>
-        <button class="btn-image" onclick="downloadAsImage('png')">🖼️ PNG İndir</button>
-        <button class="btn-image" onclick="downloadAsImage('jpeg')">🎨 JPG İndir</button>
-        <button class="btn-share" onclick="openShareModal()">📤 PAYLAŞ</button>
+        <button class="btn-image" onclick="generateImage('png')">🖼️ HD PNG</button>
+        <button class="btn-image" onclick="generateImage('jpeg')">🎨 HD JPG</button>
+        <button class="btn-share" onclick="openShare()">📤 PAYLAŞ</button>
         <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
     </div>
 
-    <div class="result-stage">
-        <div class="label">
-            ✨ SONUÇ (DÜZENLENEBİLİR METİN) 
-            <span class="badge-info">resim çıktısı alınabilir</span>
-        </div>
-        <textarea id="output" placeholder="Düzenlenmiş metin burada belirecek..."></textarea>
-    </div>
-</div>
-
-<!-- PAYLAŞIM MODAL (POPUP) - Açıklama metni yok -->
-<div id="shareModal" class="modal">
-    <div class="modal-content">
-        <h3>📤 Paylaşım Formatı</h3>
-        <p style="font-size:0.85rem; color:#4b5563;">Düzenlenmiş metni paylaş</p>
-        <div class="modal-options">
-            <button onclick="shareAsText()">📄 Metin (TXT)</button>
-            <button onclick="shareAsImage('png')">🖼️ PNG Görsel</button>
-            <button onclick="shareAsImage('jpeg')">🎨 JPG Görsel</button>
-        </div>
-        <button class="close-modal" onclick="closeShareModal()">Kapat</button>
-    </div>
+    <div class="label">✨ DÜZENLENMİŞ METİN (Paragraflar girintili, kısa satırlar düz)</div>
+    <textarea id="output" placeholder="Dönüştürülmüş metin burada görünecek..."></textarea>
 </div>
 
 <script>
-    // ========== RAKAM -> YAZI (SATIR BAZLI ÇALIŞACAK) ==========
-    function convertNumbersToWords(line) {
-        let result = line;
-        result = result.replace(/\b7\./g, 'yedinci');
-        result = result.replace(/\b1\./g, 'birinci');
-        result = result.replace(/\b2\./g, 'ikinci');
-        result = result.replace(/\b3\./g, 'üçüncü');
-        result = result.replace(/\b4\./g, 'dördüncü');
-        result = result.replace(/\b5\./g, 'beşinci');
-        result = result.replace(/\b6\./g, 'altıncı');
-        result = result.replace(/\b8\./g, 'sekizinci');
-        result = result.replace(/\b9\./g, 'dokuzuncu');
-        result = result.replace(/\b10\./g, 'onuncu');
-        result = result.replace(/(?<!\d)7(?!\d)/g, 'yedi');
-        result = result.replace(/(?<!\d)0(?!\d)/g, 'sıfır');
-        result = result.replace(/(?<!\d)1(?!\d)/g, 'bir');
-        result = result.replace(/(?<!\d)2(?!\d)/g, 'iki');
-        result = result.replace(/(?<!\d)3(?!\d)/g, 'üç');
-        result = result.replace(/(?<!\d)4(?!\d)/g, 'dört');
-        result = result.replace(/(?<!\d)5(?!\d)/g, 'beş');
-        result = result.replace(/(?<!\d)6(?!\d)/g, 'altı');
-        result = result.replace(/(?<!\d)8(?!\d)/g, 'sekiz');
-        result = result.replace(/(?<!\d)9(?!\d)/g, 'dokuz');
-        result = result.replace(/(?<!\d)10(?!\d)/g, 'on');
-        result = result.replace(/7('n[iı]|[y])/g, 'yedi$1');
-        return result;
-    }
-
-    function fixCommonTypos(line) {
-        const corrections = {
-            "birşey": "bir şey", "herşey": "her şey", "hiçbirşey": "hiçbir şey",
-            "birşeyler": "bir şeyler", "herkez": "herkes", "herzaman": "her zaman", "birebir": "bire bir"
-        };
-        let result = line;
-        for (let [wrong, correct] of Object.entries(corrections)) {
-            const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
-            result = result.replace(regex, correct);
-        }
-        return result;
+    // =============== METİN DÜZENLEME ===============
+    function convertNumbersToWords(text) {
+        let r = text;
+        r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
+        r = r.replace(/\b4\./g, 'dördüncü').replace(/\b5\./g, 'beşinci').replace(/\b6\./g, 'altıncı').replace(/\b8\./g, 'sekizinci');
+        r = r.replace(/\b9\./g, 'dokuzuncu').replace(/\b10\./g, 'onuncu');
+        r = r.replace(/(?<!\d)7(?!\d)/g, 'yedi').replace(/(?<!\d)0(?!\d)/g, 'sıfır').replace(/(?<!\d)1(?!\d)/g, 'bir');
+        r = r.replace(/(?<!\d)2(?!\d)/g, 'iki').replace(/(?<!\d)3(?!\d)/g, 'üç').replace(/(?<!\d)4(?!\d)/g, 'dört');
+        r = r.replace(/(?<!\d)5(?!\d)/g, 'beş').replace(/(?<!\d)6(?!\d)/g, 'altı').replace(/(?<!\d)8(?!\d)/g, 'sekiz');
+        r = r.replace(/(?<!\d)9(?!\d)/g, 'dokuz').replace(/(?<!\d)10(?!\d)/g, 'on');
+        return r;
     }
     
-    function splitDeDa(line) {
-        let result = line;
+    function fixCommonTypos(text) {
+        const corrections = {
+            "birşey":"bir şey", "herşey":"her şey", "hiçbirşey":"hiçbir şey", "birşeyler":"bir şeyler",
+            "herkez":"herkes", "herzaman":"her zaman", "birebir":"bire bir", "nede":"ne de", "istiyorumki":"istiyorum ki"
+        };
+        let r = text;
+        for(let [wrong, correct] of Object.entries(corrections)) {
+            r = r.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), correct);
+        }
+        return r;
+    }
+    
+    function splitDeDa(text) {
+        let r = text;
         const safe = [
             { wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' },
             { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' },
             { wrong: /\b(sizde)\b/gi, correct: 'siz de' }, { wrong: /\b(onlarda)\b/gi, correct: 'onlar da' }
         ];
-        for (let item of safe) {
-            result = result.replace(item.wrong, (match) => {
-                if (match[0] === match[0].toUpperCase() && match[0] !== match[0].toLowerCase())
+        for(let item of safe) {
+            r = r.replace(item.wrong, (match) => {
+                if(match[0] === match[0].toUpperCase() && match[0] !== match[0].toLowerCase())
                     return item.correct.charAt(0).toUpperCase() + item.correct.slice(1);
                 return item.correct;
             });
         }
-        result = result.replace(/\b(burda)\b/gi, 'burada');
-        result = result.replace(/\b(orda)\b/gi, 'orada');
-        return result;
+        r = r.replace(/\b(burda)\b/gi, 'burada').replace(/\b(orda)\b/gi, 'orada');
+        return r;
     }
     
-    function splitKi(line) {
+    function splitKi(text) {
         const neverSplit = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
-        let protectedText = line;
-        const placeholders = [];
+        let prot = text, ph = [];
         neverSplit.forEach((phrase, idx) => {
-            const regex = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
-            protectedText = protectedText.replace(regex, (match) => {
-                placeholders.push(match);
-                return `__NS_${idx}__`;
-            });
+            let re = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
+            prot = prot.replace(re, (m) => { ph.push(m); return `__NS_${idx}__`; });
         });
-        let result = protectedText.replace(/\b(\w+?)(ki)\b/gi, (match, root, kiPart) => {
-            const safeRoots = ['yok', 'var', 'demek', 'bilmiyorum', 'bilmez', 'sanmam', 'düşünmüyorum', 'gerek', 'ister'];
-            if (safeRoots.includes(root.toLowerCase()) && root.length > 1) return root + ' ' + kiPart;
-            return match;
+        let res = prot.replace(/\b(\w+?)(ki)\b/gi, (m, root, kiPart) => {
+            let safeRoots = ['yok','var','demek','bilmiyorum','bilmez','sanmam','düşünmüyorum','gerek','ister'];
+            if(safeRoots.includes(root.toLowerCase()) && root.length>1) return root+' '+kiPart;
+            return m;
         });
-        for (let i = 0; i < placeholders.length; i++) result = result.replace(`__NS_${i}__`, placeholders[i]);
-        return result;
+        for(let i=0;i<ph.length;i++) res = res.replace(`__NS_${i}__`, ph[i]);
+        return res;
     }
     
-    function splitQuestionParticles(line) {
-        let words = line.split(/(\s+)/);
-        const particles = ['mı', 'mi', 'mu', 'mü'];
-        const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı', 'kalemi', 'dersimi'];
-        for (let i = 0; i < words.length; i++) {
-            let w = words[i];
-            let lower = w.toLowerCase();
-            if (lower.length < 2) continue;
-            for (let p of particles) {
-                if (lower.endsWith(p) && !exceptions.includes(lower)) {
-                    let base = lower.slice(0, -p.length);
-                    if (base.length >= 2 && /[a-zğüşıöç]/.test(base)) {
+    function splitQuestionParticles(text) {
+        let words = text.split(/(\s+)/);
+        const particles = ['mı','mi','mu','mü'], exceptions = ['önemi','kimi','gemini','resmi','cismi','ilmi','seni','beni','annemi','babamı'];
+        for(let i=0;i<words.length;i++) {
+            let w = words[i], lower = w.toLowerCase();
+            if(lower.length<2) continue;
+            for(let p of particles) {
+                if(lower.endsWith(p) && !exceptions.includes(lower)) {
+                    let base = lower.slice(0,-p.length);
+                    if(base.length>=2 && /[a-zğüşıöç]/.test(base)) {
                         let newWord = base + ' ' + p + '?';
-                        if (w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) newWord = newWord.charAt(0).toUpperCase() + newWord.slice(1);
+                        if(w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) newWord = newWord.charAt(0).toUpperCase() + newWord.slice(1);
                         words[i] = newWord;
                         break;
                     }
@@ -450,109 +237,94 @@
         return words.join('');
     }
     
-    function fixPunctuationSpacing(line) {
-        let fixed = line;
-        fixed = fixed.replace(/\s+([.,!?;:])/g, '$1');
-        fixed = fixed.replace(/([.,!?;:])([^\s])/g, '$1 $2');
-        fixed = fixed.replace(/\.{3,}/g, '...');
-        fixed = fixed.replace(/([?!]){2,}/g, '$1');
-        return fixed;
+    function fixPunctuationSpacing(text) {
+        return text.replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
     }
     
-    function addSafeCommas(line) {
-        let result = line;
-        const conjunctions = ['ama', 'fakat', 'ancak', 'çünkü', 'yani', 'lakin', 'oysa'];
-        for (let conj of conjunctions) {
-            const regex = new RegExp(`(\\s)(${conj})(\\s)`, 'gi');
-            result = result.replace(regex, (match, space, conjWord, afterSpace) => {
-                const idx = result.indexOf(match);
-                const beforeChar = idx > 0 ? result[idx-1] : '';
-                if (beforeChar !== ',' && beforeChar !== '.' && beforeChar !== '?' && beforeChar !== '!') return `, ${conjWord}${afterSpace}`;
-                return match;
+    function addSafeCommas(text) {
+        let r = text;
+        const conj = ['ama', 'fakat', 'ancak', 'çünkü', 'yani', 'lakin', 'oysa', 'oysaki'];
+        for(let c of conj) {
+            r = r.replace(new RegExp(`\\s(${c})\\s`, 'gi'), (match, conjWord) => `, ${conjWord} `);
+        }
+        return r;
+    }
+    
+    function isShortLine(text) {
+        if(text.length < 45 && text.split(/\s+/).length <= 5) return true;
+        if(/^[\d\s\(\)\+\-]{8,}$/.test(text.trim())) return true;
+        return false;
+    }
+    
+    function finalizeText(text) {
+        let paragraphs = text.split(/\n\s*\n/);
+        let processedParas = paragraphs.map(para => {
+            if(para.trim() === "") return "";
+            let lines = para.split('\n');
+            let processedLines = lines.map(line => {
+                line = line.trim();
+                if(line === "") return "";
+                let sentences = line.match(/[^.!?]+[.!?]+/g) || [line];
+                let fixedSentences = sentences.map(s => {
+                    s = s.trim();
+                    if(s.length === 0) return "";
+                    let firstChar = s.charAt(0);
+                    if(/[a-zğüşıöç]/i.test(firstChar)) {
+                        s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
+                    }
+                    if(!/[.!?]$/.test(s)) s += ".";
+                    return s;
+                });
+                let result = fixedSentences.join(" ");
+                if(isShortLine(result)) {
+                    return result;
+                } else {
+                    return "      " + result;
+                }
             });
-        }
-        const intro = ['evet', 'hayır', 'peki', 'mesela', 'örneğin', 'kısacası'];
-        for (let phrase of intro) {
-            const regex = new RegExp(`(^|[.!?]\\s+)(${phrase})(\\s+)`, 'gi');
-            result = result.replace(regex, (match, before, phr, spaces) => {
-                if (!match.includes(',')) return `${before}${phr},${spaces}`;
-                return match;
-            });
-        }
-        return result;
+            return processedLines.join('\n');
+        });
+        return processedParas.join("\n\n");
     }
     
-    // Satır başı büyük harf (isteğe bağlı, cümle gibi görünmesi için)
-    function capitalizeLineStart(line) {
-        if (line.trim().length === 0) return line;
-        // Sadece harfle başlıyorsa büyüt
-        if (/[a-zğüşıöç]/i.test(line[0])) {
-            return line[0].toLocaleUpperCase('tr-TR') + line.slice(1);
-        }
-        return line;
-    }
-    
-    // ----- ANA DÖNÜŞTÜRME: SATIRLARI KORU -----
     function processText() {
         let raw = document.getElementById('input').value;
         if (!raw.trim()) return;
-        
-        // Satırları ayır (boş satırlar dahil)
         let lines = raw.split(/\r?\n/);
-        
         let processedLines = lines.map(line => {
-            let processed = line;
-            // Sadece boş olmayan satırlara düzeltme uygula
-            if (processed.trim() !== "") {
-                processed = convertNumbersToWords(processed);
-                processed = fixCommonTypos(processed);
-                processed = splitDeDa(processed);
-                processed = splitKi(processed);
-                processed = splitQuestionParticles(processed);
-                processed = fixPunctuationSpacing(processed);
-                processed = addSafeCommas(processed);
-                // İsteğe bağlı: her satırın başını büyük harf yap (şiirde istenebilir)
-                processed = capitalizeLineStart(processed);
-            }
-            return processed;
+            if(line.trim() === "") return "";
+            let p = line;
+            p = convertNumbersToWords(p);
+            p = fixCommonTypos(p);
+            p = splitDeDa(p);
+            p = splitKi(p);
+            p = splitQuestionParticles(p);
+            p = fixPunctuationSpacing(p);
+            p = addSafeCommas(p);
+            return p;
         });
-        
-        // Satırları yeniden birleştir (orijinal boşluklar korunur)
-        let finalText = processedLines.join('\n');
-        // "eğer ki" düzeltmesi global
+        let combined = processedLines.join('\n');
+        let finalText = finalizeText(combined);
         finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
-        
         document.getElementById('output').value = finalText;
     }
     
     function copyOutput() {
-        const text = document.getElementById('output').value;
-        if(!text) { alert("Henüz dönüştürülmüş metin yok."); return; }
-        navigator.clipboard.writeText(text);
-        alert("✅ Metin panoya kopyalandı.");
-    }
-    
-    // UTF-8 BOM ile indirme
-    function downloadWithBOM(content, filename) {
-        const bom = "\uFEFF";
-        const blob = new Blob([bom + content], {type: 'text/plain;charset=utf-8'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
+        let t = document.getElementById('output').value;
+        if(!t) { alert("Dönüştürülmüş metin yok."); return; }
+        navigator.clipboard.writeText(t);
+        alert("✅ Metin panoya kopyalandı!");
     }
     
     function downloadTxt() {
-        const text = document.getElementById('output').value;
-        if(!text) { alert("Dışa aktarılacak dönüştürülmüş metin yok."); return; }
-        downloadWithBOM(text, "Duzenlenmis_Metin.txt");
-    }
-    
-    function downloadRawTxt() {
-        const rawText = document.getElementById('input').value;
-        if(!rawText.trim()) { alert("Kaydedilecek ham metin yok."); return; }
-        downloadWithBOM(rawText, "metin.txt");
+        let t = document.getElementById('output').value;
+        if(!t) return;
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + t], {type: 'text/plain;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "duzenlenmis_metin.txt";
+        a.click();
     }
     
     function clearAll() {
@@ -560,191 +332,119 @@
         document.getElementById('output').value = "";
     }
     
-    // =============== GÖRSEL OLUŞTURMA (PAYLAŞIM & İNDİRME İÇİN ORTAK) ===============
-    const IMAGE_FONT_SIZE = 36;
-    const IMAGE_LINE_HEIGHT = 1.40;
-    const IMAGE_PADDING = 50;
-    const IMAGE_MAX_WIDTH = 720;
-    
-    function breakLongWord(ctx, word, maxWidth) {
-        let chars = word.split('');
-        let lines = [];
-        let currentLine = '';
-        for (let i = 0; i < chars.length; i++) {
-            let testLine = currentLine + chars[i];
-            if (ctx.measureText(testLine).width > maxWidth && currentLine.length > 0) {
-                lines.push(currentLine);
-                currentLine = chars[i];
-            } else {
-                currentLine = testLine;
-            }
-        }
-        if (currentLine) lines.push(currentLine);
-        return lines;
-    }
-    
-    function wrapTextToLines(ctx, text, maxWidth) {
-        const paragraphs = text.split(/\r?\n/);
-        let allLines = [];
-        for (let para of paragraphs) {
-            if (para.trim() === "") { 
-                allLines.push(""); 
-                continue; 
-            }
-            const words = para.split(/\s+/);
-            let currentLine = "";
-            for (let word of words) {
-                let testLine = currentLine ? currentLine + " " + word : word;
-                let metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && currentLine !== "") {
-                    allLines.push(currentLine);
-                    let wordWidth = ctx.measureText(word).width;
-                    if (wordWidth > maxWidth) {
-                        let brokenParts = breakLongWord(ctx, word, maxWidth);
-                        for (let i = 0; i < brokenParts.length - 1; i++) allLines.push(brokenParts[i]);
-                        currentLine = brokenParts[brokenParts.length - 1];
-                    } else {
-                        currentLine = word;
-                    }
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            if (currentLine) allLines.push(currentLine);
-        }
-        return allLines;
-    }
-    
+    // =============== EN YÜKSEK KALİTE GÖRSEL (KESİLME SIFIR) ===============
     async function getImageBlob(format) {
         const text = document.getElementById('output').value;
-        if (!text || text.trim() === "") {
-            alert("⚠️ Paylaşılacak metin boş. Önce metin girip Dönüştür butonuna tıklayın.");
-            return null;
+        if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
+        
+        const SCALE = 2.1;
+        const BASE_WIDTH = 1900;           // Daha geniş canvas
+        const WIDTH = BASE_WIDTH * SCALE;
+        const PADDING_X = 220 * SCALE;       // Büyük sol boşluk (kesilmeyi tamamen önler)
+        const MAX_W = WIDTH - (PADDING_X * 2);
+        
+        let fontSize = text.length > 800 ? 74 : 88;
+        fontSize = fontSize * SCALE;
+        
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.font = `500 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        
+        const rawLines = text.split(/\r?\n/);
+        let finalLines = [];
+        for(let line of rawLines) {
+            if(line.trim() === "") { finalLines.push(""); continue; }
+            
+            let hasIndent = line.startsWith("      ");
+            let content = hasIndent ? line.substring(6) : line;
+            
+            if(tempCtx.measureText(line).width <= MAX_W) {
+                finalLines.push(line);
+            } else {
+                let words = content.split(/\s+/);
+                let current = hasIndent ? "      " : "";
+                for(let w of words) {
+                    let test = current ? current + " " + w : (hasIndent ? "      " + w : w);
+                    if(tempCtx.measureText(test).width > MAX_W && current !== (hasIndent ? "      " : "")) {
+                        finalLines.push(current);
+                        current = (hasIndent ? "      " : "") + w;
+                    } else {
+                        current = test;
+                    }
+                }
+                if(current) finalLines.push(current);
+            }
         }
-        const PADDING = IMAGE_PADDING;
-        const MAX_CONTENT_WIDTH = IMAGE_MAX_WIDTH;
-        const FONT_SIZE = IMAGE_FONT_SIZE;
-        const LINE_HEIGHT_MULTIPLIER = IMAGE_LINE_HEIGHT;
-        const FONT_FAMILY = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
+        
+        const lineHeight = fontSize * 1.55;
+        const textHeight = finalLines.length * lineHeight;
+        const minHeight = 1500 * SCALE;
+        const calcHeight = textHeight + (600 * SCALE);
+        const HEIGHT = Math.max(minHeight, calcHeight);
         
         const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
         const ctx = canvas.getContext('2d');
-        ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
-        const lines = wrapTextToLines(ctx, text, MAX_CONTENT_WIDTH);
-        if (lines.length === 0) return null;
         
-        const lineHeight = FONT_SIZE * LINE_HEIGHT_MULTIPLIER;
-        const textHeight = lines.length * lineHeight;
-        const canvasWidth = MAX_CONTENT_WIDTH + PADDING * 2;
-        const canvasHeight = textHeight + PADDING * 2 + 28;
-        canvas.width = canvasWidth;
-        canvas.height = Math.max(320, canvasHeight);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
         
-        const finalCtx = canvas.getContext('2d');
-        finalCtx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
-        finalCtx.textBaseline = "top";
-        finalCtx.textAlign = "left";
-        finalCtx.fillStyle = "#FFFFFF";
-        finalCtx.fillRect(0, 0, canvas.width, canvas.height);
-        finalCtx.strokeStyle = "#e2e8f0";
-        finalCtx.lineWidth = 1.5;
-        finalCtx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
-        finalCtx.fillStyle = "#1e293b";
-        let y = PADDING;
-        for (let line of lines) {
-            finalCtx.fillText(line, PADDING, y);
-            y += lineHeight;
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 18 * SCALE;
+        ctx.strokeRect(50, 50, WIDTH - 100, HEIGHT - 100);
+        
+        ctx.fillStyle = "#0f172a";
+        ctx.font = `500 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+        
+        let startY = (HEIGHT - (finalLines.length * lineHeight)) / 2;
+        if(startY < 180 * SCALE) startY = 180 * SCALE;
+        
+        for(let i = 0; i < finalLines.length; i++) {
+            ctx.fillText(finalLines[i], PADDING_X, startY + (i * lineHeight));
         }
-        finalCtx.font = `14px ${FONT_FAMILY}`;
-        finalCtx.fillStyle = "#64748b";
-        finalCtx.fillText(`Oluşturulma: ${new Date().toLocaleString('tr-TR')}`, PADDING, canvas.height - 22);
+        
+        ctx.font = `bold ${42 * SCALE}px 'Segoe UI', Arial`;
+        ctx.fillStyle = "#64748b";
+        ctx.textAlign = "right";
+        ctx.fillText(new Date().toLocaleString('tr-TR'), WIDTH - (200 * SCALE), HEIGHT - (140 * SCALE));
         
         return new Promise(resolve => {
             const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-            const quality = format === 'jpeg' ? 0.92 : undefined;
+            const quality = format === 'jpeg' ? 1.0 : undefined;
             canvas.toBlob(blob => resolve(blob), mime, quality);
         });
     }
     
-    async function downloadAsImage(format) {
+    async function generateImage(format) {
         const blob = await getImageBlob(format);
-        if (!blob) return;
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.download = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
-        link.click();
-        URL.revokeObjectURL(url);
-        const notif = document.createElement('div');
-        notif.innerText = `✅ ${format.toUpperCase()} dosyası indirildi.`;
-        notif.style.cssText = "position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#2c7a4b; color:white; padding:10px 22px; border-radius:40px; font-size:0.9rem; z-index:999; font-weight:500; box-shadow:0 4px 12px rgba(0,0,0,0.2);";
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 2000);
-    }
-    
-    // =============== PAYLAŞIM MODAL (AÇIKLAMA METNİ YOK) ===============
-    const modal = document.getElementById('shareModal');
-    function openShareModal() {
-        const outputText = document.getElementById('output').value;
-        if (!outputText.trim()) {
-            alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
-            return;
-        }
-        modal.style.display = 'flex';
-    }
-    function closeShareModal() {
-        modal.style.display = 'none';
-    }
-    
-    // Paylaşım: sadece dosya, açıklama veya başlık yok
-    async function shareFile(blob, fileName, mimeType) {
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
-            try {
-                const file = new File([blob], fileName, { type: mimeType });
-                await navigator.share({ files: [file] });  // title ve text göndermiyoruz
-                return true;
-            } catch (err) {
-                if (err.name !== 'AbortError') console.warn(err);
-            }
-        }
-        // Fallback: indir
+        if(!blob) return;
         const a = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
+        a.href = URL.createObjectURL(blob);
+        a.download = `girintili_metin.${format === 'png' ? 'png' : 'jpg'}`;
         a.click();
-        URL.revokeObjectURL(url);
-        alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
-        return false;
+        alert(`✅ En yüksek kaliteli ${format.toUpperCase()} görseli indirildi! (Kesilme yok)`);
     }
     
-    async function shareAsText() {
-        closeShareModal();
-        const text = document.getElementById('output').value;
-        if (!text.trim()) { alert("Paylaşılacak metin yok."); return; }
-        const bom = "\uFEFF";
-        const blob = new Blob([bom + text], {type: 'text/plain;charset=utf-8'});
-        await shareFile(blob, "duzenli_metin.txt", "text/plain");
+    async function openShare() {
+        const blob = await getImageBlob('png');
+        if(!blob) return;
+        const file = new File([blob], 'girintili_metin.png', {type: 'image/png'});
+        if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file], title: 'Düzenlenmiş Metin' });
+                alert("✅ Paylaşıldı! (Kesilme yok)");
+                return;
+            } catch(e) { if(e.name !== 'AbortError') console.warn(e); }
+        }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "paylasilacak_metin.png";
+        a.click();
+        alert("📁 Görsel indirildi. Hiçbir karakter kesilmeden WhatsApp'tan gönderebilirsiniz.");
     }
-    
-    async function shareAsImage(format) {
-        closeShareModal();
-        const blob = await getImageBlob(format);
-        if (!blob) return;
-        const fileName = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
-        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-        await shareFile(blob, fileName, mime);
-    }
-    
-    // Modal dışarı tıklanınca kapat
-    window.onclick = function(event) {
-        if (event.target === modal) closeShareModal();
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        const inp = document.getElementById('input');
-        if (inp) inp.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
-    });
 </script>
 </body>
 </html>
