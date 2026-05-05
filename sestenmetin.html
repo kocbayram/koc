@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sesten Metin Oluşturucu | Son Versiyon - Kesin Çözüm</title>
+    <title>Sesten Metin Oluşturucu | Gelişmiş Paylaşım + Karakter Sayacı</title>
     <style>
         :root {
             --bg-color: #f1f5f9;
@@ -56,16 +56,32 @@
             padding: 18px;
             font-size: 18px;
             font-family: inherit;
+            font-weight: 500;
             line-height: 1.6;
             min-height: 200px;
             outline: none;
             transition: 0.2s;
             resize: vertical;
             background: #ffffff;
+            color: #0f172a;
         }
         textarea:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Karakter Sayacı */
+        .counter-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 5px 0 5px;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .counter-item {
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 20px;
         }
         
         .toolbar {
@@ -118,18 +134,108 @@
             text-transform: uppercase; 
             letter-spacing: 1.5px;
         }
+        .badge-info {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #eef2ff;
+            color: #2563eb;
+            border-radius: 30px;
+            padding: 3px 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
         #output {
             min-height: 180px;
             white-space: pre-wrap;
             font-size: 17px;
+            font-family: inherit;
+            font-weight: 600;
             line-height: 1.65;
+            color: #0f172a;
         }
+        
+        .date-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            border-top: 2px solid var(--border);
+            padding-top: 15px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 320px;
+            width: 90%;
+            padding: 24px 20px 28px;
+            text-align: center;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.2s ease;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+        .modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .modal-options button {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            padding: 12px;
+            font-size: 1rem;
+            justify-content: center;
+        }
+        .modal-options button:hover {
+            background: #eef2ff;
+            transform: scale(0.98);
+        }
+        .close-modal {
+            background: #f1f5f9;
+            color: #475569;
+            margin-top: 8px;
+            width: 100%;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         @media (max-width: 650px) {
             .container { padding: 20px; }
             .toolbar { gap: 8px; }
             button { padding: 10px 5px; font-size: 0.7rem; }
             .btn-main { font-size: 0.85rem; }
             textarea, #output { font-size: 15px; }
+            .date-footer { font-size: 0.85rem; }
+            .counter-wrapper { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -140,24 +246,62 @@
     <div style="text-align: center;">
         <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
     </div>
-    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın. Sesli not, şiir, dörtlük, liste..."></textarea>
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın." oninput="updateInputCounter()"></textarea>
+    <div class="counter-wrapper">
+        <span class="counter-item">📝 Giriş: <span id="inputCount">0</span> karakter</span>
+        <span class="counter-item">✨ Çıkış: <span id="outputCount">0</span> karakter</span>
+    </div>
     
     <div class="toolbar">
-        <button class="btn-main full-width" onclick="processText()">✨ DÖNÜŞTÜR (Noktalama + İmla + Akıllı Girinti)</button>
+        <button class="btn-main full-width" onclick="processText()">✨ DÖNÜŞTÜR</button>
         <button class="btn-util" onclick="copyOutput()">📋 KOPYALA</button>
         <button class="btn-util" onclick="downloadTxt()">📄 TXT İNDİR</button>
         <button class="btn-image" onclick="generateImage('png')">🖼️ HD PNG</button>
         <button class="btn-image" onclick="generateImage('jpeg')">🎨 HD JPG</button>
-        <button class="btn-share" onclick="openShare()">📤 PAYLAŞ</button>
+        <button class="btn-share" onclick="openShareModal()">📤 PAYLAŞ</button>
         <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
     </div>
 
-    <div class="label">✨ DÜZENLENMİŞ METİN (Paragraflar girintili, kısa satırlar düz)</div>
-    <textarea id="output" placeholder="Dönüştürülmüş metin burada görünecek..."></textarea>
+    <div class="result-stage">
+        <div class="label">
+            ✨ DÜZENLENMİŞ METİN 
+            <span class="badge-info">resim çıktısı alınabilir</span>
+        </div>
+        <textarea id="output" placeholder="Dönüştürülmüş metin burada görünecek..."></textarea>
+    </div>
+    
+    <div class="date-footer" id="dateFooter"></div>
+</div>
+
+<!-- GELİŞMİŞ PAYLAŞIM MODALI -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <h3>📤 Paylaşım Formatı</h3>
+        <p style="font-size:0.85rem; color:#4b5563;">Düzenlenmiş metni paylaş</p>
+        <div class="modal-options">
+            <button onclick="shareAsText()">📄 Metin (TXT)</button>
+            <button onclick="shareAsImage('png')">🖼️ PNG Görsel</button>
+            <button onclick="shareAsImage('jpeg')">🎨 JPG Görsel</button>
+        </div>
+        <button class="close-modal" onclick="closeShareModal()">Kapat</button>
+    </div>
 </div>
 
 <script>
+    // =============== KARAKTER SAYACI ===============
+    function updateInputCounter() {
+        const inputText = document.getElementById('input').value;
+        document.getElementById('inputCount').innerText = inputText.length;
+    }
+    
+    function updateOutputCounter() {
+        const outputText = document.getElementById('output').value;
+        document.getElementById('outputCount').innerText = outputText.length;
+    }
+    
     // =============== METİN DÜZENLEME ===============
+    const INDENT = "      "; // 6 boşluk
+    
     function convertNumbersToWords(text) {
         let r = text;
         r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
@@ -279,7 +423,7 @@
                 if(isShortLine(result)) {
                     return result;
                 } else {
-                    return "      " + result;
+                    return INDENT + result;
                 }
             });
             return processedLines.join('\n');
@@ -307,6 +451,12 @@
         let finalText = finalizeText(combined);
         finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
         document.getElementById('output').value = finalText;
+        
+        updateOutputCounter();
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
     }
     
     function copyOutput() {
@@ -330,44 +480,54 @@
     function clearAll() {
         document.getElementById('input').value = "";
         document.getElementById('output').value = "";
+        updateInputCounter();
+        updateOutputCounter();
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
     }
     
-    // =============== EN YÜKSEK KALİTE GÖRSEL (KESİLME SIFIR) ===============
+    // =============== GÖRSEL OLUŞTURMA ===============
     async function getImageBlob(format) {
         const text = document.getElementById('output').value;
         if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
         
-        const SCALE = 2.1;
-        const BASE_WIDTH = 1900;           // Daha geniş canvas
+        const SCALE = 2.0;
+        const BASE_WIDTH = 2100;
         const WIDTH = BASE_WIDTH * SCALE;
-        const PADDING_X = 220 * SCALE;       // Büyük sol boşluk (kesilmeyi tamamen önler)
+        const PADDING_X = 200 * SCALE;
         const MAX_W = WIDTH - (PADDING_X * 2);
         
-        let fontSize = text.length > 800 ? 74 : 88;
+        let fontSize = text.length > 800 ? 82 : 96;
         fontSize = fontSize * SCALE;
         
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.font = `500 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        tempCtx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
         
         const rawLines = text.split(/\r?\n/);
         let finalLines = [];
+        
         for(let line of rawLines) {
-            if(line.trim() === "") { finalLines.push(""); continue; }
+            if(line.trim() === "") { 
+                finalLines.push(""); 
+                continue; 
+            }
             
-            let hasIndent = line.startsWith("      ");
-            let content = hasIndent ? line.substring(6) : line;
+            const hasIndent = line.startsWith(INDENT);
+            const content = hasIndent ? line.substring(INDENT.length) : line;
+            const indentSpaces = hasIndent ? INDENT : "";
             
             if(tempCtx.measureText(line).width <= MAX_W) {
                 finalLines.push(line);
             } else {
                 let words = content.split(/\s+/);
-                let current = hasIndent ? "      " : "";
+                let current = indentSpaces;
                 for(let w of words) {
-                    let test = current ? current + " " + w : (hasIndent ? "      " + w : w);
-                    if(tempCtx.measureText(test).width > MAX_W && current !== (hasIndent ? "      " : "")) {
+                    let test = current ? current + " " + w : indentSpaces + w;
+                    if(tempCtx.measureText(test).width > MAX_W && current !== indentSpaces) {
                         finalLines.push(current);
-                        current = (hasIndent ? "      " : "") + w;
+                        current = indentSpaces + w;
                     } else {
                         current = test;
                     }
@@ -378,8 +538,8 @@
         
         const lineHeight = fontSize * 1.55;
         const textHeight = finalLines.length * lineHeight;
-        const minHeight = 1500 * SCALE;
-        const calcHeight = textHeight + (600 * SCALE);
+        const minHeight = 1700 * SCALE;
+        const calcHeight = textHeight + (700 * SCALE);
         const HEIGHT = Math.max(minHeight, calcHeight);
         
         const canvas = document.createElement('canvas');
@@ -391,25 +551,27 @@
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
         
         ctx.strokeStyle = "#cbd5e1";
-        ctx.lineWidth = 18 * SCALE;
-        ctx.strokeRect(50, 50, WIDTH - 100, HEIGHT - 100);
+        ctx.lineWidth = 22 * SCALE;
+        ctx.strokeRect(55, 55, WIDTH - 110, HEIGHT - 110);
         
         ctx.fillStyle = "#0f172a";
-        ctx.font = `500 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        ctx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
         ctx.textBaseline = "top";
         ctx.textAlign = "left";
         
         let startY = (HEIGHT - (finalLines.length * lineHeight)) / 2;
-        if(startY < 180 * SCALE) startY = 180 * SCALE;
+        if(startY < 200 * SCALE) startY = 200 * SCALE;
         
         for(let i = 0; i < finalLines.length; i++) {
             ctx.fillText(finalLines[i], PADDING_X, startY + (i * lineHeight));
         }
         
-        ctx.font = `bold ${42 * SCALE}px 'Segoe UI', Arial`;
-        ctx.fillStyle = "#64748b";
-        ctx.textAlign = "right";
-        ctx.fillText(new Date().toLocaleString('tr-TR'), WIDTH - (200 * SCALE), HEIGHT - (140 * SCALE));
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        ctx.font = `bold ${56 * SCALE}px 'Segoe UI', Arial`;
+        ctx.fillStyle = "#1e293b";
+        ctx.textAlign = "center";
+        ctx.fillText(`📅 ${dateStr}`, WIDTH / 2, HEIGHT - (130 * SCALE));
         
         return new Promise(resolve => {
             const mime = format === 'png' ? 'image/png' : 'image/jpeg';
@@ -425,26 +587,78 @@
         a.href = URL.createObjectURL(blob);
         a.download = `girintili_metin.${format === 'png' ? 'png' : 'jpg'}`;
         a.click();
-        alert(`✅ En yüksek kaliteli ${format.toUpperCase()} görseli indirildi! (Kesilme yok)`);
+        alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
     }
     
-    async function openShare() {
-        const blob = await getImageBlob('png');
-        if(!blob) return;
-        const file = new File([blob], 'girintili_metin.png', {type: 'image/png'});
-        if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    // =============== GELİŞMİŞ PAYLAŞIM MODALI ===============
+    const modal = document.getElementById('shareModal');
+    function openShareModal() {
+        const outputText = document.getElementById('output').value;
+        if (!outputText.trim()) {
+            alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
+            return;
+        }
+        modal.style.display = 'flex';
+    }
+    function closeShareModal() {
+        modal.style.display = 'none';
+    }
+    
+    async function shareFile(blob, fileName, mimeType) {
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
             try {
-                await navigator.share({ files: [file], title: 'Düzenlenmiş Metin' });
-                alert("✅ Paylaşıldı! (Kesilme yok)");
-                return;
-            } catch(e) { if(e.name !== 'AbortError') console.warn(e); }
+                const file = new File([blob], fileName, { type: mimeType });
+                await navigator.share({ files: [file] });
+                return true;
+            } catch (err) {
+                if (err.name !== 'AbortError') console.warn(err);
+            }
         }
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "paylasilacak_metin.png";
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
         a.click();
-        alert("📁 Görsel indirildi. Hiçbir karakter kesilmeden WhatsApp'tan gönderebilirsiniz.");
+        URL.revokeObjectURL(url);
+        alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
+        return false;
     }
+    
+    async function shareAsText() {
+        closeShareModal();
+        const text = document.getElementById('output').value;
+        if (!text.trim()) { alert("Paylaşılacak metin yok."); return; }
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + text], {type: 'text/plain;charset=utf-8'});
+        await shareFile(blob, "duzenli_metin.txt", "text/plain");
+    }
+    
+    async function shareAsImage(format) {
+        closeShareModal();
+        const blob = await getImageBlob(format);
+        if (!blob) return;
+        const fileName = `duzenli_metin.${format === 'png' ? 'png' : 'jpg'}`;
+        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+        await shareFile(blob, fileName, mime);
+    }
+    
+    window.onclick = function(event) {
+        if (event.target === modal) closeShareModal();
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
+        updateInputCounter();
+        
+        const inp = document.getElementById('input');
+        if(inp) inp.addEventListener('keydown', (e) => { if((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
+        
+        // Output değişikliklerini izle
+        const outputArea = document.getElementById('output');
+        if(outputArea) outputArea.addEventListener('input', updateOutputCounter);
+    });
 </script>
 </body>
 </html>
