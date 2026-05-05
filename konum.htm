@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>📍 Konum Bul ve Paylaş | Basit Araç</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 40px;
+            padding: 28px 24px 32px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: 0.2s;
+        }
+        h1 {
+            font-size: 1.9rem;
+            margin: 0 0 8px;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .sub {
+            color: #4b5563;
+            margin-bottom: 28px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: inline-block;
+            padding-bottom: 6px;
+        }
+        .map-placeholder {
+            background: #eef2ff;
+            border-radius: 28px;
+            height: 220px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #2563eb;
+            font-weight: 500;
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+            position: relative;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 24px;
+        }
+        .info-box {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        .coord {
+            font-family: monospace;
+            font-size: 1rem;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 20px;
+            margin: 6px 0;
+            border: 1px solid #cbd5e1;
+            word-break: break-all;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        button {
+            background: #1877f2;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 14px 22px;
+            border-radius: 60px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        button:active { transform: scale(0.97); }
+        .btn-outline {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-outline:hover { background: #f1f5f9; }
+        .status {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #2563eb;
+            font-weight: 500;
+        }
+        hr {
+            margin: 20px 0 10px;
+            border-color: #e2e8f0;
+        }
+        footer {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 24px;
+        }
+        @media (max-width: 500px) {
+            .card { padding: 20px; }
+            button { padding: 12px 18px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>📍 Konum Bul & Paylaş</h1>
+    <div class="sub">tek dokunuşla yerini gönder</div>
+
+    <!-- harita alanı -->
+    <div class="map-placeholder" id="mapContainer">
+        <div>🗺️ Harita burada görünecek</div>
+        <div style="font-size:12px; margin-top:8px;">📍 Konum bul butonuna tıkla</div>
+    </div>
+
+    <!-- konum bilgileri -->
+    <div class="info-box" id="infoBox">
+        <div style="font-weight:700;">📍 Mevcut Konum</div>
+        <div class="coord" id="latlon">Henüz alınmadı</div>
+        <div class="coord" id="address">🏠 Adres: —</div>
+        <div id="accuracy" style="font-size:0.75rem; color:#475569;">🎯 Doğruluk: —</div>
+    </div>
+
+    <div class="btn-group">
+        <button id="getLocationBtn">📍 Konumu Bul</button>
+        <button id="shareBtn" class="btn-outline" disabled>📤 Konumu Paylaş</button>
+        <button id="copyCoordsBtn" class="btn-outline" disabled>📋 Kopyala</button>
+    </div>
+    <div id="statusMsg" class="status"></div>
+    <hr />
+    <footer>📍 Cihaz izin verdiğinde doğru konum gösterilir.<br>Paylaş butonu ile WhatsApp, mesaj veya mail üzerinden gönderebilirsin.</footer>
+</div>
+
+<script>
+    // === BASİT KONUM BULUCU + PAYLAŞIM ===
+    let currentLat = null;
+    let currentLng = null;
+    let currentAccuracy = null;
+    let currentAddress = "Adres alınamadı";
+
+    // DOM elementleri
+    const getBtn = document.getElementById('getLocationBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const copyBtn = document.getElementById('copyCoordsBtn');
+    const latlonDiv = document.getElementById('latlon');
+    const addressDiv = document.getElementById('address');
+    const accuracySpan = document.getElementById('accuracy');
+    const mapContainer = document.getElementById('mapContainer');
+    const statusDiv = document.getElementById('statusMsg');
+
+    // OpenStreetMap görsel harita oluştur (iframe)
+    function updateMap(lat, lng) {
+        if (!lat || !lng) return;
+        // Leaflet değil, basit statik harita görüntüsü (OpenStreetMap'in static tile'ı için)
+        // Daha temiz: OpenStreetMap'ın embed'ı için:
+        const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.02}%2C${lat-0.02}%2C${lng+0.02}%2C${lat+0.02}&layer=mapnik&marker=${lat},${lng}`;
+        mapContainer.innerHTML = `<iframe src="${mapUrl}" allowfullscreen></iframe>`;
+    }
+
+    // Adres çözümleme (reverse geocoding) - basit ve ücretsiz (Nominatim)
+    async function fetchAddress(lat, lng) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=tr`);
+            const data = await response.json();
+            if (data && data.display_name) {
+                let short = data.display_name.split(',')[0];
+                if (data.address?.road) short = data.address.road;
+                if (data.address?.village) short = data.address.village;
+                if (data.address?.town) short = data.address.town;
+                if (data.address?.city) short = data.address.city;
+                currentAddress = short || data.display_name.substring(0, 60);
+            } else {
+                currentAddress = "Adres bilgisi alınamadı";
+            }
+        } catch (err) {
+            console.warn("Adres çözümleme hatası:", err);
+            currentAddress = "Adres çözümlenemedi (çevrimdışı veya hız sınırı)";
+        }
+        addressDiv.innerHTML = `🏠 Adres: ${currentAddress}`;
+    }
+
+    // Konum alındığında çalışacak
+    function onLocationSuccess(position) {
+        currentLat = position.coords.latitude;
+        currentLng = position.coords.longitude;
+        currentAccuracy = Math.round(position.coords.accuracy) + " metre";
+
+        latlonDiv.innerHTML = `🌍 Enlem: ${currentLat.toFixed(6)} , Boylam: ${currentLng.toFixed(6)}`;
+        accuracySpan.innerHTML = `🎯 Doğruluk: ±${currentAccuracy}`;
+
+        // adres çek (async)
+        fetchAddress(currentLat, currentLng);
+        
+        // haritayı güncelle
+        updateMap(currentLat, currentLng);
+        
+        // butonları aktifleştir
+        shareBtn.disabled = false;
+        copyBtn.disabled = false;
+        
+        statusDiv.innerHTML = "✅ Konum başarıyla alındı! Artık paylaşabilirsin.";
+        setTimeout(() => { statusDiv.innerHTML = ""; }, 4000);
+    }
+
+    function onLocationError(error) {
+        let errMsg = "";
+        switch(error.code) {
+            case 1: errMsg = "Konum izni reddedildi. Ayarlardan izin verip tekrar dene."; break;
+            case 2: errMsg = "Konum bilgisi alınamıyor (cihaz veya ağ hatası)."; break;
+            case 3: errMsg = "Konum zaman aşımına uğradı. Tekrar dene."; break;
+            default: errMsg = "Bilinmeyen hata.";
+        }
+        statusDiv.innerHTML = `⚠️ ${errMsg}`;
+        alert("Konum alınamadı: " + errMsg);
+        shareBtn.disabled = true;
+        copyBtn.disabled = true;
+    }
+
+    // Konum bul butonu
+    function getLocation() {
+        statusDiv.innerHTML = "🔄 Konum isteniyor... Lütfen izin ver.";
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            });
+        } else {
+            alert("Tarayıcınız konum desteğine sahip değil.");
+            statusDiv.innerHTML = "❌ Tarayıcı konum desteklemiyor.";
+        }
+    }
+
+    // Paylaşım (Web Share API) – coordinat + adres + harita linki
+    async function shareLocation() {
+        if (!currentLat || !currentLng) {
+            alert("Önce 'Konum Bul' butonuna tıklayarak konumunuzu alın.");
+            return;
+        }
+        
+        const mapsLink = `https://www.openstreetmap.org/?mlat=${currentLat}&mlon=${currentLng}#map=16/${currentLat}/${currentLng}`;
+        const googleMapsLink = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+        const message = `📍 *Konumum* 🗺️\nEnlem: ${currentLat.toFixed(6)}\nBoylam: ${currentLng.toFixed(6)}\n🏠 Yaklaşık adres: ${currentAddress}\n🎯 Doğruluk: ±${currentAccuracy}\n\n📌 Haritalar:\nOpenStreetMap: ${mapsLink}\nGoogle Maps: ${googleMapsLink}`;
+        
+        // Eğer Web Share API destekliyorsa (özellikle mobil)
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Konumum',
+                    text: message,
+                    url: googleMapsLink
+                });
+                statusDiv.innerHTML = "✅ Konum paylaşıldı!";
+                setTimeout(() => statusDiv.innerHTML = "", 3000);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    fallbackCopyShare(message, googleMapsLink);
+                }
+            }
+        } else {
+            fallbackCopyShare(message, googleMapsLink);
+        }
+    }
+    
+    function fallbackCopyShare(message, mapLink) {
+        // Paylaşım yapılamazsa, mesajı kopyala ve kullanıcıya bildir
+        const fullMessage = `${message}\n\n🔗 Harita linki: ${mapLink}`;
+        navigator.clipboard.writeText(fullMessage).then(() => {
+            alert("📋 Konum bilgisi panoya kopyalandı!\nŞimdi WhatsApp veya mesaj uygulamasında yapıştırabilirsin.");
+            statusDiv.innerHTML = "📍 Bilgiler panoya kopyalandı, istediğin yere yapıştır.";
+            setTimeout(() => statusDiv.innerHTML = "", 4000);
+        }).catch(() => {
+            alert("Paylaşım desteklenmiyor. Bilgileri manuel kopyala:\n" + fullMessage);
+        });
+    }
+    
+    // Koordinatları panoya kopyala
+    function copyCoordinates() {
+        if (!currentLat || !currentLng) {
+            alert("Konum henüz alınmadı. Önce 'Konum Bul' butonunu kullan.");
+            return;
+        }
+        const mapLink = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+        const textToCopy = `📍 Konum: ${currentLat.toFixed(6)}, ${currentLng.toFixed(6)}\n🏠 Adres: ${currentAddress}\n🗺️ Harita: ${mapLink}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert("✅ Koordinatlar ve adres panoya kopyalandı!");
+            statusDiv.innerHTML = "📋 Kopyalandı.";
+            setTimeout(() => statusDiv.innerHTML = "", 2000);
+        }).catch(() => {
+            alert("Kopyalama başarısız, manuel seç.");
+        });
+    }
+    
+    // Buton dinleyicileri
+    getBtn.addEventListener('click', getLocation);
+    shareBtn.addEventListener('click', shareLocation);
+    copyBtn.addEventListener('click', copyCoordinates);
+    
+    // Başlangıç mesajı
+    statusDiv.innerHTML = "📍 'Konum Bul' ile yerini paylaşmaya hazır.";
+</script>
+</body>
+</html>
