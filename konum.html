@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>📍 Konum Paylaş | Kesin Çözüm + Manuel Giriş</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #eef2ff;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .card {
+            max-width: 620px;
+            width: 100%;
+            background: white;
+            border-radius: 40px;
+            padding: 28px 24px 32px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+            transition: 0.2s;
+        }
+        h1 {
+            font-size: 1.9rem;
+            margin: 0 0 8px;
+            color: #1877f2;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .sub {
+            text-align: center;
+            color: #4b5563;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 6px;
+        }
+        .map-area {
+            background: #f1f5f9;
+            border-radius: 28px;
+            height: 220px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .info-card {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 16px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .coord-box {
+            font-family: monospace;
+            background: white;
+            padding: 10px 12px;
+            border-radius: 20px;
+            margin: 8px 0;
+            border: 1px solid #cbd5e1;
+            word-break: break-all;
+            font-weight: 500;
+        }
+        .flex-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0 10px;
+            justify-content: center;
+        }
+        button {
+            background: #1877f2;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:active { transform: scale(0.97); }
+        .btn-outline {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        .manual-input {
+            background: #fef9e3;
+            border-radius: 24px;
+            padding: 16px;
+            margin: 12px 0;
+            border: 1px solid #fde68a;
+        }
+        .coord-input {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .coord-input input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 60px;
+            border: 1px solid #cbd5e1;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .status {
+            font-size: 0.85rem;
+            margin-top: 10px;
+            color: #2563eb;
+            font-weight: 500;
+            text-align: center;
+        }
+        hr {
+            margin: 20px 0 10px;
+            border-color: #e2e8f0;
+        }
+        footer {
+            font-size: 0.7rem;
+            color: #6c757d;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .error-text {
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>📍 Konum Paylaş</h1>
+    <div class="sub">Otomatik veya manuel konum gir</div>
+
+    <!-- harita -->
+    <div class="map-area" id="mapArea">
+        <div>🗺️ Harita</div>
+        <div style="font-size:12px;">📍 Konum bulunca görünecek</div>
+    </div>
+
+    <!-- otomatik konum bilgileri -->
+    <div class="info-card">
+        <div style="font-weight: 700;">📍 Otomatik Konum</div>
+        <div class="coord-box" id="autoCoord">Henüz alınmadı</div>
+        <div class="coord-box" id="autoAddress">🏠 Adres: —</div>
+        <div id="autoAccuracy" style="font-size:0.75rem;">🎯 Doğruluk: —</div>
+    </div>
+
+    <!-- MANUEL GİRİŞ (kesin çözüm) -->
+    <div class="manual-input">
+        <div style="font-weight: 700; margin-bottom: 8px;">✍️ Manuel Konum (otomatik çalışmazsa)</div>
+        <div class="coord-input">
+            <input type="text" id="manualLat" placeholder="Enlem (örn: 41.0082)" value="">
+            <input type="text" id="manualLng" placeholder="Boylam (örn: 28.9784)" value="">
+        </div>
+        <div class="flex-buttons" style="margin-top: 5px;">
+            <button id="useManualBtn" class="btn-outline" style="background:#fef3c7;">📍 Manuel Konumu Kullan</button>
+            <button id="shareManualBtn" class="btn-outline" disabled>📤 Manuel Paylaş</button>
+        </div>
+        <div class="status" id="manualStatus"></div>
+    </div>
+
+    <div class="flex-buttons">
+        <button id="getLocationBtn">📍 Otomatik Bul</button>
+        <button id="shareAutoBtn" class="btn-outline" disabled>📤 Konumu Paylaş</button>
+        <button id="copyAutoBtn" class="btn-outline" disabled>📋 Kopyala</button>
+    </div>
+
+    <div id="globalStatus" class="status"></div>
+    <hr />
+    <footer>🔒 İzin verilmezse veya otomatik konum çalışmazsa, <strong>manuel giriş</strong> kullan.<br>Harita için konum seçildikten sonra "Manuel Paylaş" ile gönderebilirsin.</footer>
+</div>
+
+<script>
+    // ---------- DEĞİŞKENLER ----------
+    let currentLat = null;
+    let currentLng = null;
+    let currentAccuracy = null;
+    let currentAddress = "Adres alınamadı";
+    let isManualMode = false;   // manuel modda mı?
+
+    // DOM
+    const getAutoBtn = document.getElementById('getLocationBtn');
+    const shareAutoBtn = document.getElementById('shareAutoBtn');
+    const copyAutoBtn = document.getElementById('copyAutoBtn');
+    const autoCoordDiv = document.getElementById('autoCoord');
+    const autoAddressDiv = document.getElementById('autoAddress');
+    const autoAccuracySpan = document.getElementById('autoAccuracy');
+    const mapArea = document.getElementById('mapArea');
+    const globalStatus = document.getElementById('globalStatus');
+    
+    // Manuel elementler
+    const manualLatInput = document.getElementById('manualLat');
+    const manualLngInput = document.getElementById('manualLng');
+    const useManualBtn = document.getElementById('useManualBtn');
+    const shareManualBtn = document.getElementById('shareManualBtn');
+    const manualStatusDiv = document.getElementById('manualStatus');
+
+    // ----- Yardımcı: Haritayı güncelle (OpenStreetMap iframe)
+    function updateMap(lat, lng) {
+        if (!lat || !lng) return;
+        const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.02}%2C${lat-0.02}%2C${lng+0.02}%2C${lat+0.02}&layer=mapnik&marker=${lat},${lng}`;
+        mapArea.innerHTML = `<iframe src="${mapUrl}" title="harita" allowfullscreen></iframe>`;
+    }
+
+    // Adres çözümleme (Nominatim)
+    async function fetchAddress(lat, lng, isManual = false) {
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=tr`);
+            const data = await res.json();
+            let addressText = "Adres bilgisi yok";
+            if (data && data.display_name) {
+                let short = data.display_name.split(',')[0];
+                if (data.address?.road) short = data.address.road;
+                if (data.address?.village) short = data.address.village;
+                if (data.address?.town) short = data.address.town;
+                if (data.address?.city) short = data.address.city;
+                addressText = short || data.display_name.substring(0, 60);
+            }
+            if (isManual) {
+                currentAddress = addressText;
+                autoAddressDiv.innerHTML = `🏠 Adres: ${addressText}`;
+            } else {
+                currentAddress = addressText;
+                autoAddressDiv.innerHTML = `🏠 Adres: ${addressText}`;
+            }
+        } catch (err) {
+            console.warn("Adres hatası:", err);
+            if (!isManual) autoAddressDiv.innerHTML = `🏠 Adres: (çevrimdışı adres alınamadı)`;
+            else autoAddressDiv.innerHTML = `🏠 Adres: (çevrimdışı)`;
+        }
+    }
+
+    // Otomatik konum başarılı
+    function onLocationSuccess(position) {
+        currentLat = position.coords.latitude;
+        currentLng = position.coords.longitude;
+        currentAccuracy = Math.round(position.coords.accuracy) + " metre";
+        isManualMode = false;
+        
+        autoCoordDiv.innerHTML = `🌍 Enlem: ${currentLat.toFixed(6)} , Boylam: ${currentLng.toFixed(6)}`;
+        autoAccuracySpan.innerHTML = `🎯 Doğruluk: ±${currentAccuracy}`;
+        
+        // adres çek
+        fetchAddress(currentLat, currentLng, false);
+        updateMap(currentLat, currentLng);
+        
+        shareAutoBtn.disabled = false;
+        copyAutoBtn.disabled = false;
+        globalStatus.innerHTML = "✅ Konum alındı! Artık paylaşabilir veya kopyalayabilirsin.";
+        setTimeout(() => { if(globalStatus.innerHTML.includes("alındı")) globalStatus.innerHTML = ""; }, 4000);
+    }
+    
+    function onLocationError(error) {
+        let errMsg = "";
+        switch(error.code) {
+            case 1: errMsg = "❌ Konum izni reddedildi. Lütfen telefon/tarayıcı ayarlarından konum iznini etkinleştir. Alternatif: Aşağıdaki 'Manuel Konum' bölümünü kullan."; break;
+            case 2: errMsg = "❌ Konum bilgisi alınamıyor (GPS sinyali yok veya ağ hatası). Manuel giriş yapmayı dene."; break;
+            case 3: errMsg = "❌ Konum zaman aşımına uğradı. Tekrar dene veya manuel gir."; break;
+            default: errMsg = "❌ Bilinmeyen konum hatası.";
+        }
+        globalStatus.innerHTML = errMsg;
+        shareAutoBtn.disabled = true;
+        copyAutoBtn.disabled = true;
+        autoCoordDiv.innerHTML = `⚠️ Konum alınamadı: ${errMsg}`;
+        // butonları manuel yönlendir
+        manualStatusDiv.innerHTML = "💡 Otomatik konum çalışmazsa, manuel giriş yapabilirsiniz.";
+    }
+    
+    function getAutoLocation() {
+        globalStatus.innerHTML = "🔄 Konum isteniyor... Telefon izin isterse 'İzin Ver'.";
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            });
+        } else {
+            globalStatus.innerHTML = "❌ Tarayıcınız Geolocation desteklemiyor. Manuel giriş kullanın.";
+            shareAutoBtn.disabled = true;
+        }
+    }
+    
+    // ----- MANUEL KONUM KULLAN -----
+    function useManualLocation() {
+        let lat = parseFloat(manualLatInput.value.trim());
+        let lng = parseFloat(manualLngInput.value.trim());
+        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            manualStatusDiv.innerHTML = "⚠️ Geçerli enlem (-90/90) ve boylam (-180/180) girin. Örnek: 41.0082, 28.9784";
+            return;
+        }
+        currentLat = lat;
+        currentLng = lng;
+        currentAccuracy = "Manuel giriş";
+        isManualMode = true;
+        
+        autoCoordDiv.innerHTML = `🌍 (Manuel) Enlem: ${lat.toFixed(6)} , Boylam: ${lng.toFixed(6)}`;
+        autoAccuracySpan.innerHTML = `🎯 Doğruluk: Manuel (kesin)`;
+        updateMap(lat, lng);
+        fetchAddress(lat, lng, true);
+        
+        shareAutoBtn.disabled = false;
+        copyAutoBtn.disabled = false;
+        shareManualBtn.disabled = false;
+        manualStatusDiv.innerHTML = "✅ Manuel konum aktif! Artık 'Manuel Paylaş' veya üstteki 'Konumu Paylaş' ile gönderebilirsin.";
+        globalStatus.innerHTML = "📍 Manuel konum yüklendi.";
+        setTimeout(() => { if(globalStatus.innerHTML === "📍 Manuel konum yüklendi.") globalStatus.innerHTML = ""; }, 3000);
+    }
+    
+    // ---- PAYLAŞIM (Web Share + Fallback) ----
+    async function shareLocation(isManualTrigger = false) {
+        if (!currentLat || !currentLng) {
+            alert("Önce konum belirleyin (Otomatik Bul veya Manuel Konumu Kullan)");
+            return;
+        }
+        const mapsLinkOSM = `https://www.openstreetmap.org/?mlat=${currentLat}&mlon=${currentLng}#map=16/${currentLat}/${currentLng}`;
+        const mapsLinkGoogle = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+        const modeText = isManualMode ? "(Manuel)" : "(GPS)";
+        const message = `📍 *Konumum* ${modeText}\n🗺️ Enlem: ${currentLat.toFixed(6)}\n🗺️ Boylam: ${currentLng.toFixed(6)}\n🏠 Adres: ${currentAddress}\n🎯 Doğruluk: ${currentAccuracy}\n\n📌 Haritalar:\n• Google Maps: ${mapsLinkGoogle}\n• OpenStreetMap: ${mapsLinkOSM}`;
+        
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Konumum',
+                    text: message,
+                    url: mapsLinkGoogle
+                });
+                const statusDiv = isManualTrigger ? manualStatusDiv : globalStatus;
+                statusDiv.innerHTML = "✅ Konum paylaşıldı!";
+                setTimeout(() => statusDiv.innerHTML = "", 3000);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    fallbackCopy(message, mapsLinkGoogle, isManualTrigger);
+                }
+            }
+        } else {
+            fallbackCopy(message, mapsLinkGoogle, isManualTrigger);
+        }
+    }
+    
+    function fallbackCopy(message, googleLink, isManualTrigger) {
+        const fullMsg = `${message}\n\n🔗 Harita linki: ${googleLink}`;
+        navigator.clipboard.writeText(fullMsg).then(() => {
+            alert("📋 Konum bilgisi panoya kopyalandı!\nArtık WhatsApp, Telegram veya başka uygulamaya yapıştırabilirsiniz.");
+            if (isManualTrigger) manualStatusDiv.innerHTML = "📋 Kopyalandı, yapıştırabilirsin.";
+            else globalStatus.innerHTML = "📋 Kopyalandı, mesaj olarak gönderebilirsin.";
+        }).catch(() => {
+            alert("Paylaşım desteklenmiyor. Bilgileri manuel kopyala:\n" + fullMsg);
+        });
+    }
+    
+    // Koordinatları kopyala
+    function copyCoordinates() {
+        if (!currentLat || !currentLng) {
+            alert("Konum yok. Önce konum al veya manuel gir.");
+            return;
+        }
+        const googleLink = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+        const text = `📍 Konumum\nEnlem: ${currentLat.toFixed(6)}\nBoylam: ${currentLng.toFixed(6)}\nAdres: ${currentAddress}\nHarita: ${googleLink}`;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ Koordinatlar ve adres panoya kopyalandı!");
+            globalStatus.innerHTML = "📋 Kopyalandı.";
+            setTimeout(() => globalStatus.innerHTML = "", 2000);
+        }).catch(() => alert("Kopyalama başarısız, manuel kopyala."));
+    }
+    
+    // Manuel paylaşım butonu için
+    function onManualShare() {
+        if (!currentLat || !currentLng) {
+            manualStatusDiv.innerHTML = "⚠️ Önce 'Manuel Konumu Kullan' butonuna tıklayarak koordinatları gir ve kaydet.";
+            return;
+        }
+        shareLocation(true);  // true = manuel trigger
+    }
+    
+    // --- Event listeners ---
+    getAutoBtn.addEventListener('click', getAutoLocation);
+    shareAutoBtn.addEventListener('click', () => shareLocation(false));
+    copyAutoBtn.addEventListener('click', copyCoordinates);
+    useManualBtn.addEventListener('click', useManualLocation);
+    shareManualBtn.addEventListener('click', onManualShare);
+    
+    // sayfa yüklenirken, konum izin durumunu kontrol et (yardım mesajı)
+    if (navigator.permissions && navigator.permissions.query) {
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+            if (result.state === 'denied') {
+                globalStatus.innerHTML = "🔒 Konum izni daha önce reddedilmiş. Tarayıcı ayarlarından konum iznini açıp 'Otomatik Bul'u tekrar dene veya manuel giriş yap.";
+            } else if (result.state === 'prompt') {
+                globalStatus.innerHTML = "📍 'Otomatik Bul' butonuna tıklayıp konum izni ver.";
+            } else if (result.state === 'granted') {
+                globalStatus.innerHTML = "📍 Hazır. 'Otomatik Bul' ile konumunu alabilirsin.";
+            }
+        }).catch(() => {});
+    } else {
+        globalStatus.innerHTML = "📍 'Otomatik Bul' ile konum izni isteyebilirsin.";
+    }
+</script>
+</body>
+</html>
