@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Videolu Kart Oluşturucu</title>
+    <title>Videolu Kart Oluşturucu | Mikrofon + Gizli Link</title>
     <style>
         * {
             margin: 0;
@@ -109,6 +109,14 @@
         .btn-green:hover {
             background: #1e7e34;
         }
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
         textarea {
             width: 100%;
             padding: 12px;
@@ -187,7 +195,6 @@
             color: #888;
             margin-top: 5px;
         }
-        /* Düzenleme: Boyut ayar çubukları alt alta, geniş tam genişlik */
         .size-control {
             display: flex;
             flex-direction: column;
@@ -205,17 +212,7 @@
         }
         .locked-control input[type="range"] {
             flex: 1;
-            min-width: 0; /* esnek genişlik için */
-        }
-        .size-control label {
-            display: block;
-            margin-bottom: 6px;
-        }
-        .range-limit-note {
-            font-size: 11px;
-            color: #6c757d;
-            margin-top: 4px;
-            text-align: center;
+            min-width: 0;
         }
         .symbol-panel {
             background: #f5f0ff;
@@ -455,22 +452,91 @@
             display: none;
             pointer-events: auto;
         }
-        .cover-info {
-            background: #e9ecef;
+        .video-progress-container {
+            background: rgba(0,0,0,0.05);
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin: 16px 0 8px 0;
+            display: none;
+            border: 1px solid #e0d4f0;
+        }
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 8px;
+            background: #e0d4f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #555;
+            font-family: monospace;
+        }
+        .elapsed-time, .total-time {
+            font-weight: 600;
+            color: #764ba2;
+        }
+        
+        /* YENİ PANEL STİLLERİ - ORJİNAL TASARIMI BOZMAZ */
+        .enhancement-panel {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e8f4f8 100%);
             border-radius: 20px;
-            padding: 10px;
+            padding: 16px;
+            margin: 20px 0;
+            border: 1px solid #b8daff;
+        }
+        .panel-title {
+            font-weight: bold;
+            color: #17a2b8;
+            margin-bottom: 12px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: #ffc107;
+            color: #333;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .row-flex {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .small-input {
+            padding: 8px 12px;
+            border-radius: 30px;
+            border: 1px solid #b8daff;
+            font-size: 13px;
+            flex: 1;
+        }
+        .small-input-num {
+            width: 100px;
+            padding: 8px 12px;
+            border-radius: 30px;
+            border: 1px solid #b8daff;
             font-size: 13px;
             text-align: center;
-            margin: 10px 0;
-            color: #0c5460;
         }
-        .warning-banner {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 8px 12px;
-            border-radius: 12px;
+        .small-btn {
+            padding: 6px 14px;
             font-size: 12px;
-            margin: 10px 0;
         }
     </style>
 </head>
@@ -484,8 +550,17 @@
             <div id="resizeHandle" class="resize-handle"></div>
         </div>
         
+        <div id="videoProgressPanel" class="video-progress-container">
+            <div class="progress-bar-wrapper">
+                <div id="videoProgressFill" class="progress-fill"></div>
+            </div>
+            <div class="time-info">
+                <span>⏱️ Geçen: <span id="elapsedTimeDisplay" class="elapsed-time">00:00</span></span>
+                <span>📊 Toplam: <span id="totalTimeDisplay" class="total-time">00:00</span></span>
+            </div>
+        </div>
+        
         <div class="section-title">📐 Canvas Boyutu (Sınırlar: Genişlik 200-1400, Yükseklik 200-1400)</div>
-        <!-- BOYUT AYARLARI: ALT ALTA, GENİŞ KAYDIRICILAR -->
         <div class="size-control">
             <div>
                 <label>📏 Genişlik: <span id="widthVal">600</span> px</label>
@@ -502,8 +577,6 @@
                 </div>
             </div>
         </div>
-        
-        
         
         <div class="section-title">📹 1. Video Yükle (Cover)</div>
         <div class="upload-area" id="uploadZone">
@@ -522,6 +595,43 @@
         
         <div id="recordStatus" class="recording-status">
             ⏺ Kayıt yapılıyor... Video bitince MP4 inecek
+        </div>
+        
+        <!-- ========= YENİ EKLENEN PANEL: MİKROFON & GİZLİ LİNK ========= -->
+        <div class="enhancement-panel">
+            <div class="panel-title">
+                🎤 MİKROFON KAYDI & 🔗 GİZLİ LİNK
+                <span id="micBadge" class="badge" style="background:#6c757d; color:white;">Kayıt yok</span>
+            </div>
+            
+            <!-- Mikrofon Bölümü -->
+            <div class="row-flex">
+                <button id="startMicBtn" class="btn-info small-btn">🎙️ Kayda Başla</button>
+                <button id="stopMicBtn" class="btn-warning small-btn" disabled>⏹️ Durdur</button>
+                <button id="playMicBtn" class="btn-green small-btn" disabled>▶️ Dinle</button>
+                <button id="clearMicBtn" class="btn-gray small-btn" disabled>🗑️ Temizle</button>
+            </div>
+            <div id="micStatusText" class="coord-info" style="margin-bottom:12px;">Mikrofon ile ses kaydedip videonuza ekleyebilirsiniz.</div>
+            
+            <!-- Müzik ve Link Bölümü -->
+            <div class="row-flex">
+                <input type="file" id="bgMusicInput" accept="audio/*" style="flex:1; padding:6px;">
+                <button id="loadMusicBtn" class="btn-info small-btn">🎵 Müzik Yükle</button>
+                <button id="clearMusicBtn" class="btn-gray small-btn">🗑️ Temizle</button>
+            </div>
+            <div id="musicStatusText" class="coord-info" style="margin-bottom:12px;">Arka plan müziği ekleyin.</div>
+            
+            <div class="row-flex">
+                <input type="text" id="hiddenLinkUrl" class="small-input" placeholder="Gizli Link Adresi" value="https://kocbayram.github.io/koc/eyvefasiz.html">
+                <input type="number" id="triggerSeconds" class="small-input-num" value="15" step="1" min="1" max="300">
+                <button id="setTriggerBtn" class="btn-info small-btn">⏰ Ayarla</button>
+            </div>
+            <div class="row-flex">
+                <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="autoOpenCheckbox" checked> Link Otomatik Açılsın</label>
+                <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="musicLoopCheckbox" checked> Müzik Döngüsü</label>
+                <span id="linkStatusBadge" class="badge" style="background:#28a745;">Hazır</span>
+            </div>
+            <div class="coord-info">💡 Video oynatıldığında belirlenen süre sonunda link yeni sekmede açılır. Müzik ve mikrofon sesi videoya eklenir.</div>
         </div>
         
         <div class="section-title">🖼️ 2. Logo / Resim Yükle (Boyut sınırı 10-400px)</div>
@@ -622,7 +732,9 @@ Bayram KOÇ</textarea>
             ⏱️ Kayıt süresi: <strong>2 saatten fazla (8 saate kadar)</strong> — Video doğal süresinde kaydedilir.<br>
             🎥 <strong>Video yüklendikten hemen sonra canvas üzerinde görüntülenir.</strong> Cover modu sayesinde hiç boşluk kalmaz.<br>
             🔧 Canvas boyutu artık çok daha esnek: genişlik 200-1400, yükseklik 200-1400 arası. Logo boyutu 10-400px.<br>
-            🔒 Tüm ayarlar varsayılan olarak kilitlidir. Değiştirmek için kilit butonuna tıklayın.<br><br>
+            🔒 Tüm ayarlar varsayılan olarak kilitlidir. Değiştirmek için kilit butonuna tıklayın.<br>
+            🎤 <strong>YENİ!</strong> Mikrofon ile ses kaydedin ve videonuza ekleyin!<br>
+            🔗 <strong>YENİ!</strong> Gizli link ve arka plan müziği desteği!<br><br>
             <h4>Bayram KOÇ</h4>
         </div>
     </div>
@@ -647,7 +759,7 @@ Bayram KOÇ</textarea>
 
 <script>
     (function() {
-        // ========= KİLİT SİSTEMİ =========
+        // ========= ORJİNAL KİLİT SİSTEMİ =========
         let locks = { canvasWidth: true, canvasHeight: true, logoWidth: true, logoHeight: true, textSize: true };
         function updateLockUI() {
             document.getElementById('canvasWidth').disabled = locks.canvasWidth;
@@ -677,7 +789,7 @@ Bayram KOÇ</textarea>
         document.getElementById('unlockLogoHeightBtn').onclick = () => { locks.logoHeight = !locks.logoHeight; updateLockUI(); };
         document.getElementById('lockFontBtn').onclick = () => { locks.textSize = !locks.textSize; updateLockUI(); };
         
-        // ========= FONT SİSTEMİ =========
+        // ========= ORJİNAL FONT SİSTEMİ =========
         const fontData = ["Arial","Verdana","Tahoma","Segoe UI","Roboto","Open Sans","Montserrat","Poppins","Playfair Display","Lobster","Pacifico","Dancing Script","Great Vibes","Comic Sans MS","Impact","Courier New","Georgia","Times New Roman"];
         let currentFont = "Arial";
         function renderFontList() {
@@ -694,7 +806,7 @@ Bayram KOÇ</textarea>
         }
         document.getElementById('searchInput').addEventListener('input', renderFontList);
         
-        // ========= CANVAS VE GENEL =========
+        // ========= ORJİNAL CANVAS =========
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
         let W = 600, H = 720;
@@ -720,7 +832,7 @@ Bayram KOÇ</textarea>
         widthSlider.addEventListener('input', () => { if (!locks.canvasWidth) updateCanvasSize(); });
         heightSlider.addEventListener('input', () => { if (!locks.canvasHeight) updateCanvasSize(); });
         
-        // semboller
+        // ========= ORJİNAL SEMBOLLER =========
         const symbols = ["🌸","🌺","🌹","🌷","💐","⭐","✨","🌟","❤️","🧡","💛","💚","💙","💜","🎉","🎊","🎈","🎁","☀️","🌈","🍀"];
         const symbolPanel = document.getElementById('symbolPanel');
         symbols.forEach(sym => {
@@ -731,24 +843,98 @@ Bayram KOÇ</textarea>
             symbolPanel.appendChild(btn);
         });
         
-        // ========= VİDEO DEĞİŞKENLERİ =========
+        // ========= ORJİNAL VİDEO DEĞİŞKENLERİ =========
         let videoElement = null, videoLoaded = false, animationId = null;
         let isRecording = false, mediaRecorder = null, recordedChunks = [];
         let currentVideoURL = null, audioSourceNode = null, audioContext = null;
+        let progressInterval = null;
         
-        // ========= LOGO =========
-        let logoImage = null, logoWidth = 80, logoHeight = 80, logoX = W/2, logoY = W/2;
+        // ========= YENİ: MİKROFON DEĞİŞKENLERİ =========
+        let mediaStream = null;
+        let mediaRecorderMic = null;
+        let micChunks = [];
+        let micAudioBlob = null;
+        let micAudioUrl = null;
+        let micAudioBuffer = null;
+        let isMicRecording = false;
+        let micAudioContext = null;
+        
+        // ========= YENİ: GİZLİ LİNK & MÜZİK =========
+        let bgAudioContext = null;
+        let bgAudioBuffer = null;
+        let bgAudioSource = null;
+        let triggerTimer = null;
+        let linkOpened = false;
+        let isVideoPlaying = false;
+        let triggerSeconds = 15;
+        let autoOpen = true;
+        let musicLoop = true;
+        
+        // ========= ORJİNAL LOGO =========
+        let logoImage = null, logoWidth = 80, logoHeight = 80, logoX = W/2, logoY = H/2;
         let originalImgW = 1, originalImgH = 1;
         let isDraggingOverlay = false, isResizing = false, dragStartX = 0, dragStartY = 0;
         let resizeStartW = 0, resizeStartH = 0, resizeStartMouseX = 0, resizeStartMouseY = 0;
         const keepAspectCheck = document.getElementById('keepAspect');
         
-        // ========= METİN =========
+        // ========= ORJİNAL METİN =========
         let currentMessage = document.getElementById('userMessage').value;
         let currentColor = '#ffffff', currentFontSize = 36, shadowActive = true;
         let textX = W/2, textY = H/2, isDraggingText = false, dragTextStartX = 0, dragTextStartY = 0;
         
-        // ========= COVER ÇİZİM FONKSİYONU (TAŞMA + KIRPMA, HİÇ BOŞLUK YOK) =========
+        // ========= ORJİNAL PROGRESS =========
+        const progressPanel = document.getElementById('videoProgressPanel');
+        const progressFill = document.getElementById('videoProgressFill');
+        const elapsedDisplay = document.getElementById('elapsedTimeDisplay');
+        const totalDisplay = document.getElementById('totalTimeDisplay');
+        
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+        
+        function updateProgressUI() {
+            if (!videoElement || !videoLoaded) {
+                if (progressPanel) progressPanel.style.display = 'none';
+                if (progressInterval) clearInterval(progressInterval);
+                return;
+            }
+            progressPanel.style.display = 'block';
+            const totalSec = videoElement.duration || 0;
+            const currentSec = videoElement.currentTime || 0;
+            totalDisplay.innerText = formatTime(totalSec);
+            elapsedDisplay.innerText = formatTime(currentSec);
+            const percent = totalSec > 0 ? (currentSec / totalSec) * 100 : 0;
+            progressFill.style.width = `${percent}%`;
+        }
+        
+        function startProgressUpdater() {
+            if (progressInterval) clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (videoElement && videoLoaded && !videoElement.paused) {
+                    updateProgressUI();
+                } else if (videoElement && videoLoaded) {
+                    updateProgressUI();
+                } else {
+                    if (progressPanel) progressPanel.style.display = 'none';
+                    if (progressInterval) clearInterval(progressInterval);
+                }
+            }, 200);
+        }
+        
+        function showProgressOnLoad() {
+            if (videoElement && videoLoaded) {
+                progressPanel.style.display = 'block';
+                updateProgressUI();
+                startProgressUpdater();
+            } else {
+                progressPanel.style.display = 'none';
+            }
+        }
+        
+        // ========= ORJİNAL ÇİZİM FONKSİYONLARI =========
         function drawVideoCover(vid) {
             if (!vid) return;
             if (vid.readyState < 2) return;
@@ -790,7 +976,20 @@ Bayram KOÇ</textarea>
             ctx.restore();
         }
         
-        // ========= ANA ÇİZİM =========
+        function roundedRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x+r, y);
+            ctx.lineTo(x+w-r, y);
+            ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+            ctx.lineTo(x+w, y+h-r);
+            ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+            ctx.lineTo(x+r, y+h);
+            ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+            ctx.lineTo(x, y+r);
+            ctx.quadraticCurveTo(x, y, x+r, y);
+            ctx.closePath();
+        }
+        
         function drawCanvas() {
             ctx.clearRect(0, 0, W, H);
             
@@ -844,21 +1043,7 @@ Bayram KOÇ</textarea>
             }
         }
         
-        function roundedRect(ctx, x, y, w, h, r) {
-            ctx.beginPath();
-            ctx.moveTo(x+r, y);
-            ctx.lineTo(x+w-r, y);
-            ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-            ctx.lineTo(x+w, y+h-r);
-            ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-            ctx.lineTo(x+r, y+h);
-            ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-            ctx.lineTo(x, y+r);
-            ctx.quadraticCurveTo(x, y, x+r, y);
-            ctx.closePath();
-        }
-        
-        // ========= VİDEO YÜKLEME (ANINDA GÖRÜNTÜ) =========
+        // ========= ORJİNAL VİDEO YÜKLEME =========
         function loadVideoFile(file) {
             if (!file || !file.type.startsWith('video/')) { alert('Geçerli video dosyası seçin!'); return; }
             if (currentVideoURL) URL.revokeObjectURL(currentVideoURL);
@@ -888,6 +1073,7 @@ Bayram KOÇ</textarea>
                     document.getElementById('videoInfoBox').style.display = 'block';
                     document.getElementById('videoButtons').style.display = 'flex';
                     showToast('Video yüklendi, şimdi canvas\'ta görünüyor! Boyutları değiştirebilirsiniz.', 'success');
+                    showProgressOnLoad();
                 };
                 setTimeout(() => {
                     if (videoLoaded) drawCanvas();
@@ -911,9 +1097,14 @@ Bayram KOÇ</textarea>
             if (audioContext) audioContext.close();
             videoLoaded = false;
             isRecording = false;
+            isVideoPlaying = false;
             document.getElementById('videoInfoBox').style.display = 'none';
             document.getElementById('videoButtons').style.display = 'none';
             document.getElementById('recordStatus').style.display = 'none';
+            if (progressPanel) progressPanel.style.display = 'none';
+            if (progressInterval) clearInterval(progressInterval);
+            stopBackgroundMusic();
+            if (triggerTimer) clearTimeout(triggerTimer);
             drawCanvas();
         }
         
@@ -928,36 +1119,199 @@ Bayram KOÇ</textarea>
             animate();
         }
         
-        // ========= KAYIT (UZUN SÜRE) =========
+        // ========= YENİ: MİKROFON FONKSİYONLARI =========
+        async function startMicrophoneRecording() {
+            if (isMicRecording) return;
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorderMic = new MediaRecorder(mediaStream);
+                micChunks = [];
+                mediaRecorderMic.ondataavailable = (e) => { if (e.data.size > 0) micChunks.push(e.data); };
+                mediaRecorderMic.onstop = () => {
+                    micAudioBlob = new Blob(micChunks, { type: 'audio/webm' });
+                    micAudioUrl = URL.createObjectURL(micAudioBlob);
+                    document.getElementById('micBadge').innerHTML = '✅ Kayıt alındı';
+                    document.getElementById('micBadge').style.background = '#28a745';
+                    document.getElementById('stopMicBtn').disabled = true;
+                    document.getElementById('playMicBtn').disabled = false;
+                    document.getElementById('clearMicBtn').disabled = false;
+                    document.getElementById('micStatusText').innerHTML = '✅ Ses kaydedildi!';
+                    if (micAudioContext) micAudioContext.close();
+                    micAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const reader = new FileReader();
+                    reader.onload = (e2) => {
+                        micAudioContext.decodeAudioData(e2.target.result, (buffer) => {
+                            micAudioBuffer = buffer;
+                        });
+                    };
+                    reader.readAsArrayBuffer(micAudioBlob);
+                    if (mediaStream) mediaStream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorderMic.start();
+                isMicRecording = true;
+                document.getElementById('startMicBtn').disabled = true;
+                document.getElementById('stopMicBtn').disabled = false;
+                document.getElementById('micBadge').innerHTML = '🔴 Kaydediliyor...';
+                document.getElementById('micBadge').style.background = '#dc3545';
+                document.getElementById('micStatusText').innerHTML = '🎙️ Kayıt yapılıyor...';
+            } catch(err) {
+                alert('Mikrofon erişilemedi: ' + err.message);
+            }
+        }
+        
+        function stopMicrophoneRecording() {
+            if (mediaRecorderMic && mediaRecorderMic.state === 'recording') {
+                mediaRecorderMic.stop();
+                isMicRecording = false;
+                document.getElementById('startMicBtn').disabled = false;
+            }
+        }
+        
+        function playMicrophoneRecording() {
+            if (micAudioUrl) {
+                new Audio(micAudioUrl).play();
+                document.getElementById('micStatusText').innerHTML = '▶️ Ses dinleniyor...';
+            } else {
+                document.getElementById('micStatusText').innerHTML = '❌ Kayıt yok!';
+            }
+        }
+        
+        function clearMicrophoneRecording() {
+            if (micAudioUrl) URL.revokeObjectURL(micAudioUrl);
+            micAudioBlob = null;
+            micAudioUrl = null;
+            micAudioBuffer = null;
+            if (micAudioContext) micAudioContext.close();
+            micAudioContext = null;
+            document.getElementById('micBadge').innerHTML = 'Kayıt yok';
+            document.getElementById('micBadge').style.background = '#6c757d';
+            document.getElementById('playMicBtn').disabled = true;
+            document.getElementById('clearMicBtn').disabled = true;
+            document.getElementById('micStatusText').innerHTML = 'Ses kaydı temizlendi.';
+        }
+        
+        // ========= YENİ: MÜZİK ve LİNK =========
+        function loadBackgroundMusic(file) {
+            if (!file || !file.type.startsWith('audio/')) { showToast('Geçerli müzik dosyası seçin!', 'error'); return; }
+            if (bgAudioContext) bgAudioContext.close();
+            bgAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                bgAudioContext.decodeAudioData(e.target.result, (buffer) => {
+                    bgAudioBuffer = buffer;
+                    const mins = Math.floor(buffer.duration / 60);
+                    const secs = Math.floor(buffer.duration % 60);
+                    document.getElementById('musicStatusText').innerHTML = `✅ Müzik yüklendi (${mins}:${secs.toString().padStart(2,'0')})`;
+                    showToast('Müzik yüklendi!', 'success');
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function startBackgroundMusic() {
+            if (!bgAudioBuffer) return false;
+            if (!bgAudioContext) bgAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+            bgAudioSource = bgAudioContext.createBufferSource();
+            bgAudioSource.buffer = bgAudioBuffer;
+            bgAudioSource.loop = musicLoop;
+            bgAudioSource.connect(bgAudioContext.destination);
+            bgAudioSource.start();
+            bgAudioContext.resume();
+            return true;
+        }
+        
+        function stopBackgroundMusic() {
+            if (bgAudioSource) {
+                try { bgAudioSource.stop(); } catch(e) {}
+                bgAudioSource = null;
+            }
+            if (bgAudioContext) bgAudioContext.suspend();
+        }
+        
+        function openHiddenLink() {
+            if (linkOpened) return;
+            if (!autoOpen) return;
+            const url = document.getElementById('hiddenLinkUrl').value.trim();
+            if (!url) return;
+            linkOpened = true;
+            window.open(url, '_blank');
+            document.getElementById('linkStatusBadge').innerHTML = '✅ Link açıldı!';
+            document.getElementById('linkStatusBadge').style.background = '#28a745';
+            setTimeout(() => {
+                if (document.getElementById('linkStatusBadge').innerHTML === '✅ Link açıldı!') {
+                    document.getElementById('linkStatusBadge').innerHTML = 'Hazır';
+                }
+            }, 3000);
+        }
+        
+        function startTriggerTimer() {
+            if (triggerTimer) clearTimeout(triggerTimer);
+            if (!autoOpen) return;
+            triggerTimer = setTimeout(() => {
+                openHiddenLink();
+            }, triggerSeconds * 1000);
+        }
+        
+        function onVideoStart() {
+            if (isVideoPlaying) return;
+            isVideoPlaying = true;
+            linkOpened = false;
+            startBackgroundMusic();
+            startTriggerTimer();
+            document.getElementById('linkStatusBadge').innerHTML = `⏱️ ${triggerSeconds} sn sonra link açılacak`;
+            document.getElementById('linkStatusBadge').style.background = '#17a2b8';
+        }
+        
+        function onVideoEnd() {
+            isVideoPlaying = false;
+            stopBackgroundMusic();
+            if (triggerTimer) clearTimeout(triggerTimer);
+            document.getElementById('linkStatusBadge').innerHTML = 'Hazır';
+            document.getElementById('linkStatusBadge').style.background = '#28a745';
+        }
+        
+        // ========= ORJİNAL KAYIT (MİKROFON VE MÜZİK EKLENDİ) =========
         async function startRecordAndPlay() {
             if (!videoLoaded || !videoElement) { alert('Önce bir video yükleyin!'); return; }
             if (isRecording) { alert('Kayıt devam ediyor!'); return; }
             try {
                 const canvasStream = canvas.captureStream(30);
-                let finalStream = canvasStream;
+                let audioTracks = [];
+                
+                // Video'nun kendi sesi
                 if (audioContext && videoElement) {
-                    try {
-                        const dest = audioContext.createMediaStreamDestination();
-                        if (audioSourceNode) {
-                            audioSourceNode.disconnect();
-                            audioSourceNode.connect(dest);
-                            audioSourceNode.connect(audioContext.destination);
-                        } else {
-                            const source = audioContext.createMediaElementSource(videoElement);
-                            source.connect(dest);
-                            source.connect(audioContext.destination);
-                        }
-                        await audioContext.resume();
-                        finalStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
-                    } catch(e) {}
+                    const dest = audioContext.createMediaStreamDestination();
+                    if (audioSourceNode) {
+                        audioSourceNode.disconnect();
+                        audioSourceNode.connect(dest);
+                        audioSourceNode.connect(audioContext.destination);
+                    }
+                    await audioContext.resume();
+                    audioTracks.push(...dest.stream.getAudioTracks());
                 }
-                // *** DEĞİŞİKLİK SADECE BURADA: bitrate düşürüldü ve daha iyi codec tercih edildi ***
+                
+                // Mikrofon sesi
+                if (micAudioBuffer) {
+                    const micCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const micSource = micCtx.createBufferSource();
+                    micSource.buffer = micAudioBuffer;
+                    const micDest = micCtx.createMediaStreamDestination();
+                    micSource.connect(micDest);
+                    micSource.start();
+                    await micCtx.resume();
+                    audioTracks.push(...micDest.stream.getAudioTracks());
+                }
+                
+                let finalStream = canvasStream;
+                if (audioTracks.length > 0) {
+                    finalStream = new MediaStream([...canvasStream.getVideoTracks(), ...audioTracks]);
+                }
+                
                 const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
                 mediaRecorder = new MediaRecorder(finalStream, {
                     mimeType: mimeType,
-                    videoBitsPerSecond: 1500000  // 1.5 Mbps (varsayılan 10-20 Mbps idi)
+                    videoBitsPerSecond: 1500000
                 });
-                // *** DEĞİŞİKLİK SONU ***
                 recordedChunks = [];
                 mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
                 mediaRecorder.onstop = () => {
@@ -988,9 +1342,12 @@ Bayram KOÇ</textarea>
                 
                 videoElement.currentTime = 0;
                 await videoElement.play();
+                onVideoStart();
                 startVideoAnimation();
+                startProgressUpdater();
                 
                 videoElement.onended = () => {
+                    onVideoEnd();
                     if (mediaRecorder && mediaRecorder.state === 'recording') {
                         setTimeout(() => mediaRecorder.stop(), 300);
                     }
@@ -1006,7 +1363,7 @@ Bayram KOÇ</textarea>
             }
         }
         
-        // ========= LOGO & METİN SÜRÜKLEME (KISALTILMIŞ) =========
+        // ========= ORJİNAL LOGO & METİN SÜRÜKLEME =========
         function getMousePos(e) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
@@ -1015,12 +1372,14 @@ Bayram KOÇ</textarea>
             else { cx = e.clientX; cy = e.clientY; }
             return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
         }
+        
         function isOverLogo(mx, my) {
             if (!logoImage) return false;
             const left = logoX - logoWidth/2, right = logoX + logoWidth/2;
             const top = logoY - logoHeight/2, bottom = logoY + logoHeight/2;
             return (mx >= left-15 && mx <= right+15 && my >= top-15 && my <= bottom+15);
         }
+        
         function updateResizeHandlePosition() {
             if (!logoImage) { document.getElementById('resizeHandle').style.display = 'none'; return; }
             const handle = document.getElementById('resizeHandle');
@@ -1034,6 +1393,7 @@ Bayram KOÇ</textarea>
             handle.style.left = (handleX - containerRect.left) + "px";
             handle.style.top = (handleY - containerRect.top) + "px";
         }
+        
         function onLogoMouseDown(e) {
             const handle = document.getElementById('resizeHandle');
             const rect = handle.getBoundingClientRect();
@@ -1057,6 +1417,7 @@ Bayram KOÇ</textarea>
                 e.preventDefault();
             }
         }
+        
         function onLogoMouseMove(e) {
             if (isResizing && logoImage) {
                 const { x, y } = getMousePos(e);
@@ -1087,7 +1448,9 @@ Bayram KOÇ</textarea>
             document.getElementById('logoY').value = logoY;
             drawCanvas(); updateResizeHandlePosition();
         }
+        
         function onLogoMouseUp() { isDraggingOverlay = false; isResizing = false; canvas.style.cursor = 'default'; }
+        
         function isOverText(mx, my) {
             const lines = currentMessage.split('\n');
             const lineH = currentFontSize * 1.35;
@@ -1098,6 +1461,7 @@ Bayram KOÇ</textarea>
             lines.forEach(l => maxW = Math.max(maxW, ctx.measureText(l).width));
             return (mx >= textX - maxW/2 - 20 && mx <= textX + maxW/2 + 20 && my >= startY - 20 && my <= startY + totalH + 20);
         }
+        
         function onTextMouseDown(e) {
             const { x, y } = getMousePos(e);
             if (isOverText(x, y)) {
@@ -1108,6 +1472,7 @@ Bayram KOÇ</textarea>
                 e.preventDefault();
             }
         }
+        
         function onTextMouseMove(e) {
             if (!isDraggingText) return;
             const { x, y } = getMousePos(e);
@@ -1117,9 +1482,10 @@ Bayram KOÇ</textarea>
             document.getElementById('messageY').value = textY;
             drawCanvas();
         }
+        
         function onTextMouseUp() { isDraggingText = false; canvas.style.cursor = 'default'; }
         
-        // ========= EVENT KAYITLARI =========
+        // ========= ORJİNAL EVENT KAYITLARI =========
         document.getElementById('uploadZone').addEventListener('click', () => document.getElementById('videoFileInput').click());
         document.getElementById('uploadZone').addEventListener('dragover', e => e.preventDefault());
         document.getElementById('uploadZone').addEventListener('drop', e => { e.preventDefault(); const file = e.dataTransfer.files[0]; if(file && file.type.startsWith('video/')) loadVideoFile(file); else alert('Video dosyası sürükleyin'); });
@@ -1127,7 +1493,6 @@ Bayram KOÇ</textarea>
         document.getElementById('startRecordingBtn').addEventListener('click', startRecordAndPlay);
         document.getElementById('deleteVideoBtn').addEventListener('click', removeVideo);
         
-        // logo yükleme
         document.getElementById('logoUploadZone').addEventListener('click', () => document.getElementById('logoFileInput').click());
         document.getElementById('logoFileInput').addEventListener('change', e => { if(e.target.files[0]) { const reader=new FileReader(); reader.onload=ev=>{ const img=new Image(); img.onload=()=>{ logoImage=img; originalImgW=img.width; originalImgH=img.height; logoWidth=80; logoHeight=80*(originalImgH/originalImgW); if(logoHeight>400) logoHeight=400; if(logoHeight<10) logoHeight=10; document.getElementById('logoWidth').value=logoWidth; document.getElementById('logoHeight').value=logoHeight; document.getElementById('logoWidthVal').innerText=logoWidth+"px"; document.getElementById('logoHeightVal').innerText=logoHeight+"px"; document.getElementById('logoThumb').src=ev.target.result; document.getElementById('logoPreviewArea').style.display='flex'; drawCanvas(); updateResizeHandlePosition(); }; img.src=ev.target.result; }; reader.readAsDataURL(e.target.files[0]); } });
         document.getElementById('clearLogoBtn').onclick = () => { logoImage=null; document.getElementById('logoPreviewArea').style.display='none'; document.getElementById('resizeHandle').style.display='none'; drawCanvas(); };
@@ -1138,7 +1503,6 @@ Bayram KOÇ</textarea>
         document.getElementById('resetLogoPosBtn').onclick = () => { logoX=W/2; logoY=H/2; document.getElementById('logoX').value=logoX; document.getElementById('logoY').value=logoY; drawCanvas(); updateResizeHandlePosition(); };
         document.getElementById('resetLogoSizeBtn').onclick = () => { if(logoImage){ logoWidth=80; logoHeight=80*(originalImgH/originalImgW); if(logoHeight>400) logoHeight=400; if(logoHeight<10) logoHeight=10; document.getElementById('logoWidth').value=logoWidth; document.getElementById('logoHeight').value=logoHeight; document.getElementById('logoWidthVal').innerText=logoWidth+"px"; document.getElementById('logoHeightVal').innerText=logoHeight+"px"; drawCanvas(); updateResizeHandlePosition(); } };
         
-        // metin
         document.getElementById('userMessage').addEventListener('input', e=>{ currentMessage=e.target.value; drawCanvas(); });
         document.getElementById('clearMessageButton').onclick = () => { document.getElementById('userMessage').value=''; currentMessage=''; drawCanvas(); };
         document.getElementById('textSizeSlider').addEventListener('input', e=>{ if(!locks.textSize){ currentFontSize=parseInt(e.target.value); document.getElementById('textSizeVal').innerText=currentFontSize; drawCanvas(); } });
@@ -1154,7 +1518,7 @@ Bayram KOÇ</textarea>
         window.addEventListener('touchmove', e=>{ onTextMouseMove(e); onLogoMouseMove(e); });
         window.addEventListener('touchend', ()=>{ onTextMouseUp(); onLogoMouseUp(); });
         
-        // renk seçici
+        // ========= ORJİNAL RENK SEÇİCİ =========
         const spectrumOverlay=document.getElementById('spectrumOverlay');
         const spectrumCanvasElem=document.getElementById('spectrumCanvas');
         let spectrumCtx=spectrumCanvasElem.getContext('2d');
@@ -1170,12 +1534,25 @@ Bayram KOÇ</textarea>
         spectrumCanvasElem.addEventListener('click',e=>{ const rect=spectrumCanvasElem.getBoundingClientRect(), x=Math.floor((e.clientX-rect.left)*400/rect.width), y=Math.floor((e.clientY-rect.top)*220/rect.height); if(x>=0&&x<400&&y>=0&&y<220){ const px=spectrumCtx.getImageData(x,y,1,1).data; tempColor='#'+[px[0],px[1],px[2]].map(v=>v.toString(16).padStart(2,'0')).join(''); document.getElementById('spectrumPreviewBox').style.backgroundColor=tempColor; document.getElementById('spectrumHexInput').value=tempColor.toUpperCase(); } });
         document.getElementById('spectrumHexInput').addEventListener('change',e=>{ let val=e.target.value; if(!val.startsWith('#'))val='#'+val; if(/^#[0-9A-Fa-f]{6}$/i.test(val)) tempColor=val; document.getElementById('spectrumPreviewBox').style.backgroundColor=tempColor; });
         
-        // proje kaydet/yükle + görsel indirme
+        // ========= ORJİNAL PROJE KAYDET/YÜKLE =========
         document.getElementById('savePng').onclick = () => { const a=document.createElement('a'); a.download=`kart_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click(); };
         document.getElementById('saveJpg').onclick = () => { const a=document.createElement('a'); a.download=`kart_${Date.now()}.jpg`; a.href=canvas.toDataURL('image/jpeg',0.95); a.click(); };
         function showToast(msg,type){ const t=document.getElementById('recordStatus'); t.textContent=msg; t.style.background=type==='error'?'#dc3545':'#28a745'; t.style.color='white'; t.style.display='block'; setTimeout(()=>{ if(t.textContent===msg) t.style.display='none'; },3000); }
         document.getElementById('saveProjectBtn').addEventListener('click', () => { const proj = { canvasWidth:W, canvasHeight:H, textX, textY, textMessage:currentMessage, textColor:currentColor, textSize:currentFontSize, textShadow:shadowActive, fontFamily:currentFont, logoImage:logoImage?logoImage.src:null, logoWidth, logoHeight, logoX, logoY }; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(proj)],{type:'application/json'})); a.download=`proje_${Date.now()}.json`; a.click(); });
         document.getElementById('loadProjectBtn').addEventListener('click', () => { const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=e=>{ const f=e.target.files[0]; const r=new FileReader(); r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(d.canvasWidth) { widthSlider.value=d.canvasWidth; heightSlider.value=d.canvasHeight; updateCanvasSize(); } textX=d.textX||W/2; textY=d.textY||H/2; currentMessage=d.textMessage||currentMessage; currentColor=d.textColor||'#ffffff'; currentFontSize=d.textSize||36; shadowActive=d.textShadow!==undefined?d.textShadow:true; currentFont=d.fontFamily||'Arial'; document.getElementById('userMessage').value=currentMessage; document.getElementById('textColorRect').style.backgroundColor=currentColor; document.getElementById('textSizeSlider').value=currentFontSize; document.getElementById('textSizeVal').innerText=currentFontSize; document.getElementById('shadowToggle').checked=shadowActive; document.getElementById('messageX').value=textX; document.getElementById('messageY').value=textY; if(d.logoWidth){ logoWidth=d.logoWidth; logoHeight=d.logoHeight; logoX=d.logoX; logoY=d.logoY; document.getElementById('logoWidth').value=logoWidth; document.getElementById('logoHeight').value=logoHeight; document.getElementById('logoX').value=logoX; document.getElementById('logoY').value=logoY; document.getElementById('logoWidthVal').innerText=logoWidth+"px"; document.getElementById('logoHeightVal').innerText=logoHeight+"px"; } drawCanvas(); updateResizeHandlePosition(); showToast('Proje yüklendi','success'); }catch(e){ showToast('Hatalı dosya','error'); } }; r.readAsText(f); }; inp.click(); });
+        
+        // ========= YENİ BUTONLAR =========
+        document.getElementById('startMicBtn').onclick = startMicrophoneRecording;
+        document.getElementById('stopMicBtn').onclick = stopMicrophoneRecording;
+        document.getElementById('playMicBtn').onclick = playMicrophoneRecording;
+        document.getElementById('clearMicBtn').onclick = clearMicrophoneRecording;
+        
+        document.getElementById('loadMusicBtn').onclick = () => document.getElementById('bgMusicInput').click();
+        document.getElementById('bgMusicInput').onchange = e => { if(e.target.files[0]) loadBackgroundMusic(e.target.files[0]); bgMusicInput.value = ''; };
+        document.getElementById('clearMusicBtn').onclick = () => { bgAudioBuffer = null; document.getElementById('musicStatusText').innerHTML = 'Arka plan müziği ekleyin.'; stopBackgroundMusic(); showToast('Müzik temizlendi', 'success'); };
+        document.getElementById('setTriggerBtn').onclick = () => { triggerSeconds = parseInt(document.getElementById('triggerSeconds').value); if(isNaN(triggerSeconds) || triggerSeconds<1) triggerSeconds=1; if(triggerSeconds>300) triggerSeconds=300; document.getElementById('triggerSeconds').value=triggerSeconds; showToast(`Link ${triggerSeconds} saniye sonra açılacak`, 'success'); if(isVideoPlaying) { if(triggerTimer) clearTimeout(triggerTimer); startTriggerTimer(); document.getElementById('linkStatusBadge').innerHTML = `⏱️ ${triggerSeconds} sn sonra link açılacak`; } };
+        document.getElementById('autoOpenCheckbox').onchange = e => autoOpen = e.target.checked;
+        document.getElementById('musicLoopCheckbox').onchange = e => musicLoop = e.target.checked;
         
         renderFontList();
         document.getElementById('fontPanelHeader').addEventListener('click', () => { document.getElementById('fontPanelContent').classList.toggle('open'); document.getElementById('fontPanelHeader').classList.toggle('open'); });
