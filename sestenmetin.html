@@ -360,29 +360,71 @@
         return res;
     }
     
+    // ★ GELİŞTİRİLMİŞ SORU EKLERİ İŞLEYİCİSİ ★
+    // Soru ekleri (mı, mi, mu, mü) ile biten kelimeleri ayırır, sonundaki nokta/virgül vb. temizler
+    // ve cümleye mutlaka soru işareti ekler. İstisnalar (kimi, önemi, gemini vb.) korunur.
     function splitQuestionParticles(text) {
+        // Kelime ve boşlukları koruyarak böl
         let words = text.split(/(\s+)/);
-        const particles = ['mı','mi','mu','mü'], exceptions = ['önemi','kimi','gemini','resmi','cismi','ilmi','seni','beni','annemi','babamı'];
-        for(let i=0;i<words.length;i++) {
-            let w = words[i], lower = w.toLowerCase();
-            if(lower.length<2) continue;
-            for(let p of particles) {
-                if(lower.endsWith(p) && !exceptions.includes(lower)) {
-                    let base = lower.slice(0,-p.length);
-                    if(base.length>=2 && /[a-zğüşıöç]/.test(base)) {
-                        let newWord = base + ' ' + p + '?';
-                        if(w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) newWord = newWord.charAt(0).toUpperCase() + newWord.slice(1);
-                        words[i] = newWord;
-                        break;
-                    }
+        const particles = ['mı', 'mi', 'mu', 'mü'];
+        const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı'];
+        
+        for (let i = 0; i < words.length; i++) {
+            let w = words[i];
+            if (w.trim() === "") continue;
+            
+            // Kelimenin sonundaki noktalama işaretlerini ayır (.,!?;:)
+            let match = w.match(/^([\wğüşıöçĞÜŞİÖÇ]+)([.!?;:]*)$/i);
+            if (!match) continue;
+            let baseWord = match[1];
+            let trailingPunctuation = match[2];
+            let lowerBase = baseWord.toLocaleLowerCase('tr-TR');
+            
+            // İstisnaları kontrol et
+            if (exceptions.includes(lowerBase)) continue;
+            
+            let foundParticle = null;
+            for (let p of particles) {
+                if (lowerBase.endsWith(p)) {
+                    foundParticle = p;
+                    break;
                 }
+            }
+            
+            if (foundParticle) {
+                let root = baseWord.slice(0, -foundParticle.length);
+                // Büyük/küçük harf durumunu tespit et (sadece ilk karakter)
+                let isCapitalized = (baseWord.length > 0 && 
+                    baseWord[0] === baseWord[0].toLocaleUpperCase('tr-TR') && 
+                    baseWord[0] !== baseWord[0].toLocaleLowerCase('tr-TR'));
+                
+                let newWord;
+                if (root.length > 0) {
+                    // Kök var: örn "uyudun" + " mu" + "?"
+                    let rootPart = root;
+                    if (isCapitalized) {
+                        rootPart = root.charAt(0).toLocaleUpperCase('tr-TR') + root.slice(1);
+                    }
+                    newWord = rootPart + ' ' + foundParticle + '?';
+                } else {
+                    // Kök yok: sadece soru eki (örn "mu." -> "mu?")
+                    let particlePart = foundParticle;
+                    if (isCapitalized) {
+                        particlePart = foundParticle.charAt(0).toLocaleUpperCase('tr-TR') + foundParticle.slice(1);
+                    }
+                    newWord = particlePart + '?';
+                }
+                words[i] = newWord;
             }
         }
         return words.join('');
     }
     
     function fixPunctuationSpacing(text) {
-        return text.replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        // Soru işareti ile nokta yan yana gelmişse düzelt (örn "?." -> "?")
+        let r = text.replace(/\?\./g, '?');
+        r = r.replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        return r;
     }
     
     function addSafeCommas(text) {
@@ -416,6 +458,7 @@
                     if(/[a-zğüşıöç]/i.test(firstChar)) {
                         s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
                     }
+                    // Cümle sonunda nokta yoksa ve soru/ünlem değilse nokta ekle
                     if(!/[.!?]$/.test(s)) s += ".";
                     return s;
                 });
@@ -442,7 +485,7 @@
             p = fixCommonTypos(p);
             p = splitDeDa(p);
             p = splitKi(p);
-            p = splitQuestionParticles(p);
+            p = splitQuestionParticles(p);   // ★ Gelişmiş soru eki işleme
             p = fixPunctuationSpacing(p);
             p = addSafeCommas(p);
             return p;
@@ -450,6 +493,8 @@
         let combined = processedLines.join('\n');
         let finalText = finalizeText(combined);
         finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
+        // Son kontroller: Soru işareti varsa ve yanında nokta varsa temizle
+        finalText = finalText.replace(/\?\./g, '?');
         document.getElementById('output').value = finalText;
         
         updateOutputCounter();
@@ -655,7 +700,6 @@
         const inp = document.getElementById('input');
         if(inp) inp.addEventListener('keydown', (e) => { if((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
         
-        // Output değişikliklerini izle
         const outputArea = document.getElementById('output');
         if(outputArea) outputArea.addEventListener('input', updateOutputCounter);
     });
