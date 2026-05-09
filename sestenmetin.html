@@ -70,7 +70,6 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
-        /* Karakter Sayacı */
         .counter-wrapper {
             display: flex;
             justify-content: space-between;
@@ -164,7 +163,6 @@
             padding-top: 15px;
         }
         
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -273,7 +271,6 @@
     <div class="date-footer" id="dateFooter"></div>
 </div>
 
-<!-- GELİŞMİŞ PAYLAŞIM MODALI -->
 <div id="shareModal" class="modal">
     <div class="modal-content">
         <h3>📤 Paylaşım Formatı</h3>
@@ -300,7 +297,7 @@
     }
     
     // =============== METİN DÜZENLEME ===============
-    const INDENT = "      "; // 6 boşluk
+    const INDENT = "      ";
     
     function convertNumbersToWords(text) {
         let r = text;
@@ -360,7 +357,7 @@
         return res;
     }
     
-    // ★★★ SORU EKLERİ (mı, mi, mu, mü, mısın, misin, musun, müsün ...) ★★★
+    // ★★★ SORU EKLERİ (mı, mi, mu, mü, mısın, misin ...) ★★★
     function splitQuestionParticles(text) {
         let words = text.split(/(\s+)/);
         const questionSuffixes = [
@@ -411,41 +408,60 @@
         return words.join('');
     }
     
-    // ★★★ ÜNLEM İŞARETİ DÜZENLEMELERİ ★★★
+    // ★★★ ÜNLEM KELİMELERİ OTOMATİK EKLEME (eyvah, imdat, oh, vs.) ★★★
+    function addExclamationToInterjections(text) {
+        // Ünlem gerektiren kelime listesi (büyük/küçük duyarsız)
+        const interjections = [
+            "eyvah", "imdat", "oh", "aah", "vah", "yazık", "bravo", "aferin", "of", "uh", 
+            "hey", "hop", "dur", "koş", "yardım", "yangın", "yetiş", "aman", "tüh", "vay", 
+            "be", "işte", "ha", "hı", "a", "o", "e", "vah vah", "vay be", "tüh be", "yuh", 
+            "ay", "ah", "off", "vahvah", "hadi", "haydi", "yahu", "bre", "lan", "behey"
+        ];
+        // Regex: kelime sınırı, ardından isteğe bağlı virgül/noktalama, kelimeyi yakala
+        // Her bir kelime için ayrı ayrı replace yapmak daha kontrollü
+        let result = text;
+        for (let int of interjections) {
+            // Kelimenin kendisi, ardından noktalama veya boşluk veya kelime sonu
+            // \b(int)\b(?![!]) -> zaten ünlem yoksa ekle
+            const regex = new RegExp(`\\b(${int.replace(/\s+/g, '\\s+')})\\b(?!\\s*!)(?=[\\s,;:.!?]|$)`, 'gi');
+            result = result.replace(regex, (match, p1, offset, string) => {
+                // Eğer zaten ardından ünlem gelmiş mi kontrol et (regex ile garantili)
+                let afterChar = string.substring(offset + match.length, offset + match.length + 1);
+                if (afterChar === '!') return match; // zaten ünlem var
+                // Büyük/küçük harf durumunu koru
+                let capitalizedMatch = match.charAt(0).toLocaleUpperCase('tr-TR') + match.slice(1);
+                // Eğer match içinde virgül varsa düzeltme: "eyvah, geç" -> "eyvah! geç"
+                let cleanMatch = capitalizedMatch.replace(/,/g, '');
+                return cleanMatch + '!';
+            });
+        }
+        // Birden fazla ünlemi temizle ve sonrasında boşluk/büyük harf düzenle
+        result = result.replace(/!+/g, '!');
+        result = result.replace(/! ([a-zğüşıöç])/g, (m, ch) => `! ${ch.toLocaleUpperCase('tr-TR')}`);
+        // Virgül-ünlem düzensizliklerini gider: "eyvah,!" -> "eyvah!"
+        result = result.replace(/,!/g, '!');
+        return result;
+    }
+    
     function enhanceExclamations(text) {
         let r = text;
-        // 1. Alay/kinaye için parantez içi ünlem düzeni: boşlukları düzelt, " (!) " şeklinde
+        // Alay/kinaye için parantez içi ünlem düzeni
         r = r.replace(/\s*\(\s*!\s*\)\s*/g, ' (!) ');
         r = r.replace(/\(\!\)/g, '(!)');
-        
-        // 2. Tekrarlanan ünlem işaretlerini tekilleştir (!! veya !!! -> !)
         r = r.replace(/!{2,}/g, '!');
-        
-        // 3. Ünlem işareti ve nokta yan yanaysa sadece ünlem bırak
         r = r.replace(/!\./g, '!');
-        
-        // 4. Ünlem işaretinden sonra boşluk ve küçük harf varsa, o harfi büyüt (sözcük başı)
-        // Örn: "Eyvah! yine geç kaldım" -> "Eyvah! Yine geç kaldım"
         r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
-        
-        // 5. Cümle sonunda ünlem varsa ve ardından başka bir noktalama yoksa sorunsuz.
-        // 6. Seslenme/hitap: "Hey, dur!" gibi ifadelerde virgülden sonra ünlem aranmaz, ama 
-        //    kullanıcı yazdıysa düzenlenir. "Hey dur!" -> "Hey, dur!" gibi bir kural eklemek riskli.
-        //    Onun yerine var olan ünlemlerin öncesindeki virgül/boşluk iyileştirilir.
-        r = r.replace(/([a-zA-ZğüşıöçĞÜŞİÖÇ])\s+!/g, '$1 !');  // "selam !" -> "selam !" (boşluk düzelt)
-        r = r.replace(/!(\w)/g, '! $1');  // "!Yazı" -> "! Yazı"
-        
+        r = r.replace(/([a-zA-ZğüşıöçĞÜŞİÖÇ])\s+!/g, '$1 !');
+        r = r.replace(/!(\w)/g, '! $1');
         return r;
     }
     
     function fixPunctuationSpacing(text) {
         let r = text;
-        // Soru ve ünlem işaretleri için boşluk düzenlemeleri
         r = r.replace(/\?\./g, '?').replace(/\.\?/g, '?');
         r = r.replace(/!\./g, '!');
         r = r.replace(/\s+([.,!?;:])/g, '$1');
         r = r.replace(/([.,!?;:])([^\s])/g, '$1 $2');
-        // Ünlemden sonra büyük harf garantisi (tekrar)
         r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
         return r;
     }
@@ -465,7 +481,6 @@
         return false;
     }
     
-    // finalizeText: cümle sonuna nokta eklerken soru/ünlem varsa ekleme, ayrıca ünlemden sonra büyük harf kontrolü
     function finalizeText(text) {
         let paragraphs = text.split(/\n\s*\n/);
         let processedParas = paragraphs.map(para => {
@@ -474,7 +489,6 @@
             let processedLines = lines.map(line => {
                 line = line.trim();
                 if(line === "") return "";
-                // Cümleleri nokta, soru, ünlem işaretlerine göre ayır
                 let sentences = line.match(/[^.!?]+[.!?]+/g) || [line];
                 let fixedSentences = sentences.map(s => {
                     s = s.trim();
@@ -483,15 +497,12 @@
                     if(/[a-zğüşıöç]/i.test(firstChar)) {
                         s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
                     }
-                    // Eğer cümle soru işareti veya ünlem ile bitmiyorsa nokta ekle
                     if(!/[?！!]$/.test(s)) {
                         s += ".";
                     } else {
-                        // Soru/ünlem var, nokta ekleme. Ayrıca son karakterin ? veya ! olduğundan emin ol.
                         if (s.endsWith("?") || s.endsWith("!")) {
                             // zaten doğru
                         } else if (s.endsWith("？") || s.endsWith("！")) {
-                            // tam genişlikli ise dönüştür
                             s = s.slice(0, -1) + (s.endsWith("？") ? "?" : "!");
                         }
                     }
@@ -520,8 +531,9 @@
             p = fixCommonTypos(p);
             p = splitDeDa(p);
             p = splitKi(p);
-            p = splitQuestionParticles(p);   // soru ekleri işleme
-            p = enhanceExclamations(p);       // ünlem düzenlemeleri
+            p = splitQuestionParticles(p);
+            p = addExclamationToInterjections(p); // ★ YENİ: eyvah, imdat vb. ünlem ekle
+            p = enhanceExclamations(p);
             p = fixPunctuationSpacing(p);
             p = addSafeCommas(p);
             return p;
@@ -529,7 +541,6 @@
         let combined = processedLines.join('\n');
         let finalText = finalizeText(combined);
         finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
-        // son temizlik
         finalText = finalText.replace(/\?\./g, '?').replace(/!\./g, '!');
         finalText = finalText.replace(/!([A-Za-zğüşıöç])/g, '! $1');
         document.getElementById('output').value = finalText;
@@ -569,7 +580,7 @@
         document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
     }
     
-    // =============== GÖRSEL OLUŞTURMA (HD PNG/JPG) ===============
+    // =============== GÖRSEL OLUŞTURMA ===============
     async function getImageBlob(format) {
         const text = document.getElementById('output').value;
         if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
