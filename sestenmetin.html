@@ -360,59 +360,50 @@
         return res;
     }
     
-    // ★ GELİŞTİRİLMİŞ SORU EKLERİ İŞLEYİCİSİ ★
-    // Soru ekleri (mı, mi, mu, mü) ile biten kelimeleri ayırır, sonundaki nokta/virgül vb. temizler
-    // ve cümleye mutlaka soru işareti ekler. İstisnalar (kimi, önemi, gemini vb.) korunur.
+    // ★★★ SORU EKLERİ (mı, mi, mu, mü, mısın, misin, musun, müsün ...) ★★★
     function splitQuestionParticles(text) {
-        // Kelime ve boşlukları koruyarak böl
         let words = text.split(/(\s+)/);
-        const particles = ['mı', 'mi', 'mu', 'mü'];
+        const questionSuffixes = [
+            "mısın", "misin", "musun", "müsün",
+            "mıyım", "miyim", "muyum", "müyüm",
+            "mıyız", "miyiz", "muyuz", "müyüz",
+            "mılar", "miler", "mular", "müler",
+            "mı", "mi", "mu", "mü"
+        ];
         const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı'];
         
         for (let i = 0; i < words.length; i++) {
             let w = words[i];
             if (w.trim() === "") continue;
-            
-            // Kelimenin sonundaki noktalama işaretlerini ayır (.,!?;:)
             let match = w.match(/^([\wğüşıöçĞÜŞİÖÇ]+)([.!?;:]*)$/i);
             if (!match) continue;
             let baseWord = match[1];
-            let trailingPunctuation = match[2];
             let lowerBase = baseWord.toLocaleLowerCase('tr-TR');
-            
-            // İstisnaları kontrol et
             if (exceptions.includes(lowerBase)) continue;
             
-            let foundParticle = null;
-            for (let p of particles) {
-                if (lowerBase.endsWith(p)) {
-                    foundParticle = p;
+            let foundSuffix = null;
+            let suffixLength = 0;
+            for (let suff of questionSuffixes) {
+                if (lowerBase.endsWith(suff)) {
+                    foundSuffix = suff;
+                    suffixLength = suff.length;
                     break;
                 }
             }
-            
-            if (foundParticle) {
-                let root = baseWord.slice(0, -foundParticle.length);
-                // Büyük/küçük harf durumunu tespit et (sadece ilk karakter)
+            if (foundSuffix) {
+                let root = baseWord.slice(0, -suffixLength);
                 let isCapitalized = (baseWord.length > 0 && 
                     baseWord[0] === baseWord[0].toLocaleUpperCase('tr-TR') && 
                     baseWord[0] !== baseWord[0].toLocaleLowerCase('tr-TR'));
-                
                 let newWord;
                 if (root.length > 0) {
-                    // Kök var: örn "uyudun" + " mu" + "?"
                     let rootPart = root;
-                    if (isCapitalized) {
-                        rootPart = root.charAt(0).toLocaleUpperCase('tr-TR') + root.slice(1);
-                    }
-                    newWord = rootPart + ' ' + foundParticle + '?';
+                    if (isCapitalized) rootPart = root.charAt(0).toLocaleUpperCase('tr-TR') + root.slice(1);
+                    newWord = rootPart + ' ' + foundSuffix + '?';
                 } else {
-                    // Kök yok: sadece soru eki (örn "mu." -> "mu?")
-                    let particlePart = foundParticle;
-                    if (isCapitalized) {
-                        particlePart = foundParticle.charAt(0).toLocaleUpperCase('tr-TR') + foundParticle.slice(1);
-                    }
-                    newWord = particlePart + '?';
+                    let suffixPart = foundSuffix;
+                    if (isCapitalized) suffixPart = foundSuffix.charAt(0).toLocaleUpperCase('tr-TR') + foundSuffix.slice(1);
+                    newWord = suffixPart + '?';
                 }
                 words[i] = newWord;
             }
@@ -420,10 +411,42 @@
         return words.join('');
     }
     
+    // ★★★ ÜNLEM İŞARETİ DÜZENLEMELERİ ★★★
+    function enhanceExclamations(text) {
+        let r = text;
+        // 1. Alay/kinaye için parantez içi ünlem düzeni: boşlukları düzelt, " (!) " şeklinde
+        r = r.replace(/\s*\(\s*!\s*\)\s*/g, ' (!) ');
+        r = r.replace(/\(\!\)/g, '(!)');
+        
+        // 2. Tekrarlanan ünlem işaretlerini tekilleştir (!! veya !!! -> !)
+        r = r.replace(/!{2,}/g, '!');
+        
+        // 3. Ünlem işareti ve nokta yan yanaysa sadece ünlem bırak
+        r = r.replace(/!\./g, '!');
+        
+        // 4. Ünlem işaretinden sonra boşluk ve küçük harf varsa, o harfi büyüt (sözcük başı)
+        // Örn: "Eyvah! yine geç kaldım" -> "Eyvah! Yine geç kaldım"
+        r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
+        
+        // 5. Cümle sonunda ünlem varsa ve ardından başka bir noktalama yoksa sorunsuz.
+        // 6. Seslenme/hitap: "Hey, dur!" gibi ifadelerde virgülden sonra ünlem aranmaz, ama 
+        //    kullanıcı yazdıysa düzenlenir. "Hey dur!" -> "Hey, dur!" gibi bir kural eklemek riskli.
+        //    Onun yerine var olan ünlemlerin öncesindeki virgül/boşluk iyileştirilir.
+        r = r.replace(/([a-zA-ZğüşıöçĞÜŞİÖÇ])\s+!/g, '$1 !');  // "selam !" -> "selam !" (boşluk düzelt)
+        r = r.replace(/!(\w)/g, '! $1');  // "!Yazı" -> "! Yazı"
+        
+        return r;
+    }
+    
     function fixPunctuationSpacing(text) {
-        // Soru işareti ile nokta yan yana gelmişse düzelt (örn "?." -> "?")
-        let r = text.replace(/\?\./g, '?');
-        r = r.replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        let r = text;
+        // Soru ve ünlem işaretleri için boşluk düzenlemeleri
+        r = r.replace(/\?\./g, '?').replace(/\.\?/g, '?');
+        r = r.replace(/!\./g, '!');
+        r = r.replace(/\s+([.,!?;:])/g, '$1');
+        r = r.replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        // Ünlemden sonra büyük harf garantisi (tekrar)
+        r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
         return r;
     }
     
@@ -442,6 +465,7 @@
         return false;
     }
     
+    // finalizeText: cümle sonuna nokta eklerken soru/ünlem varsa ekleme, ayrıca ünlemden sonra büyük harf kontrolü
     function finalizeText(text) {
         let paragraphs = text.split(/\n\s*\n/);
         let processedParas = paragraphs.map(para => {
@@ -450,6 +474,7 @@
             let processedLines = lines.map(line => {
                 line = line.trim();
                 if(line === "") return "";
+                // Cümleleri nokta, soru, ünlem işaretlerine göre ayır
                 let sentences = line.match(/[^.!?]+[.!?]+/g) || [line];
                 let fixedSentences = sentences.map(s => {
                     s = s.trim();
@@ -458,8 +483,18 @@
                     if(/[a-zğüşıöç]/i.test(firstChar)) {
                         s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
                     }
-                    // Cümle sonunda nokta yoksa ve soru/ünlem değilse nokta ekle
-                    if(!/[.!?]$/.test(s)) s += ".";
+                    // Eğer cümle soru işareti veya ünlem ile bitmiyorsa nokta ekle
+                    if(!/[?！!]$/.test(s)) {
+                        s += ".";
+                    } else {
+                        // Soru/ünlem var, nokta ekleme. Ayrıca son karakterin ? veya ! olduğundan emin ol.
+                        if (s.endsWith("?") || s.endsWith("!")) {
+                            // zaten doğru
+                        } else if (s.endsWith("？") || s.endsWith("！")) {
+                            // tam genişlikli ise dönüştür
+                            s = s.slice(0, -1) + (s.endsWith("？") ? "?" : "!");
+                        }
+                    }
                     return s;
                 });
                 let result = fixedSentences.join(" ");
@@ -485,7 +520,8 @@
             p = fixCommonTypos(p);
             p = splitDeDa(p);
             p = splitKi(p);
-            p = splitQuestionParticles(p);   // ★ Gelişmiş soru eki işleme
+            p = splitQuestionParticles(p);   // soru ekleri işleme
+            p = enhanceExclamations(p);       // ünlem düzenlemeleri
             p = fixPunctuationSpacing(p);
             p = addSafeCommas(p);
             return p;
@@ -493,8 +529,9 @@
         let combined = processedLines.join('\n');
         let finalText = finalizeText(combined);
         finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
-        // Son kontroller: Soru işareti varsa ve yanında nokta varsa temizle
-        finalText = finalText.replace(/\?\./g, '?');
+        // son temizlik
+        finalText = finalText.replace(/\?\./g, '?').replace(/!\./g, '!');
+        finalText = finalText.replace(/!([A-Za-zğüşıöç])/g, '! $1');
         document.getElementById('output').value = finalText;
         
         updateOutputCounter();
@@ -532,7 +569,7 @@
         document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
     }
     
-    // =============== GÖRSEL OLUŞTURMA ===============
+    // =============== GÖRSEL OLUŞTURMA (HD PNG/JPG) ===============
     async function getImageBlob(format) {
         const text = document.getElementById('output').value;
         if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
@@ -558,11 +595,9 @@
                 finalLines.push(""); 
                 continue; 
             }
-            
             const hasIndent = line.startsWith(INDENT);
             const content = hasIndent ? line.substring(INDENT.length) : line;
             const indentSpaces = hasIndent ? INDENT : "";
-            
             if(tempCtx.measureText(line).width <= MAX_W) {
                 finalLines.push(line);
             } else {
@@ -635,7 +670,7 @@
         alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
     }
     
-    // =============== GELİŞMİŞ PAYLAŞIM MODALI ===============
+    // =============== PAYLAŞIM MODAL ===============
     const modal = document.getElementById('shareModal');
     function openShareModal() {
         const outputText = document.getElementById('output').value;
