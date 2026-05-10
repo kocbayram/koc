@@ -251,21 +251,18 @@
         <span class="counter-item">✨ Çıkış: <span id="outputCount">0</span> karakter</span>
     </div>
     
-    <!-- 1. satır: TXT, PNG, JPG indir -->
     <div class="download-row">
         <button class="btn-image" onclick="downloadTxt()">📄 TXT İNDİR</button>
         <button class="btn-image" onclick="generateImage('png')">🖼️ PNG İNDİR</button>
         <button class="btn-image" onclick="generateImage('jpeg')">🎨 JPG İNDİR</button>
     </div>
 
-    <!-- 2. satır: KOPYALA, PAYLAŞ, TEMİZLE -->
     <div class="action-row">
         <button class="btn-util" onclick="copyOutput()">📋 KOPYALA</button>
         <button class="btn-share" onclick="openShareModal()">📤 PAYLAŞ</button>
         <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
     </div>
 
-    <!-- 3. satır: DÖNÜŞTÜR (tek başına ortada) -->
     <div class="convert-row">
         <button class="btn-main" onclick="processText()">✨ DÖNÜŞTÜR</button>
     </div>
@@ -294,297 +291,483 @@
 </div>
 
 <script>
-    function updateInputCounter() {
-        document.getElementById('inputCount').innerText = document.getElementById('input').value.length;
-    }
-    function updateOutputCounter() {
-        document.getElementById('outputCount').innerText = document.getElementById('output').value.length;
-    }
-    const INDENT = "      ";
-    
-    // ---------- TELEFON NUMARASI KORUMA (Rakam içermeyen placeholder'lar) ----------
-    let phoneMap = new Map(); // placeholder -> orijinal numara
-    function protectPhoneNumbers(text) {
-        phoneMap.clear();
-        // tüm olası telefon formatlarını yakala
-        const patterns = [
-            /\b0\s+5\d{2}\s+\d{3}\s+\d{2}\s+\d{2}\b/g,      // 0 5xx xxx xx xx
-            /\b0\s+[2-4]\d{2}\s+\d{3}\s+\d{2}\s+\d{2}\b/g,  // 0 2xx/3xx/4xx xxx xx xx
-            /\b0\s+5\d{2}\s+\d{3}\s+\d{4}\b/g,               // 0 5xx xxx xxxx
-            /\b0\s+[2-4]\d{2}\s+\d{3}\s+\d{4}\b/g,
-            /\b0[5][0-9]{9}\b/g,                             // 05xxxxxxxxx
-            /\b0[2-4][0-9]{9}\b/g
-        ];
-        let result = text;
-        let counter = 0;
-        patterns.forEach(pattern => {
-            result = result.replace(pattern, (match) => {
-                // Rakam içermeyen benzersiz bir placeholder üret (harf tabanlı)
-                // Alfabe harfleri kullan: TEL_A, TEL_B, ... TEL_Z, sonra TEL_AA vb.
-                let placeholder = generatePhonePlaceholder(counter);
-                phoneMap.set(placeholder, match);
-                counter++;
-                return placeholder;
-            });
-        });
-        return result;
-    }
-    
-    function generatePhonePlaceholder(index) {
-        // index'i harf tabanlı alfabetik yap: 0->A, 1->B, ... 25->Z, 26->AA, 27->AB ...
-        let letters = "";
-        let n = index;
-        while (true) {
-            let remainder = n % 26;
-            letters = String.fromCharCode(65 + remainder) + letters; // A=65
-            n = Math.floor(n / 26);
-            if (n === 0) break;
-        }
-        return `{{TEL_${letters}}}`;
-    }
-    
-    function restorePhoneNumbers(text) {
-        let result = text;
-        for (let [placeholder, original] of phoneMap.entries()) {
-            result = result.split(placeholder).join(original);
-        }
-        return result;
-    }
-    
-    // Rakam dönüşümü (telefon koruması uygulanmış metin üzerinde çalışır)
-    function convertNumbersToWords(text) {
-        let r = text;
-        r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
-        r = r.replace(/\b4\./g, 'dördüncü').replace(/\b5\./g, 'beşinci').replace(/\b6\./g, 'altıncı').replace(/\b8\./g, 'sekizinci');
-        r = r.replace(/\b9\./g, 'dokuzuncu').replace(/\b10\./g, 'onuncu');
-        r = r.replace(/(?<!\d)7(?!\d)/g, 'yedi').replace(/(?<!\d)0(?!\d)/g, 'sıfır').replace(/(?<!\d)1(?!\d)/g, 'bir');
-        r = r.replace(/(?<!\d)2(?!\d)/g, 'iki').replace(/(?<!\d)3(?!\d)/g, 'üç').replace(/(?<!\d)4(?!\d)/g, 'dört');
-        r = r.replace(/(?<!\d)5(?!\d)/g, 'beş').replace(/(?<!\d)6(?!\d)/g, 'altı').replace(/(?<!\d)8(?!\d)/g, 'sekiz');
-        r = r.replace(/(?<!\d)9(?!\d)/g, 'dokuz').replace(/(?<!\d)10(?!\d)/g, 'on');
-        return r;
-    }
-    
-    function fixCommonTypos(t) {
-        const c = { "birşey":"bir şey", "herşey":"her şey", "hiçbirşey":"hiçbir şey", "birşeyler":"bir şeyler", "herkez":"herkes", "herzaman":"her zaman", "birebir":"bire bir", "nede":"ne de", "istiyorumki":"istiyorum ki" };
-        let r = t;
-        for(let [w, cor] of Object.entries(c)) r = r.replace(new RegExp(`\\b${w}\\b`, 'gi'), cor);
-        return r;
-    }
-    function splitDeDa(t) {
-        let r = t;
-        const safe = [{ wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' }, { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' }, { wrong: /\b(sizde)\b/gi, correct: 'siz de' }, { wrong: /\b(onlarda)\b/gi, correct: 'onlar da' }];
-        for(let item of safe) r = r.replace(item.wrong, (m) => (m[0] === m[0].toUpperCase() && m[0] !== m[0].toLowerCase()) ? item.correct.charAt(0).toUpperCase() + item.correct.slice(1) : item.correct);
-        r = r.replace(/\b(burda)\b/gi, 'burada').replace(/\b(orda)\b/gi, 'orada');
-        return r;
-    }
-    function splitKi(t) {
-        const never = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
-        let prot = t, ph = [];
-        never.forEach((phr, idx) => { let re = new RegExp(`\\b${phr.replace(' ', '\\s+')}\\b`, 'gi'); prot = prot.replace(re, (m) => { ph.push(m); return `__NS_${idx}__`; }); });
-        let res = prot.replace(/\b(\w+?)(ki)\b/gi, (m, root) => { let safeRoots = ['yok','var','demek','bilmiyorum','bilmez','sanmam','düşünmüyorum','gerek','ister']; return safeRoots.includes(root.toLowerCase()) && root.length>1 ? root+' ki' : m; });
-        for(let i=0;i<ph.length;i++) res = res.replace(`__NS_${i}__`, ph[i]);
-        return res;
-    }
-    function splitQuestionParticles(t) {
-        let words = t.split(/(\s+)/);
-        const suffixes = ["mısın","misin","musun","müsün","mıyım","miyim","muyum","müyüm","mıyız","miyiz","muyuz","müyüz","mılar","miler","mular","müler","mı","mi","mu","mü"];
-        const exc = ['önemi','kimi','gemini','resmi','cismi','ilmi','seni','beni','annemi','babamı'];
-        for(let i=0;i<words.length;i++) {
-            let w = words[i];
-            if(w.trim()==="") continue;
-            let match = w.match(/^([\wğüşıəöçĞÜŞİÖÇ]+)([.!?;:]*)$/i);
-            if(!match) continue;
-            let base = match[1], lowBase = base.toLocaleLowerCase('tr-TR');
-            if(exc.includes(lowBase)) continue;
-            let found = null, len=0;
-            for(let suff of suffixes) if(lowBase.endsWith(suff)) { found = suff; len = suff.length; break; }
-            if(found) {
-                let root = base.slice(0, -len);
-                let isCap = base.length>0 && base[0]===base[0].toLocaleUpperCase('tr-TR') && base[0]!==base[0].toLocaleLowerCase('tr-TR');
-                let newW;
-                if(root.length>0) { let rp = root; if(isCap) rp = rp.charAt(0).toLocaleUpperCase('tr-TR')+rp.slice(1); newW = rp + ' ' + found + '?'; }
-                else { let sp = found; if(isCap) sp = sp.charAt(0).toLocaleUpperCase('tr-TR')+sp.slice(1); newW = sp + '?'; }
-                words[i] = newW;
+    (function() {
+        // --------------------- GENEL DEĞİŞKENLER ---------------------
+        const INDENT = "      ";
+        let phoneMap = new Map(); // telefon placeholder eşlemesi
+        let phoneCounter = 0;
+        
+        // --------------------- TELEFON KORUMA (RAKAM DOKUNULMAZ) ---------------------
+        function generatePhonePlaceholder() {
+            let letters = "";
+            let n = phoneCounter++;
+            while (true) {
+                let rem = n % 26;
+                letters = String.fromCharCode(65 + rem) + letters;
+                n = Math.floor(n / 26);
+                if (n === 0) break;
             }
+            return `{{TEL_${letters}}}`;
         }
-        return words.join('');
-    }
-    function addExclamationToInterjections(t) {
-        const interj = ["eyvah","imdat","oh","aah","vah","yazık","bravo","aferin","of","uh","hey","hop","dur","koş","yardım","yangın","yetiş","aman","tüh","vay","be","işte","ha","hı","a","o","e","vah vah","vay be","tüh be","yuh","ay","ah","off","vahvah","hadi","haydi","yahu","bre","lan","behey"];
-        let r = t;
-        for(let k of interj) {
-            let re = new RegExp(`\\b(${k.replace(/\s+/g, '\\s+')})\\b(?!\\s*!)(?=[\\s,;:.!?]|$)`, 'gi');
-            r = r.replace(re, (m, p1, off, str) => {
-                if(str.substring(off+m.length, off+m.length+1) === '!') return m;
-                let clean = m.charAt(0).toLocaleUpperCase('tr-TR') + m.slice(1).replace(/,/g, '');
-                return clean + '!';
-            });
-        }
-        r = r.replace(/!+/g, '!').replace(/! ([a-zğüşıəöç])/g, (_,ch) => `! ${ch.toLocaleUpperCase('tr-TR')}`).replace(/,!/g, '!');
-        return r;
-    }
-    function enhanceExclamations(t) {
-        let r = t;
-        r = r.replace(/\s*\(\s*!\s*\)\s*/g, ' (!) ').replace(/\(!\)/g, '(!)').replace(/!{2,}/g, '!').replace(/!\./g, '!');
-        r = r.replace(/! ([a-zğüşıəöç])/g, (_,p) => `! ${p.toLocaleUpperCase('tr-TR')}`).replace(/([a-zA-ZğüşıəöçĞÜŞİÖÇ])\s+!/g, '$1 !').replace(/!(\w)/g, '! $1');
-        return r;
-    }
-    function fixPunctuationSpacing(t) {
-        let r = t;
-        r = r.replace(/\?\./g, '?').replace(/\.\?/g, '?').replace(/!\./g, '!').replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
-        r = r.replace(/! ([a-zğüşıəöç])/g, (_,p) => `! ${p.toLocaleUpperCase('tr-TR')}`);
-        return r;
-    }
-    function addSafeCommas(t) {
-        let r = t;
-        const conj = ['ama','fakat','ancak','çünkü','yani','lakin','oysa','oysaki'];
-        for(let c of conj) r = r.replace(new RegExp(`\\s(${c})\\s`, 'gi'), (_, w) => `, ${w} `);
-        return r;
-    }
-    
-    // Bir satırda telefon numarası var mı (placeholder veya ham halde)
-    function lineHasPhone(line) {
-        // placeholder kontrolü
-        if (/{{TEL_[A-Z]+}}/.test(line)) return true;
-        // ham telefon deseni kontrolü
-        const phonePattern = /\b0\s*[5][0-9]{2}\s*[0-9]{3}\s*[0-9]{2}\s*[0-9]{2}\b|\b0\s*[2-4][0-9]{2}\s*[0-9]{3}\s*[0-9]{2}\s*[0-9]{2}\b|\b0[0-9]{10}\b/;
-        return phonePattern.test(line);
-    }
-    
-    function finalizeText(text) {
-        let paragraphs = text.split(/\n\s*\n/);
-        let res = paragraphs.map(para => {
-            if(para.trim()==="") return "";
-            let lines = para.split('\n');
-            let proc = lines.map(line => {
-                line = line.trim();
-                if(line==="") return "";
-                // Telefon içeren satırlara hiç dokunma (nokta ekleme, girinti vs.)
-                if(lineHasPhone(line)) return line;
-                // Tamamen büyük harfli ve 5 kelimeden kısa isim gibi yapılar (örn: BAYRAM KOÇ)
-                const isShortName = /^[A-ZĞÜŞİÖÇ][A-ZĞÜŞİÖÇ\s]+$/.test(line) && line.split(/\s+/).length <= 5 && !/[.!?]$/.test(line);
-                if(isShortName) return line;
-                
-                let sentences = line.match(/[^.!?]+[.!?]+/g) || [line];
-                let fixedSentences = sentences.map(s => {
-                    s = s.trim();
-                    if(!s) return "";
-                    if(lineHasPhone(s)) return s;
-                    let firstChar = s.charAt(0);
-                    if(/[a-zğüşıəöç]/i.test(firstChar)) {
-                        s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
-                    }
-                    if(!/[?!]$/.test(s)) {
-                        s += ".";
-                    }
-                    return s;
+        
+        function protectPhoneNumbers(text) {
+            phoneMap.clear();
+            phoneCounter = 0;
+            const patterns = [
+                /\b0\s+5\d{2}\s+\d{3}\s+\d{2}\s+\d{2}\b/g,
+                /\b0\s+[2-4]\d{2}\s+\d{3}\s+\d{2}\s+\d{2}\b/g,
+                /\b0\s+5\d{2}\s+\d{3}\s+\d{4}\b/g,
+                /\b0\s+[2-4]\d{2}\s+\d{3}\s+\d{4}\b/g,
+                /\b0[5][0-9]{9}\b/g,
+                /\b0[2-4][0-9]{9}\b/g
+            ];
+            let result = text;
+            patterns.forEach(pattern => {
+                result = result.replace(pattern, (match) => {
+                    let ph = generatePhonePlaceholder();
+                    phoneMap.set(ph, match);
+                    return ph;
                 });
-                let joined = fixedSentences.join(" ");
-                // Kısa satır kontrolü (girinti yapma)
-                if(joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
-                else return INDENT + joined;
             });
-            return proc.join('\n');
-        });
-        let combined = res.join("\n\n");
-        combined = combined.replace(/\.\.+/g, '.');
-        return combined;
-    }
-    
-    function processText() {
-        let raw = document.getElementById('input').value;
-        if(!raw.trim()) return;
-        
-        // 1. Telefon numaralarını koru (rakamsız placeholder)
-        let protectedText = protectPhoneNumbers(raw);
-        
-        // 2. Satır satır işle (korunmuş metin üzerinde)
-        let lines = protectedText.split(/\r?\n/);
-        let processed = lines.map(l => {
-            if(l.trim()==="") return "";
-            let p = l;
-            p = convertNumbersToWords(p);
-            p = fixCommonTypos(p);
-            p = splitDeDa(p);
-            p = splitKi(p);
-            p = splitQuestionParticles(p);
-            p = addExclamationToInterjections(p);
-            p = enhanceExclamations(p);
-            p = fixPunctuationSpacing(p);
-            p = addSafeCommas(p);
-            return p;
-        });
-        let combined = processed.join('\n');
-        
-        // 3. Telefon placeholder'larını geri döndür
-        let finalText = restorePhoneNumbers(combined);
-        
-        // 4. Son düzenleme (noktalama, girinti, telefon satırlarına dokunmama)
-        finalText = finalizeText(finalText);
-        finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki').replace(/\?\./g, '?').replace(/!\./g, '!').replace(/!([A-Za-zğüşıəöç])/g, '! $1');
-        
-        // Fazladan boşluk temizliği
-        finalText = finalText.replace(/\s+\./g, '.').replace(/\s+\?/g, '?').replace(/\s+\!/g, '!');
-        
-        document.getElementById('output').value = finalText;
-        updateOutputCounter();
-        const now = new Date();
-        document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
-    }
-    
-    function copyOutput() { let t = document.getElementById('output').value; if(!t) { alert("Dönüştürülmüş metin yok."); return; } navigator.clipboard.writeText(t); alert("✅ Metin panoya kopyalandı!"); }
-    function downloadTxt() { let t = document.getElementById('output').value; if(!t) return; const blob = new Blob(["\uFEFF"+t], {type: 'text/plain;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "metin.txt"; a.click(); }
-    function clearAll() { document.getElementById('input').value = ""; document.getElementById('output').value = ""; updateInputCounter(); updateOutputCounter(); const now = new Date(); document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`; }
-    
-    async function getImageBlob(format) {
-        const text = document.getElementById('output').value;
-        if(!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
-        const SCALE = 2.0, BASE_WIDTH = 2100, WIDTH = BASE_WIDTH*SCALE, PADDING_X = 200*SCALE, MAX_W = WIDTH - (PADDING_X*2);
-        let fontSize = text.length>800 ? 82 : 96; fontSize *= SCALE;
-        const tempCanvas = document.createElement('canvas'), tempCtx = tempCanvas.getContext('2d');
-        tempCtx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
-        const rawLines = text.split(/\r?\n/), finalLines = [];
-        for(let line of rawLines) {
-            if(line.trim()==="") { finalLines.push(""); continue; }
-            const hasIndent = line.startsWith(INDENT), content = hasIndent ? line.substring(INDENT.length) : line, indentSpaces = hasIndent ? INDENT : "";
-            if(tempCtx.measureText(line).width <= MAX_W) { finalLines.push(line); continue; }
-            let words = content.split(/\s+/), current = indentSpaces;
-            for(let w of words) {
-                let test = current ? current + " " + w : indentSpaces + w;
-                if(tempCtx.measureText(test).width > MAX_W && current !== indentSpaces) { finalLines.push(current); current = indentSpaces + w; }
-                else current = test;
-            }
-            if(current) finalLines.push(current);
+            return result;
         }
-        const lineHeight = fontSize*1.55, textHeight = finalLines.length*lineHeight, minHeight = 1700*SCALE, calcHeight = textHeight+(700*SCALE), HEIGHT = Math.max(minHeight, calcHeight);
-        const canvas = document.createElement('canvas'); canvas.width = WIDTH; canvas.height = HEIGHT; const ctx = canvas.getContext('2d');
-        ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0,0,WIDTH,HEIGHT);
-        ctx.strokeStyle = "#cbd5e1"; ctx.lineWidth = 22*SCALE; ctx.strokeRect(55,55,WIDTH-110,HEIGHT-110);
-        ctx.fillStyle = "#0f172a"; ctx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`; ctx.textBaseline = "top"; ctx.textAlign = "left";
-        let startY = (HEIGHT - (finalLines.length*lineHeight))/2; if(startY < 200*SCALE) startY = 200*SCALE;
-        for(let i=0;i<finalLines.length;i++) ctx.fillText(finalLines[i], PADDING_X, startY+(i*lineHeight));
-        const now = new Date(); const dateStr = now.toLocaleDateString('tr-TR')+' '+now.toLocaleTimeString('tr-TR');
-        ctx.font = `bold ${56*SCALE}px 'Segoe UI', Arial`; ctx.fillStyle = "#1e293b"; ctx.textAlign = "center"; ctx.fillText(`📅 ${dateStr}`, WIDTH/2, HEIGHT-(130*SCALE));
-        return new Promise(resolve => { canvas.toBlob(blob => resolve(blob), format==='png' ? 'image/png' : 'image/jpeg', format==='jpeg'?1.0:undefined); });
-    }
-    async function generateImage(format) { let blob = await getImageBlob(format); if(!blob) return; const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `metin.${format==='png'?'png':'jpg'}`; a.click(); alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`); }
-    
-    const modal = document.getElementById('shareModal');
-    function openShareModal() { if(!document.getElementById('output').value.trim()) { alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın."); return; } modal.style.display = 'flex'; }
-    function closeShareModal() { modal.style.display = 'none'; }
-    async function shareFile(blob, fn, mime) {
-        if(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fn)] })) { try { await navigator.share({ files: [new File([blob], fn, {type:mime})] }); return true; } catch(e) { if(e.name!=='AbortError') console.warn(e); } }
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn; a.click(); URL.revokeObjectURL(a.href); alert("📁 Paylaşım desteklenmiyor, dosya indirildi."); return false;
-    }
-    async function shareAsText() { closeShareModal(); const t = document.getElementById('output').value; if(!t.trim()) return; const blob = new Blob(["\uFEFF"+t], {type:'text/plain;charset=utf-8'}); await shareFile(blob, "metin.txt", "text/plain"); }
-    async function shareAsImage(fmt) { closeShareModal(); const blob = await getImageBlob(fmt); if(!blob) return; await shareFile(blob, `metin.${fmt==='png'?'png':'jpg'}`, fmt==='png'?'image/png':'image/jpeg'); }
-    window.onclick = (e) => { if(e.target===modal) closeShareModal(); };
-    document.addEventListener('DOMContentLoaded', () => {
-        const now = new Date(); document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
-        updateInputCounter(); updateOutputCounter();
-        document.getElementById('input').addEventListener('keydown', (e) => { if((e.ctrlKey||e.metaKey) && e.key==='Enter') { e.preventDefault(); processText(); } });
-        document.getElementById('output').addEventListener('input', updateOutputCounter);
-    });
+        
+        function restorePhoneNumbers(text) {
+            let result = text;
+            for (let [ph, original] of phoneMap.entries()) {
+                result = result.split(ph).join(original);
+            }
+            return result;
+        }
+        
+        function lineHasPhone(line) {
+            if (/{{TEL_[A-Z]+}}/.test(line)) return true;
+            const phonePattern = /\b0\s*[5][0-9]{2}\s*[0-9]{3}\s*[0-9]{2}\s*[0-9]{2}\b|\b0\s*[2-4][0-9]{2}\s*[0-9]{3}\s*[0-9]{2}\s*[0-9]{2}\b|\b0[0-9]{10}\b/;
+            return phonePattern.test(line);
+        }
+        
+        // --------------------- RAKAM -> YAZI DÖNÜŞÜMÜ (TELEFONLAR KORUNARAK) ---------------------
+        function convertNumbersToWords(text) {
+            let r = text;
+            r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
+            r = r.replace(/\b4\./g, 'dördüncü').replace(/\b5\./g, 'beşinci').replace(/\b6\./g, 'altıncı').replace(/\b8\./g, 'sekizinci');
+            r = r.replace(/\b9\./g, 'dokuzuncu').replace(/\b10\./g, 'onuncu');
+            r = r.replace(/(?<!\d)7(?!\d)/g, 'yedi').replace(/(?<!\d)0(?!\d)/g, 'sıfır').replace(/(?<!\d)1(?!\d)/g, 'bir');
+            r = r.replace(/(?<!\d)2(?!\d)/g, 'iki').replace(/(?<!\d)3(?!\d)/g, 'üç').replace(/(?<!\d)4(?!\d)/g, 'dört');
+            r = r.replace(/(?<!\d)5(?!\d)/g, 'beş').replace(/(?<!\d)6(?!\d)/g, 'altı').replace(/(?<!\d)8(?!\d)/g, 'sekiz');
+            r = r.replace(/(?<!\d)9(?!\d)/g, 'dokuz').replace(/(?<!\d)10(?!\d)/g, 'on');
+            return r;
+        }
+        
+        // --------------------- DİĞER DÜZELTMELER ---------------------
+        function fixCommonTypos(t) {
+            const corrections = {
+                "birşey":"bir şey", "herşey":"her şey", "hiçbirşey":"hiçbir şey", "birşeyler":"bir şeyler",
+                "herkez":"herkes", "herzaman":"her zaman", "birebir":"bire bir", "nede":"ne de", "istiyorumki":"istiyorum ki"
+            };
+            let r = t;
+            for (let [wrong, correct] of Object.entries(corrections)) {
+                r = r.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), correct);
+            }
+            return r;
+        }
+        
+        function splitDeDa(t) {
+            let r = t;
+            const safe = [
+                { wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' },
+                { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' },
+                { wrong: /\b(sizde)\b/gi, correct: 'siz de' }, { wrong: /\b(onlarda)\b/gi, correct: 'onlar da' }
+            ];
+            for (let item of safe) {
+                r = r.replace(item.wrong, (match) => {
+                    let isUpper = match[0] === match[0].toUpperCase() && match[0] !== match[0].toLowerCase();
+                    let corr = isUpper ? item.correct.charAt(0).toUpperCase() + item.correct.slice(1) : item.correct;
+                    return corr;
+                });
+            }
+            r = r.replace(/\b(burda)\b/gi, 'burada').replace(/\b(orda)\b/gi, 'orada');
+            return r;
+        }
+        
+        function splitKi(t) {
+            const never = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
+            let prot = t, ph = [];
+            never.forEach((phrase, idx) => {
+                let re = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
+                prot = prot.replace(re, (m) => { ph.push(m); return `__NS_${idx}__`; });
+            });
+            let res = prot.replace(/\b(\w+?)(ki)\b/gi, (m, root) => {
+                let safeRoots = ['yok','var','demek','bilmiyorum','bilmez','sanmam','düşünmüyorum','gerek','ister'];
+                return safeRoots.includes(root.toLowerCase()) && root.length>1 ? root+' ki' : m;
+            });
+            for (let i=0;i<ph.length;i++) res = res.replace(`__NS_${i}__`, ph[i]);
+            return res;
+        }
+        
+        function splitQuestionParticles(t) {
+            let words = t.split(/(\s+)/);
+            const suffixes = ["mısın","misin","musun","müsün","mıyım","miyim","muyum","müyüm","mıyız","miyiz","muyuz","müyüz","mılar","miler","mular","müler","mı","mi","mu","mü"];
+            const exceptions = ['önemi','kimi','gemini','resmi','cismi','ilmi','seni','beni','annemi','babamı'];
+            for (let i=0; i<words.length; i++) {
+                let w = words[i];
+                if (w.trim() === "") continue;
+                let match = w.match(/^([\wğüşıəöçĞÜŞİÖÇ]+)([.!?;:]*)$/i);
+                if (!match) continue;
+                let base = match[1];
+                let lowBase = base.toLocaleLowerCase('tr-TR');
+                if (exceptions.includes(lowBase)) continue;
+                let foundSuffix = null, len = 0;
+                for (let suff of suffixes) {
+                    if (lowBase.endsWith(suff)) {
+                        foundSuffix = suff;
+                        len = suff.length;
+                        break;
+                    }
+                }
+                if (foundSuffix) {
+                    let root = base.slice(0, -len);
+                    let isCap = base.length>0 && base[0]===base[0].toLocaleUpperCase('tr-TR') && base[0]!==base[0].toLocaleLowerCase('tr-TR');
+                    let newWord;
+                    if (root.length > 0) {
+                        let rp = root;
+                        if (isCap) rp = rp.charAt(0).toLocaleUpperCase('tr-TR') + rp.slice(1);
+                        newWord = rp + ' ' + foundSuffix + '?';
+                    } else {
+                        let sp = foundSuffix;
+                        if (isCap) sp = sp.charAt(0).toLocaleUpperCase('tr-TR') + sp.slice(1);
+                        newWord = sp + '?';
+                    }
+                    words[i] = newWord;
+                }
+            }
+            return words.join('');
+        }
+        
+        // Ünlem ekleme (imdat, eyvah vb.) - yanındaki kelimeler korunur
+        function addExclamationToInterjections(t) {
+            const interjections = [
+                "eyvah","imdat","oh","aah","vah","yazık","bravo","aferin","of","uh","hey","hop","dur","koş",
+                "yardım","yangın","yetiş","aman","tüh","vay","be","işte","ha","hı","a","o","e","vah vah",
+                "vay be","tüh be","yuh","ay","ah","off","vahvah","hadi","haydi","yahu","bre","lan","behey"
+            ];
+            let r = t;
+            for (let int of interjections) {
+                let regex = new RegExp(`\\b(${int.replace(/\s+/g, '\\s+')})\\b(?!\\s*!)(?=[\\s,;:.!?]|$)`, 'gi');
+                r = r.replace(regex, (match) => {
+                    let clean = match.charAt(0).toLocaleUpperCase('tr-TR') + match.slice(1).replace(/,/g, '');
+                    return clean + '!';
+                });
+            }
+            r = r.replace(/!+/g, '!').replace(/! ([a-zğüşıəöç])/g, (_,ch) => `! ${ch.toLocaleUpperCase('tr-TR')}`).replace(/,!/g, '!');
+            return r;
+        }
+        
+        function enhanceExclamations(t) {
+            let r = t;
+            r = r.replace(/\s*\(\s*!\s*\)\s*/g, ' (!) ').replace(/\(!\)/g, '(!)').replace(/!{2,}/g, '!').replace(/!\./g, '!');
+            r = r.replace(/! ([a-zğüşıəöç])/g, (_,p) => `! ${p.toLocaleUpperCase('tr-TR')}`);
+            r = r.replace(/([a-zA-ZğüşıəöçĞÜŞİÖÇ])\s+!/g, '$1 !').replace(/!(\w)/g, '! $1');
+            return r;
+        }
+        
+        function fixPunctuationSpacing(t) {
+            let r = t;
+            r = r.replace(/\?\./g, '?').replace(/\.\?/g, '?').replace(/!\./g, '!');
+            r = r.replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s])/g, '$1 $2');
+            r = r.replace(/! ([a-zğüşıəöç])/g, (_,p) => `! ${p.toLocaleUpperCase('tr-TR')}`);
+            return r;
+        }
+        
+        function addSafeCommas(t) {
+            let r = t;
+            const conj = ['ama','fakat','ancak','çünkü','yani','lakin','oysa','oysaki'];
+            for (let c of conj) r = r.replace(new RegExp(`\\s(${c})\\s`, 'gi'), (_, w) => `, ${w} `);
+            return r;
+        }
+        
+        // --------------------- SON DÜZENLEME (CÜMLE SONU NOKTALAMA + GİRİNTİ + TELEFON KORUMA) ---------------------
+        function finalizeText(text) {
+            let paragraphs = text.split(/\n\s*\n/);
+            let processedParas = paragraphs.map(para => {
+                if (para.trim() === "") return "";
+                let lines = para.split('\n');
+                let processedLines = lines.map(line => {
+                    line = line.trim();
+                    if (line === "") return "";
+                    // Telefon içeren satırlara hiç dokunma
+                    if (lineHasPhone(line)) return line;
+                    
+                    // Tamamen büyük harfli ve kısa isimler (BAYRAM KOÇ gibi) noktasız kalmalı
+                    const isShortName = /^[A-ZĞÜŞİÖÇ][A-ZĞÜŞİÖÇ\s]+$/.test(line) && line.split(/\s+/).length <= 5 && !/[.!?]$/.test(line);
+                    if (isShortName) return line;
+                    
+                    // ---- GELİŞMİŞ CÜMLE AYIRMA: noktalama işaretlerine göre böl, ama geriye kalan kısmı da al ----
+                    let segments = [];
+                    let remaining = line;
+                    const punctuationRegex = /[.!?]+/g;
+                    let lastIndex = 0;
+                    let match;
+                    while ((match = punctuationRegex.exec(remaining)) !== null) {
+                        let endIndex = match.index + match[0].length;
+                        let sentence = remaining.substring(lastIndex, endIndex).trim();
+                        if (sentence) segments.push(sentence);
+                        lastIndex = endIndex;
+                    }
+                    // Son kalan noktalama ile bitmeyen kısım varsa onu da ekle
+                    let tail = remaining.substring(lastIndex).trim();
+                    if (tail) segments.push(tail);
+                    
+                    if (segments.length === 0) segments = [line];
+                    
+                    // Her bir segmenti düzenle (büyük harf, nokta ekleme)
+                    let fixedSegments = segments.map(seg => {
+                        if (lineHasPhone(seg)) return seg;
+                        let s = seg.trim();
+                        if (!s) return "";
+                        // İlk harf büyük
+                        let first = s.charAt(0);
+                        if (/[a-zğüşıəöç]/i.test(first)) {
+                            s = first.toLocaleUpperCase('tr-TR') + s.slice(1);
+                        }
+                        // Eğer sonunda noktalama yoksa ve sadece harf/rakam varsa nokta ekle
+                        if (!/[.!?]$/.test(s) && !lineHasPhone(s)) {
+                            s += ".";
+                        }
+                        return s;
+                    });
+                    
+                    let joined = fixedSegments.join(" ");
+                    // Kısa satır kontrolü (girinti)
+                    if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
+                    else return INDENT + joined;
+                });
+                return processedLines.join('\n');
+            });
+            let result = processedParas.join("\n\n");
+            result = result.replace(/\.\.+/g, '.');
+            return result;
+        }
+        
+        // --------------------- ANA DÖNÜŞÜM ---------------------
+        function processText() {
+            let raw = document.getElementById('input').value;
+            if (!raw.trim()) return;
+            
+            // 1. Telefonları koru
+            let protectedText = protectPhoneNumbers(raw);
+            
+            // 2. Satır satır işle (korunmuş metin üzerinde)
+            let lines = protectedText.split(/\r?\n/);
+            let processedLines = lines.map(line => {
+                if (line.trim() === "") return "";
+                let p = line;
+                p = convertNumbersToWords(p);
+                p = fixCommonTypos(p);
+                p = splitDeDa(p);
+                p = splitKi(p);
+                p = splitQuestionParticles(p);
+                p = addExclamationToInterjections(p);
+                p = enhanceExclamations(p);
+                p = fixPunctuationSpacing(p);
+                p = addSafeCommas(p);
+                return p;
+            });
+            let combined = processedLines.join('\n');
+            
+            // 3. Telefonları geri getir
+            let finalText = restorePhoneNumbers(combined);
+            
+            // 4. Son düzenleme (noktalama, girinti, isim koruma)
+            finalText = finalizeText(finalText);
+            finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
+            finalText = finalText.replace(/\?\./g, '?').replace(/!\./g, '!');
+            finalText = finalText.replace(/!([A-Za-zğüşıəöç])/g, '! $1');
+            finalText = finalText.replace(/\s+\./g, '.').replace(/\s+\?/g, '?').replace(/\s+\!/g, '!');
+            
+            document.getElementById('output').value = finalText;
+            updateOutputCounter();
+            const now = new Date();
+            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
+        }
+        
+        // --------------------- YARDIMCI FONKSİYONLAR ---------------------
+        function updateInputCounter() {
+            document.getElementById('inputCount').innerText = document.getElementById('input').value.length;
+        }
+        function updateOutputCounter() {
+            document.getElementById('outputCount').innerText = document.getElementById('output').value.length;
+        }
+        function copyOutput() {
+            let t = document.getElementById('output').value;
+            if (!t) { alert("Dönüştürülmüş metin yok."); return; }
+            navigator.clipboard.writeText(t);
+            alert("✅ Metin panoya kopyalandı!");
+        }
+        function downloadTxt() {
+            let t = document.getElementById('output').value;
+            if (!t) return;
+            const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "metin.txt";
+            a.click();
+        }
+        function clearAll() {
+            document.getElementById('input').value = "";
+            document.getElementById('output').value = "";
+            updateInputCounter();
+            updateOutputCounter();
+            const now = new Date();
+            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
+        }
+        
+        // --------------------- GÖRSEL OLUŞTURMA ---------------------
+        async function getImageBlob(format) {
+            const text = document.getElementById('output').value;
+            if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
+            const SCALE = 2.0, BASE_WIDTH = 2100, WIDTH = BASE_WIDTH * SCALE, PADDING_X = 200 * SCALE;
+            const MAX_W = WIDTH - (PADDING_X * 2);
+            let fontSize = text.length > 800 ? 82 : 96;
+            fontSize *= SCALE;
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+            const rawLines = text.split(/\r?\n/);
+            let finalLines = [];
+            for (let line of rawLines) {
+                if (line.trim() === "") { finalLines.push(""); continue; }
+                const hasIndent = line.startsWith(INDENT);
+                const content = hasIndent ? line.substring(INDENT.length) : line;
+                const indentSpaces = hasIndent ? INDENT : "";
+                if (tempCtx.measureText(line).width <= MAX_W) {
+                    finalLines.push(line);
+                    continue;
+                }
+                let words = content.split(/\s+/);
+                let current = indentSpaces;
+                for (let w of words) {
+                    let test = current ? current + " " + w : indentSpaces + w;
+                    if (tempCtx.measureText(test).width > MAX_W && current !== indentSpaces) {
+                        finalLines.push(current);
+                        current = indentSpaces + w;
+                    } else {
+                        current = test;
+                    }
+                }
+                if (current) finalLines.push(current);
+            }
+            const lineHeight = fontSize * 1.55;
+            const textHeight = finalLines.length * lineHeight;
+            const minHeight = 1700 * SCALE;
+            const calcHeight = textHeight + (700 * SCALE);
+            const HEIGHT = Math.max(minHeight, calcHeight);
+            const canvas = document.createElement('canvas');
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+            ctx.strokeStyle = "#cbd5e1";
+            ctx.lineWidth = 22 * SCALE;
+            ctx.strokeRect(55, 55, WIDTH - 110, HEIGHT - 110);
+            ctx.fillStyle = "#0f172a";
+            ctx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+            ctx.textBaseline = "top";
+            ctx.textAlign = "left";
+            let startY = (HEIGHT - (finalLines.length * lineHeight)) / 2;
+            if (startY < 200 * SCALE) startY = 200 * SCALE;
+            for (let i = 0; i < finalLines.length; i++) {
+                ctx.fillText(finalLines[i], PADDING_X, startY + (i * lineHeight));
+            }
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+            ctx.font = `bold ${56 * SCALE}px 'Segoe UI', Arial`;
+            ctx.fillStyle = "#1e293b";
+            ctx.textAlign = "center";
+            ctx.fillText(`📅 ${dateStr}`, WIDTH / 2, HEIGHT - (130 * SCALE));
+            return new Promise(resolve => {
+                canvas.toBlob(blob => resolve(blob), format === 'png' ? 'image/png' : 'image/jpeg', format === 'jpeg' ? 1.0 : undefined);
+            });
+        }
+        async function generateImage(format) {
+            let blob = await getImageBlob(format);
+            if (!blob) return;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `metin.${format === 'png' ? 'png' : 'jpg'}`;
+            a.click();
+            alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
+        }
+        
+        // --------------------- PAYLAŞIM ---------------------
+        const modal = document.getElementById('shareModal');
+        function openShareModal() {
+            if (!document.getElementById('output').value.trim()) {
+                alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
+                return;
+            }
+            modal.style.display = 'flex';
+        }
+        function closeShareModal() { modal.style.display = 'none'; }
+        async function shareFile(blob, fileName, mimeType) {
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
+                try {
+                    await navigator.share({ files: [new File([blob], fileName, { type: mimeType })] });
+                    return true;
+                } catch (e) { if (e.name !== 'AbortError') console.warn(e); }
+            }
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
+            return false;
+        }
+        async function shareAsText() {
+            closeShareModal();
+            const t = document.getElementById('output').value;
+            if (!t.trim()) return;
+            const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'});
+            await shareFile(blob, "metin.txt", "text/plain");
+        }
+        async function shareAsImage(format) {
+            closeShareModal();
+            const blob = await getImageBlob(format);
+            if (!blob) return;
+            await shareFile(blob, `metin.${format === 'png' ? 'png' : 'jpg'}`, format === 'png' ? 'image/png' : 'image/jpeg');
+        }
+        window.onclick = (e) => { if (e.target === modal) closeShareModal(); };
+        
+        // --------------------- SAYFA YÜKLENİNCE ---------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
+            updateInputCounter();
+            updateOutputCounter();
+            document.getElementById('input').addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    processText();
+                }
+            });
+            document.getElementById('output').addEventListener('input', updateOutputCounter);
+        });
+        
+        // Global fonksiyonları dışa aç
+        window.updateInputCounter = updateInputCounter;
+        window.updateOutputCounter = updateOutputCounter;
+        window.processText = processText;
+        window.copyOutput = copyOutput;
+        window.downloadTxt = downloadTxt;
+        window.generateImage = generateImage;
+        window.clearAll = clearAll;
+        window.openShareModal = openShareModal;
+        window.closeShareModal = closeShareModal;
+        window.shareAsText = shareAsText;
+        window.shareAsImage = shareAsImage;
+    })();
 </script>
 </body>
 </html>
