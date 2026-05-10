@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sesten Metin Oluşturucu | Gelişmiş Paylaşım + Karakter Sayacı</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --primary: #2563eb;
+            --card-bg: #ffffff;
+            --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        h1 { 
+            font-size: 1.8rem; 
+            text-align: center; 
+            color: var(--primary); 
+            margin: 0 0 6px; 
+            font-weight: 800; 
+        }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 28px;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border);
+            display: inline-block;
+            width: auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 8px;
+        }
+        textarea {
+            width: 100%;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.6;
+            min-height: 200px;
+            outline: none;
+            transition: 0.2s;
+            resize: vertical;
+            background: #ffffff;
+            color: #0f172a;
+        }
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .counter-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 5px 0 5px;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        .counter-item {
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .toolbar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 28px 0 24px;
+        }
+        button {
+            padding: 14px 8px;
+            border: none;
+            border-radius: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .btn-main { 
+            background: var(--primary); 
+            color: white; 
+            font-size: 1rem; 
+            padding: 16px;
+        }
+        .btn-main:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .btn-util { background: #e2e8f0; }
+        .btn-util:hover { background: #cbd5e1; transform: translateY(-1px); }
+        .btn-image { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .btn-image:hover { background: #bbf7d0; transform: translateY(-1px); }
+        .btn-share { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .btn-share:hover { background: #bfdbfe; transform: translateY(-1px); }
+        .btn-clear { background: #fee2e2; color: #991b1b; }
+        .btn-clear:hover { background: #fecaca; }
+        
+        .full-width {
+            grid-column: span 3;
+        }
+        
+        .label { 
+            font-size: 0.75rem; 
+            color: var(--primary); 
+            font-weight: 800; 
+            text-align: center; 
+            margin-bottom: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+        }
+        .badge-info {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #eef2ff;
+            color: #2563eb;
+            border-radius: 30px;
+            padding: 3px 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        #output {
+            min-height: 180px;
+            white-space: pre-wrap;
+            font-size: 17px;
+            font-family: inherit;
+            font-weight: 600;
+            line-height: 1.65;
+            color: #0f172a;
+        }
+        
+        .date-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            border-top: 2px solid var(--border);
+            padding-top: 15px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 320px;
+            width: 90%;
+            padding: 24px 20px 28px;
+            text-align: center;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.2s ease;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+        .modal-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .modal-options button {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            padding: 12px;
+            font-size: 1rem;
+            justify-content: center;
+        }
+        .modal-options button:hover {
+            background: #eef2ff;
+            transform: scale(0.98);
+        }
+        .close-modal {
+            background: #f1f5f9;
+            color: #475569;
+            margin-top: 8px;
+            width: 100%;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 650px) {
+            .container { padding: 20px; }
+            .toolbar { gap: 8px; }
+            button { padding: 10px 5px; font-size: 0.7rem; }
+            .btn-main { font-size: 0.85rem; }
+            textarea, #output { font-size: 15px; }
+            .date-footer { font-size: 0.85rem; }
+            .counter-wrapper { font-size: 0.65rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sesten Metin Oluşturucu</h1>
+    <div style="text-align: center;">
+        <div class="subtitle">Simetrik ve Akıllı Metin Editörü</div>
+    </div>
+    <textarea id="input" placeholder="Metninizi buraya yazın veya yapıştırın." oninput="updateInputCounter()"></textarea>
+    <div class="counter-wrapper">
+        <span class="counter-item">📝 Giriş: <span id="inputCount">0</span> karakter</span>
+        <span class="counter-item">✨ Çıkış: <span id="outputCount">0</span> karakter</span>
+    </div>
+    
+    <div class="toolbar">
+        <button class="btn-main full-width" onclick="processText()">✨ DÖNÜŞTÜR</button>
+        <button class="btn-util" onclick="copyOutput()">📋 KOPYALA</button>
+        <button class="btn-util" onclick="downloadTxt()">📄 TXT İNDİR</button>
+        <button class="btn-image" onclick="generateImage('png')">🖼️ PNG İNDİR</button>
+        <button class="btn-image" onclick="generateImage('jpeg')">🎨 JPG İNDİR</button>
+        <button class="btn-share" onclick="openShareModal()">📤 PAYLAŞ</button>
+        <button class="btn-clear" onclick="clearAll()">🗑️ TEMİZLE</button>
+    </div>
+
+    <div class="result-stage">
+        <div class="label">
+            ✨ DÜZENLENMİŞ METİN 
+            <span class="badge-info">Noktalama İşaretleri+Yazım Kuralları</span>
+        </div>
+        <textarea id="output" placeholder="Dönüştürülmüş metin burada görünecek..."></textarea>
+    </div>
+    
+    <div class="date-footer" id="dateFooter"></div>
+</div>
+
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <h3>📤 Paylaşım Formatı</h3>
+        <p style="font-size:0.85rem; color:#4b5563;">Düzenlenmiş metni paylaş</p>
+        <div class="modal-options">
+            <button onclick="shareAsText()">📄 Metin (TXT)</button>
+            <button onclick="shareAsImage('png')">🖼️ PNG Görsel</button>
+            <button onclick="shareAsImage('jpeg')">🎨 JPG Görsel</button>
+        </div>
+        <button class="close-modal" onclick="closeShareModal()">Kapat</button>
+    </div>
+</div>
+
+<script>
+    // =============== KARAKTER SAYACI ===============
+    function updateInputCounter() {
+        const inputText = document.getElementById('input').value;
+        document.getElementById('inputCount').innerText = inputText.length;
+    }
+    
+    function updateOutputCounter() {
+        const outputText = document.getElementById('output').value;
+        document.getElementById('outputCount').innerText = outputText.length;
+    }
+    
+    // =============== METİN DÜZENLEME ===============
+    const INDENT = "      ";
+    
+    function convertNumbersToWords(text) {
+        let r = text;
+        r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
+        r = r.replace(/\b4\./g, 'dördüncü').replace(/\b5\./g, 'beşinci').replace(/\b6\./g, 'altıncı').replace(/\b8\./g, 'sekizinci');
+        r = r.replace(/\b9\./g, 'dokuzuncu').replace(/\b10\./g, 'onuncu');
+        r = r.replace(/(?<!\d)7(?!\d)/g, 'yedi').replace(/(?<!\d)0(?!\d)/g, 'sıfır').replace(/(?<!\d)1(?!\d)/g, 'bir');
+        r = r.replace(/(?<!\d)2(?!\d)/g, 'iki').replace(/(?<!\d)3(?!\d)/g, 'üç').replace(/(?<!\d)4(?!\d)/g, 'dört');
+        r = r.replace(/(?<!\d)5(?!\d)/g, 'beş').replace(/(?<!\d)6(?!\d)/g, 'altı').replace(/(?<!\d)8(?!\d)/g, 'sekiz');
+        r = r.replace(/(?<!\d)9(?!\d)/g, 'dokuz').replace(/(?<!\d)10(?!\d)/g, 'on');
+        return r;
+    }
+    
+    function fixCommonTypos(text) {
+        const corrections = {
+            "birşey":"bir şey", "herşey":"her şey", "hiçbirşey":"hiçbir şey", "birşeyler":"bir şeyler",
+            "herkez":"herkes", "herzaman":"her zaman", "birebir":"bire bir", "nede":"ne de", "istiyorumki":"istiyorum ki"
+        };
+        let r = text;
+        for(let [wrong, correct] of Object.entries(corrections)) {
+            r = r.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), correct);
+        }
+        return r;
+    }
+    
+    function splitDeDa(text) {
+        let r = text;
+        const safe = [
+            { wrong: /\b(bende)\b/gi, correct: 'ben de' }, { wrong: /\b(sende)\b/gi, correct: 'sen de' },
+            { wrong: /\b(onda)\b/gi, correct: 'o da' }, { wrong: /\b(bizde)\b/gi, correct: 'biz de' },
+            { wrong: /\b(sizde)\b/gi, correct: 'siz de' }, { wrong: /\b(onlarda)\b/gi, correct: 'onlar da' }
+        ];
+        for(let item of safe) {
+            r = r.replace(item.wrong, (match) => {
+                if(match[0] === match[0].toUpperCase() && match[0] !== match[0].toLowerCase())
+                    return item.correct.charAt(0).toUpperCase() + item.correct.slice(1);
+                return item.correct;
+            });
+        }
+        r = r.replace(/\b(burda)\b/gi, 'burada').replace(/\b(orda)\b/gi, 'orada');
+        return r;
+    }
+    
+    function splitKi(text) {
+        const neverSplit = ['eğer ki', 'sanki', 'belki', 'çünkü', 'mademki', 'oysaki', 'illaki'];
+        let prot = text, ph = [];
+        neverSplit.forEach((phrase, idx) => {
+            let re = new RegExp(`\\b${phrase.replace(' ', '\\s+')}\\b`, 'gi');
+            prot = prot.replace(re, (m) => { ph.push(m); return `__NS_${idx}__`; });
+        });
+        let res = prot.replace(/\b(\w+?)(ki)\b/gi, (m, root, kiPart) => {
+            let safeRoots = ['yok','var','demek','bilmiyorum','bilmez','sanmam','düşünmüyorum','gerek','ister'];
+            if(safeRoots.includes(root.toLowerCase()) && root.length>1) return root+' '+kiPart;
+            return m;
+        });
+        for(let i=0;i<ph.length;i++) res = res.replace(`__NS_${i}__`, ph[i]);
+        return res;
+    }
+    
+    // ★★★ SORU EKLERİ (mı, mi, mu, mü, mısın, misin ...) ★★★
+    function splitQuestionParticles(text) {
+        let words = text.split(/(\s+)/);
+        const questionSuffixes = [
+            "mısın", "misin", "musun", "müsün",
+            "mıyım", "miyim", "muyum", "müyüm",
+            "mıyız", "miyiz", "muyuz", "müyüz",
+            "mılar", "miler", "mular", "müler",
+            "mı", "mi", "mu", "mü"
+        ];
+        const exceptions = ['önemi', 'kimi', 'gemini', 'resmi', 'cismi', 'ilmi', 'seni', 'beni', 'annemi', 'babamı'];
+        
+        for (let i = 0; i < words.length; i++) {
+            let w = words[i];
+            if (w.trim() === "") continue;
+            let match = w.match(/^([\wğüşıöçĞÜŞİÖÇ]+)([.!?;:]*)$/i);
+            if (!match) continue;
+            let baseWord = match[1];
+            let lowerBase = baseWord.toLocaleLowerCase('tr-TR');
+            if (exceptions.includes(lowerBase)) continue;
+            
+            let foundSuffix = null;
+            let suffixLength = 0;
+            for (let suff of questionSuffixes) {
+                if (lowerBase.endsWith(suff)) {
+                    foundSuffix = suff;
+                    suffixLength = suff.length;
+                    break;
+                }
+            }
+            if (foundSuffix) {
+                let root = baseWord.slice(0, -suffixLength);
+                let isCapitalized = (baseWord.length > 0 && 
+                    baseWord[0] === baseWord[0].toLocaleUpperCase('tr-TR') && 
+                    baseWord[0] !== baseWord[0].toLocaleLowerCase('tr-TR'));
+                let newWord;
+                if (root.length > 0) {
+                    let rootPart = root;
+                    if (isCapitalized) rootPart = root.charAt(0).toLocaleUpperCase('tr-TR') + root.slice(1);
+                    newWord = rootPart + ' ' + foundSuffix + '?';
+                } else {
+                    let suffixPart = foundSuffix;
+                    if (isCapitalized) suffixPart = foundSuffix.charAt(0).toLocaleUpperCase('tr-TR') + foundSuffix.slice(1);
+                    newWord = suffixPart + '?';
+                }
+                words[i] = newWord;
+            }
+        }
+        return words.join('');
+    }
+    
+    // ★★★ ÜNLEM KELİMELERİ OTOMATİK EKLEME (eyvah, imdat, oh, vs.) ★★★
+    function addExclamationToInterjections(text) {
+        // Ünlem gerektiren kelime listesi (büyük/küçük duyarsız)
+        const interjections = [
+            "eyvah", "imdat", "oh", "aah", "vah", "yazık", "bravo", "aferin", "of", "uh", 
+            "hey", "hop", "dur", "koş", "yardım", "yangın", "yetiş", "aman", "tüh", "vay", 
+            "be", "işte", "ha", "hı", "a", "o", "e", "vah vah", "vay be", "tüh be", "yuh", 
+            "ay", "ah", "off", "vahvah", "hadi", "haydi", "yahu", "bre", "lan", "behey"
+        ];
+        // Regex: kelime sınırı, ardından isteğe bağlı virgül/noktalama, kelimeyi yakala
+        // Her bir kelime için ayrı ayrı replace yapmak daha kontrollü
+        let result = text;
+        for (let int of interjections) {
+            // Kelimenin kendisi, ardından noktalama veya boşluk veya kelime sonu
+            // \b(int)\b(?![!]) -> zaten ünlem yoksa ekle
+            const regex = new RegExp(`\\b(${int.replace(/\s+/g, '\\s+')})\\b(?!\\s*!)(?=[\\s,;:.!?]|$)`, 'gi');
+            result = result.replace(regex, (match, p1, offset, string) => {
+                // Eğer zaten ardından ünlem gelmiş mi kontrol et (regex ile garantili)
+                let afterChar = string.substring(offset + match.length, offset + match.length + 1);
+                if (afterChar === '!') return match; // zaten ünlem var
+                // Büyük/küçük harf durumunu koru
+                let capitalizedMatch = match.charAt(0).toLocaleUpperCase('tr-TR') + match.slice(1);
+                // Eğer match içinde virgül varsa düzeltme: "eyvah, geç" -> "eyvah! geç"
+                let cleanMatch = capitalizedMatch.replace(/,/g, '');
+                return cleanMatch + '!';
+            });
+        }
+        // Birden fazla ünlemi temizle ve sonrasında boşluk/büyük harf düzenle
+        result = result.replace(/!+/g, '!');
+        result = result.replace(/! ([a-zğüşıöç])/g, (m, ch) => `! ${ch.toLocaleUpperCase('tr-TR')}`);
+        // Virgül-ünlem düzensizliklerini gider: "eyvah,!" -> "eyvah!"
+        result = result.replace(/,!/g, '!');
+        return result;
+    }
+    
+    function enhanceExclamations(text) {
+        let r = text;
+        // Alay/kinaye için parantez içi ünlem düzeni
+        r = r.replace(/\s*\(\s*!\s*\)\s*/g, ' (!) ');
+        r = r.replace(/\(\!\)/g, '(!)');
+        r = r.replace(/!{2,}/g, '!');
+        r = r.replace(/!\./g, '!');
+        r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
+        r = r.replace(/([a-zA-ZğüşıöçĞÜŞİÖÇ])\s+!/g, '$1 !');
+        r = r.replace(/!(\w)/g, '! $1');
+        return r;
+    }
+    
+    function fixPunctuationSpacing(text) {
+        let r = text;
+        r = r.replace(/\?\./g, '?').replace(/\.\?/g, '?');
+        r = r.replace(/!\./g, '!');
+        r = r.replace(/\s+([.,!?;:])/g, '$1');
+        r = r.replace(/([.,!?;:])([^\s])/g, '$1 $2');
+        r = r.replace(/! ([a-zğüşıöç])/g, (match, p1) => `! ${p1.toLocaleUpperCase('tr-TR')}`);
+        return r;
+    }
+    
+    function addSafeCommas(text) {
+        let r = text;
+        const conj = ['ama', 'fakat', 'ancak', 'çünkü', 'yani', 'lakin', 'oysa', 'oysaki'];
+        for(let c of conj) {
+            r = r.replace(new RegExp(`\\s(${c})\\s`, 'gi'), (match, conjWord) => `, ${conjWord} `);
+        }
+        return r;
+    }
+    
+    function isShortLine(text) {
+        if(text.length < 45 && text.split(/\s+/).length <= 5) return true;
+        if(/^[\d\s\(\)\+\-]{8,}$/.test(text.trim())) return true;
+        return false;
+    }
+    
+    function finalizeText(text) {
+        let paragraphs = text.split(/\n\s*\n/);
+        let processedParas = paragraphs.map(para => {
+            if(para.trim() === "") return "";
+            let lines = para.split('\n');
+            let processedLines = lines.map(line => {
+                line = line.trim();
+                if(line === "") return "";
+                let sentences = line.match(/[^.!?]+[.!?]+/g) || [line];
+                let fixedSentences = sentences.map(s => {
+                    s = s.trim();
+                    if(s.length === 0) return "";
+                    let firstChar = s.charAt(0);
+                    if(/[a-zğüşıöç]/i.test(firstChar)) {
+                        s = firstChar.toLocaleUpperCase('tr-TR') + s.slice(1);
+                    }
+                    if(!/[?！!]$/.test(s)) {
+                        s += ".";
+                    } else {
+                        if (s.endsWith("?") || s.endsWith("!")) {
+                            // zaten doğru
+                        } else if (s.endsWith("？") || s.endsWith("！")) {
+                            s = s.slice(0, -1) + (s.endsWith("？") ? "?" : "!");
+                        }
+                    }
+                    return s;
+                });
+                let result = fixedSentences.join(" ");
+                if(isShortLine(result)) {
+                    return result;
+                } else {
+                    return INDENT + result;
+                }
+            });
+            return processedLines.join('\n');
+        });
+        return processedParas.join("\n\n");
+    }
+    
+    function processText() {
+        let raw = document.getElementById('input').value;
+        if (!raw.trim()) return;
+        let lines = raw.split(/\r?\n/);
+        let processedLines = lines.map(line => {
+            if(line.trim() === "") return "";
+            let p = line;
+            p = convertNumbersToWords(p);
+            p = fixCommonTypos(p);
+            p = splitDeDa(p);
+            p = splitKi(p);
+            p = splitQuestionParticles(p);
+            p = addExclamationToInterjections(p); // ★ YENİ: eyvah, imdat vb. ünlem ekle
+            p = enhanceExclamations(p);
+            p = fixPunctuationSpacing(p);
+            p = addSafeCommas(p);
+            return p;
+        });
+        let combined = processedLines.join('\n');
+        let finalText = finalizeText(combined);
+        finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
+        finalText = finalText.replace(/\?\./g, '?').replace(/!\./g, '!');
+        finalText = finalText.replace(/!([A-Za-zğüşıöç])/g, '! $1');
+        document.getElementById('output').value = finalText;
+        
+        updateOutputCounter();
+        
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
+    }
+    
+    function copyOutput() {
+        let t = document.getElementById('output').value;
+        if(!t) { alert("Dönüştürülmüş metin yok."); return; }
+        navigator.clipboard.writeText(t);
+        alert("✅ Metin panoya kopyalandı!");
+    }
+    
+    function downloadTxt() {
+        let t = document.getElementById('output').value;
+        if(!t) return;
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + t], {type: 'text/plain;charset=utf-8'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "metin.txt";
+        a.click();
+    }
+    
+    function clearAll() {
+        document.getElementById('input').value = "";
+        document.getElementById('output').value = "";
+        updateInputCounter();
+        updateOutputCounter();
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
+    }
+    
+    // =============== GÖRSEL OLUŞTURMA ===============
+    async function getImageBlob(format) {
+        const text = document.getElementById('output').value;
+        if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
+        
+        const SCALE = 2.0;
+        const BASE_WIDTH = 2100;
+        const WIDTH = BASE_WIDTH * SCALE;
+        const PADDING_X = 200 * SCALE;
+        const MAX_W = WIDTH - (PADDING_X * 2);
+        
+        let fontSize = text.length > 800 ? 82 : 96;
+        fontSize = fontSize * SCALE;
+        
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        
+        const rawLines = text.split(/\r?\n/);
+        let finalLines = [];
+        
+        for(let line of rawLines) {
+            if(line.trim() === "") { 
+                finalLines.push(""); 
+                continue; 
+            }
+            const hasIndent = line.startsWith(INDENT);
+            const content = hasIndent ? line.substring(INDENT.length) : line;
+            const indentSpaces = hasIndent ? INDENT : "";
+            if(tempCtx.measureText(line).width <= MAX_W) {
+                finalLines.push(line);
+            } else {
+                let words = content.split(/\s+/);
+                let current = indentSpaces;
+                for(let w of words) {
+                    let test = current ? current + " " + w : indentSpaces + w;
+                    if(tempCtx.measureText(test).width > MAX_W && current !== indentSpaces) {
+                        finalLines.push(current);
+                        current = indentSpaces + w;
+                    } else {
+                        current = test;
+                    }
+                }
+                if(current) finalLines.push(current);
+            }
+        }
+        
+        const lineHeight = fontSize * 1.55;
+        const textHeight = finalLines.length * lineHeight;
+        const minHeight = 1700 * SCALE;
+        const calcHeight = textHeight + (700 * SCALE);
+        const HEIGHT = Math.max(minHeight, calcHeight);
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 22 * SCALE;
+        ctx.strokeRect(55, 55, WIDTH - 110, HEIGHT - 110);
+        
+        ctx.fillStyle = "#0f172a";
+        ctx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+        
+        let startY = (HEIGHT - (finalLines.length * lineHeight)) / 2;
+        if(startY < 200 * SCALE) startY = 200 * SCALE;
+        
+        for(let i = 0; i < finalLines.length; i++) {
+            ctx.fillText(finalLines[i], PADDING_X, startY + (i * lineHeight));
+        }
+        
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        ctx.font = `bold ${56 * SCALE}px 'Segoe UI', Arial`;
+        ctx.fillStyle = "#1e293b";
+        ctx.textAlign = "center";
+        ctx.fillText(`📅 ${dateStr}`, WIDTH / 2, HEIGHT - (130 * SCALE));
+        
+        return new Promise(resolve => {
+            const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+            const quality = format === 'jpeg' ? 1.0 : undefined;
+            canvas.toBlob(blob => resolve(blob), mime, quality);
+        });
+    }
+    
+    async function generateImage(format) {
+        const blob = await getImageBlob(format);
+        if(!blob) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `metin.${format === 'png' ? 'png' : 'jpg'}`;
+        a.click();
+        alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
+    }
+    
+    // =============== PAYLAŞIM MODAL ===============
+    const modal = document.getElementById('shareModal');
+    function openShareModal() {
+        const outputText = document.getElementById('output').value;
+        if (!outputText.trim()) {
+            alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
+            return;
+        }
+        modal.style.display = 'flex';
+    }
+    function closeShareModal() {
+        modal.style.display = 'none';
+    }
+    
+    async function shareFile(blob, fileName, mimeType) {
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
+            try {
+                const file = new File([blob], fileName, { type: mimeType });
+                await navigator.share({ files: [file] });
+                return true;
+            } catch (err) {
+                if (err.name !== 'AbortError') console.warn(err);
+            }
+        }
+        const a = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+        alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
+        return false;
+    }
+    
+    async function shareAsText() {
+        closeShareModal();
+        const text = document.getElementById('output').value;
+        if (!text.trim()) { alert("Paylaşılacak metin yok."); return; }
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + text], {type: 'text/plain;charset=utf-8'});
+        await shareFile(blob, "metin.txt", "text/plain");
+    }
+    
+    async function shareAsImage(format) {
+        closeShareModal();
+        const blob = await getImageBlob(format);
+        if (!blob) return;
+        const fileName = `metin.${format === 'png' ? 'png' : 'jpg'}`;
+        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+        await shareFile(blob, fileName, mime);
+    }
+    
+    window.onclick = function(event) {
+        if (event.target === modal) closeShareModal();
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+        document.getElementById('dateFooter').innerHTML = `📅 ${formattedDate}`;
+        updateInputCounter();
+        
+        const inp = document.getElementById('input');
+        if(inp) inp.addEventListener('keydown', (e) => { if((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
+        
+        const outputArea = document.getElementById('output');
+        if(outputArea) outputArea.addEventListener('input', updateOutputCounter);
+    });
+</script>
+</body>
+</html>
