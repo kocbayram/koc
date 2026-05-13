@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Resim Düzenleme Araçları </title>
+    <title>Resim Düzenleme</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -36,6 +36,8 @@
             text-align: center;
         }
         .editor-layout { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1rem; }
+        
+        /* ========== SOL TARAF (KANVAS ALANI) ========== */
         .canvas-area {
             flex: 2; min-width: 260px;
             background: #03050b;
@@ -46,6 +48,38 @@
             gap: 0.8rem;
             border-left: 3px solid rgba(250,204,21,0.6);
         }
+        
+        .image-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+        .upload-btn {
+            background: linear-gradient(95deg, #facc15, #eab308);
+            color: #0f172a;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .upload-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .reset-btn {
+            background: #475569;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .reset-btn:hover { background: #5a6a7e; transform: translateY(-2px); }
+        
         .canvas-container {
             position: relative;
             background: #00000055;
@@ -73,7 +107,6 @@
             pointer-events: auto;
         }
         
-        /* ========== KIRPMA KUTUSU ========== */
         #cropBox { 
             position: absolute; 
             border: 2px solid #4caf50; 
@@ -85,8 +118,6 @@
             background: rgba(76, 175, 80, 0.05);
             will-change: left, top, width, height;
         }
-        
-        /* L şeklinde köşe tutamaçları */
         .l-corner { 
             position: absolute; 
             width: 32px; 
@@ -98,13 +129,11 @@
             z-index: 101;
         }
         .l-corner:hover { transform: scale(1.1); filter: brightness(1.2); }
-        
         .h-nw { top: -6px; left: -6px; border-width: 6px 0 0 6px; cursor: nw-resize; }
         .h-ne { top: -6px; right: -6px; border-width: 6px 6px 0 0; cursor: ne-resize; }
         .h-sw { bottom: -6px; left: -6px; border-width: 0 0 6px 6px; cursor: sw-resize; }
         .h-se { bottom: -6px; right: -6px; border-width: 0 6px 6px 0; cursor: se-resize; }
         
-        /* Kibar Butonlar */
         .crop-buttons {
             display: flex;
             gap: 10px;
@@ -127,31 +156,66 @@
         .btn-cancel { background: #dc3545; color: white; }
         .btn-save { background: #facc15; color: #0f172a; font-weight: bold; }
         
+        /* ========== SAĞ TARAF (SEKMELİ PANEL) ========== */
         .tools-panel {
             flex: 1.2; min-width: 280px;
             background: rgba(0,0,0,0.4);
             backdrop-filter: blur(4px);
             border-radius: 1.5rem;
-            padding: 1rem;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-left: 3px solid #facc15;
-        }
-        .tool-group {
-            background: rgba(25,35,55,0.7);
-            border-radius: 1.2rem;
             padding: 0.8rem;
-            margin-bottom: 1rem;
             border-left: 3px solid #facc15;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
         }
-        .tool-group h3 { font-size: 0.9rem; color: #facc15; margin-bottom: 8px; }
+        
+        .tab-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50px;
+            padding: 5px;
+        }
+        .tab-btn {
+            background: #1e293b;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #94a3b8;
+            flex: 1;
+            text-align: center;
+        }
+        .tab-btn:hover { background: #334155; color: #facc15; }
+        .tab-btn.active {
+            background: #facc15;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(250,204,21,0.3);
+        }
+        
+        .tab-content {
+            background: rgba(25,35,55,0.5);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            display: none;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .tab-content.active { display: block; }
+        
+        .tool-group { margin-bottom: 1rem; }
+        .tool-group h3 { font-size: 0.85rem; color: #facc15; margin-bottom: 8px; border-left: 2px solid #facc15; padding-left: 8px; }
         .btn-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
         .btn {
             background: #1e293b;
             border: none;
             padding: 6px 12px;
             border-radius: 40px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 500;
             color: #eef2ff;
             cursor: pointer;
@@ -164,7 +228,7 @@
         .btn-warning { background: #f39c12; color: white; }
         .btn-success { background: #28a745; color: white; }
         .slider-group { margin: 8px 0; }
-        .slider-group label { font-size: 0.7rem; color: #ccd6f0; }
+        .slider-group label { font-size: 0.7rem; color: #ccd6f0; display: block; margin-bottom: 4px; }
         input[type="range"] { width: 100%; accent-color: #facc15; }
         select, input[type="file"] {
             background: #0f172a;
@@ -172,19 +236,18 @@
             border-radius: 40px;
             padding: 6px 10px;
             color: white;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
-        .info-text { font-size: 0.65rem; color: #b9c7ff; text-align: center; }
+        .info-text { font-size: 0.6rem; color: #b9c7ff; text-align: center; margin-top: 6px; }
         
         .batch-resize-area {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
             border-radius: 1rem;
-            padding: 10px;
-            border: 1px solid #facc1533;
+            padding: 8px;
         }
         .batch-input-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 8px;
         }
         .batch-input-group input {
@@ -192,10 +255,11 @@
             background: #0f172a;
             border: 1px solid #475569;
             border-radius: 40px;
-            padding: 6px 10px;
+            padding: 6px 8px;
             color: white;
             font-size: 0.7rem;
         }
+        
         .result-panel {
             position: fixed;
             top: 50%;
@@ -222,11 +286,11 @@
             gap: 12px;
             margin-bottom: 10px;
         }
-        .result-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+        .result-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
         .result-item-info { flex: 1; }
-        .result-item-name { color: white; font-size: 0.7rem; word-break: break-all; }
-        .result-item-size { color: #facc15; font-size: 0.6rem; }
-        .download-single { background: #facc15; border: none; padding: 5px 10px; border-radius: 40px; cursor: pointer; font-size: 0.7rem; }
+        .result-item-name { color: white; font-size: 0.65rem; word-break: break-all; }
+        .result-item-size { color: #facc15; font-size: 0.55rem; }
+        .download-single { background: #facc15; border: none; padding: 4px 10px; border-radius: 40px; cursor: pointer; font-size: 0.65rem; }
         .error-toast {
             position: fixed;
             bottom: 20px;
@@ -248,6 +312,12 @@
     <div class="hero"><h1>✨ Resim Düzenleme Araçları ✨</h1></div>
     <div class="editor-layout">
         <div class="canvas-area">
+            <div class="image-controls">
+                <input type="file" id="fileInput" accept="image/*" style="display:none">
+                <button class="upload-btn" id="selectImageBtn">📸 Resim Seç</button>
+                <button class="reset-btn" id="resetBtn">🔄 Sıfırla</button>
+            </div>
+            
             <div class="canvas-container" id="canvasContainer">
                 <div class="c-wrapper" id="wrap">
                     <canvas id="mainCanvas"></canvas>
@@ -268,35 +338,96 @@
         </div>
         
         <div class="tools-panel">
-            <div class="tool-group"><h3>📸 Görüntü Yükle</h3><div class="btn-grid"><input type="file" id="fileInput" accept="image/*" style="flex:1"><button id="resetBtn" class="btn">Sıfırla</button></div></div>
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="tab-batch">📏 Toplu Boyut</button>
+                <button class="tab-btn" data-tab="tab-color">🎨 Renk</button>
+                <button class="tab-btn" data-tab="tab-transform">🔄 Dönüştür</button>
+                <button class="tab-btn" data-tab="tab-merge">🧩 Birleştir</button>
+                <button class="tab-btn" data-tab="tab-project">💾 Proje</button>
+            </div>
             
-            <div class="tool-group">
-                <h3>📏 Tüm Resimleri Aynı Boyuta Getir (Siyah Fon)</h3>
-                <div class="batch-resize-area">
-                    <input type="file" id="batchFileInput" multiple accept="image/*" style="display:none">
-                    <div class="btn-grid">
-                        <button id="selectBatchBtn" class="btn">📁 Resimleri Seç</button>
-                        <button id="clearBatchBtn" class="btn btn-gri">🗑️ Temizle</button>
+            <div id="tab-batch" class="tab-content active">
+                <div class="tool-group">
+                    <h3>📏 Tüm Resimleri Aynı Boyuta Getir</h3>
+                    <div class="batch-resize-area">
+                        <input type="file" id="batchFileInput" multiple accept="image/*" style="display:none">
+                        <div class="btn-grid">
+                            <button id="selectBatchBtn" class="btn">📁 Resimleri Seç</button>
+                            <button id="clearBatchBtn" class="btn btn-gri">🗑️ Temizle</button>
+                        </div>
+                        <div class="batch-input-group">
+                            <input type="number" id="batchTargetWidth" placeholder="Genişlik" value="800" step="10">
+                            <input type="number" id="batchTargetHeight" placeholder="Yükseklik" value="800" step="10">
+                        </div>
+                        <div class="btn-grid">
+                            <button id="resizeBatchBtn" class="btn btn-warning">🔄 Aynı Boyuta Getir</button>
+                            <button id="resizeToSquareBtn" class="btn btn-primary">⬜ Kare Yap (800x800)</button>
+                        </div>
+                        <div class="info-text" id="batchStatus">Henüz resim seçilmedi</div>
                     </div>
-                    <div class="batch-input-group">
-                        <input type="number" id="batchTargetWidth" placeholder="Genişlik (px)" value="800" step="10">
-                        <input type="number" id="batchTargetHeight" placeholder="Yükseklik (px)" value="800" step="10">
-                    </div>
-                    <div class="btn-grid">
-                        <button id="resizeBatchBtn" class="btn btn-warning">🔄 Aynı Boyuta Getir</button>
-                        <button id="resizeToSquareBtn" class="btn btn-primary">⬜ Kare Yap (800x800)</button>
-                    </div>
-                    <div class="info-text" id="batchStatus">Henüz resim seçilmedi</div>
                 </div>
             </div>
             
-            <div class="tool-group"><h3>🎨 Renk Düzeltme</h3><div class="slider-group"><label>Parlaklık</label><input type="range" id="brightness" min="-50" max="50" value="0"></div><div class="slider-group"><label>Kontrast</label><input type="range" id="contrast" min="-30" max="30" value="0"></div><div class="slider-group"><label>Doygunluk</label><input type="range" id="saturation" min="-50" max="50" value="0"></div><div class="btn-grid"><button id="applyColorBtn" class="btn">Uygula</button><button id="enhanceQualityBtn" class="btn">Keskinleştir</button></div></div>
+            <div id="tab-color" class="tab-content">
+                <div class="tool-group">
+                    <h3>🎨 Renk Düzeltme</h3>
+                    <div class="slider-group"><label>Parlaklık</label><input type="range" id="brightness" min="-50" max="50" value="0"></div>
+                    <div class="slider-group"><label>Kontrast</label><input type="range" id="contrast" min="-30" max="30" value="0"></div>
+                    <div class="slider-group"><label>Doygunluk</label><input type="range" id="saturation" min="-50" max="50" value="0"></div>
+                    <div class="btn-grid">
+                        <button id="applyColorBtn" class="btn">Uygula</button>
+                        <button id="enhanceQualityBtn" class="btn">Keskinleştir</button>
+                    </div>
+                </div>
+            </div>
             
-            <div class="tool-group"><h3>🔄 Dönüştür & Döndür</h3><div class="btn-grid"><button id="rotate90Btn" class="btn">90° Döndür</button><button id="flipHBtn" class="btn">Yatay Yansıt</button><button id="flipVBtn" class="btn">Dikey Yansıt</button></div><div class="btn-grid"><select id="formatSelect"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WEBP</option></select><button id="convertFormatBtn" class="btn">Dönüştür & İndir</button></div></div>
+            <div id="tab-transform" class="tab-content">
+                <div class="tool-group">
+                    <h3>🔄 Dönüştür & Döndür</h3>
+                    <div class="btn-grid">
+                        <button id="rotate90Btn" class="btn">90° Döndür</button>
+                        <button id="flipHBtn" class="btn">↔️ Yatay Yansıt</button>
+                        <button id="flipVBtn" class="btn">↕️ Dikey Yansıt</button>
+                    </div>
+                    <div class="btn-grid" style="margin-top: 10px;">
+                        <select id="formatSelect">
+                            <option value="image/png">PNG</option>
+                            <option value="image/jpeg">JPEG</option>
+                            <option value="image/webp">WEBP</option>
+                        </select>
+                        <button id="convertFormatBtn" class="btn">Dönüştür & İndir</button>
+                    </div>
+                </div>
+            </div>
             
-            <div class="tool-group"><h3>🧩 Çoklu Birleştir</h3><div class="btn-grid"><input type="file" id="multiMergeInput" multiple accept="image/*" style="display:none"><button id="selectMultiBtn" class="btn">Resimleri Seç</button></div><div class="btn-grid"><button id="mergeHorizontalMultiBtn" class="btn">↔️ Yatay Birleştir</button><button id="mergeVerticalMultiBtn" class="btn">↕️ Dikey Birleştir</button></div><div class="info-text" id="multiStatus">Henüz resim seçilmedi</div></div>
+            <div id="tab-merge" class="tab-content">
+                <div class="tool-group">
+                    <h3>🧩 Çoklu Birleştir</h3>
+                    <div class="btn-grid">
+                        <input type="file" id="multiMergeInput" multiple accept="image/*" style="display:none">
+                        <button id="selectMultiBtn" class="btn">📂 Resimleri Seç</button>
+                    </div>
+                    <div class="btn-grid">
+                        <button id="mergeHorizontalMultiBtn" class="btn">↔️ Yatay Birleştir</button>
+                        <button id="mergeVerticalMultiBtn" class="btn">↕️ Dikey Birleştir</button>
+                    </div>
+                    <div class="info-text" id="multiStatus">Henüz resim seçilmedi</div>
+                </div>
+            </div>
             
-            <div class="tool-group"><h3>💾 Proje & Paylaş</h3><div class="btn-grid"><button id="projeKaydet" class="btn btn-primary">Proje Kaydet</button><button id="projeYukle" class="btn">Proje Yükle</button><button id="paylasResim" class="btn btn-gri">📱 Paylaş (Resim)</button><button id="paylasProje" class="btn btn-gri">📱 Paylaş (Proje)</button></div></div>
+            <div id="tab-project" class="tab-content">
+                <div class="tool-group">
+                    <h3>💾 Proje & Paylaş</h3>
+                    <div class="btn-grid">
+                        <button id="projeKaydet" class="btn btn-primary">💾 Proje Kaydet</button>
+                        <button id="projeYukle" class="btn">📂 Proje Yükle</button>
+                    </div>
+                    <div class="btn-grid">
+                        <button id="paylasResim" class="btn btn-gri">📱 Paylaş (Resim)</button>
+                        <button id="paylasProje" class="btn btn-gri">📱 Paylaş (Proje)</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -319,7 +450,21 @@
         setTimeout(() => { errorToast.style.display = 'none'; }, 3500);
     }
     
-    // ========== KIRPMA DEĞİŞKENLERİ ==========
+    function initTabs() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                const activeContent = document.getElementById(tabId);
+                if (activeContent) activeContent.classList.add('active');
+            });
+        });
+    }
+    
     let cropping = false;
     let drag = false;
     let res = false;
@@ -332,12 +477,10 @@
     let batchFiles = [];
     let batchResizedImages = [];
     
-    // Buton referansları
     const applyBtn = document.getElementById('applyCropBtn');
     const cancelBtn = document.getElementById('cancelCropBtn');
     const saveBtn = document.getElementById('saveImageBtn');
     
-    // ========== TEMEL FONKSİYONLAR ==========
     function initEmptyCanvas() {
         canvas.width = 700;
         canvas.height = 400;
@@ -364,7 +507,6 @@
         }
     }
     
-    // ========== KIRPMA FONKSİYONLARI - DÜZELTİLMİŞ ==========
     function startCrop() {
         if (!currentImage) {
             showError("Önce bir resim yükleyin!");
@@ -385,19 +527,9 @@
         cropBox.style.height = (rect.h * sc) + "px";
     }
     
-    // SAYFA KAYMASINI ENGELLEME
-    function preventScroll(e) {
-        e.preventDefault();
-        return false;
-    }
-    
-    // Pointer olayları - DÜZELTİLMİŞ (karşı kenar sabit)
     wrap.onpointerdown = (e) => {
         if (!cropping) return;
-        
-        // Sayfa kaymasını engelle
         e.preventDefault();
-        
         const h = e.target.closest('.l-corner');
         if (h) { 
             res = true; 
@@ -407,7 +539,6 @@
             wrap.setPointerCapture(e.pointerId);
             return;
         }
-        
         if (e.target === cropBox || cropBox.contains(e.target)) { 
             drag = true; 
             startM = { x: e.clientX, y: e.clientY };
@@ -419,49 +550,27 @@
     
     wrap.onpointermove = (e) => {
         if (!cropping || (!drag && !res)) return;
-        
-        // Sayfa kaymasını engelle
         e.preventDefault();
-        
         const sc = canvas.width / canvas.offsetWidth;
         const dx = (e.clientX - startM.x) * sc;
         const dy = (e.clientY - startM.y) * sc;
         
         if (drag) {
-            // Kutuyu taşı - tüm kutu hareket eder
             rect.x = Math.max(0, Math.min(startR.x + dx, canvas.width - rect.w));
             rect.y = Math.max(0, Math.min(startR.y + dy, canvas.height - rect.h));
         } else if (res) {
-            // Yeniden boyutlandır - karşı kenar SABİT!
             let newX = startR.x;
             let newY = startR.y;
             let newW = startR.w;
             let newH = startR.h;
             
             switch(hType) {
-                case 'se': // sağ-alt: sol-üst sabit
-                    newW = Math.max(30, startR.w + dx);
-                    newH = Math.max(30, startR.h + dy);
-                    break;
-                case 'sw': // sol-alt: sağ-üst sabit
-                    newW = Math.max(30, startR.w - dx);
-                    newX = startR.x + dx;
-                    newH = Math.max(30, startR.h + dy);
-                    break;
-                case 'ne': // sağ-üst: sol-alt sabit
-                    newW = Math.max(30, startR.w + dx);
-                    newH = Math.max(30, startR.h - dy);
-                    newY = startR.y + dy;
-                    break;
-                case 'nw': // sol-üst: sağ-alt sabit
-                    newW = Math.max(30, startR.w - dx);
-                    newX = startR.x + dx;
-                    newH = Math.max(30, startR.h - dy);
-                    newY = startR.y + dy;
-                    break;
+                case 'se': newW = Math.max(30, startR.w + dx); newH = Math.max(30, startR.h + dy); break;
+                case 'sw': newW = Math.max(30, startR.w - dx); newX = startR.x + dx; newH = Math.max(30, startR.h + dy); break;
+                case 'ne': newW = Math.max(30, startR.w + dx); newH = Math.max(30, startR.h - dy); newY = startR.y + dy; break;
+                case 'nw': newW = Math.max(30, startR.w - dx); newX = startR.x + dx; newH = Math.max(30, startR.h - dy); newY = startR.y + dy; break;
             }
             
-            // Sınırları kontrol et
             if (newX < 0) { newW += newX; newX = 0; }
             if (newY < 0) { newH += newY; newY = 0; }
             if (newX + newW > canvas.width) newW = canvas.width - newX;
@@ -472,22 +581,13 @@
         syncCropBox();
     };
     
-    wrap.onpointerup = (e) => { 
-        drag = false; 
-        res = false; 
-        if (e.target) wrap.releasePointerCapture?.(e.pointerId);
-    };
-    
-    // Sayfa kaymasını tamamen engellemek için
+    wrap.onpointerup = (e) => { drag = false; res = false; if (e.target) wrap.releasePointerCapture?.(e.pointerId); };
     wrap.addEventListener('touchstart', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     wrap.addEventListener('touchmove', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     
     function doCrop() {
         if (!cropping || !currentImage) return;
-        if (rect.w < 5 || rect.h < 5) {
-            showError("Kırpma alanı çok küçük!");
-            return;
-        }
+        if (rect.w < 5 || rect.h < 5) { showError("Kırpma alanı çok küçük!"); return; }
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = rect.w;
         tempCanvas.height = rect.h;
@@ -506,28 +606,17 @@
         newImg.src = tempCanvas.toDataURL();
     }
     
-    function endCrop() {
-        cropping = false;
-        cropBox.style.display = 'none';
-    }
-    
+    function endCrop() { cropping = false; cropBox.style.display = 'none'; }
     function saveCurrentImage() {
-        if (!currentImage) {
-            showError("Kaydedilecek resim yok!");
-            return;
-        }
+        if (!currentImage) { showError("Kaydedilecek resim yok!"); return; }
         const a = document.createElement('a');
         a.download = 'resim_duzenlendi.png';
         a.href = canvas.toDataURL('image/png');
         a.click();
     }
     
-    // ========== RESİM YÜKLEME ==========
     function loadSingleImage(file) {
-        if (!file || !file.type.startsWith('image/')) {
-            showError("Lütfen geçerli bir resim dosyası seçin.");
-            return;
-        }
+        if (!file || !file.type.startsWith('image/')) { showError("Lütfen geçerli bir resim dosyası seçin."); return; }
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = new Image();
@@ -536,17 +625,13 @@
                 drawImageOnCanvas();
                 startCrop();
             };
-            img.onerror = () => {
-                showError("Resim yüklenirken hata oluştu.");
-                initEmptyCanvas();
-            };
+            img.onerror = () => { showError("Resim yüklenirken hata oluştu."); initEmptyCanvas(); };
             img.src = e.target.result;
         };
         reader.onerror = () => showError("Dosya okuma hatası.");
         reader.readAsDataURL(file);
     }
     
-    // ========== TOPLU BOYUTLANDIRMA ==========
     function resizeImageWithBlackBg(img, targetW, targetH) {
         return new Promise((resolve) => {
             const tempCanvas = document.createElement('canvas');
@@ -555,11 +640,9 @@
             tempCanvas.height = targetH;
             tempCtx.fillStyle = "#000000";
             tempCtx.fillRect(0, 0, targetW, targetH);
-            
             let drawW, drawH, drawX, drawY;
             const imgRatio = img.width / img.height;
             const targetRatio = targetW / targetH;
-            
             if (imgRatio > targetRatio) {
                 drawW = targetW;
                 drawH = targetW / imgRatio;
@@ -593,34 +676,19 @@
     }
     
     async function resizeAllBatchImages(targetW, targetH) {
-        if (batchFiles.length === 0) {
-            showError("Lütfen önce toplu işlem için resim seçin!");
-            return;
-        }
+        if (batchFiles.length === 0) { showError("Lütfen önce toplu işlem için resim seçin!"); return; }
         const statusSpan = document.getElementById('batchStatus');
         statusSpan.innerHTML = "📏 İşleniyor...";
         const newResizedImages = [];
-        
         for (let i = 0; i < batchFiles.length; i++) {
             try {
                 const img = await loadImageFromFile(batchFiles[i]);
                 const resizedImg = await resizeImageWithBlackBg(img, targetW, targetH);
-                newResizedImages.push({
-                    originalName: batchFiles[i].name,
-                    image: resizedImg,
-                    width: targetW,
-                    height: targetH
-                });
+                newResizedImages.push({ originalName: batchFiles[i].name, image: resizedImg, width: targetW, height: targetH });
                 statusSpan.innerHTML = `📏 ${i + 1}/${batchFiles.length}`;
-            } catch (err) {
-                statusSpan.innerHTML = `⚠️ ${batchFiles[i]?.name || 'dosya'} hatalı, atlandı.`;
-            }
+            } catch (err) { statusSpan.innerHTML = `⚠️ ${batchFiles[i]?.name || 'dosya'} hatalı, atlandı.`; }
         }
-        
-        if (newResizedImages.length === 0) {
-            statusSpan.innerHTML = "❌ Hiçbir resim işlenemedi.";
-            return;
-        }
+        if (newResizedImages.length === 0) { statusSpan.innerHTML = "❌ Hiçbir resim işlenemedi."; return; }
         batchResizedImages = newResizedImages;
         statusSpan.innerHTML = `✅ ${batchResizedImages.length} resim ${targetW}x${targetH} boyutlandırıldı`;
         showResultPanel();
@@ -661,10 +729,7 @@
             a.click();
             URL.revokeObjectURL(a.href);
         });
-        
-        document.getElementById('closeResultPanel')?.addEventListener('click', () => {
-            panel.style.display = 'none';
-        });
+        document.getElementById('closeResultPanel')?.addEventListener('click', () => { panel.style.display = 'none'; });
     }
     
     async function resizeToSquare() {
@@ -682,7 +747,6 @@
         });
     }
     
-    // ========== RENK DÜZELTME ==========
     function applyColorAdjustment() {
         if (!currentImage) return;
         let brightness = parseInt(document.getElementById('brightness').value);
@@ -794,7 +858,6 @@
         }, format, 0.92);
     }
     
-    // ========== ÇOKLU BİRLEŞTİRME ==========
     async function loadImagesFromFiles(files) {
         const promises = files.map(file => new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -810,29 +873,42 @@
         return Promise.all(promises);
     }
     
+    // ========== DÜZELTİLMİŞ BİRLEŞTİRME FONKSİYONLARI ==========
     async function mergeHorizontalAuto() {
         if (selectedMultiFiles.length < 2) { showError("En az 2 resim seçin"); return; }
         try {
             const images = await loadImagesFromFiles(selectedMultiFiles);
+            
+            // Tüm resimleri aynı yüksekliğe ölçekle (en yüksek resmi baz al)
             let targetHeight = Math.max(...images.map(img => img.height));
-            const scaled = images.map(img => {
+            
+            const scaledImages = images.map(img => {
                 const scale = targetHeight / img.height;
-                const c = document.createElement('canvas');
-                c.width = img.width * scale;
-                c.height = targetHeight;
-                c.getContext('2d').drawImage(img, 0, 0, c.width, targetHeight);
-                return c;
+                const newWidth = img.width * scale;
+                const canvas = document.createElement('canvas');
+                canvas.width = newWidth;
+                canvas.height = targetHeight;
+                const ctx = canvas.getContext('2d');
+                // Beyaz arkaplan (kenarlıklar için)
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, newWidth, targetHeight);
+                // Resmi ortala
+                ctx.drawImage(img, 0, 0, newWidth, targetHeight);
+                return canvas;
             });
-            let totalW = scaled.reduce((s,c) => s + c.width, 0);
-            const result = document.createElement('canvas');
-            result.width = totalW;
-            result.height = targetHeight;
-            const rctx = result.getContext('2d');
+            
+            let totalWidth = scaledImages.reduce((sum, c) => sum + c.width, 0);
+            const resultCanvas = document.createElement('canvas');
+            resultCanvas.width = totalWidth;
+            resultCanvas.height = targetHeight;
+            const resultCtx = resultCanvas.getContext('2d');
+            
             let x = 0;
-            for (let c of scaled) {
-                rctx.drawImage(c, x, 0);
-                x += c.width;
+            for (let imgCanvas of scaledImages) {
+                resultCtx.drawImage(imgCanvas, x, 0);
+                x += imgCanvas.width;
             }
+            
             const finalImg = new Image();
             finalImg.onload = () => { 
                 currentImage = finalImg; 
@@ -844,33 +920,43 @@
                 }
                 multiStatusSpan.innerText = "Yatay birleştirme tamamlandı!"; 
             };
-            finalImg.src = result.toDataURL();
-        } catch(e) { showError("Birleştirme hatası: geçersiz resim"); }
+            finalImg.src = resultCanvas.toDataURL();
+        } catch(e) { showError("Birleştirme hatası: " + e.message); }
     }
     
     async function mergeVerticalAuto() {
         if (selectedMultiFiles.length < 2) { showError("En az 2 resim seçin"); return; }
         try {
             const images = await loadImagesFromFiles(selectedMultiFiles);
+            
+            // Tüm resimleri aynı genişliğe ölçekle (en geniş resmi baz al)
             let targetWidth = Math.max(...images.map(img => img.width));
-            const scaled = images.map(img => {
+            
+            const scaledImages = images.map(img => {
                 const scale = targetWidth / img.width;
-                const c = document.createElement('canvas');
-                c.width = targetWidth;
-                c.height = img.height * scale;
-                c.getContext('2d').drawImage(img, 0, 0, targetWidth, c.height);
-                return c;
+                const newHeight = img.height * scale;
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = newHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, targetWidth, newHeight);
+                ctx.drawImage(img, 0, 0, targetWidth, newHeight);
+                return canvas;
             });
-            let totalH = scaled.reduce((s,c) => s + c.height, 0);
-            const result = document.createElement('canvas');
-            result.width = targetWidth;
-            result.height = totalH;
-            const rctx = result.getContext('2d');
+            
+            let totalHeight = scaledImages.reduce((sum, c) => sum + c.height, 0);
+            const resultCanvas = document.createElement('canvas');
+            resultCanvas.width = targetWidth;
+            resultCanvas.height = totalHeight;
+            const resultCtx = resultCanvas.getContext('2d');
+            
             let y = 0;
-            for (let c of scaled) {
-                rctx.drawImage(c, 0, y);
-                y += c.height;
+            for (let imgCanvas of scaledImages) {
+                resultCtx.drawImage(imgCanvas, 0, y);
+                y += imgCanvas.height;
             }
+            
             const finalImg = new Image();
             finalImg.onload = () => { 
                 currentImage = finalImg; 
@@ -882,11 +968,10 @@
                 }
                 multiStatusSpan.innerText = "Dikey birleştirme tamamlandı!"; 
             };
-            finalImg.src = result.toDataURL();
-        } catch(e) { showError("Dikey birleştirme hatası"); }
+            finalImg.src = resultCanvas.toDataURL();
+        } catch(e) { showError("Dikey birleştirme hatası: " + e.message); }
     }
     
-    // ========== PROJE & PAYLAŞ ==========
     function projeKaydet() {
         if (!currentImage) { showError("Resim yok"); return; }
         const veri = { resimVerisi: currentImage.src };
@@ -957,12 +1042,13 @@
         }
     }
     
-    // ========== DOM OLAY BAĞLANTILARI ==========
-    document.getElementById('fileInput').onchange = (e) => { if(e.target.files[0]) loadSingleImage(e.target.files[0]); };
-    document.getElementById('resetBtn').onclick = () => { 
-        if(currentImage) drawImageOnCanvas(); 
-        startCrop();
-    };
+    // DOM bağlantıları
+    const fileInput = document.getElementById('fileInput');
+    const selectImageBtn = document.getElementById('selectImageBtn');
+    selectImageBtn.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => { if(e.target.files[0]) loadSingleImage(e.target.files[0]); };
+    
+    document.getElementById('resetBtn').onclick = () => { if(currentImage) drawImageOnCanvas(); startCrop(); };
     document.getElementById('applyColorBtn').onclick = applyColorAdjustment;
     document.getElementById('enhanceQualityBtn').onclick = sharpen;
     document.getElementById('rotate90Btn').onclick = rotate90;
@@ -982,6 +1068,7 @@
     };
     document.getElementById('mergeHorizontalMultiBtn').onclick = mergeHorizontalAuto;
     document.getElementById('mergeVerticalMultiBtn').onclick = mergeVerticalAuto;
+    
     document.getElementById('projeKaydet').onclick = projeKaydet;
     document.getElementById('projeYukle').onclick = projeYukle;
     document.getElementById('paylasResim').onclick = paylasResim;
@@ -1008,6 +1095,8 @@
         resizeAllBatchImages(targetW, targetH);
     };
     document.getElementById('resizeToSquareBtn').onclick = () => resizeToSquare();
+    
+    initTabs();
 })();
 </script>
 </body>
