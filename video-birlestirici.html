@@ -48,8 +48,8 @@
         </div>
         <div class="control-group">
             <label>🎚️ SIKIŞTIRMA</label>
-            <input type="range" id="qualitySlider" min="30" max="55" value="48" step="1">
-            <span id="qualityValue" style="color:var(--ana-renk)">48</span>
+            <input type="range" id="qualitySlider" min="30" max="55" value="40" step="1">
+            <span id="qualityValue" style="color:var(--ana-renk)">40</span>
         </div>
     </div>
     
@@ -83,7 +83,11 @@ const qualityValue = document.getElementById('qualityValue');
 
 qualitySlider.oninput = () => qualityValue.textContent = qualitySlider.value;
 function updateStatus(msg, isOk = true) { stSpan.innerHTML = `${isOk ? '✨' : '⚠️'} ${msg}`; }
-function setProgress(percent) { pBar.style.width = `${Math.min(100, Math.max(0, percent))}%`; progressPercent.innerText = `${Math.floor(percent)}%`; }
+function setProgress(percent) { 
+    const p = Math.min(100, Math.max(0, percent));
+    pBar.style.width = `${p}%`; 
+    progressPercent.innerText = `${Math.floor(p)}%`; 
+}
 function formatBytes(bytes) { 
     if(bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB'; 
@@ -177,13 +181,11 @@ function drawVideoFit(ctx, canvas, video) {
     let drawW, drawH, offsetX, offsetY;
     
     if (videoAspect > canvasAspect) {
-        // Video daha yatay -> genişliğe göre ölçekle
         drawW = canvasW;
         drawH = canvasW / videoAspect;
         offsetX = 0;
         offsetY = (canvasH - drawH) / 2;
     } else {
-        // Video daha dik -> yüksekliğe göre ölçekle
         drawH = canvasH;
         drawW = canvasH * videoAspect;
         offsetX = (canvasW - drawW) / 2;
@@ -194,29 +196,36 @@ function drawVideoFit(ctx, canvas, video) {
 }
 
 async function mergeVideos() {
-    if (videoFiles.length < 2 || isProcessing) {
-        if(videoFiles.length < 2) updateStatus("En az 2 video seçin!", false);
+    if (videoFiles.length < 2) {
+        updateStatus("En az 2 video seçin!", false);
+        return;
+    }
+    if (isProcessing) {
+        updateStatus("Zaten bir işlem devam ediyor!", false);
         return;
     }
     
     isProcessing = true;
     mergeBtn.disabled = true;
     updateStatus("Videolar analiz ediliyor...");
+    setProgress(0);
     
     // Toplam süreyi hesapla
     let totalDuration = 0;
+    const durations = [];
     
     for (const f of videoFiles) {
         const v = document.createElement('video');
         v.src = URL.createObjectURL(f);
-        await new Promise(r => { 
+        const duration = await new Promise((resolve) => {
             v.onloadedmetadata = () => { 
-                totalDuration += v.duration; 
+                resolve(v.duration);
                 URL.revokeObjectURL(v.src);
-                r(); 
             };
-            v.onerror = () => { totalDuration += 1; r(); };
+            v.onerror = () => resolve(1);
         });
+        durations.push(duration);
+        totalDuration += duration;
     }
     
     if (totalDuration === 0) totalDuration = 1;
@@ -235,8 +244,12 @@ async function mergeVideos() {
     canvas.height = targetRes.height;
     const ctx = canvas.getContext('2d');
     
-    // Ses sistemi - temiz ses için
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
+    // Siyah arka plan
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Ses sistemi
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const dest = audioContext.createMediaStreamDestination();
     
     const highpassFilter = audioContext.createBiquadFilter();
@@ -260,9 +273,9 @@ async function mergeVideos() {
     const canvasStream = canvas.captureStream(30);
     const combinedStream = new MediaStream([...canvasStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
     
-    let mimeType = 'video/webm;codecs=vp8';
-    if (MediaRecorder.isTypeSupported('video/mp4;codecs=h264,aac')) {
-        mimeType = 'video/mp4;codecs=h264,aac';
+    let mimeType = 'video/webm';
+    if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+        mimeType = 'video/webm;codecs=vp8';
     }
     
     const recorder = new MediaRecorder(combinedStream, {
@@ -273,8 +286,22 @@ async function mergeVideos() {
     
     const chunks = [];
     recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
-    recorder.start(1000);
     
+    recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/mp4' });
+        const finalSizeMB = blob.size / (1024 * 1024);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `birlesik_video_${Date.now()}.mp4`;
+        a.click();
+        updateStatus(`✅ ${finalSizeMB.toFixed(2)} MB | Başarılı!`, true);
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        isProcessing = false;
+        mergeBtn.disabled = false;
+        audioContext.close();
+    };
+    
+    recorder.start();
     await audioContext.resume();
     
     let processedTime = 0;
@@ -283,52 +310,43 @@ async function mergeVideos() {
         const video = document.createElement('video');
         video.src = URL.createObjectURL(videoFiles[i]);
         video.crossOrigin = "anonymous";
-        video.preload = "auto";
         
         await new Promise((resolve) => {
             let resolved = false;
-            let timeoutId = setTimeout(() => {
-                if(!resolved) {
-                    resolved = true;
-                    processedTime += (video.duration || 2);
-                    resolve();
-                }
-            }, 30000);
             
             video.onloadeddata = async () => {
                 if(resolved) return;
                 resolved = true;
-                clearTimeout(timeoutId);
                 
                 try {
                     const source = audioContext.createMediaElementSource(video);
                     source.connect(highpassFilter);
+                    
+                    video.currentTime = 0;
                     await video.play();
                     
-                    const duration = video.duration;
+                    const duration = durations[i];
+                    let startTime = performance.now();
                     
                     const renderFrame = () => {
-                        if (video.ended) {
+                        if (video.ended || video.currentTime >= duration) {
                             source.disconnect();
                             processedTime += duration;
                             resolve();
                             return;
                         }
                         
-                        // Sığdır (Fit) modu ile çiz
                         drawVideoFit(ctx, canvas, video);
-                        
                         const overallProgress = ((processedTime + video.currentTime) / totalDuration) * 100;
                         setProgress(overallProgress);
-                        
                         requestAnimationFrame(renderFrame);
                     };
                     
                     renderFrame();
                     
                 } catch(e) {
-                    console.warn("Video render hatası:", e);
-                    processedTime += duration;
+                    console.error("Video hatası:", e);
+                    processedTime += durations[i];
                     resolve();
                 }
             };
@@ -336,43 +354,31 @@ async function mergeVideos() {
             video.onerror = () => {
                 if(!resolved) {
                     resolved = true;
-                    clearTimeout(timeoutId);
-                    processedTime += (video.duration || 2);
+                    processedTime += durations[i];
                     resolve();
                 }
             };
+            
+            // Timeout
+            setTimeout(() => {
+                if(!resolved) {
+                    resolved = true;
+                    processedTime += durations[i];
+                    resolve();
+                }
+            }, 30000);
         });
         
         URL.revokeObjectURL(video.src);
     }
     
     setProgress(100);
-    updateStatus("Videolar birleştirildi, dosya hazırlanıyor...");
-    
-    recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/mp4' });
-        const finalSizeMB = blob.size / (1024 * 1024);
-        
-        let sizeStatus = blob.size <= HEDEF_BOYUT_BYTES 
-            ? `✅ ${finalSizeMB.toFixed(2)} MB (hedef:10MB)` 
-            : `⚠️ ${finalSizeMB.toFixed(2)} MB`;
-        
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `birlesik_sigdir_${Date.now()}.mp4`;
-        a.click();
-        
-        updateStatus(`${sizeStatus} | Sığdır modu | Başarılı!`, true);
-        
-        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-        
-        isProcessing = false;
-        mergeBtn.disabled = false;
-        audioContext.close();
-    };
+    updateStatus("Video oluşturuluyor...");
     
     setTimeout(() => {
-        if(recorder.state === 'recording') recorder.stop();
+        if (recorder.state === 'recording') {
+            recorder.stop();
+        }
     }, 500);
 }
 
