@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sesten Metin Oluşturucu | Gelişmiş Paylaşım + Karakter Sayacı</title>
+    <!-- html2canvas kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #f1f5f9;
@@ -82,6 +84,49 @@
             padding: 4px 10px;
             border-radius: 20px;
         }
+        
+        .design-panel {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .design-panel h4 {
+            font-size: 0.8rem;
+            color: #2563eb;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+        .design-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .design-item {
+            background: white;
+            padding: 5px 14px;
+            border-radius: 40px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .design-item label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+        }
+        select {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 30px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            outline: none;
+        }
+        
         .download-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -234,6 +279,7 @@
             textarea, #output { font-size: 15px; }
             .date-footer { font-size: 0.85rem; }
             .counter-wrapper { font-size: 0.65rem; }
+            .design-item { padding: 4px 10px; }
         }
         @media (max-width: 480px) {
             .action-row { gap: 6px; }
@@ -251,10 +297,43 @@
         <span class="counter-item">✨ Çıkış: <span id="outputCount">0</span> karakter</span>
     </div>
     
+    <div class="design-panel">
+        <h4>🎨 GÖRSEL TASARIM AYARLARI (PNG / JPG)</h4>
+        <div class="design-options">
+            <div class="design-item">
+                <label>🖌️ Arkaplan</label>
+                <select id="bgColor">
+                    <option value="#FFFFFF">Beyaz</option>
+                    <option value="#FFF8E7">Krem</option>
+                    <option value="#E8F0FE">Mavi Soft</option>
+                    <option value="#F0F0F0">Gri Modern</option>
+                    <option value="#FFE4E1" selected>Pudra</option>
+                </select>
+            </div>
+            <div class="design-item">
+                <label>📏 Yazı Boyutu</label>
+                <select id="fontSize">
+                    <option value="48" selected>48px (Varsayılan)</option>
+                    <option value="50">50px</option>
+                    <option value="52">52px</option>
+                </select>
+            </div>
+            <div class="design-item">
+                <label>🎨 Yazı Rengi</label>
+                <select id="textColor">
+                    <option value="#0f172a">Koyu Gri</option>
+                    <option value="#1e293b">Lacivert</option>
+                    <option value="#8b4513">Kahve</option>
+                    <option value="#b91c1c">Koyu Kırmızı</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
     <div class="download-row">
         <button class="btn-image" onclick="downloadTxt()">📄 TXT İNDİR</button>
-        <button class="btn-image" onclick="generateImage('png')">🖼️ PNG İNDİR</button>
-        <button class="btn-image" onclick="generateImage('jpeg')">🎨 JPG İNDİR</button>
+        <button class="btn-image" id="pngGenBtn">🖼️ PNG İNDİR</button>
+        <button class="btn-image" id="jpgGenBtn">🎨 JPG İNDİR</button>
     </div>
 
     <div class="action-row">
@@ -294,10 +373,14 @@
     (function() {
         // --------------------- GENEL DEĞİŞKENLER ---------------------
         const INDENT = "      ";
-        let phoneMap = new Map(); // telefon placeholder eşlemesi
+        let phoneMap = new Map();
         let phoneCounter = 0;
         
-        // --------------------- TELEFON KORUMA (RAKAM DOKUNULMAZ) ---------------------
+        const bgColorSelect = document.getElementById('bgColor');
+        const fontSizeSelect = document.getElementById('fontSize');
+        const textColorSelect = document.getElementById('textColor');
+        
+        // --------------------- TELEFON KORUMA ---------------------
         function generatePhonePlaceholder() {
             let letters = "";
             let n = phoneCounter++;
@@ -346,7 +429,6 @@
             return phonePattern.test(line);
         }
         
-        // --------------------- RAKAM -> YAZI DÖNÜŞÜMÜ (TELEFONLAR KORUNARAK) ---------------------
         function convertNumbersToWords(text) {
             let r = text;
             r = r.replace(/\b7\./g, 'yedinci').replace(/\b1\./g, 'birinci').replace(/\b2\./g, 'ikinci').replace(/\b3\./g, 'üçüncü');
@@ -359,7 +441,6 @@
             return r;
         }
         
-        // --------------------- DİĞER DÜZELTMELER ---------------------
         function fixCommonTypos(t) {
             const corrections = {
                 "birşey":"bir şey", "herşey":"her şey", "hiçbirşey":"hiçbir şey", "birşeyler":"bir şeyler",
@@ -444,7 +525,6 @@
             return words.join('');
         }
         
-        // Ünlem ekleme (imdat, eyvah vb.) - yanındaki kelimeler korunur
         function addExclamationToInterjections(t) {
             const interjections = [
                 "eyvah","imdat","oh","aah","vah","yazık","bravo","aferin","of","uh","hey","hop","dur","koş",
@@ -486,7 +566,6 @@
             return r;
         }
         
-        // --------------------- SON DÜZENLEME (CÜMLE SONU NOKTALAMA + GİRİNTİ + TELEFON KORUMA) ---------------------
         function finalizeText(text) {
             let paragraphs = text.split(/\n\s*\n/);
             let processedParas = paragraphs.map(para => {
@@ -495,14 +574,11 @@
                 let processedLines = lines.map(line => {
                     line = line.trim();
                     if (line === "") return "";
-                    // Telefon içeren satırlara hiç dokunma
                     if (lineHasPhone(line)) return line;
                     
-                    // Tamamen büyük harfli ve kısa isimler (BAYRAM KOÇ gibi) noktasız kalmalı
                     const isShortName = /^[A-ZĞÜŞİÖÇ][A-ZĞÜŞİÖÇ\s]+$/.test(line) && line.split(/\s+/).length <= 5 && !/[.!?]$/.test(line);
                     if (isShortName) return line;
                     
-                    // ---- GELİŞMİŞ CÜMLE AYIRMA: noktalama işaretlerine göre böl, ama geriye kalan kısmı da al ----
                     let segments = [];
                     let remaining = line;
                     const punctuationRegex = /[.!?]+/g;
@@ -514,23 +590,19 @@
                         if (sentence) segments.push(sentence);
                         lastIndex = endIndex;
                     }
-                    // Son kalan noktalama ile bitmeyen kısım varsa onu da ekle
                     let tail = remaining.substring(lastIndex).trim();
                     if (tail) segments.push(tail);
                     
                     if (segments.length === 0) segments = [line];
                     
-                    // Her bir segmenti düzenle (büyük harf, nokta ekleme)
                     let fixedSegments = segments.map(seg => {
                         if (lineHasPhone(seg)) return seg;
                         let s = seg.trim();
                         if (!s) return "";
-                        // İlk harf büyük
                         let first = s.charAt(0);
                         if (/[a-zğüşıəöç]/i.test(first)) {
                             s = first.toLocaleUpperCase('tr-TR') + s.slice(1);
                         }
-                        // Eğer sonunda noktalama yoksa ve sadece harf/rakam varsa nokta ekle
                         if (!/[.!?]$/.test(s) && !lineHasPhone(s)) {
                             s += ".";
                         }
@@ -538,7 +610,6 @@
                     });
                     
                     let joined = fixedSegments.join(" ");
-                    // Kısa satır kontrolü (girinti)
                     if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
                     else return INDENT + joined;
                 });
@@ -549,15 +620,11 @@
             return result;
         }
         
-        // --------------------- ANA DÖNÜŞÜM ---------------------
         function processText() {
             let raw = document.getElementById('input').value;
             if (!raw.trim()) return;
             
-            // 1. Telefonları koru
             let protectedText = protectPhoneNumbers(raw);
-            
-            // 2. Satır satır işle (korunmuş metin üzerinde)
             let lines = protectedText.split(/\r?\n/);
             let processedLines = lines.map(line => {
                 if (line.trim() === "") return "";
@@ -574,11 +641,7 @@
                 return p;
             });
             let combined = processedLines.join('\n');
-            
-            // 3. Telefonları geri getir
             let finalText = restorePhoneNumbers(combined);
-            
-            // 4. Son düzenleme (noktalama, girinti, isim koruma)
             finalText = finalizeText(finalText);
             finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki');
             finalText = finalText.replace(/\?\./g, '?').replace(/!\./g, '!');
@@ -591,7 +654,6 @@
             document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
         }
         
-        // --------------------- YARDIMCI FONKSİYONLAR ---------------------
         function updateInputCounter() {
             document.getElementById('inputCount').innerText = document.getElementById('input').value.length;
         }
@@ -622,81 +684,95 @@
             document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
         }
         
-        // --------------------- GÖRSEL OLUŞTURMA ---------------------
-        async function getImageBlob(format) {
-            const text = document.getElementById('output').value;
-            if (!text.trim()) { alert("Önce metni dönüştürün!"); return null; }
-            const SCALE = 2.0, BASE_WIDTH = 2100, WIDTH = BASE_WIDTH * SCALE, PADDING_X = 200 * SCALE;
-            const MAX_W = WIDTH - (PADDING_X * 2);
-            let fontSize = text.length > 800 ? 82 : 96;
-            fontSize *= SCALE;
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
-            const rawLines = text.split(/\r?\n/);
-            let finalLines = [];
-            for (let line of rawLines) {
-                if (line.trim() === "") { finalLines.push(""); continue; }
-                const hasIndent = line.startsWith(INDENT);
-                const content = hasIndent ? line.substring(INDENT.length) : line;
-                const indentSpaces = hasIndent ? INDENT : "";
-                if (tempCtx.measureText(line).width <= MAX_W) {
-                    finalLines.push(line);
-                    continue;
+        // --------------------- GÖRSEL OLUŞTURMA (YUVARLAK KÖŞELİ) ---------------------
+        async function generateStyledImage(format) {
+            let finalText = document.getElementById('output').value;
+            if (!finalText.trim()) {
+                if (document.getElementById('input').value.trim()) {
+                    processText();
+                    finalText = document.getElementById('output').value;
+                } else {
+                    alert("Lütfen önce metin girin veya dönüştürün!");
+                    return null;
                 }
-                let words = content.split(/\s+/);
-                let current = indentSpaces;
-                for (let w of words) {
-                    let test = current ? current + " " + w : indentSpaces + w;
-                    if (tempCtx.measureText(test).width > MAX_W && current !== indentSpaces) {
-                        finalLines.push(current);
-                        current = indentSpaces + w;
-                    } else {
-                        current = test;
-                    }
-                }
-                if (current) finalLines.push(current);
             }
-            const lineHeight = fontSize * 1.55;
-            const textHeight = finalLines.length * lineHeight;
-            const minHeight = 1700 * SCALE;
-            const calcHeight = textHeight + (700 * SCALE);
-            const HEIGHT = Math.max(minHeight, calcHeight);
-            const canvas = document.createElement('canvas');
-            canvas.width = WIDTH;
-            canvas.height = HEIGHT;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, WIDTH, HEIGHT);
-            ctx.strokeStyle = "#cbd5e1";
-            ctx.lineWidth = 22 * SCALE;
-            ctx.strokeRect(55, 55, WIDTH - 110, HEIGHT - 110);
-            ctx.fillStyle = "#0f172a";
-            ctx.font = `600 ${fontSize}px 'Segoe UI', 'Roboto', Arial, sans-serif`;
-            ctx.textBaseline = "top";
-            ctx.textAlign = "left";
-            let startY = (HEIGHT - (finalLines.length * lineHeight)) / 2;
-            if (startY < 200 * SCALE) startY = 200 * SCALE;
-            for (let i = 0; i < finalLines.length; i++) {
-                ctx.fillText(finalLines[i], PADDING_X, startY + (i * lineHeight));
-            }
+            
+            const bg = bgColorSelect.value;
+            const fontSize = fontSizeSelect.value;
+            const textColor = textColorSelect.value;
             const now = new Date();
-            const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
-            ctx.font = `bold ${56 * SCALE}px 'Segoe UI', Arial`;
-            ctx.fillStyle = "#1e293b";
-            ctx.textAlign = "center";
-            ctx.fillText(`📅 ${dateStr}`, WIDTH / 2, HEIGHT - (130 * SCALE));
-            return new Promise(resolve => {
-                canvas.toBlob(blob => resolve(blob), format === 'png' ? 'image/png' : 'image/jpeg', format === 'jpeg' ? 1.0 : undefined);
-            });
+            const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '0';
+            tempDiv.style.width = '800px';
+            tempDiv.style.backgroundColor = bg;
+            tempDiv.style.padding = '60px 50px';
+            tempDiv.style.display = 'flex';
+            tempDiv.style.flexDirection = 'column';
+            tempDiv.style.alignItems = 'flex-start';
+            tempDiv.style.fontFamily = "'Segoe UI', 'Inter', system-ui, monospace";
+            tempDiv.style.borderRadius = '48px';  // Dış kenarlar yuvarlak
+            tempDiv.style.overflow = 'hidden';
+            
+            const textBox = document.createElement('div');
+            textBox.style.whiteSpace = 'pre-wrap';
+            textBox.style.wordBreak = 'break-word';
+            textBox.style.fontSize = `${fontSize}px`;
+            textBox.style.color = textColor;
+            textBox.style.fontWeight = '500';
+            textBox.style.lineHeight = '1.5';
+            textBox.style.textAlign = 'left';
+            textBox.style.width = '100%';
+            textBox.style.padding = '30px 28px';
+            textBox.style.backgroundColor = 'rgba(255,255,245,0.9)';
+            textBox.style.borderRadius = '28px';  // İç kutu da yuvarlak
+            textBox.style.boxShadow = '0 12px 28px rgba(0,0,0,0.08)';
+            textBox.innerText = finalText;
+            
+            const footerInfo = document.createElement('div');
+            footerInfo.style.marginTop = '35px';
+            footerInfo.style.fontSize = '22px';
+            footerInfo.style.color = '#475569';
+            footerInfo.style.textAlign = 'center';
+            footerInfo.style.width = '100%';
+            footerInfo.style.borderTop = '2px solid rgba(0,0,0,0.08)';
+            footerInfo.style.paddingTop = '22px';
+            footerInfo.style.fontWeight = '500';
+            footerInfo.innerHTML = `👨‍💻 Bayram KOÇ  •  📅 ${dateStr}  •  🕒 ${timeStr}`;
+            
+            tempDiv.appendChild(textBox);
+            tempDiv.appendChild(footerInfo);
+            document.body.appendChild(tempDiv);
+            
+            try {
+                const canvas = await html2canvas(tempDiv, {
+                    scale: 2.6,
+                    backgroundColor: bg,
+                    logging: false,
+                    useCORS: false,
+                    borderRadius: '48px'
+                });
+                document.body.removeChild(tempDiv);
+                return canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 0.92);
+            } catch (err) {
+                document.body.removeChild(tempDiv);
+                console.error(err);
+                alert("Görsel oluşturulamadı!");
+                return null;
+            }
         }
-        async function generateImage(format) {
-            let blob = await getImageBlob(format);
-            if (!blob) return;
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `metin.${format === 'png' ? 'png' : 'jpg'}`;
-            a.click();
+        
+        async function downloadImage(format) {
+            const dataUrl = await generateStyledImage(format);
+            if (!dataUrl) return;
+            const link = document.createElement('a');
+            link.download = `metin.${format}`;
+            link.href = dataUrl;
+            link.click();
             alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
         }
         
@@ -710,6 +786,7 @@
             modal.style.display = 'flex';
         }
         function closeShareModal() { modal.style.display = 'none'; }
+        
         async function shareFile(blob, fileName, mimeType) {
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
                 try {
@@ -725,6 +802,7 @@
             alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
             return false;
         }
+        
         async function shareAsText() {
             closeShareModal();
             const t = document.getElementById('output').value;
@@ -732,13 +810,19 @@
             const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'});
             await shareFile(blob, "metin.txt", "text/plain");
         }
+        
         async function shareAsImage(format) {
             closeShareModal();
-            const blob = await getImageBlob(format);
-            if (!blob) return;
-            await shareFile(blob, `metin.${format === 'png' ? 'png' : 'jpg'}`, format === 'png' ? 'image/png' : 'image/jpeg');
+            const dataUrl = await generateStyledImage(format);
+            if (!dataUrl) return;
+            const blob = await (await fetch(dataUrl)).blob();
+            await shareFile(blob, `metin.${format}`, format === 'png' ? 'image/png' : 'image/jpeg');
         }
+        
         window.onclick = (e) => { if (e.target === modal) closeShareModal(); };
+        
+        document.getElementById('pngGenBtn').onclick = () => downloadImage('png');
+        document.getElementById('jpgGenBtn').onclick = () => downloadImage('jpeg');
         
         // --------------------- SAYFA YÜKLENİNCE ---------------------
         document.addEventListener('DOMContentLoaded', () => {
@@ -755,13 +839,11 @@
             document.getElementById('output').addEventListener('input', updateOutputCounter);
         });
         
-        // Global fonksiyonları dışa aç
         window.updateInputCounter = updateInputCounter;
         window.updateOutputCounter = updateOutputCounter;
         window.processText = processText;
         window.copyOutput = copyOutput;
         window.downloadTxt = downloadTxt;
-        window.generateImage = generateImage;
         window.clearAll = clearAll;
         window.openShareModal = openShareModal;
         window.closeShareModal = closeShareModal;
