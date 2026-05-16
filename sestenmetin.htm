@@ -209,8 +209,8 @@
         .date-footer {
             text-align: center;
             margin-top: 20px;
-            font-size: 1rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: #1e293b;
             border-top: 2px solid var(--border);
             padding-top: 15px;
@@ -277,7 +277,7 @@
             button { padding: 10px 5px; font-size: 0.75rem; }
             .convert-row button { font-size: 1rem; padding: 14px; max-width: 260px; }
             textarea, #output { font-size: 15px; }
-            .date-footer { font-size: 0.85rem; }
+            .date-footer { font-size: 0.75rem; }
             .counter-wrapper { font-size: 0.65rem; }
             .design-item { padding: 4px 10px; }
         }
@@ -300,7 +300,6 @@
     <div class="design-panel">
         <h4>🎨 GÖRSEL TASARIM AYARLARI (PNG / JPG)</h4>
         <div class="design-options">
-            <!-- 1. Arkaplan -->
             <div class="design-item">
                 <label>🖌️ Arkaplan</label>
                 <select id="bgColor">
@@ -319,24 +318,35 @@
                     <option value="#E8F5E9">Doğa Yeşili</option>
                     <option value="#FCE4EC">Soft Pembe</option>
                     <option value="#E3F2FD">Gökyüzü</option>
+                    <option value="#D6D3D1">Füme Gri</option>
+                    <option value="#FED7AA">Şeftali</option>
+                    <option value="#CCFBF1">Nane Yeşili</option>
                 </select>
             </div>
-            <!-- 2. İç Alan -->
             <div class="design-item">
                 <label>🪟 İç Alan</label>
                 <select id="innerBgColor">
-                    <option value="rgba(255,255,245,0.9)" selected>Yumuşak Beyaz</option>
-                    <option value="rgba(255,248,231,0.92)">Krem</option>
-                    <option value="rgba(232,240,254,0.92)">Mavi Soft</option>
-                    <option value="rgba(240,240,240,0.92)">Modern Gri</option>
-                    <option value="rgba(255,228,225,0.92)">Pudra</option>
-                    <option value="rgba(245,255,250,0.92)">Mint</option>
-                    <option value="rgba(243,229,245,0.92)">Lila</option>
-                    <option value="rgba(252,228,236,0.92)">Pembe</option>
-                    <option value="rgba(232,245,233,0.92)">Yeşil Soft</option>
+                    <option value="#FFFFFF">Beyaz</option>
+                    <option value="#F8FAFC" selected>Buz Beyazı</option>
+                    <option value="#FFF8E7">Krem</option>
+                    <option value="#E8F0FE">Mavi Soft</option>
+                    <option value="#F0F0F0">Gri Modern</option>
+                    <option value="#FFE4E1">Pudra</option>
+                    <option value="#FFF0F5">Lavanta Pembe</option>
+                    <option value="#F5FFFA">Mint</option>
+                    <option value="#FAF3DD">Pastel Sarı</option>
+                    <option value="#E0F7FA">Turkuaz Soft</option>
+                    <option value="#F3E5F5">Lila</option>
+                    <option value="#ECEFF1">Gümüş Gri</option>
+                    <option value="#FFFDE7">Açık Krem</option>
+                    <option value="#E8F5E9">Doğa Yeşili</option>
+                    <option value="#FCE4EC">Soft Pembe</option>
+                    <option value="#E3F2FD">Gökyüzü</option>
+                    <option value="#D6D3D1">Füme Gri</option>
+                    <option value="#FED7AA">Şeftali</option>
+                    <option value="#CCFBF1">Nane Yeşili</option>
                 </select>
             </div>
-            <!-- 3. Yazı Boyutu -->
             <div class="design-item">
                 <label>📏 Yazı Boyutu</label>
                 <select id="fontSize">
@@ -348,7 +358,6 @@
                     <option value="52">52px</option>
                 </select>
             </div>
-            <!-- 4. Yazı Rengi -->
             <div class="design-item">
                 <label>🎨 Yazı Rengi</label>
                 <select id="textColor">
@@ -411,6 +420,8 @@
         const fontSizeSelect = document.getElementById('fontSize');
         const textColorSelect = document.getElementById('textColor');
         const innerBgColorSelect = document.getElementById('innerBgColor');
+        
+        // Varsayılan iç alan rengi Buz Beyazı (#F8FAFC) olarak ayarlandı
         
         // --------------------- TELEFON KORUMA ---------------------
         function generatePhonePlaceholder() {
@@ -603,14 +614,12 @@
             let processedParas = paragraphs.map(para => {
                 if (para.trim() === "") return "";
                 let lines = para.split('\n');
-                let processedLines = lines.map(line => {
+                let processedLines = lines.map((line, idx) => {
                     line = line.trim();
                     if (line === "") return "";
                     if (lineHasPhone(line)) return line;
-                    
                     const isShortName = /^[A-ZĞÜŞİÖÇ][A-ZĞÜŞİÖÇ\s]+$/.test(line) && line.split(/\s+/).length <= 5 && !/[.!?]$/.test(line);
                     if (isShortName) return line;
-                    
                     let segments = [];
                     let remaining = line;
                     const punctuationRegex = /[.!?]+/g;
@@ -624,9 +633,7 @@
                     }
                     let tail = remaining.substring(lastIndex).trim();
                     if (tail) segments.push(tail);
-                    
                     if (segments.length === 0) segments = [line];
-                    
                     let fixedSegments = segments.map(seg => {
                         if (lineHasPhone(seg)) return seg;
                         let s = seg.trim();
@@ -640,10 +647,12 @@
                         }
                         return s;
                     });
-                    
                     let joined = fixedSegments.join(" ");
-                    if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
-                    else return INDENT + joined;
+                    if (idx === 0) return INDENT + joined;
+                    else {
+                        if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
+                        else return INDENT + joined;
+                    }
                 });
                 return processedLines.join('\n');
             });
@@ -652,420 +661,149 @@
             return result;
         }
         
-        function enhanceTurkishGrammar(text) {
+        // Şehir, ilçe, köy, mahalle adlarına gelen ekleri doğru şekilde ayarlayan fonksiyon
+        function fixLocationSuffixes(text) {
             let t = text;
-
-            const cityNames = [
-                'adana','adıyaman','afyonkarahisar','ağrı','amasya','ankara','antalya','artvin','aydın',
-                'balıkesir','bilecik','bingöl','bitlis','bolu','burdur','bursa','çanakkale','çankırı',
-                'çorum','denizli','diyarbakır','edirne','elazığ','erzincan','erzurum','eskişehir',
-                'gaziantep','giresun','gümüşhane','hakkari','hatay','ısparta','mersin','istanbul','izmir',
-                'kars','kastamonu','kayseri','kırklareli','kırşehir','kocaeli','konya','kütahya','malatya',
-                'manisa','kahramanmaraş','mardin','muğla','muş','nevşehir','niğde','ordu','rize','sakarya',
-                'samsun','siirt','sinop','sivas','tekirdağ','tokat','trabzon','tunceli','şanlıurfa','uşak',
-                'van','yozgat','zonguldak','aksaray','bayburt','karaman','kırıkkale','batman','şırnak',
-                'bartın','ardahan','ığdır','yalova','karabük','kilis','osmaniye','düzce'
+            
+            const locationNames = [
+                'adana', 'adıyaman', 'afyonkarahisar', 'ağrı', 'amasya', 'ankara', 'antalya', 'artvin', 'aydın',
+                'balıkesir', 'bilecik', 'bingöl', 'bitlis', 'bolu', 'burdur', 'bursa', 'çanakkale', 'çankırı',
+                'çorum', 'denizli', 'diyarbakır', 'edirne', 'elazığ', 'erzincan', 'erzurum', 'eskişehir',
+                'gaziantep', 'giresun', 'gümüşhane', 'hakkari', 'hatay', 'ısparta', 'mersin', 'istanbul', 'izmir',
+                'kars', 'kastamonu', 'kayseri', 'kırklareli', 'kırşehir', 'kocaeli', 'konya', 'kütahya', 'malatya',
+                'manisa', 'kahramanmaraş', 'mardin', 'muğla', 'muş', 'nevşehir', 'niğde', 'ordu', 'rize', 'sakarya',
+                'samsun', 'siirt', 'sinop', 'sivas', 'tekirdağ', 'tokat', 'trabzon', 'tunceli', 'şanlıurfa', 'uşak',
+                'van', 'yozgat', 'zonguldak', 'aksaray', 'bayburt', 'karaman', 'kırıkkale', 'batman', 'şırnak',
+                'bartın', 'ardahan', 'ığdır', 'yalova', 'karabük', 'kilis', 'osmaniye', 'düzce'
             ];
-
-            const typoMap = {
-                'amayanın': "Amasya'nın",
-                'amasyanın': "Amasya'nın",
-                'tokatın': "Tokat'ın",
-                'ankaranın': "Ankara'nın",
-                'istanbulun': "İstanbul'un",
-                'izmirin': "İzmir'in"
-            };
-
-            Object.keys(typoMap).forEach(key => {
-                const regex = new RegExp(`\\b${key}\\b`, 'gi');
-                t = t.replace(regex, typoMap[key]);
-            });
-
-            cityNames.forEach(city => {
-                const regex = new RegExp(`\\b${city}\\b`, 'gi');
-                t = t.replace(regex, (m) => {
-                    return m.charAt(0).toLocaleUpperCase('tr-TR') +
-                           m.slice(1).toLocaleLowerCase('tr-TR');
+            
+            const apostropheSuffixes = ['a', 'e', 'ı', 'i', 'u', 'ü', 'da', 'de', 'ta', 'te', 'dan', 'den', 'tan', 'ten', 'nın', 'nin', 'nun', 'nün', 'ya', 'ye', 'na', 'ne', 'yı', 'yi', 'yu', 'yü'];
+            const noApostropheSuffixes = ['lı', 'li', 'lu', 'lü', 'cı', 'ci', 'cu', 'cü', 'sı', 'si', 'su', 'sü', 'lık', 'lik', 'luk', 'lük', 'cilik'];
+            
+            locationNames.forEach(name => {
+                const capitalized = name.charAt(0).toLocaleUpperCase('tr-TR') + name.slice(1).toLocaleLowerCase('tr-TR');
+                
+                apostropheSuffixes.forEach(suffix => {
+                    const regexWithSpace = new RegExp(`\\b(${capitalized})\\s+(${suffix})\\b`, 'gi');
+                    const regexWithDirect = new RegExp(`\\b(${capitalized})(${suffix})\\b`, 'gi');
+                    t = t.replace(regexWithSpace, (match, city, suf) => `${city}'${suf}`);
+                    t = t.replace(regexWithDirect, (match, city, suf) => `${city}'${suf}`);
+                });
+                
+                noApostropheSuffixes.forEach(suffix => {
+                    const regexWithApostrophe = new RegExp(`\\b(${capitalized})'(${suffix})\\b`, 'gi');
+                    t = t.replace(regexWithApostrophe, (match, city, suf) => `${city}${suf}`);
                 });
             });
-
-            cityNames.forEach(city => {
-                const cap =
-                    city.charAt(0).toLocaleUpperCase('tr-TR') +
-                    city.slice(1);
-
-                const regex = new RegExp(
-                    `\\b${cap}(nın|nin|nun|nün|ın|in|un|ün|a|e|da|de|ta|te)\\b`,
-                    'g'
-                );
-
-                t = t.replace(regex, `${cap}'$1`);
-            });
-
-            t = t.replace(
-                /\b([a-zçğıöşü]+)\s+(köyünde|köyüne|köyü|ilçesinde|ilçesine|ilçesi|mahallesinde|mahallesi)\b/gi,
-                (m, p1, p2) => {
-                    const fixed =
-                        p1.charAt(0).toLocaleUpperCase('tr-TR') +
-                        p1.slice(1).toLocaleLowerCase('tr-TR');
-
-                    return fixed + ' ' + p2;
+            
+            t = t.replace(/\b([A-ZĞÜŞİÖÇ][a-zğüşıöç]+)\s+([aaeıiuü])\b/gi, (match, city, suffix) => {
+                if (city.length >= 3 && !city.match(/^(ve|ile|ki|de|da)$/i)) {
+                    return `${city}'${suffix}`;
                 }
-            );
-
-            t = t.replace(
-                /(^|[.!?]\s+)([a-zçğıöşü])/g,
-                (m, p1, p2) => p1 + p2.toLocaleUpperCase('tr-TR')
-            );
-
+                return match;
+            });
+            
             return t;
         }
-
-        function advancedLanguageChecks(text) {
+        
+        function enhanceTurkishGrammar(text) {
             let t = text;
-
-            const months = [
-                'ocak','şubat','mart','nisan','mayıs','haziran',
-                'temmuz','ağustos','eylül','ekim','kasım','aralık'
+            t = fixLocationSuffixes(t);
+            
+            const cityNames = [
+                'adana', 'adıyaman', 'afyonkarahisar', 'ağrı', 'amasya', 'ankara', 'antalya', 'artvin', 'aydın',
+                'balıkesir', 'bilecik', 'bingöl', 'bitlis', 'bolu', 'burdur', 'bursa', 'çanakkale', 'çankırı',
+                'çorum', 'denizli', 'diyarbakır', 'edirne', 'elazığ', 'erzincan', 'erzurum', 'eskişehir',
+                'gaziantep', 'giresun', 'gümüşhane', 'hakkari', 'hatay', 'ısparta', 'mersin', 'istanbul', 'izmir',
+                'kars', 'kastamonu', 'kayseri', 'kırklareli', 'kırşehir', 'kocaeli', 'konya', 'kütahya', 'malatya',
+                'manisa', 'kahramanmaraş', 'mardin', 'muğla', 'muş', 'nevşehir', 'niğde', 'ordu', 'rize', 'sakarya',
+                'samsun', 'siirt', 'sinop', 'sivas', 'tekirdağ', 'tokat', 'trabzon', 'tunceli', 'şanlıurfa', 'uşak',
+                'van', 'yozgat', 'zonguldak', 'aksaray', 'bayburt', 'karaman', 'kırıkkale', 'batman', 'şırnak',
+                'bartın', 'ardahan', 'ığdır', 'yalova', 'karabük', 'kilis', 'osmaniye', 'düzce'
             ];
-
-            const days = [
-                'pazartesi','salı','çarşamba','perşembe',
-                'cuma','cumartesi','pazar'
-            ];
-
-            months.forEach(month => {
-                const re = new RegExp(`\\b${month}\\b`, 'gi');
-                t = t.replace(re, (m) =>
-                    m.charAt(0).toLocaleUpperCase('tr-TR') +
-                    m.slice(1).toLocaleLowerCase('tr-TR')
-                );
+            
+            const typoMap = {
+                'amayanın': "Amasya'nın", 'amasyanın': "Amasya'nın", 'tokatın': "Tokat'ın",
+                'ankaranın': "Ankara'nın", 'istanbulun': "İstanbul'un", 'izmirin': "İzmir'in"
+            };
+            
+            Object.keys(typoMap).forEach(key => { t = t.replace(new RegExp(`\\b${key}\\b`, 'gi'), typoMap[key]); });
+            
+            cityNames.forEach(city => { 
+                t = t.replace(new RegExp(`\\b${city}\\b`, 'gi'), m => m.charAt(0).toLocaleUpperCase('tr-TR') + m.slice(1).toLocaleLowerCase('tr-TR')); 
             });
-
-            days.forEach(day => {
-                const re = new RegExp(`\\b${day}\\b`, 'gi');
-                t = t.replace(re, (m) =>
-                    m.charAt(0).toLocaleUpperCase('tr-TR') +
-                    m.slice(1).toLocaleLowerCase('tr-TR')
-                );
+            
+            cityNames.forEach(city => { 
+                const cap = city.charAt(0).toLocaleUpperCase('tr-TR') + city.slice(1);
+                const suffixPattern = '(nın|nin|nun|nün|ın|in|un|ün|a|e|da|de|ta|te|ya|ye|na|ne|yı|yi|yu|yü|dan|den|tan|ten)';
+                t = t.replace(new RegExp(`\\b${cap}(${suffixPattern})\\b`, 'g'), `${cap}'$1`);
             });
-
-            t = t.replace(/\bya da\b/gi, 'ya da');
-            t = t.replace(/\bki\b\s+\?/gi, 'ki?');
-            t = t.replace(/[ ]{2,}/g, ' ');
-            t = t.replace(/([!?.,]){2,}/g, '$1');
-            t = t.replace(/\(\s+/g, '(');
-            t = t.replace(/\s+\)/g, ')');
-            t = t.replace(/“\s+/g, '“');
-            t = t.replace(/\s+”/g, '”');
-
-            return t.trim();
-        }
-
-        function advancedPunctuationEnhancer(text) {
-            let t = text;
-
-            const exclamations = [
-                'müjde', 'eyvah', 'aman', 'imdat', 'yardım',
-                'bravo', 'aferin', 'haydi', 'hadi', 'vah',
-                'yazık', 'tüh', 'vay', 'hey', 'dur'
-            ];
-
-            exclamations.forEach(word => {
-                const re = new RegExp(`\\b(${word})\\b(?!\\s*!)(?=\\s)`, 'gi');
-                t = t.replace(re, '$1!');
-            });
-
-            t = t.replace(
-                /([^.!?\n]+\b(mı|mi|mu|mü)\b[^.!?\n]*)(\.)/gi,
-                '$1?'
-            );
-
-            t = t.replace(
-                /\b(evet|hayır|elbette|örneğin|örnek olarak|açıkçası|kısacası)\b/gi,
-                '$&, '
-            );
-
-            t = t.replace(
-                /\s+(ama|fakat|ancak|lakin|çünkü|oysa|oysaki|yani)\s+/gi,
-                ', $1 '
-            );
-
-            t = t.replace(/\.{3,}/g, '...');
-            t = t.replace(/"([^"]+)"/g, '“$1”');
-            t = t.replace(
-                /([A-ZÇĞİÖŞÜ][a-zçğıöşü]+)([dD][ae])\b/g,
-                "$1'$2"
-            );
-            t = t.replace(
-                /(\w+),(\s+)(fakat|ancak|oysa)/gi,
-                "$1;$2$3"
-            );
-            t = t.replace(/\s+([.,!?;:])/g, '$1');
-            t = t.replace(/([.,!?;:])([^\s\n])/g, '$1 $2');
-
-            return t;
-        }
-
-        function normalizeSentences(text) {
-            let t = text;
-            t = t.replace(/\r/g, '');
-            t = t.replace(/[ \t]+/g, ' ');
-            t = t.replace(/\n{3,}/g, '\n\n');
-
-            t = t.split('\n').map(line => {
-                let s = line.trim();
-                if (!s) return '';
-                if (!/[.!?:;…]$/.test(s)) s += '.';
-                s = s.replace(/^([a-zçğıöşü])/, (m, p1) => p1.toLocaleUpperCase('tr-TR'));
-                return s;
-            }).join('\n');
-
-            t = t.replace(/\s+(ama|fakat|ancak|lakin|çünkü|yani|oysa|oysaki)\s+/gi, ', $1 ');
-            t = t.replace(/\s+(mı|mi|mu|mü)\./gi, ' $1?');
-            t = t.replace(/\.{2,}/g, '.');
-            t = t.replace(/\?{2,}/g, '?');
-            t = t.replace(/!{2,}/g, '!');
-            t = t.replace(/\s+([.,!?;:])/g, '$1');
-            t = t.replace(/([.,!?;:])([^\s\n])/g, '$1 $2');
+            
+            t = t.replace(/\b([a-zçğıöşü]+)\s+(köyünde|köyüne|köyü|ilçesinde|ilçesine|ilçesi|mahallesinde|mahallesi)\b/gi, (m, p1, p2) => p1.charAt(0).toLocaleUpperCase('tr-TR') + p1.slice(1).toLocaleLowerCase('tr-TR') + ' ' + p2);
             t = t.replace(/(^|[.!?]\s+)([a-zçğıöşü])/g, (m, p1, p2) => p1 + p2.toLocaleUpperCase('tr-TR'));
-            return t.trim();
+            
+            return t;
         }
+
+        function advancedLanguageChecks(text) { let t = text; const months = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık']; const days = ['pazartesi','salı','çarşamba','perşembe','cuma','cumartesi','pazar']; months.forEach(month => { t = t.replace(new RegExp(`\\b${month}\\b`, 'gi'), m => m.charAt(0).toLocaleUpperCase('tr-TR') + m.slice(1).toLocaleLowerCase('tr-TR')); }); days.forEach(day => { t = t.replace(new RegExp(`\\b${day}\\b`, 'gi'), m => m.charAt(0).toLocaleUpperCase('tr-TR') + m.slice(1).toLocaleLowerCase('tr-TR')); }); t = t.replace(/\bya da\b/gi, 'ya da').replace(/\bki\b\s+\?/gi, 'ki?').replace(/[ ]{2,}/g, ' ').replace(/([!?.,]){2,}/g, '$1').replace(/\(\s+/g, '(').replace(/\s+\)/g, ')').replace(/“\s+/g, '“').replace(/\s+”/g, '”'); return t.trim(); }
+        function advancedPunctuationEnhancer(text) { let t = text; const exclamations = ['müjde','eyvah','aman','imdat','yardım','bravo','aferin','haydi','hadi','vah','yazık','tüh','vay','hey','dur']; exclamations.forEach(word => { t = t.replace(new RegExp(`\\b(${word})\\b(?!\\s*!)(?=\\s)`, 'gi'), '$1!'); }); t = t.replace(/([^.!?\n]+\b(mı|mi|mu|mü)\b[^.!?\n]*)(\.)/gi, '$1?').replace(/\b(evet|hayır|elbette|örneğin|örnek olarak|açıkçası|kısacası)\b/gi, '$&, ').replace(/\s+(ama|fakat|ancak|lakin|çünkü|oysa|oysaki|yani)\s+/gi, ', $1 ').replace(/\.{3,}/g, '...').replace(/"([^"]+)"/g, '“$1”').replace(/([A-ZÇĞİÖŞÜ][a-zçğıöşü]+)([dD][ae])\b/g, "$1'$2").replace(/(\w+),(\s+)(fakat|ancak|oysa)/gi, "$1;$2$3").replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s\n])/g, '$1 $2'); return t; }
+        function normalizeSentences(text) { let t = text; t = t.replace(/\r/g, '').replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n'); t = t.split('\n').map(line => { let s = line.trim(); if (!s) return ''; if (!/[.!?:;…]$/.test(s)) s += '.'; s = s.replace(/^([a-zçğıöşü])/, (m, p1) => p1.toLocaleUpperCase('tr-TR')); return s; }).join('\n'); t = t.replace(/\s+(ama|fakat|ancak|lakin|çünkü|yani|oysa|oysaki)\s+/gi, ', $1 ').replace(/\s+(mı|mi|mu|mü)\./gi, ' $1?').replace(/\.{2,}/g, '.').replace(/\?{2,}/g, '?').replace(/!{2,}/g, '!').replace(/\s+([.,!?;:])/g, '$1').replace(/([.,!?;:])([^\s\n])/g, '$1 $2').replace(/(^|[.!?]\s+)([a-zçğıöşü])/g, (m, p1, p2) => p1 + p2.toLocaleUpperCase('tr-TR')); return t.trim(); }
 
         function processText() {
             let raw = document.getElementById('input').value;
             if (!raw.trim()) return;
-
             let protectedText = protectPhoneNumbers(raw);
             let lines = protectedText.split(/\r?\n/);
-
-            let processedLines = lines.map(line => {
-                if (line.trim() === "") return "";
-                let p = line;
-                p = convertNumbersToWords(p);
-                p = fixCommonTypos(p);
-                p = splitDeDa(p);
-                p = splitKi(p);
-                p = splitQuestionParticles(p);
-                p = addExclamationToInterjections(p);
-                p = enhanceExclamations(p);
-                p = fixPunctuationSpacing(p);
-                p = addSafeCommas(p);
-                return p;
-            });
-
+            let processedLines = lines.map(line => { if (line.trim() === "") return ""; let p = line; p = convertNumbersToWords(p); p = fixCommonTypos(p); p = splitDeDa(p); p = splitKi(p); p = splitQuestionParticles(p); p = addExclamationToInterjections(p); p = enhanceExclamations(p); p = fixPunctuationSpacing(p); p = addSafeCommas(p); return p; });
             let combined = processedLines.join('\n');
             combined = enhanceTurkishGrammar(combined);
             combined = advancedLanguageChecks(combined);
             combined = advancedPunctuationEnhancer(combined);
             combined = normalizeSentences(combined);
             let finalText = restorePhoneNumbers(combined);
-            finalText = finalText.replace(/eğer , ki/gi, 'eğer ki');
-            finalText = finalText.replace(/eğer, ki/gi, 'eğer ki');
-            finalText = finalText.replace(/\?\./g, '?');
-            finalText = finalText.replace(/!\./g, '!');
-            finalText = finalText.replace(/\s+\./g, '.');
-            finalText = finalText.replace(/\s+\?/g, '?');
-            finalText = finalText.replace(/\s+\!/g, '!');
-
+            finalText = finalText.replace(/eğer , ki/gi, 'eğer ki').replace(/eğer, ki/gi, 'eğer ki').replace(/\?\./g, '?').replace(/!\./g, '!').replace(/\s+\./g, '.').replace(/\s+\?/g, '?').replace(/\s+\!/g, '!');
+            finalText = finalizeText(finalText);
             document.getElementById('output').value = finalText;
             updateOutputCounter();
-            const now = new Date();
-            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
+            const now = new Date(); document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
         }
         
-        function updateInputCounter() {
-            document.getElementById('inputCount').innerText = document.getElementById('input').value.length;
-        }
-        function updateOutputCounter() {
-            document.getElementById('outputCount').innerText = document.getElementById('output').value.length;
-        }
-        function copyOutput() {
-            let t = document.getElementById('output').value;
-            if (!t) { alert("Dönüştürülmüş metin yok."); return; }
-            navigator.clipboard.writeText(t);
-            alert("✅ Metin panoya kopyalandı!");
-        }
-        function downloadTxt() {
-            let t = document.getElementById('output').value;
-            if (!t) return;
-            const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "metin.txt";
-            a.click();
-        }
-        function clearAll() {
-            document.getElementById('input').value = "";
-            document.getElementById('output').value = "";
-            updateInputCounter();
-            updateOutputCounter();
-            const now = new Date();
-            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
-        }
+        function updateInputCounter() { document.getElementById('inputCount').innerText = document.getElementById('input').value.length; }
+        function updateOutputCounter() { document.getElementById('outputCount').innerText = document.getElementById('output').value.length; }
+        function copyOutput() { let t = document.getElementById('output').value; if (!t) { alert("Dönüştürülmüş metin yok."); return; } navigator.clipboard.writeText(t); alert("✅ Metin panoya kopyalandı!"); }
+        function downloadTxt() { let t = document.getElementById('output').value; if (!t) return; const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "metin.txt"; a.click(); }
+        function clearAll() { document.getElementById('input').value = ""; document.getElementById('output').value = ""; updateInputCounter(); updateOutputCounter(); const now = new Date(); document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`; }
         
         async function generateStyledImage(format) {
             let finalText = document.getElementById('output').value;
-            if (!finalText.trim()) {
-                if (document.getElementById('input').value.trim()) {
-                    processText();
-                    finalText = document.getElementById('output').value;
-                } else {
-                    alert("Lütfen önce metin girin veya dönüştürün!");
-                    return null;
-                }
-            }
-            const bg = bgColorSelect.value;
-            const fontSize = fontSizeSelect.value;
-            const textColor = textColorSelect.value;
-            const innerBgColor = innerBgColorSelect.value;
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
-            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'fixed';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.top = '0';
-            tempDiv.style.width = '800px';
-            tempDiv.style.backgroundColor = bg;
-            tempDiv.style.padding = '60px 50px';
-            tempDiv.style.display = 'flex';
-            tempDiv.style.flexDirection = 'column';
-            tempDiv.style.alignItems = 'flex-start';
-            tempDiv.style.fontFamily = "'Segoe UI', 'Inter', system-ui, monospace";
-            tempDiv.style.borderRadius = '48px';
-            tempDiv.style.overflow = 'hidden';
-            
-            const textBox = document.createElement('div');
-            textBox.style.whiteSpace = 'pre-wrap';
-            textBox.style.wordBreak = 'break-word';
-            textBox.style.fontSize = `${fontSize}px`;
-            textBox.style.color = textColor;
-            textBox.style.fontWeight = '500';
-            textBox.style.lineHeight = '1.5';
-            textBox.style.textAlign = 'left';
-            textBox.style.width = '100%';
-            textBox.style.padding = '30px 28px';
-            textBox.style.backgroundColor = innerBgColor;
-            textBox.style.borderRadius = '28px';
-            textBox.style.boxShadow = '0 12px 28px rgba(0,0,0,0.08)';
-            textBox.innerText = finalText;
-            
-            const footerInfo = document.createElement('div');
-            footerInfo.style.marginTop = '35px';
-            footerInfo.style.fontSize = '22px';
-            footerInfo.style.color = '#475569';
-            footerInfo.style.textAlign = 'center';
-            footerInfo.style.width = '100%';
-            footerInfo.style.borderTop = '2px solid rgba(0,0,0,0.08)';
-            footerInfo.style.paddingTop = '22px';
-            footerInfo.style.fontWeight = '500';
-            footerInfo.innerHTML = `👨‍💻 Bayram KOÇ  •  📅 ${dateStr}  •  🕒 ${timeStr}`;
-            
-            tempDiv.appendChild(textBox);
-            tempDiv.appendChild(footerInfo);
-            document.body.appendChild(tempDiv);
-            
-            try {
-                const canvas = await html2canvas(tempDiv, {
-                    scale: 2.6,
-                    backgroundColor: bg,
-                    logging: false,
-                    useCORS: false,
-                    borderRadius: '48px'
-                });
-                document.body.removeChild(tempDiv);
-                return canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 0.92);
-            } catch (err) {
-                document.body.removeChild(tempDiv);
-                console.error(err);
-                alert("Görsel oluşturulamadı!");
-                return null;
-            }
+            if (!finalText.trim()) { if (document.getElementById('input').value.trim()) { processText(); finalText = document.getElementById('output').value; } else { alert("Lütfen önce metin girin veya dönüştürün!"); return null; } }
+            const bg = bgColorSelect.value; const fontSize = fontSizeSelect.value; const textColor = textColorSelect.value; const innerBgColor = innerBgColorSelect.value;
+            const now = new Date(); const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }); const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const tempDiv = document.createElement('div'); tempDiv.style.position = 'fixed'; tempDiv.style.left = '-9999px'; tempDiv.style.top = '0'; tempDiv.style.width = '800px'; tempDiv.style.backgroundColor = bg; tempDiv.style.padding = '60px 50px'; tempDiv.style.display = 'flex'; tempDiv.style.flexDirection = 'column'; tempDiv.style.alignItems = 'flex-start'; tempDiv.style.fontFamily = "'Segoe UI', 'Inter', system-ui, monospace"; tempDiv.style.borderRadius = '48px'; tempDiv.style.overflow = 'hidden';
+            const textBox = document.createElement('div'); textBox.style.whiteSpace = 'pre-wrap'; textBox.style.wordBreak = 'break-word'; textBox.style.fontSize = `${fontSize}px`; textBox.style.color = textColor; textBox.style.fontWeight = '500'; textBox.style.lineHeight = '1.5'; textBox.style.textAlign = 'left'; textBox.style.width = '100%'; textBox.style.padding = '30px 28px'; textBox.style.backgroundColor = innerBgColor; textBox.style.borderRadius = '28px'; textBox.style.boxShadow = '0 12px 28px rgba(0,0,0,0.08)'; textBox.innerText = finalText;
+            const footerInfo = document.createElement('div'); footerInfo.style.marginTop = '35px'; footerInfo.style.fontSize = '22px'; footerInfo.style.color = '#475569'; footerInfo.style.textAlign = 'center'; footerInfo.style.width = '100%'; footerInfo.style.borderTop = '2px solid rgba(0,0,0,0.08)'; footerInfo.style.paddingTop = '22px'; footerInfo.style.fontWeight = '500'; footerInfo.innerHTML = `📅 ${dateStr}  •  🕒 ${timeStr}`;
+            tempDiv.appendChild(textBox); tempDiv.appendChild(footerInfo); document.body.appendChild(tempDiv);
+            try { const canvas = await html2canvas(tempDiv, { scale: 2.6, backgroundColor: bg, logging: false, useCORS: false, borderRadius: '48px' }); document.body.removeChild(tempDiv); return canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 0.92); } catch (err) { document.body.removeChild(tempDiv); console.error(err); alert("Görsel oluşturulamadı!"); return null; }
         }
         
-        async function downloadImage(format) {
-            const dataUrl = await generateStyledImage(format);
-            if (!dataUrl) return;
-            const link = document.createElement('a');
-            link.download = `metin.${format}`;
-            link.href = dataUrl;
-            link.click();
-            alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`);
-        }
-        
+        async function downloadImage(format) { const dataUrl = await generateStyledImage(format); if (!dataUrl) return; const link = document.createElement('a'); link.download = `metin.${format}`; link.href = dataUrl; link.click(); alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`); }
         const modal = document.getElementById('shareModal');
-        function openShareModal() {
-            if (!document.getElementById('output').value.trim()) {
-                alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın.");
-                return;
-            }
-            modal.style.display = 'flex';
-        }
+        function openShareModal() { if (!document.getElementById('output').value.trim()) { alert("⚠️ Paylaşmak için önce metin girin ve Dönüştür butonuna tıklayın."); return; } modal.style.display = 'flex'; }
         function closeShareModal() { modal.style.display = 'none'; }
-        
-        async function shareFile(blob, fileName, mimeType) {
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) {
-                try {
-                    await navigator.share({ files: [new File([blob], fileName, { type: mimeType })] });
-                    return true;
-                } catch (e) { if (e.name !== 'AbortError') console.warn(e); }
-            }
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = fileName;
-            a.click();
-            URL.revokeObjectURL(a.href);
-            alert("📁 Paylaşım desteklenmiyor, dosya indirildi.");
-            return false;
-        }
-        
-        async function shareAsText() {
-            closeShareModal();
-            const t = document.getElementById('output').value;
-            if (!t.trim()) return;
-            const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'});
-            await shareFile(blob, "metin.txt", "text/plain");
-        }
-        
-        async function shareAsImage(format) {
-            closeShareModal();
-            const dataUrl = await generateStyledImage(format);
-            if (!dataUrl) return;
-            const blob = await (await fetch(dataUrl)).blob();
-            await shareFile(blob, `metin.${format}`, format === 'png' ? 'image/png' : 'image/jpeg');
-        }
-        
+        async function shareFile(blob, fileName, mimeType) { if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], fileName)] })) { try { await navigator.share({ files: [new File([blob], fileName, { type: mimeType })] }); return true; } catch (e) { if (e.name !== 'AbortError') console.warn(e); } } const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); URL.revokeObjectURL(a.href); alert("📁 Paylaşım desteklenmiyor, dosya indirildi."); return false; }
+        async function shareAsText() { closeShareModal(); const t = document.getElementById('output').value; if (!t.trim()) return; const blob = new Blob(["\uFEFF" + t], {type: 'text/plain;charset=utf-8'}); await shareFile(blob, "metin.txt", "text/plain"); }
+        async function shareAsImage(format) { closeShareModal(); const dataUrl = await generateStyledImage(format); if (!dataUrl) return; const blob = await (await fetch(dataUrl)).blob(); await shareFile(blob, `metin.${format}`, format === 'png' ? 'image/png' : 'image/jpeg'); }
         window.onclick = (e) => { if (e.target === modal) closeShareModal(); };
-        
-        document.getElementById('pngGenBtn').onclick = () => downloadImage('png');
-        document.getElementById('jpgGenBtn').onclick = () => downloadImage('jpeg');
+        document.getElementById('pngGenBtn').onclick = () => downloadImage('png'); document.getElementById('jpgGenBtn').onclick = () => downloadImage('jpeg');
         
         document.addEventListener('DOMContentLoaded', () => {
-            const now = new Date();
-            document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
-            updateInputCounter();
-            updateOutputCounter();
-            document.getElementById('input').addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    processText();
-                }
-            });
+            const now = new Date(); document.getElementById('dateFooter').innerHTML = `📅 ${now.toLocaleDateString('tr-TR')} ${now.toLocaleTimeString('tr-TR')}`;
+            updateInputCounter(); updateOutputCounter();
+            document.getElementById('input').addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); processText(); } });
             document.getElementById('output').addEventListener('input', updateOutputCounter);
         });
         
-        window.updateInputCounter = updateInputCounter;
-        window.updateOutputCounter = updateOutputCounter;
-        window.processText = processText;
-        window.copyOutput = copyOutput;
-        window.downloadTxt = downloadTxt;
-        window.clearAll = clearAll;
-        window.openShareModal = openShareModal;
-        window.closeShareModal = closeShareModal;
-        window.shareAsText = shareAsText;
-        window.shareAsImage = shareAsImage;
+        window.updateInputCounter = updateInputCounter; window.updateOutputCounter = updateOutputCounter; window.processText = processText; window.copyOutput = copyOutput; window.downloadTxt = downloadTxt; window.clearAll = clearAll; window.openShareModal = openShareModal; window.closeShareModal = closeShareModal; window.shareAsText = shareAsText; window.shareAsImage = shareAsImage;
     })();
 </script>
 </body>
