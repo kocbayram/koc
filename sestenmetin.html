@@ -350,12 +350,11 @@
             <div class="design-item">
                 <label>📏 Yazı Boyutu</label>
                 <select id="fontSize">
+                    <option value="32">32px</option>
                     <option value="36">36px</option>
-                    <option value="40">40px</option>
-                    <option value="44">44px</option>
-                    <option value="48" selected>48px (Varsayılan)</option>
-                    <option value="50">50px</option>
-                    <option value="52">52px</option>
+                    <option value="38" selected>38px (Önerilen)</option>
+                    <option value="42">42px</option>
+                    <option value="48">48px</option>
                 </select>
             </div>
             <div class="design-item">
@@ -422,12 +421,9 @@
         const innerBgColorSelect = document.getElementById('innerBgColor');
         
         // ----- ŞİİR TESPİTİ İÇİN FONKSİYON -----
-        // Bir satırın şiir satırı olup olmadığını kontrol et (kısa satırlar, noktalama ile bitmeyen, satır sonunda boşluk yok)
         function isPoetryLine(line) {
             if (!line || line.trim() === "") return false;
-            // Şiir özellikleri: satır genellikle kısadır, cümle bitirme noktası yoktur, büyük harfle başlamayabilir
             const words = line.trim().split(/\s+/);
-            // 8 kelimeden kısa ve nokta/ünlem/soru işareti ile bitmiyorsa şiir olma ihtimali yüksek
             if (words.length <= 8 && !/[.!?]$/.test(line.trim())) {
                 return true;
             }
@@ -436,7 +432,6 @@
         
         function isPoeticParagraph(paraLines) {
             if (paraLines.length === 0) return false;
-            // Eğer paragraftaki satırların çoğu şiir özelliği gösteriyorsa
             let poetryCount = 0;
             for (let line of paraLines) {
                 if (isPoetryLine(line)) poetryCount++;
@@ -636,10 +631,7 @@
             let processedParas = paragraphs.map(para => {
                 if (para.trim() === "") return "";
                 let lines = para.split('\n');
-                
-                // Şiir kontrolü: Eğer bu paragraf şiir özelliği gösteriyorsa girinti ekleme
                 const isPoetic = isPoeticParagraph(lines);
-                
                 let processedLines = lines.map((line, idx) => {
                     line = line.trim();
                     if (line === "") return "";
@@ -679,7 +671,6 @@
                     
                     let joined = fixedSegments.join(" ");
                     
-                    // Şiir ise girinti EKLEME, değilse paragrafın ilk satırına girinti ekle
                     if (isPoetic) {
                         return joined;
                     } else {
@@ -713,17 +704,13 @@
                 'bartın', 'ardahan', 'ığdır', 'yalova', 'karabük', 'kilis', 'osmaniye', 'düzce'
             ];
             
-            // Kesme işareti gerektiren ekler
             const apostropheSuffixes = ['a', 'e', 'ı', 'i', 'u', 'ü', 'da', 'de', 'ta', 'te', 'dan', 'den', 'tan', 'ten', 'nın', 'nin', 'nun', 'nün', 'ya', 'ye', 'na', 'ne', 'yı', 'yi', 'yu', 'yü'];
-            
-            // Kesme işareti gerektirmeyen ekler (bitişik yazılır) - li, lı, lu, lü bunların başında
             const noApostropheSuffixes = ['lı', 'li', 'lu', 'lü', 'cı', 'ci', 'cu', 'cü', 'sı', 'si', 'su', 'sü', 'lık', 'lik', 'luk', 'lük', 'cilik'];
             
             locationNames.forEach(name => {
                 const capitalized = name.charAt(0).toLocaleUpperCase('tr-TR') + name.slice(1).toLocaleLowerCase('tr-TR');
                 const lowerName = name.toLocaleLowerCase('tr-TR');
                 
-                // Kesme işareti gerektiren ekler için
                 apostropheSuffixes.forEach(suffix => {
                     const regexWithSpace = new RegExp(`\\b(${capitalized})\\s+(${suffix})\\b`, 'gi');
                     const regexWithDirect = new RegExp(`\\b(${capitalized})(${suffix})\\b`, 'gi');
@@ -731,14 +718,11 @@
                     t = t.replace(regexWithDirect, (match, city, suf) => `${city}'${suf}`);
                 });
                 
-                // Kesme işareti gerektirmeyen ekler için (bitişik yazılır, kesme işareti konmaz)
                 noApostropheSuffixes.forEach(suffix => {
-                    // Yanlışlıkla kesme işareti konmuşsa düzelt
                     const regexWithApostrophe = new RegExp(`\\b(${capitalized})'(${suffix})\\b`, 'gi');
                     t = t.replace(regexWithApostrophe, (match, city, suf) => `${city}${suf}`);
                 });
                 
-                // "amasyalı" -> "Amasyalı" (ilk harf büyük, kesme yok)
                 const lowerWithSuffix = new RegExp(`\\b${lowerName}(lı|li|lu|lü)\\b`, 'gi');
                 t = t.replace(lowerWithSuffix, (match, suffix) => {
                     return capitalized + suffix;
@@ -819,13 +803,74 @@
         async function generateStyledImage(format) {
             let finalText = document.getElementById('output').value;
             if (!finalText.trim()) { if (document.getElementById('input').value.trim()) { processText(); finalText = document.getElementById('output').value; } else { alert("Lütfen önce metin girin veya dönüştürün!"); return null; } }
-            const bg = bgColorSelect.value; const fontSize = fontSizeSelect.value; const textColor = textColorSelect.value; const innerBgColor = innerBgColorSelect.value;
-            const now = new Date(); const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }); const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            const tempDiv = document.createElement('div'); tempDiv.style.position = 'fixed'; tempDiv.style.left = '-9999px'; tempDiv.style.top = '0'; tempDiv.style.width = '800px'; tempDiv.style.backgroundColor = bg; tempDiv.style.padding = '60px 50px'; tempDiv.style.display = 'flex'; tempDiv.style.flexDirection = 'column'; tempDiv.style.alignItems = 'flex-start'; tempDiv.style.fontFamily = "'Segoe UI', 'Inter', system-ui, monospace"; tempDiv.style.borderRadius = '48px'; tempDiv.style.overflow = 'hidden';
-            const textBox = document.createElement('div'); textBox.style.whiteSpace = 'pre-wrap'; textBox.style.wordBreak = 'break-word'; textBox.style.fontSize = `${fontSize}px`; textBox.style.color = textColor; textBox.style.fontWeight = '500'; textBox.style.lineHeight = '1.5'; textBox.style.textAlign = 'left'; textBox.style.width = '100%'; textBox.style.padding = '30px 28px'; textBox.style.backgroundColor = innerBgColor; textBox.style.borderRadius = '28px'; textBox.style.boxShadow = '0 12px 28px rgba(0,0,0,0.08)'; textBox.innerText = finalText;
-            const footerInfo = document.createElement('div'); footerInfo.style.marginTop = '35px'; footerInfo.style.fontSize = '22px'; footerInfo.style.color = '#475569'; footerInfo.style.textAlign = 'center'; footerInfo.style.width = '100%'; footerInfo.style.borderTop = '2px solid rgba(0,0,0,0.08)'; footerInfo.style.paddingTop = '22px'; footerInfo.style.fontWeight = '500'; footerInfo.innerHTML = `📅 ${dateStr}  •  🕒 ${timeStr}`;
-            tempDiv.appendChild(textBox); tempDiv.appendChild(footerInfo); document.body.appendChild(tempDiv);
-            try { const canvas = await html2canvas(tempDiv, { scale: 2.6, backgroundColor: bg, logging: false, useCORS: false, borderRadius: '48px' }); document.body.removeChild(tempDiv); return canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 0.92); } catch (err) { document.body.removeChild(tempDiv); console.error(err); alert("Görsel oluşturulamadı!"); return null; }
+            const bg = bgColorSelect.value; 
+            let fontSize = parseInt(fontSizeSelect.value);
+            const textColor = textColorSelect.value; 
+            const innerBgColor = innerBgColorSelect.value;
+            const now = new Date(); 
+            const dateStr = now.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }); 
+            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const tempDiv = document.createElement('div'); 
+            tempDiv.style.position = 'fixed'; 
+            tempDiv.style.left = '-9999px'; 
+            tempDiv.style.top = '0'; 
+            tempDiv.style.width = '1000px';  // Daha geniş (800'den 1000'e)
+            tempDiv.style.backgroundColor = bg; 
+            tempDiv.style.padding = '40px 45px';  // Padding azaltıldı
+            tempDiv.style.display = 'flex'; 
+            tempDiv.style.flexDirection = 'column'; 
+            tempDiv.style.alignItems = 'flex-start'; 
+            tempDiv.style.fontFamily = "'Segoe UI', 'Inter', system-ui, monospace"; 
+            tempDiv.style.borderRadius = '48px'; 
+            tempDiv.style.overflow = 'hidden';
+            
+            const textBox = document.createElement('div'); 
+            textBox.style.whiteSpace = 'pre-wrap'; 
+            textBox.style.wordBreak = 'break-word'; 
+            textBox.style.fontSize = `${fontSize}px`; 
+            textBox.style.color = textColor; 
+            textBox.style.fontWeight = '500'; 
+            textBox.style.lineHeight = '1.45';  // Daha kompakt
+            textBox.style.textAlign = 'left'; 
+            textBox.style.width = '100%'; 
+            textBox.style.padding = '20px 28px';  // Daha dar padding
+            textBox.style.backgroundColor = innerBgColor; 
+            textBox.style.borderRadius = '28px'; 
+            textBox.style.boxShadow = '0 12px 28px rgba(0,0,0,0.08)'; 
+            textBox.innerText = finalText;
+            
+            const footerInfo = document.createElement('div'); 
+            footerInfo.style.marginTop = '28px'; 
+            footerInfo.style.fontSize = '20px'; 
+            footerInfo.style.color = '#475569'; 
+            footerInfo.style.textAlign = 'center'; 
+            footerInfo.style.width = '100%'; 
+            footerInfo.style.borderTop = '2px solid rgba(0,0,0,0.08)'; 
+            footerInfo.style.paddingTop = '18px'; 
+            footerInfo.style.fontWeight = '500'; 
+            footerInfo.innerHTML = `📅 ${dateStr}  •  🕒 ${timeStr}`;
+            
+            tempDiv.appendChild(textBox); 
+            tempDiv.appendChild(footerInfo); 
+            document.body.appendChild(tempDiv);
+            
+            try { 
+                const canvas = await html2canvas(tempDiv, { 
+                    scale: 2.4, 
+                    backgroundColor: bg, 
+                    logging: false, 
+                    useCORS: false, 
+                    borderRadius: '48px' 
+                }); 
+                document.body.removeChild(tempDiv); 
+                return canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 0.92); 
+            } catch (err) { 
+                document.body.removeChild(tempDiv); 
+                console.error(err); 
+                alert("Görsel oluşturulamadı!"); 
+                return null; 
+            }
         }
         
         async function downloadImage(format) { const dataUrl = await generateStyledImage(format); if (!dataUrl) return; const link = document.createElement('a'); link.download = `metin.${format}`; link.href = dataUrl; link.click(); alert(`✅ ${format.toUpperCase()} görseli oluşturuldu!`); }
