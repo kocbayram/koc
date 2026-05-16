@@ -421,7 +421,28 @@
         const textColorSelect = document.getElementById('textColor');
         const innerBgColorSelect = document.getElementById('innerBgColor');
         
-        // Varsayılan iç alan rengi Buz Beyazı (#F8FAFC) olarak ayarlandı
+        // ----- ŞİİR TESPİTİ İÇİN FONKSİYON -----
+        // Bir satırın şiir satırı olup olmadığını kontrol et (kısa satırlar, noktalama ile bitmeyen, satır sonunda boşluk yok)
+        function isPoetryLine(line) {
+            if (!line || line.trim() === "") return false;
+            // Şiir özellikleri: satır genellikle kısadır, cümle bitirme noktası yoktur, büyük harfle başlamayabilir
+            const words = line.trim().split(/\s+/);
+            // 8 kelimeden kısa ve nokta/ünlem/soru işareti ile bitmiyorsa şiir olma ihtimali yüksek
+            if (words.length <= 8 && !/[.!?]$/.test(line.trim())) {
+                return true;
+            }
+            return false;
+        }
+        
+        function isPoeticParagraph(paraLines) {
+            if (paraLines.length === 0) return false;
+            // Eğer paragraftaki satırların çoğu şiir özelliği gösteriyorsa
+            let poetryCount = 0;
+            for (let line of paraLines) {
+                if (isPoetryLine(line)) poetryCount++;
+            }
+            return poetryCount > paraLines.length / 2;
+        }
         
         // --------------------- TELEFON KORUMA ---------------------
         function generatePhonePlaceholder() {
@@ -609,17 +630,24 @@
             return r;
         }
         
+        // finalizeText - Şiirleri koruyarak sadece düz yazı paragraflarının ilk satırına girinti ekle
         function finalizeText(text) {
             let paragraphs = text.split(/\n\s*\n/);
             let processedParas = paragraphs.map(para => {
                 if (para.trim() === "") return "";
                 let lines = para.split('\n');
+                
+                // Şiir kontrolü: Eğer bu paragraf şiir özelliği gösteriyorsa girinti ekleme
+                const isPoetic = isPoeticParagraph(lines);
+                
                 let processedLines = lines.map((line, idx) => {
                     line = line.trim();
                     if (line === "") return "";
                     if (lineHasPhone(line)) return line;
+                    
                     const isShortName = /^[A-ZĞÜŞİÖÇ][A-ZĞÜŞİÖÇ\s]+$/.test(line) && line.split(/\s+/).length <= 5 && !/[.!?]$/.test(line);
                     if (isShortName) return line;
+                    
                     let segments = [];
                     let remaining = line;
                     const punctuationRegex = /[.!?]+/g;
@@ -634,6 +662,7 @@
                     let tail = remaining.substring(lastIndex).trim();
                     if (tail) segments.push(tail);
                     if (segments.length === 0) segments = [line];
+                    
                     let fixedSegments = segments.map(seg => {
                         if (lineHasPhone(seg)) return seg;
                         let s = seg.trim();
@@ -647,11 +676,18 @@
                         }
                         return s;
                     });
+                    
                     let joined = fixedSegments.join(" ");
-                    if (idx === 0) return INDENT + joined;
-                    else {
-                        if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
-                        else return INDENT + joined;
+                    
+                    // Şiir ise girinti EKLEME, değilse paragrafın ilk satırına girinti ekle
+                    if (isPoetic) {
+                        return joined;
+                    } else {
+                        if (idx === 0) return INDENT + joined;
+                        else {
+                            if (joined.length < 45 && joined.split(/\s+/).length <= 5) return joined;
+                            else return INDENT + joined;
+                        }
                     }
                 });
                 return processedLines.join('\n');
@@ -677,12 +713,17 @@
                 'bartın', 'ardahan', 'ığdır', 'yalova', 'karabük', 'kilis', 'osmaniye', 'düzce'
             ];
             
+            // Kesme işareti gerektiren ekler
             const apostropheSuffixes = ['a', 'e', 'ı', 'i', 'u', 'ü', 'da', 'de', 'ta', 'te', 'dan', 'den', 'tan', 'ten', 'nın', 'nin', 'nun', 'nün', 'ya', 'ye', 'na', 'ne', 'yı', 'yi', 'yu', 'yü'];
+            
+            // Kesme işareti gerektirmeyen ekler (bitişik yazılır) - li, lı, lu, lü bunların başında
             const noApostropheSuffixes = ['lı', 'li', 'lu', 'lü', 'cı', 'ci', 'cu', 'cü', 'sı', 'si', 'su', 'sü', 'lık', 'lik', 'luk', 'lük', 'cilik'];
             
             locationNames.forEach(name => {
                 const capitalized = name.charAt(0).toLocaleUpperCase('tr-TR') + name.slice(1).toLocaleLowerCase('tr-TR');
+                const lowerName = name.toLocaleLowerCase('tr-TR');
                 
+                // Kesme işareti gerektiren ekler için
                 apostropheSuffixes.forEach(suffix => {
                     const regexWithSpace = new RegExp(`\\b(${capitalized})\\s+(${suffix})\\b`, 'gi');
                     const regexWithDirect = new RegExp(`\\b(${capitalized})(${suffix})\\b`, 'gi');
@@ -690,17 +731,18 @@
                     t = t.replace(regexWithDirect, (match, city, suf) => `${city}'${suf}`);
                 });
                 
+                // Kesme işareti gerektirmeyen ekler için (bitişik yazılır, kesme işareti konmaz)
                 noApostropheSuffixes.forEach(suffix => {
+                    // Yanlışlıkla kesme işareti konmuşsa düzelt
                     const regexWithApostrophe = new RegExp(`\\b(${capitalized})'(${suffix})\\b`, 'gi');
                     t = t.replace(regexWithApostrophe, (match, city, suf) => `${city}${suf}`);
                 });
-            });
-            
-            t = t.replace(/\b([A-ZĞÜŞİÖÇ][a-zğüşıöç]+)\s+([aaeıiuü])\b/gi, (match, city, suffix) => {
-                if (city.length >= 3 && !city.match(/^(ve|ile|ki|de|da)$/i)) {
-                    return `${city}'${suffix}`;
-                }
-                return match;
+                
+                // "amasyalı" -> "Amasyalı" (ilk harf büyük, kesme yok)
+                const lowerWithSuffix = new RegExp(`\\b${lowerName}(lı|li|lu|lü)\\b`, 'gi');
+                t = t.replace(lowerWithSuffix, (match, suffix) => {
+                    return capitalized + suffix;
+                });
             });
             
             return t;
