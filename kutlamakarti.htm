@@ -115,9 +115,10 @@
 
         .position-control { background: #faf5ff; border-radius: 28px; padding: 14px; margin: 12px 0; border: 1px solid #eeddff; }
         .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-        .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
-        .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
-        .btn-success { background: linear-gradient(115deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; flex: 1; text-align: center; }
+        .action-buttons > * { flex: 1; min-width: 90px; }
+        .btn-primary { background: linear-gradient(115deg, #b77bff, #a855f7); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; text-align: center; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn-secondary { background: #f3ecff; border: 1.5px solid #e2ceff; color: #b77bff; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; text-align: center; }
+        .btn-success { background: linear-gradient(115deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 44px; font-weight: 700; cursor: pointer; text-align: center; }
         .btn-jpg {
             background: linear-gradient(115deg, #f97316, #ea580c);
             color: white;
@@ -126,13 +127,69 @@
             padding: 12px 20px;
             font-weight: 700;
             cursor: pointer;
-            flex: 1;
             text-align: center;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .btn-jpg:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(234, 88, 12, 0.3); }
-        
         .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { transform: translateY(-2px); }
+
+        /* Paylaş butonu stilleri */
+        .share-wrapper { position: relative; flex: 1; }
+        .btn-share {
+            background: linear-gradient(115deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-share:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(59,130,246,0.3); background: linear-gradient(115deg, #2563eb, #1d4ed8); }
+        .share-dropdown {
+            position: absolute;
+            bottom: 130%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            z-index: 300;
+            overflow: hidden;
+            border: 1px solid #e2ceff;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            transform: translateY(10px);
+        }
+        .share-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .share-dropdown button {
+            width: 100%;
+            padding: 12px 16px;
+            background: white;
+            border: none;
+            text-align: left;
+            font-weight: 600;
+            color: #4b2e6b;
+            cursor: pointer;
+            transition: background 0.1s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .share-dropdown button:hover { background: #f3ecff; }
+        .share-dropdown hr { margin: 0; border-color: #eeddff; }
 
         .symbol-panel { background: #fff5e8; border-radius: 32px; padding: 12px; margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; overflow-y: auto; border: 1px solid #f5e0c0; }
         .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: all 0.1s; }
@@ -498,8 +555,8 @@
         <div class="column">
             <div class="card-preview">
                 <div class="canvas-size-control">
-                    <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="640" step="20" min="400" max="2000">
-                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="400" max="2000">
+                    <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="640" step="20" min="100" max="2000">
+                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="100" max="2000">
                     <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
                     <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
                 </div>
@@ -522,7 +579,6 @@
                     <div class="compact-palette-btn" data-target="gradColor2">🌈 Gradien Renk 2 <div class="color-preview-rect" id="gradColor2Rect"></div></div>
                 </div>
 
-                <!-- YENİ: Çift renkli kesik çizgi için renk seçiciler -->
                 <div class="color-picker-buttons" style="margin-top: -8px;">
                     <div class="compact-palette-btn" data-target="borderDoubleColor1">🎨 Çift Renkli Çizgi Renk 1 <div class="color-preview-rect" id="borderDoubleColor1Rect"></div></div>
                     <div class="compact-palette-btn" data-target="borderDoubleColor2">🎨 Çift Renkli Çizgi Renk 2 <div class="color-preview-rect" id="borderDoubleColor2Rect"></div></div>
@@ -540,7 +596,6 @@
                     <div><label>Gradien 2 HEX:</label><input type="text" id="customGrad2Hex" maxlength="7" placeholder="#ffffff"></div>
                     <div></div>
                 </div>
-                <!-- YENİ: Çift renk HEX alanları -->
                 <div class="custom-hex-row" style="margin-top: 0;">
                     <div><label>Çift Renk 1 HEX:</label><input type="text" id="customDoubleColor1Hex" maxlength="7" placeholder="#FFD700"></div>
                     <div><label>Çift Renk 2 HEX:</label><input type="text" id="customDoubleColor2Hex" maxlength="7" placeholder="#FF4500"></div>
@@ -634,7 +689,7 @@ Doğum günün kutlu olsun.
 
 🎁 Nice mutlu yıllara! 🎁
 
-💝 Sevgilerle, Bayram Koç 💝</textarea>
+💝 Sevgilerle, Bayram KOÇ 💝</textarea>
 
                 <div class="controls">
                     <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
@@ -648,7 +703,17 @@ Doğum günün kutlu olsun.
                     <button id="clearTextBtn" class="btn-secondary">🧹 Metni Temizle</button>
                     <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
                     <button id="downloadJpgBtn" class="btn-jpg">🖼️ JPG İndir</button>
-                    <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir (Özel İkon & Fontlarla)</button>
+                    <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir</button>
+                    
+                    <div class="share-wrapper">
+                        <button id="shareBtn" class="btn-share">📤 Paylaş</button>
+                        <div id="shareDropdown" class="share-dropdown">
+                            <button id="shareAsPngBtn">📸 PNG Olarak Paylaş</button>
+                            <button id="shareAsJpgBtn">🖼️ JPG Olarak Paylaş</button>
+                            <hr>
+                            <button id="shareAsHtmlBtn">💾 HTML Olarak Paylaş</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="alertMsg" class="alert" style="display:none; background:#efe6ff; padding:10px; border-radius:40px; text-align:center; margin-top:10px;"></div>
@@ -659,7 +724,7 @@ Doğum günün kutlu olsun.
             </div>
         </div>
     </div>
-    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | HTML İndir | 🇹🇷<br><br>
+    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | Paylaş & İndir | 🇹🇷<br><br>
                 <h4>Bayram KOÇ</h4></span></div>
 </div>
 
@@ -702,7 +767,6 @@ Doğum günün kutlu olsun.
     let textDragStartX=0, textDragStartY=0, isDraggingText=false;
     const keepAspectCheck = document.getElementById("keepAspect");
 
-    // YENİ: Çift renkli çizgi için renk değişkenleri
     let borderDoubleColor1 = "#FFD700";
     let borderDoubleColor2 = "#FF4500";
 
@@ -715,7 +779,6 @@ Doğum günün kutlu olsun.
             inp = document.createElement("input"); inp.type="color"; inp.id="gradColor1"; inp.style.display="none"; inp.value="#f9e5ff"; document.body.appendChild(inp);
             inp = document.createElement("input"); inp.type="color"; inp.id="gradColor2"; inp.style.display="none"; inp.value="#ffffff"; document.body.appendChild(inp);
             inp = document.createElement("input"); inp.type="color"; inp.id="borderThirdColor"; inp.style.display="none"; inp.value="#B9B4BF"; document.body.appendChild(inp);
-            // YENİ: Çift renk inputları
             inp = document.createElement("input"); inp.type="color"; inp.id="borderDoubleColor1"; inp.style.display="none"; inp.value="#FFD700"; document.body.appendChild(inp);
             inp = document.createElement("input"); inp.type="color"; inp.id="borderDoubleColor2"; inp.style.display="none"; inp.value="#FF4500"; document.body.appendChild(inp);
         }
@@ -821,7 +884,7 @@ Doğum günün kutlu olsun.
     document.getElementById("customDoubleColor1Hex").addEventListener("change", syncHexFromInputs);
     document.getElementById("customDoubleColor2Hex").addEventListener("change", syncHexFromInputs);
     
-    // Spektrum renk seçici (tamamen aynı)
+    // Spektrum renk seçici
     const spectrumOverlayEl = document.getElementById("spectrumOverlay");
     const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -905,10 +968,8 @@ Doğum günün kutlu olsun.
         }
     }
     
-    // YENİ: Çift renkli kesik çizgi için yardımcı fonksiyon
     function drawDoubleColorDashedBorder(x, y, w, h, r, lineWidth, color1, color2, dashPattern) {
         let perimeter = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
-        let totalDashLength = dashPattern[0] + dashPattern[1];
         let points = [];
         let step = 2;
         for(let t = 0; t <= perimeter; t += step) {
@@ -990,7 +1051,6 @@ Doğum günün kutlu olsun.
         return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
     }
     
-    // DÜZELTİLMİŞ drawCard - ORİJİNAL YAPI KORUNDU, SADECE 3. KATMANA ÇİFT RENK EKLENDİ
     function drawCard() { 
         if(!ctx) return; 
         canvas.width = canvasWidth; 
@@ -1022,7 +1082,6 @@ Doğum günün kutlu olsun.
         let layerCount = parseInt(borderLayerCountSelect.value);
         let thirdStyle = borderThirdStyleSelect.value;
         
-        // Dış kenarlık (1. katman)
         ctx.save();
         ctx.strokeStyle = borderOuterHidden.value;
         ctx.lineWidth = bw;
@@ -1030,7 +1089,6 @@ Doğum günün kutlu olsun.
         ctx.stroke();
         ctx.restore();
         
-        // İç kenarlık (2. katman)
         ctx.save();
         ctx.strokeStyle = borderInnerHidden.value;
         ctx.lineWidth = bw * 0.7;
@@ -1039,7 +1097,6 @@ Doğum günün kutlu olsun.
         ctx.stroke();
         ctx.restore();
         
-        // 3. katman - YENİ: ÇİFT RENKLİ DESTEĞİ
         if(layerCount >= 3) {
             let thirdOffset = innerOffset + bw + 2;
             let rectW = canvasWidth - thirdOffset * 2;
@@ -1047,7 +1104,6 @@ Doğum günün kutlu olsun.
             let lineW = Math.max(1, bw * 0.55);
             
             if(thirdStyle === "doublecolor") {
-                // Ardışık çift renkli kesik çizgi (15px çizgi, 10px boşluk)
                 drawDoubleColorDashedBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderDoubleColor1, borderDoubleColor2, [15, 10]);
             } else {
                 ctx.save();
@@ -1108,8 +1164,8 @@ Doğum günün kutlu olsun.
         let newHeight = parseInt(document.getElementById("canvasHeightInput").value);
         if (isNaN(newWidth)) newWidth = 640;
         if (isNaN(newHeight)) newHeight = 580;
-        newWidth = Math.min(Math.max(newWidth, 400), 2000);
-        newHeight = Math.min(Math.max(newHeight, 400), 2000);
+        newWidth = Math.min(Math.max(newWidth, 100), 2000);
+        newHeight = Math.min(Math.max(newHeight, 100), 2000);
         
         canvasWidth = newWidth;
         canvasHeight = newHeight;
@@ -1419,13 +1475,6 @@ Doğum günün kutlu olsun.
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); 
     document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
     
-    function updateCustomFontsFooter() {
-        const footerDiv = document.getElementById("customFontsListDisplay");
-        if (!footerDiv) return;
-        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
-        else { footerDiv.innerHTML = customFontsList.map(font => "<span>⭐ " + font + "</span>").join(''); }
-    }
-    
     document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
         let htmlContent = document.documentElement.outerHTML;
         const ozelIkonlar = customIconsList.join(',');
@@ -1454,6 +1503,105 @@ Doğum günün kutlu olsun.
         link.click();
         URL.revokeObjectURL(link.href);
         showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
+    });
+    
+    // PAYLAŞ FONKSİYONLARI (açıklama metni yok)
+    async function shareFile(blob, fileName) {
+        const file = new File([blob], fileName, { type: blob.type });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try { 
+                await navigator.share({ files: [file], title: "Kutlama Kartım" }); 
+                showAlert("🎉 Kart başarıyla paylaşıldı!", "success"); 
+                return true; 
+            } catch(e) { 
+                if(e.name !== "AbortError") showAlert("Paylaşım iptal edildi.", "warning"); 
+            }
+        } else { 
+            showAlert("Tarayıcınız paylaşımı desteklemiyor, dosya indiriliyor...", "info"); 
+            return false; 
+        }
+        return false;
+    }
+    
+    document.getElementById("shareAsPngBtn").addEventListener("click", async () => {
+        const dataUrl = canvas.toDataURL("image/png");
+        const blob = await (await fetch(dataUrl)).blob();
+        if(!await shareFile(blob, "kutlama_karti.png")) {
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "kutlama_karti.png";
+            a.click();
+        }
+        document.getElementById("shareDropdown").classList.remove("active");
+    });
+    
+    document.getElementById("shareAsJpgBtn").addEventListener("click", async () => {
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        const blob = await (await fetch(dataUrl)).blob();
+        if(!await shareFile(blob, "kutlama_karti.jpg")) {
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "kutlama_karti.jpg";
+            a.click();
+        }
+        document.getElementById("shareDropdown").classList.remove("active");
+    });
+    
+    document.getElementById("shareAsHtmlBtn").addEventListener("click", () => {
+        let htmlContent = document.documentElement.outerHTML;
+        const ozelIkonlar = customIconsList.join(',');
+        const ozelFontlar = customFontsList.join(',');
+        const yuklemeScripti = '<scr' + 'ipt>' +
+            'window.addEventListener("DOMContentLoaded",function(){' +
+            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
+            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
+            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
+            'var dizi=ikonlar.split(",");' +
+            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
+            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
+            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
+            'var dizi2=fontlar.split(",");' +
+            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
+            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
+            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
+            '</scr' + 'ipt>';
+        if (htmlContent.indexOf('</head>') > -1) {
+            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
+        }
+        const blob = new Blob([htmlContent], {type: "text/html"});
+        const file = new File([blob], "kutlama_karti.html", { type: "text/html" });
+        
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: "Kutlama Kartı HTML" }).catch(() => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "kutlama_karti.html";
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        } else {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "kutlama_karti.html";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        showAlert('HTML dosyası paylaşıldı/indirildi!', "success");
+        document.getElementById("shareDropdown").classList.remove("active");
+    });
+    
+    const shareBtn = document.getElementById("shareBtn");
+    const shareDropdown = document.getElementById("shareDropdown");
+    shareBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        shareDropdown.classList.toggle("active");
+    });
+    document.addEventListener("click", (e) => {
+        if(!shareBtn.contains(e.target) && !shareDropdown.contains(e.target)) {
+            shareDropdown.classList.remove("active");
+        }
     });
     
     function loadBg(file) { 
@@ -1591,6 +1739,13 @@ Doğum günün kutlu olsun.
         if (!header || !content) return;
         header.addEventListener("click", () => { content.classList.toggle("open"); header.classList.toggle("open"); });
         content.classList.remove("open"); header.classList.remove("open");
+    }
+    
+    function updateCustomFontsFooter() {
+        const footerDiv = document.getElementById("customFontsListDisplay");
+        if (!footerDiv) return;
+        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
+        else { footerDiv.innerHTML = customFontsList.map(font => "<span>⭐ " + font + "</span>").join(''); }
     }
     
     function showAlert(msg, type) {
