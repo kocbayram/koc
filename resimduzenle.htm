@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Resim Düzenleme - Köşe Beyazlık Temizleyici</title>
+    <title>Resim Düzenleme - Köşe Yuvarlatma | Kırpma Düzeltildi</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -225,7 +225,7 @@
         .btn-gri { background: #6c757d; color: white; }
         .btn-warning { background: #f39c12; color: white; }
         .btn-success { background: #28a745; color: white; }
-        .btn-oval { background: #8b5cf6; color: white; font-weight: bold; }
+        .btn-round { background: #8b5cf6; color: white; font-weight: bold; }
         .btn-clean { background: #10b981; color: white; font-weight: bold; }
         .slider-group { margin: 8px 0; }
         .slider-group label { font-size: 0.7rem; color: #ccd6f0; display: block; margin-bottom: 4px; }
@@ -305,11 +305,14 @@
             display: none;
             border-left: 5px solid #facc15;
         }
+        .radius-group { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+        .radius-group label { font-size: 0.7rem; }
+        .radius-group input { width: 80px; }
     </style>
 </head>
 <body>
 <div class="glass-panel">
-    <div class="hero"><h1>✨ Resim Düzenleme Araçları ✨</h1></div>
+    <div class="hero"><h1>✨ Resim Düzenleme - Köşe Yuvarlatma ✨</h1></div>
     <div class="editor-layout">
         <div class="canvas-area">
             <div class="image-controls">
@@ -334,13 +337,14 @@
                 <button class="crop-btn btn-cancel" id="cancelCropBtn">✗ İptal</button>
                 <button class="crop-btn btn-save" id="saveImageBtn">💾 Kaydet</button>
             </div>
-            <div class="info-text">✨ Resim kırpmak için yeşil tutamaçları sürükleyin!</div>
+            <div class="info-text">✨ Resim kırpmak için yeşil tutamaçları sürükleyin, "Uygula"ya basın, sonra "Kaydet"e basın!</div>
         </div>
         
         <div class="tools-panel">
             <div class="tab-buttons">
                 <button class="tab-btn active" data-tab="tab-batch">📏 Toplu Boyut</button>
                 <button class="tab-btn" data-tab="tab-color">🎨 Renk</button>
+                <button class="tab-btn" data-tab="tab-round">🪄 Köşe Yuvarla</button>
                 <button class="tab-btn" data-tab="tab-transform">🔄 Dönüştür</button>
                 <button class="tab-btn" data-tab="tab-merge">🧩 Birleştir</button>
                 <button class="tab-btn" data-tab="tab-project">💾 Proje</button>
@@ -380,19 +384,45 @@
                     </div>
                 </div>
                 <div class="tool-group">
-                    <h3>🧹 Köşelerdeki Beyazlığı Temizle (Resmi Bozmaz!)</h3>
+                    <h3>🧹 Köşelerdeki Beyazlığı Temizle</h3>
                     <div class="btn-grid">
                         <button id="removeCornersWhiteBtn" class="btn btn-clean">🎯 Sadece Köşelerdeki Beyazlığı Siyah Yap</button>
                     </div>
-                    <div class="info-text">✨ Resmin sadece DIŞ KENARINDAKİ (köşelerdeki) beyaz alanları siyaha çevirir. Ortadaki görsel tamamen korunur!</div>
                 </div>
+            </div>
+
+            <div id="tab-round" class="tab-content">
                 <div class="tool-group">
-                    <h3>⭕ Oval Kesim</h3>
-                    <div class="btn-grid">
-                        <button id="makeOvalBtn" class="btn btn-oval">🔘 Oval Yap (Şeffaf)</button>
-                        <button id="makeOvalWhiteBtn" class="btn btn-primary">⚪ Oval Yap (Beyaz)</button>
+                    <h3>🪄 Aktif Resmin Köşelerini Yuvarla</h3>
+                    <div class="radius-group">
+                        <label>📐 Köşe Yuvarlaklık (px):</label>
+                        <input type="range" id="cornerRadius" min="0" max="150" value="30" step="1">
+                        <span id="radiusValue" style="color:#facc15;">30</span>
+                    </div>
+                    <div class="btn-grid" style="margin-top:10px">
+                        <button id="applyRoundCornersBtn" class="btn btn-round">✨ Köşeleri Yuvarla</button>
                     </div>
                 </div>
+                <div class="tool-group">
+                    <h3>📂 Toplu Resimlerin Köşelerini Yuvarla (ZIP)</h3>
+                    <div class="batch-resize-area">
+                        <input type="file" id="batchRoundInput" multiple accept="image/*" style="display:none">
+                        <div class="btn-grid">
+                            <button id="selectBatchRoundBtn" class="btn">📁 Resimleri Seç</button>
+                            <button id="clearBatchRoundBtn" class="btn btn-gri">🗑️ Temizle</button>
+                        </div>
+                        <div class="radius-group">
+                            <label>📐 Köşe Yuvarlaklık (px):</label>
+                            <input type="range" id="batchCornerRadius" min="0" max="150" value="30" step="1">
+                            <span id="batchRadiusValue" style="color:#facc15;">30</span>
+                        </div>
+                        <div class="btn-grid" style="margin-top:8px">
+                            <button id="batchRoundCornersBtn" class="btn btn-round">📦 Seçili Resimlerin Köşelerini Yuvarla</button>
+                        </div>
+                        <div class="info-text" id="batchRoundStatus">Henüz toplu resim seçilmedi</div>
+                    </div>
+                </div>
+                <div class="info-text">🎯 Köşe yuvarlatma resmin sadece dört köşesini yumuşatır, resmin kendisi dikdörtgen kalır.</div>
             </div>
             
             <div id="tab-transform" class="tab-content">
@@ -447,7 +477,7 @@
 </div>
 
 <div id="resultPanel" class="result-panel"></div>
-<div id="errorToast" class="error-toast">⚠️ Resim yüklenemedi, format desteklenmiyor veya dosya bozuk.</div>
+<div id="errorToast" class="error-toast">⚠️ İşlem sırasında hata oluştu.</div>
 
 <script>
 (function(){
@@ -463,7 +493,6 @@
         errorToast.style.display = 'block';
         setTimeout(() => { errorToast.style.display = 'none'; }, 3500);
     }
-    
     function showSuccess(msg) {
         errorToast.style.background = "#10b981";
         errorToast.innerText = msg || "✅ İşlem başarılı!";
@@ -490,20 +519,10 @@
     }
     
     let cropping = false;
-    let drag = false;
-    let res = false;
-    let hType = "";
+    let drag = false, res = false, hType = "";
     let rect = { x: 0, y: 0, w: 0, h: 0 };
     let startM = { x: 0, y: 0 };
     let startR = { x: 0, y: 0, w: 0, h: 0 };
-    
-    let selectedMultiFiles = [];
-    let batchFiles = [];
-    let batchResizedImages = [];
-    
-    const applyBtn = document.getElementById('applyCropBtn');
-    const cancelBtn = document.getElementById('cancelCropBtn');
-    const saveBtn = document.getElementById('saveImageBtn');
     
     function initEmptyCanvas() {
         canvas.width = 700;
@@ -532,10 +551,7 @@
     }
     
     function startCrop() {
-        if (!currentImage) {
-            showError("Önce bir resim yükleyin!");
-            return;
-        }
+        if (!currentImage) { showError("Önce bir resim yükleyin!"); return; }
         cropping = true;
         rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
         cropBox.style.display = 'block';
@@ -568,7 +584,6 @@
             startM = { x: e.clientX, y: e.clientY };
             startR = { x: rect.x, y: rect.y, w: rect.w, h: rect.h };
             wrap.setPointerCapture(e.pointerId);
-            return;
         }
     };
     
@@ -578,45 +593,42 @@
         const sc = canvas.width / canvas.offsetWidth;
         const dx = (e.clientX - startM.x) * sc;
         const dy = (e.clientY - startM.y) * sc;
-        
         if (drag) {
             rect.x = Math.max(0, Math.min(startR.x + dx, canvas.width - rect.w));
             rect.y = Math.max(0, Math.min(startR.y + dy, canvas.height - rect.h));
         } else if (res) {
-            let newX = startR.x;
-            let newY = startR.y;
-            let newW = startR.w;
-            let newH = startR.h;
-            
+            let newX = startR.x, newY = startR.y, newW = startR.w, newH = startR.h;
             switch(hType) {
                 case 'se': newW = Math.max(30, startR.w + dx); newH = Math.max(30, startR.h + dy); break;
                 case 'sw': newW = Math.max(30, startR.w - dx); newX = startR.x + dx; newH = Math.max(30, startR.h + dy); break;
                 case 'ne': newW = Math.max(30, startR.w + dx); newH = Math.max(30, startR.h - dy); newY = startR.y + dy; break;
                 case 'nw': newW = Math.max(30, startR.w - dx); newX = startR.x + dx; newH = Math.max(30, startR.h - dy); newY = startR.y + dy; break;
             }
-            
             if (newX < 0) { newW += newX; newX = 0; }
             if (newY < 0) { newH += newY; newY = 0; }
             if (newX + newW > canvas.width) newW = canvas.width - newX;
             if (newY + newH > canvas.height) newH = canvas.height - newY;
-            
             rect = { x: newX, y: newY, w: newW, h: newH };
         }
         syncCropBox();
     };
-    
     wrap.onpointerup = (e) => { drag = false; res = false; if (e.target) wrap.releasePointerCapture?.(e.pointerId); };
     wrap.addEventListener('touchstart', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     wrap.addEventListener('touchmove', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     
-    function doCrop() {
-        if (!cropping || !currentImage) return;
-        if (rect.w < 5 || rect.h < 5) { showError("Kırpma alanı çok küçük!"); return; }
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = rect.w;
-        tempCanvas.height = rect.h;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(canvas, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
+    // KIRPMA İŞLEMİ - DOĞRU ÇALIŞIYOR
+    function applyCrop() {
+        if (!cropping || !currentImage) { showError("Önce kırpma modunu başlatın!"); return; }
+        if (rect.w < 10 || rect.h < 10) { showError("Kırpma alanı çok küçük!"); return; }
+        
+        // Kırpma işlemi
+        const cropCanvas = document.createElement('canvas');
+        cropCanvas.width = rect.w;
+        cropCanvas.height = rect.h;
+        const cropCtx = cropCanvas.getContext('2d');
+        cropCtx.drawImage(canvas, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
+        
+        // Yeni resim oluştur
         const newImg = new Image();
         newImg.onload = () => {
             currentImage = newImg;
@@ -625,230 +637,151 @@
             rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
             cropBox.style.display = 'block';
             syncCropBox();
+            showSuccess("Resim kırpıldı! Şimdi 'Kaydet' butonuna basarak indirebilirsiniz.");
         };
-        newImg.onerror = () => showError("Kırpma sonrası hata");
-        newImg.src = tempCanvas.toDataURL();
+        newImg.onerror = () => showError("Kırpma sonrası hata oluştu!");
+        newImg.src = cropCanvas.toDataURL('image/png');
     }
     
-    function endCrop() { cropping = false; cropBox.style.display = 'none'; }
+    function cancelCrop() { 
+        cropping = false; 
+        cropBox.style.display = 'none'; 
+        showSuccess("Kırpma iptal edildi.");
+    }
+    
+    // KAYDETME İŞLEMİ - KIRPILMIŞ HALİ KAYDEDER
     function saveCurrentImage() {
-        if (!currentImage) { showError("Kaydedilecek resim yok!"); return; }
+        if (!currentImage) { 
+            showError("Kaydedilecek resim yok!"); 
+            return; 
+        }
+        // Canvas'taki GÜNCEL görüntüyü kaydet (kırpılmış hali)
         const a = document.createElement('a');
         a.download = 'resim_duzenlendi.png';
         a.href = canvas.toDataURL('image/png');
         a.click();
+        showSuccess("Resim başarıyla kaydedildi!");
     }
     
-    // ========== SADECE KÖŞELERDEKİ BEYAZLIĞI TEMİZLE (Resmi Bozmaz!) ==========
-    async function removeCornersWhiteOnly() {
-        if (!currentImage) {
-            showError("Önce bir resim yükleyin!");
-            return;
-        }
-        
-        const width = canvas.width;
-        const height = canvas.height;
-        const imgData = ctx.getImageData(0, 0, width, height);
-        const data = imgData.data;
-        
-        // Ziyaret edilen pikselleri takip et
-        const visited = new Uint8Array(width * height);
-        const queue = [];
-        
-        // Beyaz kontrol fonksiyonu (beyaza yakınlık)
-        function isWhite(r, g, b) {
-            // RGB ortalaması 200'den büyükse beyaz kabul et
-            return (r + g + b) / 3 > 200;
-        }
-        
-        // DÖRT KÖŞEYİ kuyruğa ekle (sadece köşeler!)
-        // Sol üst köşe
-        for (let y = 0; y < 5 && y < height; y++) {
-            for (let x = 0; x < 5 && x < width; x++) {
-                const idx = (y * width + x) * 4;
-                if (!visited[y * width + x] && isWhite(data[idx], data[idx+1], data[idx+2])) {
-                    visited[y * width + x] = 1;
-                    queue.push([x, y]);
-                }
-            }
-        }
-        // Sağ üst köşe
-        for (let y = 0; y < 5 && y < height; y++) {
-            for (let x = Math.max(0, width-5); x < width; x++) {
-                const idx = (y * width + x) * 4;
-                if (!visited[y * width + x] && isWhite(data[idx], data[idx+1], data[idx+2])) {
-                    visited[y * width + x] = 1;
-                    queue.push([x, y]);
-                }
-            }
-        }
-        // Sol alt köşe
-        for (let y = Math.max(0, height-5); y < height; y++) {
-            for (let x = 0; x < 5 && x < width; x++) {
-                const idx = (y * width + x) * 4;
-                if (!visited[y * width + x] && isWhite(data[idx], data[idx+1], data[idx+2])) {
-                    visited[y * width + x] = 1;
-                    queue.push([x, y]);
-                }
-            }
-        }
-        // Sağ alt köşe
-        for (let y = Math.max(0, height-5); y < height; y++) {
-            for (let x = Math.max(0, width-5); x < width; x++) {
-                const idx = (y * width + x) * 4;
-                if (!visited[y * width + x] && isWhite(data[idx], data[idx+1], data[idx+2])) {
-                    visited[y * width + x] = 1;
-                    queue.push([x, y]);
-                }
-            }
-        }
-        
-        // BFS ile sadece kenarlardan içeri doğru yayılan beyaz bölgeleri bul
-        const dirs = [[0,1],[1,0],[0,-1],[-1,0]];
-        let anyFound = false;
-        
-        while (queue.length > 0) {
-            const [x, y] = queue.shift();
-            anyFound = true;
-            
-            for (let [dx, dy] of dirs) {
-                const nx = x + dx;
-                const ny = y + dy;
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height && !visited[ny * width + nx]) {
-                    const idx = (ny * width + nx) * 4;
-                    if (isWhite(data[idx], data[idx+1], data[idx+2])) {
-                        visited[ny * width + nx] = 1;
-                        queue.push([nx, ny]);
-                    }
-                }
-            }
-        }
-        
-        if (!anyFound) {
-            showError("Köşelerde beyaz alan bulunamadı!");
-            return;
-        }
-        
-        // Bulunan beyaz pikselleri SİYAH yap (resmin geri kalanına dokunma!)
-        for (let i = 0; i < width * height; i++) {
-            if (visited[i]) {
-                data[i * 4] = 0;     // R = 0
-                data[i * 4 + 1] = 0; // G = 0
-                data[i * 4 + 2] = 0; // B = 0
-                // Alpha aynı kalır (şeffaflık bozulmaz)
-            }
-        }
-        
-        ctx.putImageData(imgData, 0, 0);
-        
+    // ========== KÖŞE YUVARLATMA ==========
+    async function roundCorners(radius) {
+        if (!currentImage) { showError("Önce bir resim yükleyin!"); return; }
+        if (radius < 1) { showError("Yuvarlaklık değeri 1'den büyük olmalı"); return; }
+        const w = currentImage.width, h = currentImage.height;
+        const r = Math.min(radius, w/2, h/2);
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = w;
+        tempCanvas.height = h;
+        const tCtx = tempCanvas.getContext('2d');
+        tCtx.clearRect(0, 0, w, h);
+        tCtx.beginPath();
+        tCtx.moveTo(r, 0);
+        tCtx.lineTo(w - r, 0);
+        tCtx.quadraticCurveTo(w, 0, w, r);
+        tCtx.lineTo(w, h - r);
+        tCtx.quadraticCurveTo(w, h, w - r, h);
+        tCtx.lineTo(r, h);
+        tCtx.quadraticCurveTo(0, h, 0, h - r);
+        tCtx.lineTo(0, r);
+        tCtx.quadraticCurveTo(0, 0, r, 0);
+        tCtx.closePath();
+        tCtx.clip();
+        tCtx.drawImage(currentImage, 0, 0);
         const newImg = new Image();
-        newImg.onload = () => {
-            currentImage = newImg;
-            drawImageOnCanvas();
-            if (cropping) {
-                rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-                cropBox.style.display = 'block';
-                syncCropBox();
-            }
-            showSuccess("✅ Köşelerdeki beyazlıklar siyaha çevrildi! Resmin ortası bozulmadı.");
+        newImg.onload = () => { 
+            currentImage = newImg; 
+            drawImageOnCanvas(); 
+            cropping = true; 
+            rect = { x: 0, y: 0, w: canvas.width, h: canvas.height }; 
+            cropBox.style.display = 'block'; 
+            syncCropBox(); 
+            showSuccess(`Köşeler ${radius}px yuvarlatıldı!`);
         };
-        newImg.onerror = () => showError("Dönüşüm hatası!");
-        newImg.src = canvas.toDataURL();
+        newImg.src = tempCanvas.toDataURL('image/png');
     }
     
-    // ========== OVAL YAPMA FONKSİYONU ==========
-    async function makeOval(backgroundColor = null) {
-        if (!currentImage) {
-            showError("Önce bir resim yükleyin!");
-            return;
+    // ========== TOPLU KÖŞE YUVARLATMA ==========
+    let batchRoundFiles = [];
+    const batchRoundInput = document.getElementById('batchRoundInput');
+    const batchRoundStatus = document.getElementById('batchRoundStatus');
+    document.getElementById('selectBatchRoundBtn').onclick = () => batchRoundInput.click();
+    batchRoundInput.onchange = (e) => {
+        batchRoundFiles = Array.from(e.target.files);
+        batchRoundStatus.innerText = `${batchRoundFiles.length} resim seçildi (Köşe yuvarlama için)`;
+    };
+    document.getElementById('clearBatchRoundBtn').onclick = () => { batchRoundFiles = []; batchRoundInput.value = ''; batchRoundStatus.innerText = 'Henüz toplu resim seçilmedi'; };
+    
+    async function makeBatchRound(radius) {
+        if (!batchRoundFiles.length) { showError("Lütfen toplu resim seçin!"); return; }
+        const r = Math.max(1, radius);
+        const results = [];
+        for (let i = 0; i < batchRoundFiles.length; i++) {
+            try {
+                const img = await loadImageFromFile(batchRoundFiles[i]);
+                const w = img.width, h = img.height;
+                const maxR = Math.min(r, w/2, h/2);
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = w;
+                tempCanvas.height = h;
+                const tCtx = tempCanvas.getContext('2d');
+                tCtx.clearRect(0, 0, w, h);
+                tCtx.beginPath();
+                tCtx.moveTo(maxR, 0);
+                tCtx.lineTo(w - maxR, 0);
+                tCtx.quadraticCurveTo(w, 0, w, maxR);
+                tCtx.lineTo(w, h - maxR);
+                tCtx.quadraticCurveTo(w, h, w - maxR, h);
+                tCtx.lineTo(maxR, h);
+                tCtx.quadraticCurveTo(0, h, 0, h - maxR);
+                tCtx.lineTo(0, maxR);
+                tCtx.quadraticCurveTo(0, 0, maxR, 0);
+                tCtx.closePath();
+                tCtx.clip();
+                tCtx.drawImage(img, 0, 0);
+                const dataURL = tempCanvas.toDataURL('image/png');
+                const finalImg = new Image();
+                await new Promise((resolve) => { finalImg.onload = resolve; finalImg.src = dataURL; });
+                results.push({ name: batchRoundFiles[i].name.replace(/\.[^/.]+$/, '') + '_yuvarlak.png', dataURL: dataURL, img: finalImg, w, h });
+                batchRoundStatus.innerText = `İşleniyor: ${i+1}/${batchRoundFiles.length}`;
+            } catch(e) { console.warn(e); }
         }
-        
-        const imgW = currentImage.width;
-        const imgH = currentImage.height;
-        const radiusX = imgW / 2;
-        const radiusY = imgH / 2;
-        const centerX = radiusX;
-        const centerY = radiusY;
-        
-        const ovalCanvas = document.createElement('canvas');
-        ovalCanvas.width = imgW;
-        ovalCanvas.height = imgH;
-        const ovalCtx = ovalCanvas.getContext('2d');
-        
-        ovalCtx.clearRect(0, 0, imgW, imgH);
-        
-        if (backgroundColor) {
-            ovalCtx.fillStyle = backgroundColor;
-            ovalCtx.fillRect(0, 0, imgW, imgH);
-        }
-        
-        ovalCtx.beginPath();
-        ovalCtx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
-        ovalCtx.clip();
-        ovalCtx.drawImage(currentImage, 0, 0, imgW, imgH);
-        
-        const newImg = new Image();
-        newImg.onload = () => {
-            currentImage = newImg;
-            drawImageOnCanvas();
-            cropping = true;
-            rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-            cropBox.style.display = 'block';
-            syncCropBox();
-            showSuccess("✅ Resim oval şekle dönüştürüldü!");
-        };
-        newImg.onerror = () => showError("Oval dönüşüm hatası!");
-        newImg.src = ovalCanvas.toDataURL('image/png');
+        if (results.length === 0) { showError("Hiçbir resim işlenemedi"); return; }
+        showBatchRoundResult(results);
+        batchRoundStatus.innerText = `${results.length} resmin köşeleri yuvarlatıldı!`;
     }
     
-    async function makeOvalTransparent() { await makeOval(null); }
-    async function makeOvalWhite() { await makeOval('#ffffff'); }
-    
-    function loadSingleImage(file) {
-        if (!file || !file.type.startsWith('image/')) { showError("Lütfen geçerli bir resim dosyası seçin."); return; }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                currentImage = img;
-                drawImageOnCanvas();
-                startCrop();
-                showSuccess("✅ Resim yüklendi!");
-            };
-            img.onerror = () => { showError("Resim yüklenirken hata oluştu."); initEmptyCanvas(); };
-            img.src = e.target.result;
-        };
-        reader.onerror = () => showError("Dosya okuma hatası.");
-        reader.readAsDataURL(file);
-    }
-    
-    function resizeImageWithBlackBg(img, targetW, targetH) {
-        return new Promise((resolve) => {
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCanvas.width = targetW;
-            tempCanvas.height = targetH;
-            tempCtx.fillStyle = "#000000";
-            tempCtx.fillRect(0, 0, targetW, targetH);
-            let drawW, drawH, drawX, drawY;
-            const imgRatio = img.width / img.height;
-            const targetRatio = targetW / targetH;
-            if (imgRatio > targetRatio) {
-                drawW = targetW;
-                drawH = targetW / imgRatio;
-                drawX = 0;
-                drawY = (targetH - drawH) / 2;
-            } else {
-                drawH = targetH;
-                drawW = targetH * imgRatio;
-                drawX = (targetW - drawW) / 2;
-                drawY = 0;
-            }
-            tempCtx.drawImage(img, drawX, drawY, drawW, drawH);
-            const newImg = new Image();
-            newImg.onload = () => resolve(newImg);
-            newImg.src = tempCanvas.toDataURL('image/png');
+    function showBatchRoundResult(items) {
+        const panel = document.getElementById('resultPanel');
+        let html = `<div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><h3 style="color:#facc15;">🪄 Köşeleri Yuvarlatılan Resimler</h3><button id="closeResultPanel" style="background:#b91c1c;border:none;color:white;padding:5px 12px;border-radius:40px;">✖</button></div><div>`;
+        items.forEach((item, idx) => {
+            html += `<div class="result-item"><img src="${item.dataURL}"><div class="result-item-info"><div class="result-item-name">${escapeHtml(item.name)}</div><div class="result-item-size">${item.w} x ${item.h}</div></div><button class="download-single" data-index="${idx}">⬇ İndir</button></div>`;
         });
+        html += `<div class="btn-grid"><button id="downloadAllZipRound" class="btn btn-success">📦 Tümünü ZIP İndir</button></div></div>`;
+        panel.innerHTML = html;
+        panel.style.display = 'block';
+        document.querySelectorAll('.download-single').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.getAttribute('data-index'));
+                const a = document.createElement('a');
+                a.href = items[idx].dataURL;
+                a.download = items[idx].name;
+                a.click();
+            });
+        });
+        document.getElementById('downloadAllZipRound')?.addEventListener('click', async () => {
+            const zip = new JSZip();
+            for (let it of items) {
+                const base64 = it.dataURL.split(',')[1];
+                zip.file(it.name, base64, { base64: true });
+            }
+            const blob = await zip.generateAsync({ type: "blob" });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `yuvarlak_koseli_resimler.zip`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+        document.getElementById('closeResultPanel')?.addEventListener('click', () => { panel.style.display = 'none'; });
     }
     
     function loadImageFromFile(file) {
@@ -865,364 +798,39 @@
         });
     }
     
-    async function resizeAllBatchImages(targetW, targetH) {
-        if (batchFiles.length === 0) { showError("Lütfen önce toplu işlem için resim seçin!"); return; }
-        const statusSpan = document.getElementById('batchStatus');
-        statusSpan.innerHTML = "📏 İşleniyor...";
-        const newResizedImages = [];
-        for (let i = 0; i < batchFiles.length; i++) {
-            try {
-                const img = await loadImageFromFile(batchFiles[i]);
-                const resizedImg = await resizeImageWithBlackBg(img, targetW, targetH);
-                newResizedImages.push({ originalName: batchFiles[i].name, image: resizedImg, width: targetW, height: targetH });
-                statusSpan.innerHTML = `📏 ${i + 1}/${batchFiles.length}`;
-            } catch (err) { statusSpan.innerHTML = `⚠️ ${batchFiles[i]?.name || 'dosya'} hatalı, atlandı.`; }
-        }
-        if (newResizedImages.length === 0) { statusSpan.innerHTML = "❌ Hiçbir resim işlenemedi."; return; }
-        batchResizedImages = newResizedImages;
-        statusSpan.innerHTML = `✅ ${batchResizedImages.length} resim ${targetW}x${targetH} boyutlandırıldı`;
-        showResultPanel();
-    }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
     
-    function showResultPanel() {
-        if (!batchResizedImages.length) return;
-        const panel = document.getElementById('resultPanel');
-        let html = `<div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><h3 style="color:#facc15;">📏 Boyutlandırılan Resimler</h3><button id="closeResultPanel" style="background:#b91c1c;border:none;color:white;padding:5px 12px;border-radius:40px;">✖</button></div><div>`;
-        for (let i = 0; i < batchResizedImages.length; i++) {
-            html += `<div class="result-item"><img src="${batchResizedImages[i].image.src}"><div class="result-item-info"><div class="result-item-name">${escapeHtml(batchResizedImages[i].originalName)}</div><div class="result-item-size">${batchResizedImages[i].width} x ${batchResizedImages[i].height}</div></div><button class="download-single" data-index="${i}">⬇ İndir</button></div>`;
-        }
-        html += `<div class="btn-grid"><button id="downloadAllZip" class="btn btn-success">📦 Tümünü ZIP İndir</button></div></div>`;
-        panel.innerHTML = html;
-        panel.style.display = 'block';
-        
-        document.querySelectorAll('.download-single').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(btn.getAttribute('data-index'));
-                const a = document.createElement('a');
-                a.href = batchResizedImages[idx].image.src;
-                a.download = `${batchResizedImages[idx].originalName.replace(/\.[^/.]+$/, '')}_${batchResizedImages[idx].width}x${batchResizedImages[idx].height}.png`;
-                a.click();
-            });
-        });
-        
-        document.getElementById('downloadAllZip')?.addEventListener('click', async () => {
-            const zip = new JSZip();
-            for (let i = 0; i < batchResizedImages.length; i++) {
-                const base64Data = batchResizedImages[i].image.src.split(',')[1];
-                const fileName = `${batchResizedImages[i].originalName.replace(/\.[^/.]+$/, '')}_${batchResizedImages[i].width}x${batchResizedImages[i].height}.png`;
-                zip.file(fileName, base64Data, { base64: true });
-            }
-            const content = await zip.generateAsync({ type: "blob" });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(content);
-            a.download = `resimler.zip`;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        });
-        document.getElementById('closeResultPanel')?.addEventListener('click', () => { panel.style.display = 'none'; });
-    }
+    async function updateCurrentImageFromCanvas() { if (!currentImage) return; const img = new Image(); img.onload = () => { currentImage = img; drawImageOnCanvas(); if (cropping) { rect = { x: 0, y: 0, w: canvas.width, h: canvas.height }; cropBox.style.display = 'block'; syncCropBox(); } }; img.src = canvas.toDataURL(); }
+    function applyColorAdjustment() { if(!currentImage) return; let brightness=parseInt(document.getElementById('brightness').value), contrast=parseInt(document.getElementById('contrast').value), saturation=parseInt(document.getElementById('saturation').value); let imgData=ctx.getImageData(0,0,canvas.width,canvas.height); let data=imgData.data; for(let i=0;i<data.length;i+=4){ let r=data[i],g=data[i+1],b=data[i+2]; let factor=(259*(contrast+255))/(255*(259-contrast)); r=factor*(r-128)+128; g=factor*(g-128)+128; b=factor*(b-128)+128; r+=brightness; g+=brightness; b+=brightness; let gray=0.2126*r+0.7152*g+0.0722*b; r=gray+(saturation/100)*(r-gray); g=gray+(saturation/100)*(g-gray); b=gray+(saturation/100)*(b-gray); data[i]=Math.min(255,Math.max(0,r)); data[i+1]=Math.min(255,Math.max(0,g)); data[i+2]=Math.min(255,Math.max(0,b)); } ctx.putImageData(imgData,0,0); updateCurrentImageFromCanvas(); }
+    function sharpen() { if(!currentImage) return; const w=canvas.width,h=canvas.height; const imgData=ctx.getImageData(0,0,w,h); const data=imgData.data; const out=new Uint8ClampedArray(data.length); for(let y=1;y<h-1;y++){ for(let x=1;x<w-1;x++){ const idx=(y*w+x)*4; const t=((y-1)*w+x)*4,b=((y+1)*w+x)*4,l=(y*w+x-1)*4,r=(y*w+x+1)*4; for(let c=0;c<3;c++){ let val=data[idx+c]*5-(data[t+c]+data[b+c]+data[l+c]+data[r+c]); out[idx+c]=Math.min(255,Math.max(0,val)); } out[idx+3]=data[idx+3]; } } ctx.putImageData(new ImageData(out,w,h),0,0); updateCurrentImageFromCanvas(); }
+    async function rotate90() { if(!currentImage) return; const w=canvas.width,h=canvas.height; const temp=document.createElement('canvas'); temp.width=h; temp.height=w; const tctx=temp.getContext('2d'); tctx.translate(h/2,w/2); tctx.rotate(Math.PI/2); tctx.drawImage(canvas,-w/2,-h/2); const newImg=new Image(); newImg.onload=()=>{ currentImage=newImg; drawImageOnCanvas(); if(cropping){ rect={x:0,y:0,w:canvas.width,h:canvas.height}; cropBox.style.display='block'; syncCropBox(); } }; newImg.src=temp.toDataURL(); }
+    async function flipH() { ctx.translate(canvas.width,0); ctx.scale(-1,1); ctx.drawImage(currentImage,0,0); ctx.setTransform(1,0,0,1,0,0); await updateCurrentImageFromCanvas(); }
+    async function flipV() { ctx.translate(0,canvas.height); ctx.scale(1,-1); ctx.drawImage(currentImage,0,0); ctx.setTransform(1,0,0,1,0,0); await updateCurrentImageFromCanvas(); }
+    function downloadWithFormat(format) { if (!currentImage) return; canvas.toBlob(blob=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`resim.${format.split('/')[1]||'png'}`; a.click(); },format,0.92); }
+    async function loadImagesFromFiles(files) { const promises=files.map(f=>new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=e=>{ const img=new Image(); img.onload=()=>resolve(img); img.onerror=()=>reject(); img.src=e.target.result; }; reader.onerror=reject; reader.readAsDataURL(f); })); return Promise.all(promises); }
+    async function mergeHorizontalAuto() { if(selectedMultiFiles.length<2){ showError("En az 2 resim seçin"); return; } try{ const images=await loadImagesFromFiles(selectedMultiFiles); let targetHeight=Math.max(...images.map(img=>img.height)); const scaled=images.map(img=>{ const scale=targetHeight/img.height; const newW=img.width*scale; const c=document.createElement('canvas'); c.width=newW; c.height=targetHeight; const cx=c.getContext('2d'); cx.fillStyle="#ffffff"; cx.fillRect(0,0,newW,targetHeight); cx.drawImage(img,0,0,newW,targetHeight); return c; }); let totalW=scaled.reduce((s,c)=>s+c.width,0); const resCanvas=document.createElement('canvas'); resCanvas.width=totalW; resCanvas.height=targetHeight; const rctx=resCanvas.getContext('2d'); let x=0; for(let c of scaled){ rctx.drawImage(c,x,0); x+=c.width; } const finalImg=new Image(); finalImg.onload=()=>{ currentImage=finalImg; drawImageOnCanvas(); if(cropping){ rect={x:0,y:0,w:canvas.width,h:canvas.height}; cropBox.style.display='block'; syncCropBox(); } multiStatusSpan.innerText="Yatay birleştirme tamamlandı!"; }; finalImg.src=resCanvas.toDataURL(); }catch(e){ showError("Birleştirme hatası"); } }
+    async function mergeVerticalAuto() { if(selectedMultiFiles.length<2){ showError("En az 2 resim seçin"); return; } try{ const images=await loadImagesFromFiles(selectedMultiFiles); let targetWidth=Math.max(...images.map(img=>img.width)); const scaled=images.map(img=>{ const scale=targetWidth/img.width; const newH=img.height*scale; const c=document.createElement('canvas'); c.width=targetWidth; c.height=newH; const cx=c.getContext('2d'); cx.fillStyle="#ffffff"; cx.fillRect(0,0,targetWidth,newH); cx.drawImage(img,0,0,targetWidth,newH); return c; }); let totalH=scaled.reduce((s,c)=>s+c.height,0); const resCanvas=document.createElement('canvas'); resCanvas.width=targetWidth; resCanvas.height=totalH; const rctx=resCanvas.getContext('2d'); let y=0; for(let c of scaled){ rctx.drawImage(c,0,y); y+=c.height; } const finalImg=new Image(); finalImg.onload=()=>{ currentImage=finalImg; drawImageOnCanvas(); if(cropping){ rect={x:0,y:0,w:canvas.width,h:canvas.height}; cropBox.style.display='block'; syncCropBox(); } multiStatusSpan.innerText="Dikey birleştirme tamamlandı!"; }; finalImg.src=resCanvas.toDataURL(); }catch(e){ showError("Dikey birleştirme hatası"); } }
+    function projeKaydet() { if(!currentImage){ showError("Resim yok"); return; } const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({resimVerisi:currentImage.src})],{type:'application/json'})); a.download=`proje_${Date.now()}.json`; a.click(); }
+    function projeYukle(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=(e)=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=(ev)=>{ try{ const data=JSON.parse(ev.target.result); if(data.resimVerisi){ const img=new Image(); img.onload=()=>{ currentImage=img; drawImageOnCanvas(); startCrop(); }; img.onerror=()=>showError("Proje resmi bozuk"); img.src=data.resimVerisi; }else showError("Geçersiz proje"); }catch(err){ showError("Hatalı dosya"); } }; reader.readAsText(file); }; inp.click(); }
+    async function paylasResim() { if(!currentImage) return; const blob=await new Promise(res=>canvas.toBlob(res,'image/png')); const file=new File([blob],'resim.png',{type:'image/png'}); if(navigator.share){ try{ await navigator.share({title:'Düzenlenmiş Resim',files:[file]}); }catch(e){} }else{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='resim.png'; a.click(); URL.revokeObjectURL(a.href); } }
+    async function paylasProje() { if(!currentImage) return; const veri={resimVerisi:currentImage.src}; const blob=new Blob([JSON.stringify(veri)],{type:'application/json'}); const file=new File([blob],'proje.json',{type:'application/json'}); if(navigator.share){ try{ await navigator.share({title:'Proje',files:[file]}); }catch(e){} }else{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='proje.json'; a.click(); URL.revokeObjectURL(a.href); } }
     
-    async function resizeToSquare() {
-        document.getElementById('batchTargetWidth').value = 800;
-        document.getElementById('batchTargetHeight').value = 800;
-        await resizeAllBatchImages(800, 800);
-    }
+    async function removeCornersWhiteOnly() { if (!currentImage) return; const width=canvas.width,height=canvas.height; const imgData=ctx.getImageData(0,0,width,height); const data=imgData.data; const visited=new Uint8Array(width*height); const queue=[]; function isWhite(r,g,b){ return (r+g+b)/3>200; } for(let y=0;y<5&&y<height;y++){ for(let x=0;x<5&&x<width;x++){ const idx=(y*width+x)*4; if(!visited[y*width+x]&&isWhite(data[idx],data[idx+1],data[idx+2])){ visited[y*width+x]=1; queue.push([x,y]); } } } for(let y=0;y<5&&y<height;y++){ for(let x=Math.max(0,width-5);x<width;x++){ const idx=(y*width+x)*4; if(!visited[y*width+x]&&isWhite(data[idx],data[idx+1],data[idx+2])){ visited[y*width+x]=1; queue.push([x,y]); } } } for(let y=Math.max(0,height-5);y<height;y++){ for(let x=0;x<5&&x<width;x++){ const idx=(y*width+x)*4; if(!visited[y*width+x]&&isWhite(data[idx],data[idx+1],data[idx+2])){ visited[y*width+x]=1; queue.push([x,y]); } } } for(let y=Math.max(0,height-5);y<height;y++){ for(let x=Math.max(0,width-5);x<width;x++){ const idx=(y*width+x)*4; if(!visited[y*width+x]&&isWhite(data[idx],data[idx+1],data[idx+2])){ visited[y*width+x]=1; queue.push([x,y]); } } } const dirs=[[0,1],[1,0],[0,-1],[-1,0]]; while(queue.length){ const [x,y]=queue.shift(); for(let [dx,dy] of dirs){ const nx=x+dx,ny=y+dy; if(nx>=0&&nx<width&&ny>=0&&ny<height&&!visited[ny*width+nx]){ const idx=(ny*width+nx)*4; if(isWhite(data[idx],data[idx+1],data[idx+2])){ visited[ny*width+nx]=1; queue.push([nx,ny]); } } } } for(let i=0;i<width*height;i++){ if(visited[i]){ data[i*4]=0; data[i*4+1]=0; data[i*4+2]=0; } } ctx.putImageData(imgData,0,0); const newImg=new Image(); newImg.onload=()=>{ currentImage=newImg; drawImageOnCanvas(); if(cropping){ rect={x:0,y:0,w:canvas.width,h:canvas.height}; cropBox.style.display='block'; syncCropBox(); } showSuccess("Köşelerdeki beyazlık siyah yapıldı"); }; newImg.src=canvas.toDataURL(); }
     
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
+    let selectedMultiFiles = [];
+    let batchFiles = [], batchResizedImages = [];
+    const multiStatusSpan = document.getElementById('multiStatus');
     
-    function applyColorAdjustment() {
-        if (!currentImage) return;
-        let brightness = parseInt(document.getElementById('brightness').value);
-        let contrast = parseInt(document.getElementById('contrast').value);
-        let saturation = parseInt(document.getElementById('saturation').value);
-        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let data = imgData.data;
-        for (let i = 0; i < data.length; i += 4) {
-            let r = data[i], g = data[i+1], b = data[i+2];
-            let factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-            r = factor * (r - 128) + 128;
-            g = factor * (g - 128) + 128;
-            b = factor * (b - 128) + 128;
-            r += brightness; g += brightness; b += brightness;
-            let gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-            r = gray + (saturation / 100) * (r - gray);
-            g = gray + (saturation / 100) * (g - gray);
-            b = gray + (saturation / 100) * (b - gray);
-            data[i] = Math.min(255, Math.max(0, r));
-            data[i+1] = Math.min(255, Math.max(0, g));
-            data[i+2] = Math.min(255, Math.max(0, b));
-        }
-        ctx.putImageData(imgData, 0, 0);
-        updateCurrentImageFromCanvas();
-    }
+    const radiusSlider = document.getElementById('cornerRadius');
+    const radiusValue = document.getElementById('radiusValue');
+    radiusSlider.addEventListener('input', () => { radiusValue.innerText = radiusSlider.value; });
+    const batchRadiusSlider = document.getElementById('batchCornerRadius');
+    const batchRadiusValue = document.getElementById('batchRadiusValue');
+    batchRadiusSlider.addEventListener('input', () => { batchRadiusValue.innerText = batchRadiusSlider.value; });
     
-    function sharpen() {
-        if (!currentImage) return;
-        const w = canvas.width, h = canvas.height;
-        const imgData = ctx.getImageData(0,0,w,h);
-        const data = imgData.data;
-        const out = new Uint8ClampedArray(data.length);
-        for (let y=1; y<h-1; y++) {
-            for (let x=1; x<w-1; x++) {
-                const idx = (y*w+x)*4;
-                const t = ((y-1)*w+x)*4, b = ((y+1)*w+x)*4, l = (y*w+x-1)*4, r = (y*w+x+1)*4;
-                for (let c=0; c<3; c++) {
-                    let val = data[idx+c]*5 - (data[t+c]+data[b+c]+data[l+c]+data[r+c]);
-                    out[idx+c] = Math.min(255, Math.max(0, val));
-                }
-                out[idx+3] = data[idx+3];
-            }
-        }
-        ctx.putImageData(new ImageData(out,w,h),0,0);
-        updateCurrentImageFromCanvas();
-    }
-    
-    async function updateCurrentImageFromCanvas() {
-        if (!currentImage) return;
-        const img = new Image();
-        img.onload = () => { 
-            currentImage = img; 
-            drawImageOnCanvas();
-            if (cropping) {
-                rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-                cropBox.style.display = 'block';
-                syncCropBox();
-            }
-        };
-        img.onerror = () => showError("Canvas dönüşüm hatası!");
-        img.src = canvas.toDataURL();
-    }
-    
-    async function rotate90() {
-        if(!currentImage) return;
-        const w = canvas.width, h = canvas.height;
-        const temp = document.createElement('canvas');
-        temp.width = h; temp.height = w;
-        const tctx = temp.getContext('2d');
-        tctx.translate(h/2, w/2);
-        tctx.rotate(Math.PI/2);
-        tctx.drawImage(canvas, -w/2, -h/2);
-        const newImg = new Image();
-        newImg.onload = () => { 
-            currentImage = newImg; 
-            drawImageOnCanvas(); 
-            if (cropping) {
-                rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-                cropBox.style.display = 'block';
-                syncCropBox();
-            }
-        };
-        newImg.src = temp.toDataURL();
-    }
-    
-    async function flipH() {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(currentImage, 0, 0);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        await updateCurrentImageFromCanvas();
-    }
-    
-    async function flipV() {
-        ctx.translate(0, canvas.height);
-        ctx.scale(1, -1);
-        ctx.drawImage(currentImage, 0, 0);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        await updateCurrentImageFromCanvas();
-    }
-    
-    function downloadWithFormat(format) {
-        if (!currentImage) return;
-        canvas.toBlob(blob => {
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `resim.${format.split('/')[1] || 'png'}`;
-            a.click();
-        }, format, 0.92);
-    }
-    
-    async function loadImagesFromFiles(files) {
-        const promises = files.map(file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = () => reject(new Error("Resim bozuk"));
-                img.src = e.target.result;
-            };
-            reader.onerror = () => reject(new Error("Okuma hatası"));
-            reader.readAsDataURL(file);
-        }));
-        return Promise.all(promises);
-    }
-    
-    async function mergeHorizontalAuto() {
-        if (selectedMultiFiles.length < 2) { showError("En az 2 resim seçin"); return; }
-        try {
-            const images = await loadImagesFromFiles(selectedMultiFiles);
-            let targetHeight = Math.max(...images.map(img => img.height));
-            const scaledImages = images.map(img => {
-                const scale = targetHeight / img.height;
-                const newWidth = img.width * scale;
-                const canvas = document.createElement('canvas');
-                canvas.width = newWidth;
-                canvas.height = targetHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(0, 0, newWidth, targetHeight);
-                ctx.drawImage(img, 0, 0, newWidth, targetHeight);
-                return canvas;
-            });
-            let totalWidth = scaledImages.reduce((sum, c) => sum + c.width, 0);
-            const resultCanvas = document.createElement('canvas');
-            resultCanvas.width = totalWidth;
-            resultCanvas.height = targetHeight;
-            const resultCtx = resultCanvas.getContext('2d');
-            let x = 0;
-            for (let imgCanvas of scaledImages) {
-                resultCtx.drawImage(imgCanvas, x, 0);
-                x += imgCanvas.width;
-            }
-            const finalImg = new Image();
-            finalImg.onload = () => { 
-                currentImage = finalImg; 
-                drawImageOnCanvas(); 
-                if (cropping) {
-                    rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-                    cropBox.style.display = 'block';
-                    syncCropBox();
-                }
-                multiStatusSpan.innerText = "Yatay birleştirme tamamlandı!"; 
-            };
-            finalImg.src = resultCanvas.toDataURL();
-        } catch(e) { showError("Birleştirme hatası: " + e.message); }
-    }
-    
-    async function mergeVerticalAuto() {
-        if (selectedMultiFiles.length < 2) { showError("En az 2 resim seçin"); return; }
-        try {
-            const images = await loadImagesFromFiles(selectedMultiFiles);
-            let targetWidth = Math.max(...images.map(img => img.width));
-            const scaledImages = images.map(img => {
-                const scale = targetWidth / img.width;
-                const newHeight = img.height * scale;
-                const canvas = document.createElement('canvas');
-                canvas.width = targetWidth;
-                canvas.height = newHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(0, 0, targetWidth, newHeight);
-                ctx.drawImage(img, 0, 0, targetWidth, newHeight);
-                return canvas;
-            });
-            let totalHeight = scaledImages.reduce((sum, c) => sum + c.height, 0);
-            const resultCanvas = document.createElement('canvas');
-            resultCanvas.width = targetWidth;
-            resultCanvas.height = totalHeight;
-            const resultCtx = resultCanvas.getContext('2d');
-            let y = 0;
-            for (let imgCanvas of scaledImages) {
-                resultCtx.drawImage(imgCanvas, 0, y);
-                y += imgCanvas.height;
-            }
-            const finalImg = new Image();
-            finalImg.onload = () => { 
-                currentImage = finalImg; 
-                drawImageOnCanvas(); 
-                if (cropping) {
-                    rect = { x: 0, y: 0, w: canvas.width, h: canvas.height };
-                    cropBox.style.display = 'block';
-                    syncCropBox();
-                }
-                multiStatusSpan.innerText = "Dikey birleştirme tamamlandı!"; 
-            };
-            finalImg.src = resultCanvas.toDataURL();
-        } catch(e) { showError("Dikey birleştirme hatası: " + e.message); }
-    }
-    
-    function projeKaydet() {
-        if (!currentImage) { showError("Resim yok"); return; }
-        const veri = { resimVerisi: currentImage.src };
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(veri)], {type:'application/json'}));
-        a.download = `proje_${Date.now()}.json`;
-        a.click();
-    }
-    
-    function projeYukle() {
-        const inp = document.createElement('input');
-        inp.type = 'file';
-        inp.accept = 'application/json';
-        inp.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const data = JSON.parse(ev.target.result);
-                    if (data.resimVerisi) {
-                        const img = new Image();
-                        img.onload = () => { 
-                            currentImage = img; 
-                            drawImageOnCanvas(); 
-                            startCrop();
-                        };
-                        img.onerror = () => showError("Proje resmi bozuk");
-                        img.src = data.resimVerisi;
-                    } else { showError("Geçersiz proje"); }
-                } catch(err) { showError("Hatalı dosya"); }
-            };
-            reader.readAsText(file);
-        };
-        inp.click();
-    }
-    
-    async function paylasResim() {
-        if (!currentImage) { showError("Resim yok"); return; }
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-        const file = new File([blob], 'resim.png', { type: 'image/png' });
-        if (navigator.share) {
-            try { await navigator.share({ title: 'Düzenlenmiş Resim', files: [file] }); } catch(e) { }
-        } else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'resim.png';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    }
-    
-    async function paylasProje() {
-        if (!currentImage) { showError("Resim yok"); return; }
-        const veri = { resimVerisi: currentImage.src };
-        const blob = new Blob([JSON.stringify(veri)], { type: 'application/json' });
-        const file = new File([blob], 'proje.json', { type: 'application/json' });
-        if (navigator.share) {
-            try { await navigator.share({ title: 'Proje', files: [file] }); } catch(e) { }
-        } else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'proje.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    }
-    
-    // DOM bağlantıları
-    const fileInput = document.getElementById('fileInput');
-    const selectImageBtn = document.getElementById('selectImageBtn');
-    selectImageBtn.onclick = () => fileInput.click();
-    fileInput.onchange = (e) => { if(e.target.files[0]) loadSingleImage(e.target.files[0]); };
-    
+    // Event bağlantıları
+    document.getElementById('selectImageBtn').onclick = () => document.getElementById('fileInput').click();
+    document.getElementById('fileInput').onchange = (e) => { if(e.target.files[0]) { const img=new Image(); const reader=new FileReader(); reader.onload=ev=>{ img.onload=()=>{ currentImage=img; drawImageOnCanvas(); startCrop(); showSuccess("Resim yüklendi"); }; img.src=ev.target.result; }; reader.readAsDataURL(e.target.files[0]); } };
     document.getElementById('resetBtn').onclick = () => { if(currentImage) drawImageOnCanvas(); startCrop(); };
     document.getElementById('applyColorBtn').onclick = applyColorAdjustment;
     document.getElementById('enhanceQualityBtn').onclick = sharpen;
@@ -1230,27 +838,21 @@
     document.getElementById('flipHBtn').onclick = flipH;
     document.getElementById('flipVBtn').onclick = flipV;
     document.getElementById('convertFormatBtn').onclick = () => downloadWithFormat(document.getElementById('formatSelect').value);
-    
-    // KÖŞE BEYAZLIK TEMİZLEYİCİ
     document.getElementById('removeCornersWhiteBtn').onclick = removeCornersWhiteOnly;
     
-    // OVAL BUTONLARI
-    document.getElementById('makeOvalBtn').onclick = makeOvalTransparent;
-    document.getElementById('makeOvalWhiteBtn').onclick = makeOvalWhite;
+    // KIRPMA BUTONLARI - DÜZELTİLDİ
+    document.getElementById('applyCropBtn').onclick = applyCrop;
+    document.getElementById('cancelCropBtn').onclick = cancelCrop;
+    document.getElementById('saveImageBtn').onclick = saveCurrentImage;
     
-    applyBtn.onclick = doCrop;
-    cancelBtn.onclick = endCrop;
-    saveBtn.onclick = saveCurrentImage;
+    // Köşe yuvarlatma butonları
+    document.getElementById('applyRoundCornersBtn').onclick = () => { const r = parseInt(radiusSlider.value); roundCorners(r); };
+    document.getElementById('batchRoundCornersBtn').onclick = () => { const r = parseInt(batchRadiusSlider.value); makeBatchRound(r); };
     
     document.getElementById('selectMultiBtn').onclick = () => document.getElementById('multiMergeInput').click();
-    const multiStatusSpan = document.getElementById('multiStatus');
-    document.getElementById('multiMergeInput').onchange = (e) => {
-        selectedMultiFiles = Array.from(e.target.files);
-        multiStatusSpan.innerText = `${selectedMultiFiles.length} resim seçildi`;
-    };
+    document.getElementById('multiMergeInput').onchange = (e) => { selectedMultiFiles = Array.from(e.target.files); multiStatusSpan.innerText = `${selectedMultiFiles.length} resim seçildi`; };
     document.getElementById('mergeHorizontalMultiBtn').onclick = mergeHorizontalAuto;
     document.getElementById('mergeVerticalMultiBtn').onclick = mergeVerticalAuto;
-    
     document.getElementById('projeKaydet').onclick = projeKaydet;
     document.getElementById('projeYukle').onclick = projeYukle;
     document.getElementById('paylasResim').onclick = paylasResim;
@@ -1258,27 +860,17 @@
     
     const batchFileInput = document.getElementById('batchFileInput');
     document.getElementById('selectBatchBtn').onclick = () => batchFileInput.click();
-    batchFileInput.onchange = (e) => {
-        batchFiles = Array.from(e.target.files);
-        document.getElementById('batchStatus').innerText = `${batchFiles.length} resim seçildi`;
-        batchResizedImages = [];
-    };
-    document.getElementById('clearBatchBtn').onclick = () => {
-        batchFiles = [];
-        batchResizedImages = [];
-        batchFileInput.value = '';
-        document.getElementById('batchStatus').innerText = 'Henüz resim seçilmedi';
-        document.getElementById('resultPanel').style.display = 'none';
-    };
-    document.getElementById('resizeBatchBtn').onclick = () => {
-        const targetW = parseInt(document.getElementById('batchTargetWidth').value);
-        const targetH = parseInt(document.getElementById('batchTargetHeight').value);
-        if (isNaN(targetW) || targetW < 10 || isNaN(targetH) || targetH < 10) { showError("Geçerli genişlik/yükseklik girin!"); return; }
-        resizeAllBatchImages(targetW, targetH);
-    };
-    document.getElementById('resizeToSquareBtn').onclick = () => resizeToSquare();
+    batchFileInput.onchange = (e) => { batchFiles = Array.from(e.target.files); document.getElementById('batchStatus').innerText = `${batchFiles.length} resim seçildi`; batchResizedImages = []; };
+    document.getElementById('clearBatchBtn').onclick = () => { batchFiles = []; batchResizedImages = []; batchFileInput.value = ''; document.getElementById('batchStatus').innerText = 'Henüz resim seçilmedi'; document.getElementById('resultPanel').style.display = 'none'; };
+    document.getElementById('resizeBatchBtn').onclick = () => { const tw=parseInt(document.getElementById('batchTargetWidth').value), th=parseInt(document.getElementById('batchTargetHeight').value); if(isNaN(tw)||tw<10||isNaN(th)||th<10){ showError("Geçerli boyut girin"); return; } resizeAllBatchImages(tw,th); };
+    document.getElementById('resizeToSquareBtn').onclick = () => { document.getElementById('batchTargetWidth').value=800; document.getElementById('batchTargetHeight').value=800; resizeAllBatchImages(800,800); };
+    
+    async function resizeImageWithBlackBg(img, tw, th) { const c=document.createElement('canvas'); c.width=tw; c.height=th; const ct=c.getContext('2d'); ct.fillStyle="#000000"; ct.fillRect(0,0,tw,th); let dw,dh,dx,dy; const ir=img.width/img.height, tr=tw/th; if(ir>tr){ dw=tw; dh=tw/ir; dx=0; dy=(th-dh)/2; } else { dh=th; dw=th*ir; dx=(tw-dw)/2; dy=0; } ct.drawImage(img,dx,dy,dw,dh); const newImg=new Image(); await new Promise(res=>{ newImg.onload=res; newImg.src=c.toDataURL(); }); return newImg; }
+    async function resizeAllBatchImages(targetW, targetH) { if(!batchFiles.length){ showError("Önce toplu resim seçin"); return; } const stat=document.getElementById('batchStatus'); stat.innerHTML="İşleniyor..."; const newList=[]; for(let i=0;i<batchFiles.length;i++){ try{ const img=await loadImageFromFile(batchFiles[i]); const resized=await resizeImageWithBlackBg(img,targetW,targetH); newList.push({ originalName:batchFiles[i].name, image:resized, width:targetW, height:targetH }); stat.innerHTML=`${i+1}/${batchFiles.length}`; }catch(e){ } } if(!newList.length){ stat.innerHTML="İşlem başarısız"; return; } batchResizedImages=newList; stat.innerHTML=`${batchResizedImages.length} resim ${targetW}x${targetH} boyutlandırıldı`; showBatchResizePanel(); }
+    function showBatchResizePanel() { const panel=document.getElementById('resultPanel'); let html=`<div style="display:flex;justify-content:space-between;margin-bottom:1rem;"><h3 style="color:#facc15;">📏 Boyutlandırılan Resimler</h3><button id="closeResultPanel" style="background:#b91c1c;border:none;color:white;padding:5px 12px;border-radius:40px;">✖</button></div><div>`; batchResizedImages.forEach((item,idx)=>{ html+=`<div class="result-item"><img src="${item.image.src}"><div class="result-item-info"><div class="result-item-name">${escapeHtml(item.originalName)}</div><div class="result-item-size">${item.width} x ${item.height}</div></div><button class="download-single" data-index="${idx}">⬇ İndir</button></div>`; }); html+=`<div class="btn-grid"><button id="downloadAllZip" class="btn btn-success">📦 Tümünü ZIP İndir</button></div></div>`; panel.innerHTML=html; panel.style.display='block'; document.querySelectorAll('.download-single').forEach(btn=>{ btn.addEventListener('click',(e)=>{ const idx=parseInt(btn.getAttribute('data-index')); const a=document.createElement('a'); a.href=batchResizedImages[idx].image.src; a.download=`${batchResizedImages[idx].originalName.replace(/\.[^/.]+$/,'')}_${batchResizedImages[idx].width}x${batchResizedImages[idx].height}.png`; a.click(); }); }); document.getElementById('downloadAllZip')?.addEventListener('click',async()=>{ const zip=new JSZip(); for(let it of batchResizedImages){ const base64=it.image.src.split(',')[1]; zip.file(`${it.originalName.replace(/\.[^/.]+$/,'')}_${it.width}x${it.height}.png`,base64,{base64:true}); } const blob=await zip.generateAsync({type:"blob"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`resimler.zip`; a.click(); URL.revokeObjectURL(a.href); }); document.getElementById('closeResultPanel')?.addEventListener('click',()=>{ panel.style.display='none'; }); }
     
     initTabs();
+    startCrop();
 })();
 </script>
 </body>
