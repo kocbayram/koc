@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Resim Düzenleme - Köşe Yuvarlatma | Kırpma Düzeltildi</title>
+    <title>Resim Düzenleme - Köşe Yuvarlatma | Bayram KOÇ</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -308,6 +308,28 @@
         .radius-group { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
         .radius-group label { font-size: 0.7rem; }
         .radius-group input { width: 80px; }
+        
+        /* FOOTER STILI */
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(250, 204, 21, 0.3);
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        .footer span {
+            color: #facc15;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .footer a {
+            color: #facc15;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -474,6 +496,11 @@
             </div>
         </div>
     </div>
+    
+    <!-- FOOTER - BAYRAM KOÇ -->
+    <div class="footer">
+        <span>✨ Bayram KOÇ✨</span> 
+    </div>
 </div>
 
 <div id="resultPanel" class="result-panel"></div>
@@ -616,19 +643,17 @@
     wrap.addEventListener('touchstart', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     wrap.addEventListener('touchmove', (e) => { if (cropping) e.preventDefault(); }, { passive: false });
     
-    // KIRPMA İŞLEMİ - DOĞRU ÇALIŞIYOR
+    // KIRPMA İŞLEMİ
     function applyCrop() {
         if (!cropping || !currentImage) { showError("Önce kırpma modunu başlatın!"); return; }
         if (rect.w < 10 || rect.h < 10) { showError("Kırpma alanı çok küçük!"); return; }
         
-        // Kırpma işlemi
         const cropCanvas = document.createElement('canvas');
         cropCanvas.width = rect.w;
         cropCanvas.height = rect.h;
         const cropCtx = cropCanvas.getContext('2d');
         cropCtx.drawImage(canvas, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
         
-        // Yeni resim oluştur
         const newImg = new Image();
         newImg.onload = () => {
             currentImage = newImg;
@@ -649,13 +674,11 @@
         showSuccess("Kırpma iptal edildi.");
     }
     
-    // KAYDETME İŞLEMİ - KIRPILMIŞ HALİ KAYDEDER
     function saveCurrentImage() {
         if (!currentImage) { 
             showError("Kaydedilecek resim yok!"); 
             return; 
         }
-        // Canvas'taki GÜNCEL görüntüyü kaydet (kırpılmış hali)
         const a = document.createElement('a');
         a.download = 'resim_duzenlendi.png';
         a.href = canvas.toDataURL('image/png');
@@ -663,7 +686,7 @@
         showSuccess("Resim başarıyla kaydedildi!");
     }
     
-    // ========== KÖŞE YUVARLATMA ==========
+    // KÖŞE YUVARLATMA
     async function roundCorners(radius) {
         if (!currentImage) { showError("Önce bir resim yükleyin!"); return; }
         if (radius < 1) { showError("Yuvarlaklık değeri 1'den büyük olmalı"); return; }
@@ -700,7 +723,7 @@
         newImg.src = tempCanvas.toDataURL('image/png');
     }
     
-    // ========== TOPLU KÖŞE YUVARLATMA ==========
+    // TOPLU KÖŞE YUVARLATMA
     let batchRoundFiles = [];
     const batchRoundInput = document.getElementById('batchRoundInput');
     const batchRoundStatus = document.getElementById('batchRoundStatus');
@@ -840,12 +863,10 @@
     document.getElementById('convertFormatBtn').onclick = () => downloadWithFormat(document.getElementById('formatSelect').value);
     document.getElementById('removeCornersWhiteBtn').onclick = removeCornersWhiteOnly;
     
-    // KIRPMA BUTONLARI - DÜZELTİLDİ
     document.getElementById('applyCropBtn').onclick = applyCrop;
     document.getElementById('cancelCropBtn').onclick = cancelCrop;
     document.getElementById('saveImageBtn').onclick = saveCurrentImage;
     
-    // Köşe yuvarlatma butonları
     document.getElementById('applyRoundCornersBtn').onclick = () => { const r = parseInt(radiusSlider.value); roundCorners(r); };
     document.getElementById('batchRoundCornersBtn').onclick = () => { const r = parseInt(batchRadiusSlider.value); makeBatchRound(r); };
     
