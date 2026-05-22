@@ -133,7 +133,6 @@
         .btn-jpg:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(234, 88, 12, 0.3); }
         .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { transform: translateY(-2px); }
 
-        /* Paylaş butonu stilleri */
         .share-wrapper { position: relative; flex: 1; }
         .btn-share {
             background: linear-gradient(115deg, #3b82f6, #2563eb);
@@ -683,9 +682,9 @@
                 <div class="symbol-panel" id="symbolPanel"></div>
                 
                 <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
-Hayatın sana hep güzellikler sunsun,
-Her yeni gün umut ve neşe getirsin.
-Doğum günün kutlu olsun. 
+    Hayatın sana hep güzellikler sunsun,
+    Her yeni gün umut ve neşe getirsin.
+    Doğum günün kutlu olsun. 
 
 🎁 Nice mutlu yıllara! 🎁
 
@@ -694,7 +693,12 @@ Doğum günün kutlu olsun.
                 <div class="controls">
                     <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
                     <select id="fontWeight"><option value="300">Light</option><option value="400">Regular</option><option value="600">SemiBold</option><option value="700" selected>Bold</option></select>
-                    <select id="textAlign"><option value="center">Merkez</option><option value="left">Sola</option><option value="right">Sağa</option></select>
+                    <select id="textAlign">
+                        <option value="center">Merkez</option>
+                        <option value="left">Sola</option>
+                        <option value="right">Sağa</option>
+                        <option value="free" selected>Serbest (Orijinal)</option>
+                    </select>
                 </div>
 
                 <div class="action-buttons">
@@ -724,8 +728,10 @@ Doğum günün kutlu olsun.
             </div>
         </div>
     </div>
-    <div class="footer"><span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | Paylaş & İndir | 🇹🇷<br><br>
-                <h4>Bayram KOÇ</h4></span></div>
+    <div class="footer">
+        <span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | Paylaş & İndir | 🇹🇷<br><br>
+        <h4>Bayram KOÇ</h4></span>
+    </div>
 </div>
 
 <div id="spectrumOverlay" class="color-spectrum-overlay">
@@ -739,14 +745,13 @@ Doğum günün kutlu olsun.
         <div class="spectrum-preview-area">
             <div id="spectrumPreviewBox" class="spectrum-preview-box" style="background:#B9B4BF"></div>
             <input type="text" id="spectrumHexInput" class="spectrum-hex-input" value="#B9B4BF">
-            <button id="spectrumSelectBtn" class="spectrum-select-btn">✓ Seç</button>
+            <button id="spectrumSelectBtn" class="spectrum-select-btn">Seç</button>
             <button id="spectrumCancelBtn" class="spectrum-cancel-btn">İptal</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ==================== TAM FONT LISTESI (ORIJINAL) ====================
     let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
     const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
@@ -942,21 +947,37 @@ Doğum günün kutlu olsun.
     
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
     
-    function wrapText(ctx, text, maxWidth) { 
-        let lines = [], paragraphs = text.split("\n"); 
-        for(let p of paragraphs) { 
-            if(p === "") { lines.push(""); continue; } 
-            let words = p.split(" "), current = ""; 
-            for(let w of words) { 
-                let test = current + (current ? " " : "") + w; 
-                if(ctx.measureText(test).width > maxWidth && current) { 
-                    lines.push(current); 
-                    current = w; 
-                } else current = test; 
-            } 
-            if(current) lines.push(current); 
-        } 
-        return lines; 
+    // ========== YENİ wrapText FONKSİYONU (CC.html'den alındı) ==========
+    function wrapText(ctx, text, maxWidth) {
+        let lines = [];
+        let paragraphs = text.split('\n');
+        for (let i = 0; i < paragraphs.length; i++) {
+            let paragraph = paragraphs[i];
+            // Paragraf başındaki boşlukları tespit et ve koru
+            let initialSpaces = "";
+            let spaceMatch = paragraph.match(/^ +/);
+            if (spaceMatch) {
+                initialSpaces = spaceMatch[0];
+            }
+            
+            let words = paragraph.substring(initialSpaces.length).split(' ');
+            let currentLine = initialSpaces;
+            
+            for (let n = 0; n < words.length; n++) {
+                if (words[n] === "" && n > 0) continue;
+                let testLine = currentLine + (currentLine === initialSpaces ? "" : " ") + words[n];
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(currentLine);
+                    currentLine = words[n];
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            lines.push(currentLine);
+        }
+        return lines;
     }
     
     function getLineDash(style) {
@@ -1127,19 +1148,65 @@ Doğum günün kutlu olsun.
             let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; 
             ctx.font = fontWeight + " " + fontSize + "px '" + currentFont + "', cursive"; 
             ctx.fillStyle = textColorHidden.value; 
-            ctx.textAlign = align; 
+            
             if(textShadowCheck.checked) { 
                 ctx.shadowColor = "rgba(0,0,0,0.3)"; 
                 ctx.shadowBlur = 4; 
                 ctx.shadowOffsetX = 2; 
                 ctx.shadowOffsetY = 2; 
             } else ctx.shadowColor = "transparent"; 
-            let maxW = canvasWidth - 80, lines = wrapText(ctx, raw, maxW), lineH = fontSize * 1.35, totalH = lines.length * lineH; 
-            let startX = textPosX, startY = textPosY - totalH/2; 
-            if(align === "center") startX = textPosX; 
-            else if(align === "left") startX = textPosX - maxW/2; 
-            else startX = textPosX + maxW/2; 
-            for(let i=0; i<lines.length; i++) ctx.fillText(lines[i], startX, startY + i*lineH); 
+            
+            let maxW = canvasWidth - 80;
+            let lines;
+            
+            // YENİ: Serbest (Orijinal) mod desteği
+            if (align === 'free') {
+                // SERBEST MOD: Girintileri koru, kelimeleri bölme
+                lines = wrapText(ctx, raw, maxW);
+                ctx.textAlign = 'left';
+                let startX = textPosX;
+                let lineH = fontSize * 1.35;
+                let totalH = lines.length * lineH;
+                let startY = textPosY;
+                
+                for(let i=0; i<lines.length; i++) {
+                    ctx.fillText(lines[i], startX, startY + i*lineH);
+                }
+            } 
+            else if (align === 'center') {
+                lines = wrapText(ctx, raw, maxW);
+                ctx.textAlign = 'center';
+                let startX = canvasWidth / 2;
+                let lineH = fontSize * 1.35;
+                let totalH = lines.length * lineH;
+                let startY = textPosY - totalH/2;
+                for(let i=0; i<lines.length; i++) {
+                    ctx.fillText(lines[i], startX, startY + i*lineH);
+                }
+            }
+            else if (align === 'right') {
+                lines = wrapText(ctx, raw, maxW);
+                ctx.textAlign = 'right';
+                let startX = canvasWidth - 60;
+                let lineH = fontSize * 1.35;
+                let totalH = lines.length * lineH;
+                let startY = textPosY - totalH/2;
+                for(let i=0; i<lines.length; i++) {
+                    ctx.fillText(lines[i], startX, startY + i*lineH);
+                }
+            }
+            else { // left
+                lines = wrapText(ctx, raw, maxW);
+                ctx.textAlign = 'left';
+                let startX = 60;
+                let lineH = fontSize * 1.35;
+                let totalH = lines.length * lineH;
+                let startY = textPosY - totalH/2;
+                for(let i=0; i<lines.length; i++) {
+                    ctx.fillText(lines[i], startX, startY + i*lineH);
+                }
+            }
+            
             ctx.shadowColor = "transparent"; 
         } 
         updateResizeHandlePosition(); 
@@ -1273,7 +1340,40 @@ Doğum günün kutlu olsun.
         }
         let fontSize = parseInt(document.getElementById("fontSize").value); 
         ctx.font = fontSize + "px '" + currentFont + "', cursive"; 
-        let raw = document.getElementById("cardText").value, maxW = canvas.width-80, lines = wrapText(ctx, raw, maxW), lineH = fontSize*1.35, totalH = lines.length*lineH, left = textPosX - maxW/2, right = textPosX + maxW/2, top = textPosY - totalH/2, bottom = textPosY + totalH/2; 
+        let raw = document.getElementById("cardText").value, maxW = canvas.width-80;
+        let align = document.getElementById("textAlign").value;
+        let lines = wrapText(ctx, raw, maxW);
+        let lineH = fontSize*1.35, totalH = lines.length*lineH;
+        let startX, left, right, top, bottom;
+        
+        if (align === 'free') {
+            // Serbest mod için metin kutusu alanını hesapla
+            let maxLineWidth = 0;
+            for(let line of lines) {
+                let w = ctx.measureText(line).width;
+                if(w > maxLineWidth) maxLineWidth = w;
+            }
+            left = textPosX;
+            right = textPosX + maxLineWidth;
+            top = textPosY;
+            bottom = textPosY + totalH;
+        } else if (align === 'center') {
+            left = canvas.width/2 - maxW/2;
+            right = canvas.width/2 + maxW/2;
+            top = textPosY - totalH/2;
+            bottom = textPosY + totalH/2;
+        } else if (align === 'right') {
+            left = canvas.width - 60 - maxW;
+            right = canvas.width - 60;
+            top = textPosY - totalH/2;
+            bottom = textPosY + totalH/2;
+        } else { // left
+            left = 60;
+            right = 60 + maxW;
+            top = textPosY - totalH/2;
+            bottom = textPosY + totalH/2;
+        }
+        
         if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { 
             isDraggingText = true; 
             textDragStartX = mx - textPosX; 
@@ -1505,7 +1605,7 @@ Doğum günün kutlu olsun.
         showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
     });
     
-    // PAYLAŞ FONKSİYONLARI (açıklama metni yok)
+    // PAYLAŞ FONKSİYONLARI
     async function shareFile(blob, fileName) {
         const file = new File([blob], fileName, { type: blob.type });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
