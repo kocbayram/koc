@@ -516,6 +516,20 @@
             border: 1.5px solid #e2ceff;
             color: #b77bff;
         }
+        
+        /* Yeni: kenar aralığı slider stili */
+        .border-offset-slider {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #eeddff;
+        }
+        .border-offset-slider label {
+            font-weight: 600;
+            color: #6b3ea5;
+            font-size: 12px;
+            display: inline-block;
+            width: 100px;
+        }
     </style>
 </head>
 <body>
@@ -652,6 +666,14 @@
                         <button id="applyBorderStyleBtn" class="btn-secondary" style="padding: 6px 16px;">✨ Uygula</button>
                     </div>
                     
+                    <!-- YENİ: Kenar Aralığı (Offset) Ayar Çubuğu -->
+                    <div class="border-offset-slider">
+                        <label>↔️ Kenar Aralığı:</label>
+                        <input type="range" id="borderOffset" min="0" max="30" value="6" step="1" style="width:160px;">
+                        <span id="borderOffsetVal">6px</span>
+                        <small style="margin-left: 12px; color:#6b3ea5;">(Katmanlar arası mesafe)</small>
+                    </div>
+                    
                     <div class="layer-color-row" data-layer="3">
                         <span>🎨 3. Katman Stili:</span>
                         <select id="borderThirdStyle" class="layer-style-select">
@@ -754,7 +776,7 @@
 <script>
     let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
-    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎺","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
+    const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
 
     let customFontsList = [];
     let customIconsList = [];
@@ -774,6 +796,7 @@
 
     let borderDoubleColor1 = "#FFD700";
     let borderDoubleColor2 = "#FF4500";
+    let borderOffset = 6;  // YENİ: kenar aralığı değişkeni
 
     function createHiddenInputs() {
         if(!document.getElementById("textColor")) {
@@ -944,16 +967,25 @@
     const borderWidthSlider = document.getElementById("borderWidth");
     const borderThirdStyleSelect = document.getElementById("borderThirdStyle");
     const borderLayerCountSelect = document.getElementById("borderLayerCount");
+    const borderOffsetSlider = document.getElementById("borderOffset");
+    const borderOffsetVal = document.getElementById("borderOffsetVal");
+    
+    if(borderOffsetSlider) {
+        borderOffsetSlider.addEventListener("input", (e) => {
+            borderOffset = parseInt(e.target.value);
+            borderOffsetVal.innerText = borderOffset + "px";
+            drawCard();
+        });
+    }
     
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
     
-    // ========== YENİ wrapText FONKSİYONU (CC.html'den alındı) ==========
+    // wrapText fonksiyonu (orijinal)
     function wrapText(ctx, text, maxWidth) {
         let lines = [];
         let paragraphs = text.split('\n');
         for (let i = 0; i < paragraphs.length; i++) {
             let paragraph = paragraphs[i];
-            // Paragraf başındaki boşlukları tespit et ve koru
             let initialSpaces = "";
             let spaceMatch = paragraph.match(/^ +/);
             if (spaceMatch) {
@@ -1072,7 +1104,6 @@
         return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
     }
     
-    // Açılışta metni düzgün göstermek için konum sıfırlama
     function resetTextPosition() {
         textPosX = canvasWidth / 2;
         textPosY = canvasHeight / 2;
@@ -1110,7 +1141,9 @@
         let bw = parseInt(borderWidthSlider.value);
         let layerCount = parseInt(borderLayerCountSelect.value);
         let thirdStyle = borderThirdStyleSelect.value;
+        let offset = borderOffset;  // YENİ: kenar aralığı kullanılıyor
         
+        // Dış kenar (1. katman)
         ctx.save();
         ctx.strokeStyle = borderOuterHidden.value;
         ctx.lineWidth = bw;
@@ -1118,16 +1151,18 @@
         ctx.stroke();
         ctx.restore();
         
+        // İç kenar (2. katman) - offset ile
         ctx.save();
         ctx.strokeStyle = borderInnerHidden.value;
         ctx.lineWidth = bw * 0.7;
-        let innerOffset = bw + 4;
+        let innerOffset = bw + offset;
         roundedRect(ctx, innerOffset, innerOffset, canvasWidth - innerOffset*2, canvasHeight - innerOffset*2, radius-8);
         ctx.stroke();
         ctx.restore();
         
+        // 3. katman (varsa) - offset*2 ile
         if(layerCount >= 3) {
-            let thirdOffset = innerOffset + bw + 2;
+            let thirdOffset = innerOffset + bw + offset;
             let rectW = canvasWidth - thirdOffset * 2;
             let rectH = canvasHeight - thirdOffset * 2;
             let lineW = Math.max(1, bw * 0.55);
@@ -1167,25 +1202,18 @@
             let maxW = canvasWidth - 80;
             let lines;
             
-            // YENİ: Serbest (Orijinal) mod desteği
             if (align === 'free') {
-                // SERBEST MOD: Girintileri koru, kelimeleri bölme
                 lines = wrapText(ctx, raw, maxW);
                 ctx.textAlign = 'left';
-                
-                // En uzun satırın genişliğini bul (metin bloğunu ortalamak için)
                 let maxLineWidth = 0;
                 for(let i=0; i<lines.length; i++) {
                     let w = ctx.measureText(lines[i]).width;
                     if(w > maxLineWidth) maxLineWidth = w;
                 }
-                
-                // Metin bloğunu yatayda ve dikeyde ortala
                 let startX = textPosX - (maxLineWidth / 2);
                 let lineH = fontSize * 1.35;
                 let totalH = lines.length * lineH;
                 let startY = textPosY - (totalH / 2);
-                
                 for(let i=0; i<lines.length; i++) {
                     ctx.fillText(lines[i], startX, startY + i*lineH);
                 }
@@ -1212,7 +1240,7 @@
                     ctx.fillText(lines[i], startX, startY + i*lineH);
                 }
             }
-            else { // left
+            else {
                 lines = wrapText(ctx, raw, maxW);
                 ctx.textAlign = 'left';
                 let startX = 60;
@@ -1223,7 +1251,6 @@
                     ctx.fillText(lines[i], startX, startY + i*lineH);
                 }
             }
-            
             ctx.shadowColor = "transparent"; 
         } 
         updateResizeHandlePosition(); 
@@ -1364,7 +1391,6 @@
         let startX, left, right, top, bottom;
         
         if (align === 'free') {
-            // Serbest mod için metin kutusu alanını hesapla
             let maxLineWidth = 0;
             for(let line of lines) {
                 let w = ctx.measureText(line).width;
@@ -1384,7 +1410,7 @@
             right = canvas.width - 60;
             top = textPosY - totalH/2;
             bottom = textPosY + totalH/2;
-        } else { // left
+        } else {
             left = 60;
             right = 60 + maxW;
             top = textPosY - totalH/2;
@@ -1480,6 +1506,7 @@
             borderDoubleColor1: borderDoubleColor1Hidden.value,
             borderDoubleColor2: borderDoubleColor2Hidden.value,
             borderWidth: borderWidthSlider.value,
+            borderOffset: borderOffset,
             borderThirdStyle: borderThirdStyleSelect.value,
             borderLayerCount: borderLayerCountSelect.value,
             textShadow: textShadowCheck.checked,
@@ -1536,6 +1563,11 @@
                     if(data.borderDoubleColor2) borderDoubleColor2Hidden.value = data.borderDoubleColor2;
                     
                     borderWidthSlider.value = parseInt(data.borderWidth) || 4;
+                    if(data.borderOffset !== undefined) {
+                        borderOffset = data.borderOffset;
+                        if(borderOffsetSlider) borderOffsetSlider.value = borderOffset;
+                        if(borderOffsetVal) borderOffsetVal.innerText = borderOffset + "px";
+                    }
                     borderThirdStyleSelect.value = data.borderThirdStyle || "doublecolor";
                     borderLayerCountSelect.value = data.borderLayerCount || "3";
                     textShadowCheck.checked = data.textShadow || false;
@@ -1629,7 +1661,6 @@
         showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
     });
     
-    // PAYLAŞ FONKSİYONLARI
     async function shareFile(blob, fileName) {
         const file = new File([blob], fileName, { type: blob.type });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1892,6 +1923,12 @@
     resetTextPosition();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
     window.addEventListener("resize", () => { drawCard(); });
+    
+    // Kenar aralığı başlangıç değeri
+    if(borderOffsetSlider) {
+        borderOffsetSlider.value = borderOffset;
+        borderOffsetVal.innerText = borderOffset + "px";
+    }
 </script>
 </body>
 </html>
