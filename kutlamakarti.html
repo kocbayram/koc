@@ -1072,6 +1072,14 @@
         return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
     }
     
+    // Açılışta metni düzgün göstermek için konum sıfırlama
+    function resetTextPosition() {
+        textPosX = canvasWidth / 2;
+        textPosY = canvasHeight / 2;
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+    }
+    
     function drawCard() { 
         if(!ctx) return; 
         canvas.width = canvasWidth; 
@@ -1164,10 +1172,19 @@
                 // SERBEST MOD: Girintileri koru, kelimeleri bölme
                 lines = wrapText(ctx, raw, maxW);
                 ctx.textAlign = 'left';
-                let startX = textPosX;
+                
+                // En uzun satırın genişliğini bul (metin bloğunu ortalamak için)
+                let maxLineWidth = 0;
+                for(let i=0; i<lines.length; i++) {
+                    let w = ctx.measureText(lines[i]).width;
+                    if(w > maxLineWidth) maxLineWidth = w;
+                }
+                
+                // Metin bloğunu yatayda ve dikeyde ortala
+                let startX = textPosX - (maxLineWidth / 2);
                 let lineH = fontSize * 1.35;
                 let totalH = lines.length * lineH;
-                let startY = textPosY;
+                let startY = textPosY - (totalH / 2);
                 
                 for(let i=0; i<lines.length; i++) {
                     ctx.fillText(lines[i], startX, startY + i*lineH);
@@ -1353,10 +1370,10 @@
                 let w = ctx.measureText(line).width;
                 if(w > maxLineWidth) maxLineWidth = w;
             }
-            left = textPosX;
-            right = textPosX + maxLineWidth;
-            top = textPosY;
-            bottom = textPosY + totalH;
+            left = textPosX - maxLineWidth/2;
+            right = textPosX + maxLineWidth/2;
+            top = textPosY - totalH/2;
+            bottom = textPosY + totalH/2;
         } else if (align === 'center') {
             left = canvas.width/2 - maxW/2;
             right = canvas.width/2 + maxW/2;
@@ -1432,14 +1449,20 @@
     document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();});
     document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();});
     document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
-    document.getElementById("cardText").addEventListener("input",drawCard);
+    document.getElementById("cardText").addEventListener("input", function() {
+        resetTextPosition();
+        drawCard();
+    });
     document.getElementById("fontSize").addEventListener("input",drawCard);
     document.getElementById("fontWeight").addEventListener("change",drawCard);
-    document.getElementById("textAlign").addEventListener("change",drawCard);
+    document.getElementById("textAlign").addEventListener("change", function() {
+        resetTextPosition();
+        drawCard();
+    });
     borderWidthSlider.addEventListener("input",drawCard);
     borderThirdStyleSelect.addEventListener("change",drawCard);
     borderLayerCountSelect.addEventListener("change",drawCard);
-    document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; drawCard(); showAlert("Metin temizlendi");});
+    document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; resetTextPosition(); drawCard(); showAlert("Metin temizlendi");});
     textShadowCheck.addEventListener("change",drawCard);
     document.getElementById("applyBorderStyleBtn").addEventListener("click", () => { drawCard(); showAlert("Kenarlık stili güncellendi"); });
     
@@ -1523,7 +1546,7 @@
                     
                     document.getElementById("fontSize").value = data.fontSize || 40;
                     document.getElementById("fontWeight").value = data.fontWeight || "700";
-                    document.getElementById("textAlign").value = data.textAlign || "center";
+                    document.getElementById("textAlign").value = data.textAlign || "free";
                     document.getElementById("cardText").value = data.cardText || "";
                     
                     if(data.customFontsList) customFontsList = data.customFontsList;
@@ -1552,6 +1575,7 @@
                         updateIconPreview(customIconsList);
                     }
                     
+                    resetTextPosition();
                     drawCard();
                     showAlert("✅ Proje başarıyla yüklendi!", "success");
                         
@@ -1865,6 +1889,7 @@
     setupCollapsible("fontPanelHeader", "fontPanelContent");
     setupCollapsible("customFontPanelHeader", "customFontPanelContent");
     setupCollapsible("customIconPanelHeader", "customIconPanelContent");
+    resetTextPosition();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
     window.addEventListener("resize", () => { drawCard(); });
 </script>
