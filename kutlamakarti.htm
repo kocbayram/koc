@@ -677,11 +677,12 @@
                     <div class="layer-color-row" data-layer="3">
                         <span>🎨 3. Katman Stili:</span>
                         <select id="borderThirdStyle" class="layer-style-select">
-                            <option value="solid">━━ Düz çizgi</option>
+                            <option value="solid" selected>━━ Düz çizgi</option>
                             <option value="dashed">- - - Kesik çizgi</option>
                             <option value="dotted">··· Noktalı çizgi</option>
                             <option value="dashdot">-·-· Çizgi-nokta</option>
-                            <option value="doublecolor" selected>🌈 Çift Renkli Kesik Çizgi</option>
+                            <option value="doublecolor">🌈 Çift Renkli Kesik Çizgi</option>
+                            <option value="wave">〰️ Dalgalı Çizgi (Wave)</option>
                         </select>
                     </div>
                 </div>
@@ -716,10 +717,10 @@
                     <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
                     <select id="fontWeight"><option value="300">Light</option><option value="400">Regular</option><option value="600">SemiBold</option><option value="700" selected>Bold</option></select>
                     <select id="textAlign">
-                        <option value="center">Merkez</option>
+                        <option value="center" selected>Merkez</option>
                         <option value="left">Sola</option>
                         <option value="right">Sağa</option>
-                        <option value="free" selected>Serbest (Orijinal)</option>
+                        <option value="free">Serbest (Orijinal)</option>
                     </select>
                 </div>
 
@@ -796,7 +797,7 @@
 
     let borderDoubleColor1 = "#FFD700";
     let borderDoubleColor2 = "#FF4500";
-    let borderOffset = 6;  // YENİ: kenar aralığı değişkeni
+    let borderOffset = 6;
 
     function createHiddenInputs() {
         if(!document.getElementById("textColor")) {
@@ -980,7 +981,6 @@
     
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
     
-    // wrapText fonksiyonu (orijinal)
     function wrapText(ctx, text, maxWidth) {
         let lines = [];
         let paragraphs = text.split('\n');
@@ -1104,6 +1104,129 @@
         return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
     }
     
+    // YENİ: Dalgalı çizgi (wave) fonksiyonu - referans alınarak eklendi, sayfanın yapısına tam uyumlu
+    function drawWaveBorder(x, y, w, h, r, lineWidth, color) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.beginPath();
+        
+        let topLen = w - 2*r, rightLen = h - 2*r, bottomLen = w - 2*r, leftLen = h - 2*r;
+        let cornerLen = (Math.PI * r) / 2;
+        
+        // Üst kenar (wave)
+        if(topLen > 0) {
+            let startX = x + r, startY = y, endX = x + w - r, endY = y;
+            let length = endX - startX;
+            let steps = Math.max(20, Math.floor(length / 5));
+            let amplitude = 5;
+            let wavelength = 12;
+            for(let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let cx = startX + length * t;
+                let cy = startY + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
+                if(i === 0) ctx.moveTo(cx, cy);
+                else ctx.lineTo(cx, cy);
+            }
+        }
+        
+        // Sağ üst köşe yayı
+        if(cornerLen > 0) {
+            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
+            for(let i = 0; i <= stepsCorner; i++) {
+                let t = i / stepsCorner;
+                let angle = (Math.PI / 2) * t;
+                let px = x + w - r + r * Math.sin(angle);
+                let py = y + r - r * Math.cos(angle);
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        // Sağ kenar (wave)
+        if(rightLen > 0) {
+            let startX = x + w, startY = y + r, endX = x + w, endY = y + h - r;
+            let length = endY - startY;
+            let steps = Math.max(20, Math.floor(length / 5));
+            let amplitude = 5;
+            let wavelength = 12;
+            for(let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let cx = startX + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
+                let cy = startY + length * t;
+                ctx.lineTo(cx, cy);
+            }
+        }
+        
+        // Sağ alt köşe yayı
+        if(cornerLen > 0) {
+            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
+            for(let i = 0; i <= stepsCorner; i++) {
+                let t = i / stepsCorner;
+                let angle = (Math.PI / 2) * t;
+                let px = x + w - r + r * Math.cos(angle);
+                let py = y + h - r + r * Math.sin(angle);
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        // Alt kenar (wave) - ters yön
+        if(bottomLen > 0) {
+            let startX = x + w - r, startY = y + h, endX = x + r, endY = y + h;
+            let length = startX - endX;
+            let steps = Math.max(20, Math.floor(length / 5));
+            let amplitude = 5;
+            let wavelength = 12;
+            for(let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let cx = startX - length * t;
+                let cy = startY + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
+                ctx.lineTo(cx, cy);
+            }
+        }
+        
+        // Sol alt köşe yayı
+        if(cornerLen > 0) {
+            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
+            for(let i = 0; i <= stepsCorner; i++) {
+                let t = i / stepsCorner;
+                let angle = (Math.PI / 2) * t;
+                let px = x + r - r * Math.sin(angle);
+                let py = y + h - r + r * Math.cos(angle);
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        // Sol kenar (wave) - ters yön
+        if(leftLen > 0) {
+            let startX = x, startY = y + h - r, endX = x, endY = y + r;
+            let length = startY - endY;
+            let steps = Math.max(20, Math.floor(length / 5));
+            let amplitude = 5;
+            let wavelength = 12;
+            for(let i = 0; i <= steps; i++) {
+                let t = i / steps;
+                let cx = startX + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
+                let cy = startY - length * t;
+                ctx.lineTo(cx, cy);
+            }
+        }
+        
+        // Sol üst köşe yayı (kapatma)
+        if(cornerLen > 0) {
+            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
+            for(let i = 0; i <= stepsCorner; i++) {
+                let t = i / stepsCorner;
+                let angle = (Math.PI / 2) * t;
+                let px = x + r - r * Math.cos(angle);
+                let py = y + r - r * Math.sin(angle);
+                ctx.lineTo(px, py);
+            }
+        }
+        
+        ctx.stroke();
+        ctx.restore();
+    }
+    
     function resetTextPosition() {
         textPosX = canvasWidth / 2;
         textPosY = canvasHeight / 2;
@@ -1141,7 +1264,7 @@
         let bw = parseInt(borderWidthSlider.value);
         let layerCount = parseInt(borderLayerCountSelect.value);
         let thirdStyle = borderThirdStyleSelect.value;
-        let offset = borderOffset;  // YENİ: kenar aralığı kullanılıyor
+        let offset = borderOffset;
         
         // Dış kenar (1. katman)
         ctx.save();
@@ -1160,7 +1283,7 @@
         ctx.stroke();
         ctx.restore();
         
-        // 3. katman (varsa) - offset*2 ile
+        // 3. katman (varsa) - offset*2 ile, stil seçeneği eklendi (wave dahil)
         if(layerCount >= 3) {
             let thirdOffset = innerOffset + bw + offset;
             let rectW = canvasWidth - thirdOffset * 2;
@@ -1169,6 +1292,8 @@
             
             if(thirdStyle === "doublecolor") {
                 drawDoubleColorDashedBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderDoubleColor1, borderDoubleColor2, [15, 10]);
+            } else if(thirdStyle === "wave") {
+                drawWaveBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderThirdHidden.value);
             } else {
                 ctx.save();
                 let dash = getLineDash(thirdStyle);
@@ -1202,6 +1327,7 @@
             let maxW = canvasWidth - 80;
             let lines;
             
+            // Metin düzeni: varsayılan artık 'center'
             if (align === 'free') {
                 lines = wrapText(ctx, raw, maxW);
                 ctx.textAlign = 'left';
@@ -1568,7 +1694,7 @@
                         if(borderOffsetSlider) borderOffsetSlider.value = borderOffset;
                         if(borderOffsetVal) borderOffsetVal.innerText = borderOffset + "px";
                     }
-                    borderThirdStyleSelect.value = data.borderThirdStyle || "doublecolor";
+                    borderThirdStyleSelect.value = data.borderThirdStyle || "solid";
                     borderLayerCountSelect.value = data.borderLayerCount || "3";
                     textShadowCheck.checked = data.textShadow || false;
                     gradToggle.checked = data.gradientToggle !== undefined ? data.gradientToggle : true;
@@ -1578,7 +1704,7 @@
                     
                     document.getElementById("fontSize").value = data.fontSize || 40;
                     document.getElementById("fontWeight").value = data.fontWeight || "700";
-                    document.getElementById("textAlign").value = data.textAlign || "free";
+                    document.getElementById("textAlign").value = data.textAlign || "center";
                     document.getElementById("cardText").value = data.cardText || "";
                     
                     if(data.customFontsList) customFontsList = data.customFontsList;
@@ -1924,7 +2050,6 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
     window.addEventListener("resize", () => { drawCard(); });
     
-    // Kenar aralığı başlangıç değeri
     if(borderOffsetSlider) {
         borderOffsetSlider.value = borderOffset;
         borderOffsetVal.innerText = borderOffset + "px";
