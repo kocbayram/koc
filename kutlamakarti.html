@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kutlama Kartı Stüdyosu | Ultimate</title>
+    <title>Kutlama Kartı Stüdyosu Premium</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -194,17 +194,21 @@
         .symbol-btn { background: white; border: 1px solid #f5d6a5; border-radius: 44px; padding: 6px 14px; font-size: 20px; cursor: pointer; transition: all 0.1s; }
         .symbol-btn:hover { background: #ffe0b5; transform: scale(1.05); }
 
-        textarea { 
-            font-family: inherit; 
-            resize: vertical; 
-            width: 100%; 
-            padding: 16px; 
-            border-radius: 28px; 
-            border: 2px solid #eeddff; 
-            margin: 12px 0; 
-            font-size: 15px; 
-            line-height: 1.5; 
-            min-height: 280px; 
+        .editable-text {
+            font-family: inherit;
+            resize: vertical;
+            width: 100%;
+            padding: 16px;
+            border-radius: 28px;
+            border: 2px solid #eeddff;
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 280px;
+            background: white;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            outline: none;
         }
         
         .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
@@ -517,7 +521,6 @@
             color: #b77bff;
         }
         
-        /* Yeni: kenar aralığı slider stili */
         .border-offset-slider {
             margin-top: 12px;
             padding-top: 8px;
@@ -530,13 +533,23 @@
             display: inline-block;
             width: 100px;
         }
+        
+        /* Yeni: canvas’ın container içinde görsel olarak taşmasını engelle */
+        .canvas-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        #cardCanvas {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
 <div class="glass-ultimate">
     <div class="header">
         <div class="icon"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4 7h16M4 12h16M4 17h10" stroke-width="1.5"/><path d="M17 17l3-3-3-3" stroke-width="1.4"/><circle cx="18" cy="17" r="2" stroke-width="1.3"/></svg></div>
-        <h1>🎈 Kutlama Kartı Stüdyosu | Premium</h1>
+        <h1>🎈 Kutlama Kartı Stüdyosu Premium</h1>
     </div>
 
     <div class="two-columns">
@@ -548,7 +561,6 @@
                     <div class="font-list" id="fontList"></div>
                 </div>
             </div>
-            
             <div class="custom-collapsible" id="customFontCollapsible">
                 <div class="panel-header" id="customFontPanelHeader">
                     <span>➕ Özel Font Ekle (Google Fonts)</span>
@@ -572,6 +584,7 @@
                     <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="100" max="2000">
                     <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
                     <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
+                    <span style="font-size:11px; color:#a78bfa;">(Manuel)</span>
                 </div>
 
                 <div class="canvas-container" id="canvasContainer">
@@ -579,7 +592,7 @@
                     <div id="resizeHandle" class="resize-handle"></div>
                 </div>
 
-                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle (Tam sığar)<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
+                <div class="drop-zone" id="dropZone">🌄 Arka Plan Resmi Seç veya Sürükle (OTOMATİK BOYUT)<input type="file" id="bgImageInput" accept="image/jpeg,image/png,image/webp" style="display:none"></div>
                 <div id="imagePreviewArea" class="image-preview" style="display:none"><img id="thumbImg" class="thumb-img"><button id="clearBgBtn" class="btn-secondary">🗑️ Arka Planı Kaldır</button></div>
 
                 <div class="color-picker-buttons">
@@ -665,15 +678,12 @@
                         <label>📏 Kenar Kalınlığı:</label><input type="range" id="borderWidth" min="1" max="10" value="4" style="width:90px">
                         <button id="applyBorderStyleBtn" class="btn-secondary" style="padding: 6px 16px;">✨ Uygula</button>
                     </div>
-                    
-                    <!-- YENİ: Kenar Aralığı (Offset) Ayar Çubuğu -->
                     <div class="border-offset-slider">
                         <label>↔️ Kenar Aralığı:</label>
                         <input type="range" id="borderOffset" min="0" max="30" value="6" step="1" style="width:160px;">
                         <span id="borderOffsetVal">6px</span>
                         <small style="margin-left: 12px; color:#6b3ea5;">(Katmanlar arası mesafe)</small>
                     </div>
-                    
                     <div class="layer-color-row" data-layer="3">
                         <span>🎨 3. Katman Stili:</span>
                         <select id="borderThirdStyle" class="layer-style-select">
@@ -704,14 +714,14 @@
 
                 <div class="symbol-panel" id="symbolPanel"></div>
                 
-                <textarea id="cardText" rows="6">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
+                <div id="cardTextEditable" class="editable-text" contenteditable="true">🎂 Mutlu Yıllar Canım Arkadaşım! 🎂
     Hayatın sana hep güzellikler sunsun,
     Her yeni gün umut ve neşe getirsin.
     Doğum günün kutlu olsun. 
 
 🎁 Nice mutlu yıllara! 🎁
 
-💝 Sevgilerle, Bayram KOÇ 💝</textarea>
+💝 Sevgilerle, Bayram KOÇ 💝</div>
 
                 <div class="controls">
                     <input type="number" id="fontSize" value="40" min="12" max="100" step="1">
@@ -731,7 +741,6 @@
                     <button id="downloadPngBtn" class="btn-primary">📸 PNG İndir</button>
                     <button id="downloadJpgBtn" class="btn-jpg">🖼️ JPG İndir</button>
                     <button id="downloadHtmlBtn" class="btn-success">💾 HTML İndir</button>
-                    
                     <div class="share-wrapper">
                         <button id="shareBtn" class="btn-share">📤 Paylaş</button>
                         <div id="shareDropdown" class="share-dropdown">
@@ -744,7 +753,6 @@
                 </div>
             </div>
             <div id="alertMsg" class="alert" style="display:none; background:#efe6ff; padding:10px; border-radius:40px; text-align:center; margin-top:10px;"></div>
-            
             <div class="custom-fonts-list-footer" id="customFontsFooter">
                 <strong>📌 Eklenen Özel Fontlar:</strong>
                 <span id="customFontsListDisplay" style="display:inline-block; background:transparent; padding:0;">Henüz özel font eklenmedi</span>
@@ -752,7 +760,7 @@
         </div>
     </div>
     <div class="footer">
-        <span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | Paylaş & İndir | 🇹🇷<br><br>
+        <span>💜 200+ Font | Dinamik Sembol Ekleme | SINIRSIZ Logo | Arkaplan Tam Sığar | Paylaş & İndir | Sürükle & Bırak Desteği 🇹🇷<br><br>
         <h4>Bayram KOÇ</h4></span>
     </div>
 </div>
@@ -775,6 +783,7 @@
 </div>
 
 <script>
+    // ---------- Tüm önceki değişkenler ve fonksiyonlar aynen korundu ----------
     let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
     const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
@@ -786,6 +795,9 @@
     let overlayX = 320, overlayY = 290, overlayWidth = 80, overlayHeight = 80;
     let textPosX = 320, textPosY = 290;
     let canvasWidth = 640, canvasHeight = 580;
+    let lastManualWidth = 640, lastManualHeight = 580; // son manuel boyutu hatırla
+    let isAutoSizeFromBg = false; // arkaplan otomatik boyutlandı mı?
+    
     const canvas = document.getElementById("cardCanvas");
     let ctx = canvas.getContext("2d");
 
@@ -798,6 +810,10 @@
     let borderDoubleColor1 = "#FFD700";
     let borderDoubleColor2 = "#FF4500";
     let borderOffset = 6;
+
+    const textEditable = document.getElementById("cardTextEditable");
+    function getCardText() { return textEditable.innerText; }
+    function setCardText(val) { textEditable.innerText = val; }
 
     function createHiddenInputs() {
         if(!document.getElementById("textColor")) {
@@ -860,35 +876,15 @@
         const double1Hex = document.getElementById("customDoubleColor1Hex")?.value.trim();
         const double2Hex = document.getElementById("customDoubleColor2Hex")?.value.trim();
         
-        if(textHex && /^#?[0-9A-Fa-f]{6}$/i.test(textHex.replace(/^#/, ''))) {
-            textColorHidden.value = textHex.startsWith('#') ? textHex.toUpperCase() : '#' + textHex.toUpperCase();
-        }
-        if(bgHex && /^#?[0-9A-Fa-f]{6}$/i.test(bgHex.replace(/^#/, ''))) {
-            bgColorHidden.value = bgHex.startsWith('#') ? bgHex.toUpperCase() : '#' + bgHex.toUpperCase();
-        }
-        if(borderOuterHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderOuterHex.replace(/^#/, ''))) {
-            borderOuterHidden.value = borderOuterHex.startsWith('#') ? borderOuterHex.toUpperCase() : '#' + borderOuterHex.toUpperCase();
-        }
-        if(borderInnerHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderInnerHex.replace(/^#/, ''))) {
-            borderInnerHidden.value = borderInnerHex.startsWith('#') ? borderInnerHex.toUpperCase() : '#' + borderInnerHex.toUpperCase();
-        }
-        if(grad1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad1Hex.replace(/^#/, ''))) {
-            gradColor1Hidden.value = grad1Hex.startsWith('#') ? grad1Hex.toUpperCase() : '#' + grad1Hex.toUpperCase();
-        }
-        if(grad2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad2Hex.replace(/^#/, ''))) {
-            gradColor2Hidden.value = grad2Hex.startsWith('#') ? grad2Hex.toUpperCase() : '#' + grad2Hex.toUpperCase();
-        }
-        if(borderThirdHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderThirdHex.replace(/^#/, ''))) {
-            borderThirdHidden.value = borderThirdHex.startsWith('#') ? borderThirdHex.toUpperCase() : '#' + borderThirdHex.toUpperCase();
-        }
-        if(double1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double1Hex.replace(/^#/, ''))) {
-            borderDoubleColor1Hidden.value = double1Hex.startsWith('#') ? double1Hex.toUpperCase() : '#' + double1Hex.toUpperCase();
-            borderDoubleColor1 = borderDoubleColor1Hidden.value;
-        }
-        if(double2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double2Hex.replace(/^#/, ''))) {
-            borderDoubleColor2Hidden.value = double2Hex.startsWith('#') ? double2Hex.toUpperCase() : '#' + double2Hex.toUpperCase();
-            borderDoubleColor2 = borderDoubleColor2Hidden.value;
-        }
+        if(textHex && /^#?[0-9A-Fa-f]{6}$/i.test(textHex.replace(/^#/, ''))) textColorHidden.value = textHex.startsWith('#') ? textHex.toUpperCase() : '#' + textHex.toUpperCase();
+        if(bgHex && /^#?[0-9A-Fa-f]{6}$/i.test(bgHex.replace(/^#/, ''))) bgColorHidden.value = bgHex.startsWith('#') ? bgHex.toUpperCase() : '#' + bgHex.toUpperCase();
+        if(borderOuterHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderOuterHex.replace(/^#/, ''))) borderOuterHidden.value = borderOuterHex.startsWith('#') ? borderOuterHex.toUpperCase() : '#' + borderOuterHex.toUpperCase();
+        if(borderInnerHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderInnerHex.replace(/^#/, ''))) borderInnerHidden.value = borderInnerHex.startsWith('#') ? borderInnerHex.toUpperCase() : '#' + borderInnerHex.toUpperCase();
+        if(grad1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad1Hex.replace(/^#/, ''))) gradColor1Hidden.value = grad1Hex.startsWith('#') ? grad1Hex.toUpperCase() : '#' + grad1Hex.toUpperCase();
+        if(grad2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(grad2Hex.replace(/^#/, ''))) gradColor2Hidden.value = grad2Hex.startsWith('#') ? grad2Hex.toUpperCase() : '#' + grad2Hex.toUpperCase();
+        if(borderThirdHex && /^#?[0-9A-Fa-f]{6}$/i.test(borderThirdHex.replace(/^#/, ''))) borderThirdHidden.value = borderThirdHex.startsWith('#') ? borderThirdHex.toUpperCase() : '#' + borderThirdHex.toUpperCase();
+        if(double1Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double1Hex.replace(/^#/, ''))) borderDoubleColor1Hidden.value = double1Hex.startsWith('#') ? double1Hex.toUpperCase() : '#' + double1Hex.toUpperCase();
+        if(double2Hex && /^#?[0-9A-Fa-f]{6}$/i.test(double2Hex.replace(/^#/, ''))) borderDoubleColor2Hidden.value = double2Hex.startsWith('#') ? double2Hex.toUpperCase() : '#' + double2Hex.toUpperCase();
         updateAllPreviews();
         drawCard();
     }
@@ -913,7 +909,7 @@
     document.getElementById("customDoubleColor1Hex").addEventListener("change", syncHexFromInputs);
     document.getElementById("customDoubleColor2Hex").addEventListener("change", syncHexFromInputs);
     
-    // Spektrum renk seçici
+    // Spektrum (kısa)
     const spectrumOverlayEl = document.getElementById("spectrumOverlay");
     const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -922,316 +918,72 @@
     const spectrumSelectBtn = document.getElementById("spectrumSelectBtn");
     const spectrumCloseBtn = document.getElementById("spectrumCloseBtn");
     const spectrumCancelBtn = document.getElementById("spectrumCancelBtn");
-    let spectrumCtx = null;
-    let currentHue = 271;
-    let tempColorHex = "#B9B4BF";
-    let activeColorTarget = null;
-
+    let spectrumCtx = null, currentHue = 271, tempColorHex = "#B9B4BF", activeColorTarget = null;
     function initSpectrum() { if(!spectrumCtx) spectrumCtx = spectrumCanvasEl.getContext("2d"); spectrumCanvasEl.width = 400; spectrumCanvasEl.height = 220; drawSpectrum(currentHue); }
-    function drawSpectrum(hue) { if(!spectrumCtx) return; const w=spectrumCanvasEl.width, h=spectrumCanvasEl.height; for(let y=0;y<h;y++){for(let x=0;x<w;x++){const sat=x/w; const light=1-(y/h); const rgb=hslToRgb(hue,sat,light); spectrumCtx.fillStyle=`rgb(${rgb.r},${rgb.g},${rgb.b})`; spectrumCtx.fillRect(x,y,1,1);}}}
-    function hslToRgb(h,s,l){h=(h%360)/360; let r,g,b; if(s===0)r=g=b=l; else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}; const q=l<0.5?l*(1+s):l+s-l*s; const p=2*l-q; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};}
+    function drawSpectrum(hue) { if(!spectrumCtx) return; const w=spectrumCanvasEl.width, h=spectrumCanvasEl.height; for(let y=0;y<h;y++){for(let x=0;x<w;x++){const sat=x/w, light=1-(y/h); const rgb=hslToRgb(hue,sat,light); spectrumCtx.fillStyle=`rgb(${rgb.r},${rgb.g},${rgb.b})`; spectrumCtx.fillRect(x,y,1,1);}}}
+    function hslToRgb(h,s,l){h=(h%360)/360; let r,g,b; if(s===0)r=g=b=l; else{const q=l<0.5?l*(1+s):l+s-l*s, p=2*l-q; const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}; r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);}return{r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};}
     function rgbToHex(r,g,b){return'#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');}
-    function getCanvasColor(x,y){const px=spectrumCtx.getImageData(x,y,1,1).data;return{r:px[0],g:px[1],b:px[2]};}
     function updateTempColorFromRgb(r,g,b){tempColorHex=rgbToHex(r,g,b);spectrumPreviewBox.style.backgroundColor=tempColorHex;spectrumHexInput.value=tempColorHex.toUpperCase();}
     function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min)h=s=0;else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
-    function openSpectrumForTarget(targetId,currentColor){initSpectrum();activeColorTarget=targetId;tempColorHex=currentColor;spectrumPreviewBox.style.backgroundColor=tempColorHex;spectrumHexInput.value=tempColorHex.toUpperCase();const r=parseInt(tempColorHex.slice(1,3),16);const g=parseInt(tempColorHex.slice(3,5),16);const b=parseInt(tempColorHex.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);spectrumOverlayEl.classList.add("active");}
+    function openSpectrumForTarget(targetId,currentColor){initSpectrum();activeColorTarget=targetId;tempColorHex=currentColor;spectrumPreviewBox.style.backgroundColor=tempColorHex;spectrumHexInput.value=tempColorHex.toUpperCase();const r=parseInt(tempColorHex.slice(1,3),16),g=parseInt(tempColorHex.slice(3,5),16),b=parseInt(tempColorHex.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);spectrumOverlayEl.classList.add("active");}
     hueSlider.addEventListener("input",(e)=>{currentHue=parseInt(e.target.value);drawSpectrum(currentHue);});
-    spectrumCanvasEl.addEventListener("click",(e)=>{const rect=spectrumCanvasEl.getBoundingClientRect();const scaleX=spectrumCanvasEl.width/rect.width;const scaleY=spectrumCanvasEl.height/rect.height;const x=(e.clientX-rect.left)*scaleX;const y=(e.clientY-rect.top)*scaleY;if(x>=0&&x<spectrumCanvasEl.width&&y>=0&&y<spectrumCanvasEl.height){const rgb=getCanvasColor(Math.floor(x),Math.floor(y));updateTempColorFromRgb(rgb.r,rgb.g,rgb.b);}});
-    spectrumHexInput.addEventListener("change",(e)=>{let val=e.target.value;if(!val.startsWith('#'))val='#'+val;if(/^#[0-9A-Fa-f]{6}$/i.test(val)){tempColorHex=val;spectrumPreviewBox.style.backgroundColor=tempColorHex;const r=parseInt(val.slice(1,3),16);const g=parseInt(val.slice(3,5),16);const b=parseInt(val.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);}else{spectrumHexInput.value=tempColorHex;}});
+    spectrumCanvasEl.addEventListener("click",(e)=>{const rect=spectrumCanvasEl.getBoundingClientRect(), scaleX=spectrumCanvasEl.width/rect.width, scaleY=spectrumCanvasEl.height/rect.height, x=(e.clientX-rect.left)*scaleX, y=(e.clientY-rect.top)*scaleY; if(x>=0&&x<spectrumCanvasEl.width&&y>=0&&y<spectrumCanvasEl.height){const px=spectrumCtx.getImageData(x,y,1,1).data; updateTempColorFromRgb(px[0],px[1],px[2]);}});
+    spectrumHexInput.addEventListener("change",(e)=>{let val=e.target.value;if(!val.startsWith('#'))val='#'+val;if(/^#[0-9A-Fa-f]{6}$/i.test(val)){tempColorHex=val;spectrumPreviewBox.style.backgroundColor=tempColorHex;const r=parseInt(val.slice(1,3),16),g=parseInt(val.slice(3,5),16),b=parseInt(val.slice(5,7),16);const hsl=rgbToHsl(r,g,b);currentHue=hsl.h;hueSlider.value=currentHue;drawSpectrum(currentHue);}else{spectrumHexInput.value=tempColorHex;}});
     spectrumSelectBtn.addEventListener("click",()=>{if(activeColorTarget){if(activeColorTarget==="textColor")textColorHidden.value=tempColorHex;else if(activeColorTarget==="bgColor")bgColorHidden.value=tempColorHex;else if(activeColorTarget==="borderOuterColor")borderOuterHidden.value=tempColorHex;else if(activeColorTarget==="borderInnerColor")borderInnerHidden.value=tempColorHex;else if(activeColorTarget==="gradColor1")gradColor1Hidden.value=tempColorHex;else if(activeColorTarget==="gradColor2")gradColor2Hidden.value=tempColorHex;else if(activeColorTarget==="borderThirdColor")borderThirdHidden.value=tempColorHex;else if(activeColorTarget==="borderDoubleColor1")borderDoubleColor1Hidden.value=tempColorHex;else if(activeColorTarget==="borderDoubleColor2")borderDoubleColor2Hidden.value=tempColorHex;updateAllPreviews();drawCard();showAlert(`Renk seçildi: ${tempColorHex}`);}spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
     spectrumCloseBtn.addEventListener("click",()=>{spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
     spectrumCancelBtn.addEventListener("click",()=>{spectrumOverlayEl.classList.remove("active");activeColorTarget=null;});
-
-    document.querySelectorAll(".compact-palette-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.getAttribute("data-target");
-            let currentColor = "#B9B4BF";
-            if(target === "textColor") currentColor = textColorHidden.value;
-            else if(target === "bgColor") currentColor = bgColorHidden.value;
-            else if(target === "borderOuterColor") currentColor = borderOuterHidden.value;
-            else if(target === "borderInnerColor") currentColor = borderInnerHidden.value;
-            else if(target === "gradColor1") currentColor = gradColor1Hidden.value;
-            else if(target === "gradColor2") currentColor = gradColor2Hidden.value;
-            else if(target === "borderThirdColor") currentColor = borderThirdHidden.value;
-            else if(target === "borderDoubleColor1") currentColor = borderDoubleColor1Hidden.value;
-            else if(target === "borderDoubleColor2") currentColor = borderDoubleColor2Hidden.value;
-            openSpectrumForTarget(target, currentColor);
-        });
-    });
-
+    document.querySelectorAll(".compact-palette-btn").forEach(btn => { btn.addEventListener("click", () => { let target=btn.dataset.target, col="#B9B4BF"; if(target==="textColor") col=textColorHidden.value; else if(target==="bgColor") col=bgColorHidden.value; else if(target==="borderOuterColor") col=borderOuterHidden.value; else if(target==="borderInnerColor") col=borderInnerHidden.value; else if(target==="gradColor1") col=gradColor1Hidden.value; else if(target==="gradColor2") col=gradColor2Hidden.value; else if(target==="borderThirdColor") col=borderThirdHidden.value; else if(target==="borderDoubleColor1") col=borderDoubleColor1Hidden.value; else if(target==="borderDoubleColor2") col=borderDoubleColor2Hidden.value; openSpectrumForTarget(target, col); }); });
+    
     const gradToggle = document.getElementById("gradientToggle");
     const gradAngle = document.getElementById("gradAngle");
     gradToggle.addEventListener("change", drawCard);
     gradAngle.addEventListener("change", drawCard);
-    
     const textShadowCheck = document.getElementById("textShadow");
     const borderWidthSlider = document.getElementById("borderWidth");
     const borderThirdStyleSelect = document.getElementById("borderThirdStyle");
     const borderLayerCountSelect = document.getElementById("borderLayerCount");
     const borderOffsetSlider = document.getElementById("borderOffset");
     const borderOffsetVal = document.getElementById("borderOffsetVal");
-    
-    if(borderOffsetSlider) {
-        borderOffsetSlider.addEventListener("input", (e) => {
-            borderOffset = parseInt(e.target.value);
-            borderOffsetVal.innerText = borderOffset + "px";
-            drawCard();
-        });
-    }
+    if(borderOffsetSlider) borderOffsetSlider.addEventListener("input", (e) => { borderOffset = parseInt(e.target.value); borderOffsetVal.innerText = borderOffset + "px"; drawCard(); });
     
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
-    
-    function wrapText(ctx, text, maxWidth) {
-        let lines = [];
-        let paragraphs = text.split('\n');
-        for (let i = 0; i < paragraphs.length; i++) {
-            let paragraph = paragraphs[i];
-            let initialSpaces = "";
-            let spaceMatch = paragraph.match(/^ +/);
-            if (spaceMatch) {
-                initialSpaces = spaceMatch[0];
-            }
-            
-            let words = paragraph.substring(initialSpaces.length).split(' ');
-            let currentLine = initialSpaces;
-            
-            for (let n = 0; n < words.length; n++) {
-                if (words[n] === "" && n > 0) continue;
-                let testLine = currentLine + (currentLine === initialSpaces ? "" : " ") + words[n];
-                let metrics = ctx.measureText(testLine);
-                let testWidth = metrics.width;
-                if (testWidth > maxWidth && n > 0) {
-                    lines.push(currentLine);
-                    currentLine = words[n];
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            lines.push(currentLine);
-        }
-        return lines;
-    }
-    
-    function getLineDash(style) {
-        switch(style) {
-            case "dashed": return [12, 8];
-            case "dotted": return [3, 5];
-            case "dashdot": return [10, 6, 3, 6];
-            default: return [];
-        }
-    }
-    
-    function drawDoubleColorDashedBorder(x, y, w, h, r, lineWidth, color1, color2, dashPattern) {
-        let perimeter = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
-        let points = [];
-        let step = 2;
-        for(let t = 0; t <= perimeter; t += step) {
-            let point = getPointOnRoundedRect(x, y, w, h, r, t / perimeter);
-            points.push(point);
-        }
-        
-        let dashIndex = 0;
-        let dashRemaining = dashPattern[0];
-        let currentColor = color1;
-        let segmentPoints = [];
-        
-        for(let i = 0; i < points.length - 1; i++) {
-            let p1 = points[i];
-            let p2 = points[i+1];
-            let dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-            let remaining = dist;
-            let start = p1;
-            
-            while(remaining > 0) {
-                if(dashRemaining <= remaining) {
-                    let end = {
-                        x: start.x + (p2.x - p1.x) * (dashRemaining / dist),
-                        y: start.y + (p2.y - p1.y) * (dashRemaining / dist)
-                    };
-                    segmentPoints.push({ start, end, color: currentColor });
-                    start = end;
-                    remaining -= dashRemaining;
-                    dashIndex = (dashIndex + 1) % 2;
-                    dashRemaining = dashPattern[dashIndex];
-                    currentColor = (dashIndex === 0) ? color1 : color2;
-                } else {
-                    let end = {
-                        x: start.x + (p2.x - p1.x) * (remaining / dist),
-                        y: start.y + (p2.y - p1.y) * (remaining / dist)
-                    };
-                    segmentPoints.push({ start, end, color: currentColor });
-                    dashRemaining -= remaining;
-                    remaining = 0;
-                    start = end;
-                }
-            }
-        }
-        
-        ctx.save();
-        ctx.lineWidth = lineWidth;
-        for(let seg of segmentPoints) {
-            ctx.beginPath();
-            ctx.moveTo(seg.start.x, seg.start.y);
-            ctx.lineTo(seg.end.x, seg.end.y);
-            ctx.strokeStyle = seg.color;
-            ctx.stroke();
-        }
-        ctx.restore();
-    }
-    
-    function getPointOnRoundedRect(x, y, w, h, r, t) {
-        let top = y, bottom = y + h, left = x, right = x + w;
-        let topLen = w - 2*r, rightLen = h - 2*r, bottomLen = w - 2*r, leftLen = h - 2*r;
-        let cornerLen = (Math.PI * r) / 2;
-        let total = topLen + rightLen + bottomLen + leftLen + 4 * cornerLen;
-        let pos = t * total;
-        
-        if(pos < topLen) return { x: left + r + pos, y: top };
-        pos -= topLen;
-        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: right - r + r * Math.sin(angle), y: top + r - r * Math.cos(angle) }; }
-        pos -= cornerLen;
-        if(pos < rightLen) return { x: right, y: top + r + pos };
-        pos -= rightLen;
-        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: right - r + r * Math.cos(angle), y: bottom - r + r * Math.sin(angle) }; }
-        pos -= cornerLen;
-        if(pos < bottomLen) return { x: right - r - pos, y: bottom };
-        pos -= bottomLen;
-        if(pos < cornerLen) { let angle = Math.PI/2 * (pos / cornerLen); return { x: left + r - r * Math.sin(angle), y: bottom - r + r * Math.cos(angle) }; }
-        pos -= cornerLen;
-        if(pos < leftLen) return { x: left, y: bottom - r - pos };
-        pos -= leftLen;
-        let angle = Math.PI/2 * (pos / cornerLen);
-        return { x: left + r - r * Math.cos(angle), y: top + r - r * Math.sin(angle) };
-    }
-    
-    // YENİ: Dalgalı çizgi (wave) fonksiyonu - referans alınarak eklendi, sayfanın yapısına tam uyumlu
-    function drawWaveBorder(x, y, w, h, r, lineWidth, color) {
-        ctx.save();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = lineWidth;
-        ctx.beginPath();
-        
-        let topLen = w - 2*r, rightLen = h - 2*r, bottomLen = w - 2*r, leftLen = h - 2*r;
-        let cornerLen = (Math.PI * r) / 2;
-        
-        // Üst kenar (wave)
-        if(topLen > 0) {
-            let startX = x + r, startY = y, endX = x + w - r, endY = y;
-            let length = endX - startX;
-            let steps = Math.max(20, Math.floor(length / 5));
-            let amplitude = 5;
-            let wavelength = 12;
-            for(let i = 0; i <= steps; i++) {
-                let t = i / steps;
-                let cx = startX + length * t;
-                let cy = startY + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
-                if(i === 0) ctx.moveTo(cx, cy);
-                else ctx.lineTo(cx, cy);
-            }
-        }
-        
-        // Sağ üst köşe yayı
-        if(cornerLen > 0) {
-            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
-            for(let i = 0; i <= stepsCorner; i++) {
-                let t = i / stepsCorner;
-                let angle = (Math.PI / 2) * t;
-                let px = x + w - r + r * Math.sin(angle);
-                let py = y + r - r * Math.cos(angle);
-                ctx.lineTo(px, py);
-            }
-        }
-        
-        // Sağ kenar (wave)
-        if(rightLen > 0) {
-            let startX = x + w, startY = y + r, endX = x + w, endY = y + h - r;
-            let length = endY - startY;
-            let steps = Math.max(20, Math.floor(length / 5));
-            let amplitude = 5;
-            let wavelength = 12;
-            for(let i = 0; i <= steps; i++) {
-                let t = i / steps;
-                let cx = startX + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
-                let cy = startY + length * t;
-                ctx.lineTo(cx, cy);
-            }
-        }
-        
-        // Sağ alt köşe yayı
-        if(cornerLen > 0) {
-            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
-            for(let i = 0; i <= stepsCorner; i++) {
-                let t = i / stepsCorner;
-                let angle = (Math.PI / 2) * t;
-                let px = x + w - r + r * Math.cos(angle);
-                let py = y + h - r + r * Math.sin(angle);
-                ctx.lineTo(px, py);
-            }
-        }
-        
-        // Alt kenar (wave) - ters yön
-        if(bottomLen > 0) {
-            let startX = x + w - r, startY = y + h, endX = x + r, endY = y + h;
-            let length = startX - endX;
-            let steps = Math.max(20, Math.floor(length / 5));
-            let amplitude = 5;
-            let wavelength = 12;
-            for(let i = 0; i <= steps; i++) {
-                let t = i / steps;
-                let cx = startX - length * t;
-                let cy = startY + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
-                ctx.lineTo(cx, cy);
-            }
-        }
-        
-        // Sol alt köşe yayı
-        if(cornerLen > 0) {
-            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
-            for(let i = 0; i <= stepsCorner; i++) {
-                let t = i / stepsCorner;
-                let angle = (Math.PI / 2) * t;
-                let px = x + r - r * Math.sin(angle);
-                let py = y + h - r + r * Math.cos(angle);
-                ctx.lineTo(px, py);
-            }
-        }
-        
-        // Sol kenar (wave) - ters yön
-        if(leftLen > 0) {
-            let startX = x, startY = y + h - r, endX = x, endY = y + r;
-            let length = startY - endY;
-            let steps = Math.max(20, Math.floor(length / 5));
-            let amplitude = 5;
-            let wavelength = 12;
-            for(let i = 0; i <= steps; i++) {
-                let t = i / steps;
-                let cx = startX + Math.sin(t * Math.PI * (length / wavelength)) * amplitude;
-                let cy = startY - length * t;
-                ctx.lineTo(cx, cy);
-            }
-        }
-        
-        // Sol üst köşe yayı (kapatma)
-        if(cornerLen > 0) {
-            let stepsCorner = Math.max(8, Math.floor(cornerLen / 3));
-            for(let i = 0; i <= stepsCorner; i++) {
-                let t = i / stepsCorner;
-                let angle = (Math.PI / 2) * t;
-                let px = x + r - r * Math.cos(angle);
-                let py = y + r - r * Math.sin(angle);
-                ctx.lineTo(px, py);
-            }
-        }
-        
-        ctx.stroke();
-        ctx.restore();
-    }
+    function wrapText(ctx, text, maxWidth) { let lines = [], paragraphs = text.split('\n'); for (let i = 0; i < paragraphs.length; i++) { let paragraph = paragraphs[i]; let initialSpaces = ""; let spaceMatch = paragraph.match(/^ +/); if (spaceMatch) initialSpaces = spaceMatch[0]; let words = paragraph.substring(initialSpaces.length).split(' '); let currentLine = initialSpaces; for (let n = 0; n < words.length; n++) { if (words[n] === "" && n > 0) continue; let testLine = currentLine + (currentLine === initialSpaces ? "" : " ") + words[n]; if (ctx.measureText(testLine).width > maxWidth && n > 0) { lines.push(currentLine); currentLine = words[n]; } else currentLine = testLine; } lines.push(currentLine); } return lines; }
+    function getLineDash(style){ switch(style){ case "dashed": return [12,8]; case "dotted": return [3,5]; case "dashdot": return [10,6,3,6]; default: return []; } }
+    function drawDoubleColorDashedBorder(x, y, w, h, r, lineWidth, color1, color2, dashPattern) { let perimeter = 2*(w+h)-8*r+2*Math.PI*r; let points = []; for(let t=0; t<=perimeter; t+=2) points.push(getPointOnRoundedRect(x,y,w,h,r,t/perimeter)); let dashIndex=0, dashRemaining=dashPattern[0], currentColor=color1, segments=[]; for(let i=0;i<points.length-1;i++){ let p1=points[i],p2=points[i+1], dist=Math.hypot(p2.x-p1.x,p2.y-p1.y), remaining=dist, start=p1; while(remaining>0){ if(dashRemaining<=remaining){ let end={x:start.x+(p2.x-p1.x)*(dashRemaining/dist), y:start.y+(p2.y-p1.y)*(dashRemaining/dist)}; segments.push({start,end,color:currentColor}); start=end; remaining-=dashRemaining; dashIndex=(dashIndex+1)%2; dashRemaining=dashPattern[dashIndex]; currentColor=(dashIndex===0)?color1:color2; } else { let end={x:start.x+(p2.x-p1.x)*(remaining/dist), y:start.y+(p2.y-p1.y)*(remaining/dist)}; segments.push({start,end,color:currentColor}); dashRemaining-=remaining; remaining=0; start=end; } } } ctx.save(); ctx.lineWidth=lineWidth; for(let seg of segments){ ctx.beginPath(); ctx.moveTo(seg.start.x,seg.start.y); ctx.lineTo(seg.end.x,seg.end.y); ctx.strokeStyle=seg.color; ctx.stroke(); } ctx.restore(); }
+    function getPointOnRoundedRect(x,y,w,h,r,t){ let top=y, bottom=y+h, left=x, right=x+w; let topLen=w-2*r, rightLen=h-2*r, bottomLen=w-2*r, leftLen=h-2*r, cornerLen=(Math.PI*r)/2, total=topLen+rightLen+bottomLen+leftLen+4*cornerLen, pos=t*total; if(pos<topLen) return {x:left+r+pos, y:top}; pos-=topLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.sin(angle), y:top+r-r*Math.cos(angle)}; } pos-=cornerLen; if(pos<rightLen) return {x:right, y:top+r+pos}; pos-=rightLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.cos(angle), y:bottom-r+r*Math.sin(angle)}; } pos-=cornerLen; if(pos<bottomLen) return {x:right-r-pos, y:bottom}; pos-=bottomLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:left+r-r*Math.sin(angle), y:bottom-r+r*Math.cos(angle)}; } pos-=cornerLen; if(pos<leftLen) return {x:left, y:bottom-r-pos}; pos-=leftLen; let angle=Math.PI/2*(pos/cornerLen); return {x:left+r-r*Math.cos(angle), y:top+r-r*Math.sin(angle)}; }
+    function drawWaveBorder(x, y, w, h, r, lineWidth, color) { ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=lineWidth; ctx.beginPath(); let topLen=w-2*r, rightLen=h-2*r, bottomLen=w-2*r, leftLen=h-2*r, cornerLen=(Math.PI*r)/2; if(topLen>0){ let startX=x+r, startY=y, endX=x+w-r, endY=y, length=endX-startX, steps=Math.max(20,Math.floor(length/5)), amplitude=5, wavelength=12; for(let i=0;i<=steps;i++){ let t=i/steps, cx=startX+length*t, cy=startY+Math.sin(t*Math.PI*(length/wavelength))*amplitude; if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy); } } if(cornerLen>0){ let stepsCorner=Math.max(8,Math.floor(cornerLen/3)); for(let i=0;i<=stepsCorner;i++){ let t=i/stepsCorner, angle=(Math.PI/2)*t; ctx.lineTo(x+w-r+r*Math.sin(angle), y+r-r*Math.cos(angle)); } } if(rightLen>0){ let startX=x+w, startY=y+r, endX=x+w, endY=y+h-r, length=endY-startY, steps=Math.max(20,Math.floor(length/5)), amplitude=5, wavelength=12; for(let i=0;i<=steps;i++){ let t=i/steps, cx=startX+Math.sin(t*Math.PI*(length/wavelength))*amplitude, cy=startY+length*t; ctx.lineTo(cx,cy); } } if(cornerLen>0){ let stepsCorner=Math.max(8,Math.floor(cornerLen/3)); for(let i=0;i<=stepsCorner;i++){ let t=i/stepsCorner, angle=(Math.PI/2)*t; ctx.lineTo(x+w-r+r*Math.cos(angle), y+h-r+r*Math.sin(angle)); } } if(bottomLen>0){ let startX=x+w-r, startY=y+h, endX=x+r, endY=y+h, length=startX-endX, steps=Math.max(20,Math.floor(length/5)), amplitude=5, wavelength=12; for(let i=0;i<=steps;i++){ let t=i/steps, cx=startX-length*t, cy=startY+Math.sin(t*Math.PI*(length/wavelength))*amplitude; ctx.lineTo(cx,cy); } } if(cornerLen>0){ let stepsCorner=Math.max(8,Math.floor(cornerLen/3)); for(let i=0;i<=stepsCorner;i++){ let t=i/stepsCorner, angle=(Math.PI/2)*t; ctx.lineTo(x+r-r*Math.sin(angle), y+h-r+r*Math.cos(angle)); } } if(leftLen>0){ let startX=x, startY=y+h-r, endX=x, endY=y+r, length=startY-endY, steps=Math.max(20,Math.floor(length/5)), amplitude=5, wavelength=12; for(let i=0;i<=steps;i++){ let t=i/steps, cx=startX+Math.sin(t*Math.PI*(length/wavelength))*amplitude, cy=startY-length*t; ctx.lineTo(cx,cy); } } if(cornerLen>0){ let stepsCorner=Math.max(8,Math.floor(cornerLen/3)); for(let i=0;i<=stepsCorner;i++){ let t=i/stepsCorner, angle=(Math.PI/2)*t; ctx.lineTo(x+r-r*Math.cos(angle), y+r-r*Math.sin(angle)); } } ctx.stroke(); ctx.restore(); }
     
     function resetTextPosition() {
-        textPosX = canvasWidth / 2;
-        textPosY = canvasHeight / 2;
+        textPosX = canvasWidth/2;
+        textPosY = canvasHeight/2;
         document.getElementById("textX").value = Math.round(textPosX);
         document.getElementById("textY").value = Math.round(textPosY);
+    }
+    
+    // **YENİ: Canvas boyutunu güncelle (arkaplan yüklendiğinde otomatik)**
+    function setCanvasSize(width, height, isAuto = false) {
+        canvasWidth = width;
+        canvasHeight = height;
+        document.getElementById("canvasWidthInput").value = canvasWidth;
+        document.getElementById("canvasHeightInput").value = canvasHeight;
+        
+        // Konumları ortala
+        overlayX = canvasWidth/2;
+        overlayY = canvasHeight/2;
+        textPosX = canvasWidth/2;
+        textPosY = canvasHeight/2;
+        document.getElementById("logoX").value = Math.round(overlayX);
+        document.getElementById("logoY").value = Math.round(overlayY);
+        document.getElementById("textX").value = Math.round(textPosX);
+        document.getElementById("textY").value = Math.round(textPosY);
+        
+        isAutoSizeFromBg = isAuto;
+        if(!isAuto) {
+            lastManualWidth = canvasWidth;
+            lastManualHeight = canvasHeight;
+        }
+        drawCard();
+        if(isAuto) showAlert(`Canvas boyutu otomatik olarak ${canvasWidth}x${canvasHeight} olarak ayarlandı (arkaplan resmine göre)`, "success");
     }
     
     function drawCard() { 
@@ -1266,330 +1018,51 @@
         let thirdStyle = borderThirdStyleSelect.value;
         let offset = borderOffset;
         
-        // Dış kenar (1. katman)
-        ctx.save();
-        ctx.strokeStyle = borderOuterHidden.value;
-        ctx.lineWidth = bw;
-        roundedRect(ctx, bw/2, bw/2, canvasWidth - bw, canvasHeight - bw, radius-4);
-        ctx.stroke();
-        ctx.restore();
-        
-        // İç kenar (2. katman) - offset ile
-        ctx.save();
-        ctx.strokeStyle = borderInnerHidden.value;
-        ctx.lineWidth = bw * 0.7;
-        let innerOffset = bw + offset;
-        roundedRect(ctx, innerOffset, innerOffset, canvasWidth - innerOffset*2, canvasHeight - innerOffset*2, radius-8);
-        ctx.stroke();
-        ctx.restore();
-        
-        // 3. katman (varsa) - offset*2 ile, stil seçeneği eklendi (wave dahil)
-        if(layerCount >= 3) {
-            let thirdOffset = innerOffset + bw + offset;
-            let rectW = canvasWidth - thirdOffset * 2;
-            let rectH = canvasHeight - thirdOffset * 2;
-            let lineW = Math.max(1, bw * 0.55);
-            
-            if(thirdStyle === "doublecolor") {
-                drawDoubleColorDashedBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderDoubleColor1, borderDoubleColor2, [15, 10]);
-            } else if(thirdStyle === "wave") {
-                drawWaveBorder(thirdOffset, thirdOffset, rectW, rectH, radius-12, lineW, borderThirdHidden.value);
-            } else {
-                ctx.save();
-                let dash = getLineDash(thirdStyle);
-                if(dash.length > 0) ctx.setLineDash(dash);
-                ctx.strokeStyle = borderThirdHidden.value;
-                ctx.lineWidth = lineW;
-                roundedRect(ctx, thirdOffset, thirdOffset, rectW, rectH, radius-12);
-                ctx.stroke();
-                ctx.restore();
-            }
+        ctx.save(); ctx.strokeStyle=borderOuterHidden.value; ctx.lineWidth=bw; roundedRect(ctx,bw/2,bw/2,canvasWidth-bw,canvasHeight-bw,radius-4); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.strokeStyle=borderInnerHidden.value; ctx.lineWidth=bw*0.7; let innerOffset=bw+offset; roundedRect(ctx,innerOffset,innerOffset,canvasWidth-innerOffset*2,canvasHeight-innerOffset*2,radius-8); ctx.stroke(); ctx.restore();
+        if(layerCount>=3){
+            let thirdOffset=innerOffset+bw+offset, rectW=canvasWidth-thirdOffset*2, rectH=canvasHeight-thirdOffset*2, lineW=Math.max(1,bw*0.55);
+            if(thirdStyle==="doublecolor") drawDoubleColorDashedBorder(thirdOffset,thirdOffset,rectW,rectH,radius-12,lineW,borderDoubleColor1,borderDoubleColor2,[15,10]);
+            else if(thirdStyle==="wave") drawWaveBorder(thirdOffset,thirdOffset,rectW,rectH,radius-12,lineW,borderThirdHidden.value);
+            else { ctx.save(); let dash=getLineDash(thirdStyle); if(dash.length) ctx.setLineDash(dash); ctx.strokeStyle=borderThirdHidden.value; ctx.lineWidth=lineW; roundedRect(ctx,thirdOffset,thirdOffset,rectW,rectH,radius-12); ctx.stroke(); ctx.restore(); }
         }
-        
-        if(overlayImage) { 
-            let dx = overlayX - overlayWidth/2, dy = overlayY - overlayHeight/2; 
-            ctx.drawImage(overlayImage, dx, dy, overlayWidth, overlayHeight); 
-        } 
-        
-        let raw = document.getElementById("cardText").value; 
-        if(raw && raw.trim()) { 
-            let fontSize = parseInt(document.getElementById("fontSize").value), fontWeight = document.getElementById("fontWeight").value, align = document.getElementById("textAlign").value; 
-            ctx.font = fontWeight + " " + fontSize + "px '" + currentFont + "', cursive"; 
-            ctx.fillStyle = textColorHidden.value; 
-            
-            if(textShadowCheck.checked) { 
-                ctx.shadowColor = "rgba(0,0,0,0.3)"; 
-                ctx.shadowBlur = 4; 
-                ctx.shadowOffsetX = 2; 
-                ctx.shadowOffsetY = 2; 
-            } else ctx.shadowColor = "transparent"; 
-            
-            let maxW = canvasWidth - 80;
-            let lines;
-            
-            // Metin düzeni: varsayılan artık 'center'
-            if (align === 'free') {
-                lines = wrapText(ctx, raw, maxW);
-                ctx.textAlign = 'left';
-                let maxLineWidth = 0;
-                for(let i=0; i<lines.length; i++) {
-                    let w = ctx.measureText(lines[i]).width;
-                    if(w > maxLineWidth) maxLineWidth = w;
-                }
-                let startX = textPosX - (maxLineWidth / 2);
-                let lineH = fontSize * 1.35;
-                let totalH = lines.length * lineH;
-                let startY = textPosY - (totalH / 2);
-                for(let i=0; i<lines.length; i++) {
-                    ctx.fillText(lines[i], startX, startY + i*lineH);
-                }
-            } 
-            else if (align === 'center') {
-                lines = wrapText(ctx, raw, maxW);
-                ctx.textAlign = 'center';
-                let startX = canvasWidth / 2;
-                let lineH = fontSize * 1.35;
-                let totalH = lines.length * lineH;
-                let startY = textPosY - totalH/2;
-                for(let i=0; i<lines.length; i++) {
-                    ctx.fillText(lines[i], startX, startY + i*lineH);
-                }
-            }
-            else if (align === 'right') {
-                lines = wrapText(ctx, raw, maxW);
-                ctx.textAlign = 'right';
-                let startX = canvasWidth - 60;
-                let lineH = fontSize * 1.35;
-                let totalH = lines.length * lineH;
-                let startY = textPosY - totalH/2;
-                for(let i=0; i<lines.length; i++) {
-                    ctx.fillText(lines[i], startX, startY + i*lineH);
-                }
-            }
-            else {
-                lines = wrapText(ctx, raw, maxW);
-                ctx.textAlign = 'left';
-                let startX = 60;
-                let lineH = fontSize * 1.35;
-                let totalH = lines.length * lineH;
-                let startY = textPosY - totalH/2;
-                for(let i=0; i<lines.length; i++) {
-                    ctx.fillText(lines[i], startX, startY + i*lineH);
-                }
-            }
-            ctx.shadowColor = "transparent"; 
-        } 
-        updateResizeHandlePosition(); 
+        if(overlayImage){ let dx=overlayX-overlayWidth/2, dy=overlayY-overlayHeight/2; ctx.drawImage(overlayImage,dx,dy,overlayWidth,overlayHeight); }
+        let raw = getCardText();
+        if(raw && raw.trim()){ let fontSize=parseInt(document.getElementById("fontSize").value), fontWeight=document.getElementById("fontWeight").value, align=document.getElementById("textAlign").value; ctx.font=fontWeight+" "+fontSize+"px '"+currentFont+"', cursive"; ctx.fillStyle=textColorHidden.value; if(textShadowCheck.checked){ ctx.shadowColor="rgba(0,0,0,0.3)"; ctx.shadowBlur=4; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2; } else ctx.shadowColor="transparent";
+            let maxW=canvasWidth-80, lines; if(align==='free'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='left'; let maxLineWidth=0; for(let i=0;i<lines.length;i++){ let w=ctx.measureText(lines[i]).width; if(w>maxLineWidth) maxLineWidth=w; } let startX=textPosX-(maxLineWidth/2), lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-(totalH/2); for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
+            else if(align==='center'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='center'; let startX=canvasWidth/2, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
+            else if(align==='right'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='right'; let startX=canvasWidth-60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
+            else{ lines=wrapText(ctx,raw,maxW); ctx.textAlign='left'; let startX=60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
+            ctx.shadowColor="transparent";
+        }
+        updateResizeHandlePosition();
     }
     
-    function updateResizeHandlePosition() {
-        const handle = document.getElementById("resizeHandle");
-        if(!overlayImage) { handle.style.display = "none"; return; }
-        handle.style.display = "block";
-        const canvasRect = canvas.getBoundingClientRect();
-        const containerRect = document.getElementById("canvasContainer").getBoundingClientRect();
-        const logoRightX = overlayX + overlayWidth/2;
-        const logoBottomY = overlayY + overlayHeight/2;
-        const handleX = canvasRect.left + (logoRightX * (canvasRect.width/canvas.width)) - 12;
-        const handleY = canvasRect.top + (logoBottomY * (canvasRect.height/canvas.height)) - 12;
-        handle.style.left = (handleX - containerRect.left) + "px";
-        handle.style.top = (handleY - containerRect.top) + "px";
-    }
+    function updateResizeHandlePosition() { let handle=document.getElementById("resizeHandle"); if(!overlayImage){ handle.style.display="none"; return; } handle.style.display="block"; let canvasRect=canvas.getBoundingClientRect(), containerRect=document.getElementById("canvasContainer").getBoundingClientRect(); let logoRightX=overlayX+overlayWidth/2, logoBottomY=overlayY+overlayHeight/2; handle.style.left=(canvasRect.left+(logoRightX*(canvasRect.width/canvas.width))-12-containerRect.left)+"px"; handle.style.top=(canvasRect.top+(logoBottomY*(canvasRect.height/canvas.height))-12-containerRect.top)+"px"; }
     
     function applyCanvasSize() {
-        let newWidth = parseInt(document.getElementById("canvasWidthInput").value);
-        let newHeight = parseInt(document.getElementById("canvasHeightInput").value);
-        if (isNaN(newWidth)) newWidth = 640;
-        if (isNaN(newHeight)) newHeight = 580;
-        newWidth = Math.min(Math.max(newWidth, 100), 2000);
-        newHeight = Math.min(Math.max(newHeight, 100), 2000);
-        
-        canvasWidth = newWidth;
-        canvasHeight = newHeight;
-        
-        document.getElementById("canvasWidthInput").value = canvasWidth;
-        document.getElementById("canvasHeightInput").value = canvasHeight;
-        
-        overlayX = canvasWidth / 2;
-        overlayY = canvasHeight / 2;
-        textPosX = canvasWidth / 2;
-        textPosY = canvasHeight / 2;
-        
-        document.getElementById("logoX").value = Math.round(overlayX);
-        document.getElementById("logoY").value = Math.round(overlayY);
-        document.getElementById("textX").value = Math.round(textPosX);
-        document.getElementById("textY").value = Math.round(textPosY);
-        
-        drawCard();
-        showAlert("Kart boyutu " + canvasWidth + "x" + canvasHeight + " olarak değiştirildi");
+        let newWidth=parseInt(document.getElementById("canvasWidthInput").value), newHeight=parseInt(document.getElementById("canvasHeightInput").value);
+        if(isNaN(newWidth)) newWidth=640; if(isNaN(newHeight)) newHeight=580;
+        newWidth=Math.min(Math.max(newWidth,100),2000); newHeight=Math.min(Math.max(newHeight,100),2000);
+        setCanvasSize(newWidth, newHeight, false);
     }
     
     function resetCanvasSize() {
-        canvasWidth = 640;
-        canvasHeight = 580;
-        document.getElementById("canvasWidthInput").value = 640;
-        document.getElementById("canvasHeightInput").value = 580;
-        overlayX = canvasWidth / 2;
-        overlayY = canvasHeight / 2;
-        textPosX = canvasWidth / 2;
-        textPosY = canvasHeight / 2;
-        document.getElementById("logoX").value = Math.round(overlayX);
-        document.getElementById("logoY").value = Math.round(overlayY);
-        document.getElementById("textX").value = Math.round(textPosX);
-        document.getElementById("textY").value = Math.round(textPosY);
-        drawCard();
+        setCanvasSize(640, 580, false);
         showAlert("Kart boyutu varsayılana (640x580) sıfırlandı");
     }
     
-    const logoWSlider = document.getElementById("logoWidth"), logoHSlider = document.getElementById("logoHeight");
-    function updateLogoSizeFromWidth(w) { 
-        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
-            let newH = Math.round(w * (originalImgH/originalImgW)); 
-            newH = Math.min(Math.max(newH, 10), 2000); 
-            overlayWidth = w; 
-            overlayHeight = newH; 
-            logoWSlider.value = overlayWidth; 
-            logoHSlider.value = overlayHeight; 
-        } else { overlayWidth = w; } 
-        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
-        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
-        drawCard(); 
-    }
-    function updateLogoSizeFromHeight(h) { 
-        if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
-            let newW = Math.round(h * (originalImgW/originalImgH)); 
-            newW = Math.min(Math.max(newW, 10), 2000); 
-            overlayHeight = h; 
-            overlayWidth = newW; 
-            logoWSlider.value = overlayWidth; 
-            logoHSlider.value = overlayHeight; 
-        } else { overlayHeight = h; } 
-        document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
-        document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
-        drawCard(); 
-    }
-    logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); 
-    logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
+    const logoWSlider=document.getElementById("logoWidth"), logoHSlider=document.getElementById("logoHeight");
+    function updateLogoSizeFromWidth(w){ if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0){ let newH=Math.round(w*(originalImgH/originalImgW)); newH=Math.min(Math.max(newH,10),2000); overlayWidth=w; overlayHeight=newH; logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; } else overlayWidth=w; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard(); }
+    function updateLogoSizeFromHeight(h){ if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0){ let newW=Math.round(h*(originalImgW/originalImgH)); newW=Math.min(Math.max(newW,10),2000); overlayHeight=h; overlayWidth=newW; logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; } else overlayHeight=h; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard(); }
+    logoWSlider.addEventListener("input", (e)=>updateLogoSizeFromWidth(parseInt(e.target.value))); logoHSlider.addEventListener("input", (e)=>updateLogoSizeFromHeight(parseInt(e.target.value)));
     
-    const resizeHandleEl = document.getElementById("resizeHandle");
-    function getMouseCoordCanvas(e) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else { cx=e.clientX; cy=e.clientY; }
-        return { mx: (cx - rect.left) * scaleX, my: (cy - rect.top) * scaleY };
-    }
-    function isOverResizeHandle(e) {
-        if(!overlayImage) return false;
-        const rect = resizeHandleEl.getBoundingClientRect();
-        let cx, cy; if(e.touches) { cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else { cx=e.clientX; cy=e.clientY; }
-        return (cx >= rect.left - 10 && cx <= rect.right + 10 && cy >= rect.top - 10 && cy <= rect.bottom + 10);
-    }
-    function onMouseDown(e) {
-        if(isOverResizeHandle(e)) { 
-            isResizing = true; 
-            resizeStartW = overlayWidth; 
-            resizeStartH = overlayHeight; 
-            let {mx,my} = getMouseCoordCanvas(e); 
-            resizeStartMouseX = mx; 
-            resizeStartMouseY = my; 
-            canvas.style.cursor = "nw-resize"; 
-            e.preventDefault(); 
-            return; 
-        }
-        let {mx,my} = getMouseCoordCanvas(e);
-        if(overlayImage) { 
-            let left = overlayX - overlayWidth/2, right = overlayX + overlayWidth/2, top = overlayY - overlayHeight/2, bottom = overlayY + overlayHeight/2; 
-            if(mx>=left-15 && mx<=right+15 && my>=top-15 && my<=bottom+15) { 
-                isDraggingOverlay = true; 
-                dragStartX = mx - overlayX; 
-                dragStartY = my - overlayY; 
-                canvas.style.cursor = "grabbing"; 
-                e.preventDefault(); 
-                return; 
-            } 
-        }
-        let fontSize = parseInt(document.getElementById("fontSize").value); 
-        ctx.font = fontSize + "px '" + currentFont + "', cursive"; 
-        let raw = document.getElementById("cardText").value, maxW = canvas.width-80;
-        let align = document.getElementById("textAlign").value;
-        let lines = wrapText(ctx, raw, maxW);
-        let lineH = fontSize*1.35, totalH = lines.length*lineH;
-        let startX, left, right, top, bottom;
-        
-        if (align === 'free') {
-            let maxLineWidth = 0;
-            for(let line of lines) {
-                let w = ctx.measureText(line).width;
-                if(w > maxLineWidth) maxLineWidth = w;
-            }
-            left = textPosX - maxLineWidth/2;
-            right = textPosX + maxLineWidth/2;
-            top = textPosY - totalH/2;
-            bottom = textPosY + totalH/2;
-        } else if (align === 'center') {
-            left = canvas.width/2 - maxW/2;
-            right = canvas.width/2 + maxW/2;
-            top = textPosY - totalH/2;
-            bottom = textPosY + totalH/2;
-        } else if (align === 'right') {
-            left = canvas.width - 60 - maxW;
-            right = canvas.width - 60;
-            top = textPosY - totalH/2;
-            bottom = textPosY + totalH/2;
-        } else {
-            left = 60;
-            right = 60 + maxW;
-            top = textPosY - totalH/2;
-            bottom = textPosY + totalH/2;
-        }
-        
-        if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40) { 
-            isDraggingText = true; 
-            textDragStartX = mx - textPosX; 
-            textDragStartY = my - textPosY; 
-            canvas.style.cursor = "grabbing"; 
-        }
-    }
-    function onMouseMove(e) {
-        if(isResizing && overlayImage) {
-            let {mx,my} = getMouseCoordCanvas(e); let deltaX = mx - resizeStartMouseX, deltaY = my - resizeStartMouseY; 
-            let newW = Math.min(Math.max(resizeStartW + deltaX, 10), 2000); 
-            let newH = Math.min(Math.max(resizeStartH + deltaY, 10), 2000);
-            if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0) { 
-                let ratio = originalImgW/originalImgH; 
-                newH = newW / ratio; 
-                if(newH<10) { newH = 10; newW = newH * ratio; } 
-                if(newH>2000) { newH = 2000; newW = newH * ratio; } 
-                if(newW<10) { newW = 10; newH = newW / ratio; } 
-                if(newW>2000) { newW = 2000; newH = newW / ratio; } 
-            }
-            overlayWidth = Math.min(Math.max(newW,10),2000); 
-            overlayHeight = Math.min(Math.max(newH,10),2000); 
-            logoWSlider.value = overlayWidth; 
-            logoHSlider.value = overlayHeight; 
-            document.getElementById("logoWidthVal").innerText = overlayWidth+"px"; 
-            document.getElementById("logoHeightVal").innerText = overlayHeight+"px"; 
-            drawCard(); 
-            return;
-        }
-        if(!isDraggingOverlay && !isDraggingText) return;
-        let {mx,my} = getMouseCoordCanvas(e);
-        if(isDraggingOverlay && overlayImage) { 
-            let nx = Math.min(Math.max(mx - dragStartX, 20), canvas.width-20), ny = Math.min(Math.max(my - dragStartY, 20), canvas.height-20); 
-            overlayX = nx; overlayY = ny; 
-            document.getElementById("logoX").value = Math.round(overlayX); 
-            document.getElementById("logoY").value = Math.round(overlayY); 
-            drawCard(); 
-        }
-        else if(isDraggingText) { 
-            let nx = Math.min(Math.max(mx - textDragStartX, 50), canvas.width-50), ny = Math.min(Math.max(my - textDragStartY, 40), canvas.height-40); 
-            textPosX = nx; textPosY = ny; 
-            document.getElementById("textX").value = Math.round(textPosX); 
-            document.getElementById("textY").value = Math.round(textPosY); 
-            drawCard(); 
-        }
-    }
-    function onMouseUp() { isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
+    const resizeHandleEl=document.getElementById("resizeHandle");
+    function getMouseCoordCanvas(e){ const rect=canvas.getBoundingClientRect(); const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height; let cx,cy; if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; e.preventDefault(); } else{ cx=e.clientX; cy=e.clientY; } return { mx:(cx-rect.left)*scaleX, my:(cy-rect.top)*scaleY }; }
+    function isOverResizeHandle(e){ if(!overlayImage) return false; const rect=resizeHandleEl.getBoundingClientRect(); let cx,cy; if(e.touches){ cx=e.touches[0].clientX; cy=e.touches[0].clientY; } else{ cx=e.clientX; cy=e.clientY; } return (cx>=rect.left-10 && cx<=rect.right+10 && cy>=rect.top-10 && cy<=rect.bottom+10); }
+    function onMouseDown(e){ if(isOverResizeHandle(e)){ isResizing=true; resizeStartW=overlayWidth; resizeStartH=overlayHeight; let {mx,my}=getMouseCoordCanvas(e); resizeStartMouseX=mx; resizeStartMouseY=my; canvas.style.cursor="nw-resize"; e.preventDefault(); return; } let {mx,my}=getMouseCoordCanvas(e); if(overlayImage){ let left=overlayX-overlayWidth/2, right=overlayX+overlayWidth/2, top=overlayY-overlayHeight/2, bottom=overlayY+overlayHeight/2; if(mx>=left-15 && mx<=right+15 && my>=top-15 && my<=bottom+15){ isDraggingOverlay=true; dragStartX=mx-overlayX; dragStartY=my-overlayY; canvas.style.cursor="grabbing"; e.preventDefault(); return; } } let fontSize=parseInt(document.getElementById("fontSize").value); ctx.font=fontSize+"px '"+currentFont+"', cursive"; let raw=getCardText(), maxW=canvas.width-80, align=document.getElementById("textAlign").value, lines=wrapText(ctx,raw,maxW), lineH=fontSize*1.35, totalH=lines.length*lineH, left,right,top,bottom; if(align==='free'){ let maxLineWidth=0; for(let line of lines){ let w=ctx.measureText(line).width; if(w>maxLineWidth) maxLineWidth=w; } left=textPosX-maxLineWidth/2; right=textPosX+maxLineWidth/2; top=textPosY-totalH/2; bottom=textPosY+totalH/2; } else if(align==='center'){ left=canvas.width/2-maxW/2; right=canvas.width/2+maxW/2; top=textPosY-totalH/2; bottom=textPosY+totalH/2; } else if(align==='right'){ left=canvas.width-60-maxW; right=canvas.width-60; top=textPosY-totalH/2; bottom=textPosY+totalH/2; } else{ left=60; right=60+maxW; top=textPosY-totalH/2; bottom=textPosY+totalH/2; } if(mx>=left-40 && mx<=right+40 && my>=top-40 && my<=bottom+40){ isDraggingText=true; textDragStartX=mx-textPosX; textDragStartY=my-textPosY; canvas.style.cursor="grabbing"; } }
+    function onMouseMove(e){ if(isResizing && overlayImage){ let {mx,my}=getMouseCoordCanvas(e), deltaX=mx-resizeStartMouseX, deltaY=my-resizeStartMouseY; let newW=Math.min(Math.max(resizeStartW+deltaX,10),2000); let newH=Math.min(Math.max(resizeStartH+deltaY,10),2000); if(keepAspectCheck.checked && originalImgW>0 && originalImgH>0){ let ratio=originalImgW/originalImgH; newH=newW/ratio; if(newH<10){ newH=10; newW=newH*ratio; } if(newH>2000){ newH=2000; newW=newH*ratio; } if(newW<10){ newW=10; newH=newW/ratio; } if(newW>2000){ newW=2000; newH=newW/ratio; } } overlayWidth=Math.min(Math.max(newW,10),2000); overlayHeight=Math.min(Math.max(newH,10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; drawCard(); return; } if(!isDraggingOverlay && !isDraggingText) return; let {mx,my}=getMouseCoordCanvas(e); if(isDraggingOverlay && overlayImage){ let nx=Math.min(Math.max(mx-dragStartX,20),canvas.width-20), ny=Math.min(Math.max(my-dragStartY,20),canvas.height-20); overlayX=nx; overlayY=ny; document.getElementById("logoX").value=Math.round(overlayX); document.getElementById("logoY").value=Math.round(overlayY); drawCard(); } else if(isDraggingText){ let nx=Math.min(Math.max(mx-textDragStartX,50),canvas.width-50), ny=Math.min(Math.max(my-textDragStartY,40),canvas.height-40); textPosX=nx; textPosY=ny; document.getElementById("textX").value=Math.round(textPosX); document.getElementById("textY").value=Math.round(textPosY); drawCard(); } }
+    function onMouseUp(){ isDraggingOverlay=false; isDraggingText=false; isResizing=false; canvas.style.cursor="default"; }
     canvas.addEventListener("mousedown",onMouseDown); window.addEventListener("mousemove",onMouseMove); window.addEventListener("mouseup",onMouseUp); canvas.addEventListener("touchstart",onMouseDown); window.addEventListener("touchmove",onMouseMove); window.addEventListener("touchend",onMouseUp);
     
     document.getElementById("applyCanvasSizeBtn").addEventListener("click", applyCanvasSize);
@@ -1601,300 +1074,59 @@
     document.getElementById("textX").addEventListener("input",(e)=>{textPosX=parseInt(e.target.value); drawCard();});
     document.getElementById("textY").addEventListener("input",(e)=>{textPosY=parseInt(e.target.value); drawCard();});
     document.getElementById("resetTextPosBtn").addEventListener("click",()=>{textPosX=canvasWidth/2; textPosY=canvasHeight/2; document.getElementById("textX").value=textPosX; document.getElementById("textY").value=textPosY; drawCard(); showAlert("Metin konumu sıfırlandı");});
-    document.getElementById("cardText").addEventListener("input", function() {
-        resetTextPosition();
-        drawCard();
-    });
+    textEditable.addEventListener("input", function() { resetTextPosition(); drawCard(); });
     document.getElementById("fontSize").addEventListener("input",drawCard);
     document.getElementById("fontWeight").addEventListener("change",drawCard);
-    document.getElementById("textAlign").addEventListener("change", function() {
-        resetTextPosition();
-        drawCard();
-    });
+    document.getElementById("textAlign").addEventListener("change", function(){ resetTextPosition(); drawCard(); });
     borderWidthSlider.addEventListener("input",drawCard);
     borderThirdStyleSelect.addEventListener("change",drawCard);
     borderLayerCountSelect.addEventListener("change",drawCard);
-    document.getElementById("clearTextBtn").addEventListener("click",()=>{document.getElementById("cardText").value=""; resetTextPosition(); drawCard(); showAlert("Metin temizlendi");});
+    document.getElementById("clearTextBtn").addEventListener("click",()=>{ setCardText(""); resetTextPosition(); drawCard(); showAlert("Metin temizlendi");});
     textShadowCheck.addEventListener("change",drawCard);
     document.getElementById("applyBorderStyleBtn").addEventListener("click", () => { drawCard(); showAlert("Kenarlık stili güncellendi"); });
     
-    document.getElementById("saveProjectBtn").addEventListener("click", () => {
-        const projectData = {
-            canvasWidth, canvasHeight,
-            textPosX, textPosY,
-            overlayX, overlayY, overlayWidth, overlayHeight,
-            currentFont,
-            textColor: textColorHidden.value,
-            bgColor: bgColorHidden.value,
-            borderOuterColor: borderOuterHidden.value,
-            borderInnerColor: borderInnerHidden.value,
-            borderThirdColor: borderThirdHidden.value,
-            borderDoubleColor1: borderDoubleColor1Hidden.value,
-            borderDoubleColor2: borderDoubleColor2Hidden.value,
-            borderWidth: borderWidthSlider.value,
-            borderOffset: borderOffset,
-            borderThirdStyle: borderThirdStyleSelect.value,
-            borderLayerCount: borderLayerCountSelect.value,
-            textShadow: textShadowCheck.checked,
-            gradientToggle: gradToggle.checked,
-            gradColor1: gradColor1Hidden.value,
-            gradColor2: gradColor2Hidden.value,
-            gradAngle: gradAngle.value,
-            fontSize: document.getElementById("fontSize").value,
-            fontWeight: document.getElementById("fontWeight").value,
-            textAlign: document.getElementById("textAlign").value,
-            cardText: document.getElementById("cardText").value,
-            customFontsList: customFontsList,
-            customIconsList: customIconsList
-        };
-        const dataStr = JSON.stringify(projectData, null, 2);
-        const blob = new Blob([dataStr], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "kart_projesi.json";
-        a.click();
-        URL.revokeObjectURL(url);
-        showAlert("✅ Proje başarıyla kaydedildi!", "success");
-    });
+    // Proje kaydetme / yükleme (aynen)
+    document.getElementById("saveProjectBtn").addEventListener("click", () => { let projectData={ canvasWidth,canvasHeight, textPosX,textPosY, overlayX,overlayY,overlayWidth,overlayHeight, currentFont, textColor:textColorHidden.value, bgColor:bgColorHidden.value, borderOuterColor:borderOuterHidden.value, borderInnerColor:borderInnerHidden.value, borderThirdColor:borderThirdHidden.value, borderDoubleColor1:borderDoubleColor1Hidden.value, borderDoubleColor2:borderDoubleColor2Hidden.value, borderWidth:borderWidthSlider.value, borderOffset, borderThirdStyle:borderThirdStyleSelect.value, borderLayerCount:borderLayerCountSelect.value, textShadow:textShadowCheck.checked, gradientToggle:gradToggle.checked, gradColor1:gradColor1Hidden.value, gradColor2:gradColor2Hidden.value, gradAngle:gradAngle.value, fontSize:document.getElementById("fontSize").value, fontWeight:document.getElementById("fontWeight").value, textAlign:document.getElementById("textAlign").value, cardText:getCardText(), customFontsList, customIconsList, lastManualWidth, lastManualHeight }; const dataStr=JSON.stringify(projectData,null,2); const blob=new Blob([dataStr],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kart_projesi.json"; a.click(); URL.revokeObjectURL(url); showAlert("✅ Proje kaydedildi!","success"); });
+    document.getElementById("loadProjectBtn").addEventListener("click", () => { const inp=document.createElement("input"); inp.type="file"; inp.accept="application/json"; inp.onchange=e=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=ev=>{ try{ const data=JSON.parse(ev.target.result); canvasWidth=data.canvasWidth||640; canvasHeight=data.canvasHeight||580; textPosX=data.textPosX||320; textPosY=data.textPosY||290; overlayX=data.overlayX||320; overlayY=data.overlayY||290; overlayWidth=data.overlayWidth||80; overlayHeight=data.overlayHeight||80; currentFont=data.currentFont||"Beau Rivage"; textColorHidden.value=data.textColor||"#4a2e6b"; bgColorHidden.value=data.bgColor||"#faf5ff"; borderOuterHidden.value=data.borderOuterColor||"#81778A"; borderInnerHidden.value=data.borderInnerColor||"#D9D6DE"; borderThirdHidden.value=data.borderThirdColor||"#B9B4BF"; if(data.borderDoubleColor1) borderDoubleColor1Hidden.value=data.borderDoubleColor1; if(data.borderDoubleColor2) borderDoubleColor2Hidden.value=data.borderDoubleColor2; borderWidthSlider.value=parseInt(data.borderWidth)||4; if(data.borderOffset!==undefined){ borderOffset=data.borderOffset; if(borderOffsetSlider) borderOffsetSlider.value=borderOffset; if(borderOffsetVal) borderOffsetVal.innerText=borderOffset+"px"; } borderThirdStyleSelect.value=data.borderThirdStyle||"solid"; borderLayerCountSelect.value=data.borderLayerCount||"3"; textShadowCheck.checked=data.textShadow||false; gradToggle.checked=data.gradientToggle!==undefined?data.gradientToggle:true; gradColor1Hidden.value=data.gradColor1||"#f9e5ff"; gradColor2Hidden.value=data.gradColor2||"#ffffff"; gradAngle.value=data.gradAngle||"0"; document.getElementById("fontSize").value=data.fontSize||40; document.getElementById("fontWeight").value=data.fontWeight||"700"; document.getElementById("textAlign").value=data.textAlign||"center"; setCardText(data.cardText||""); if(data.customFontsList) customFontsList=data.customFontsList; if(data.customIconsList) customIconsList=data.customIconsList; if(data.lastManualWidth) lastManualWidth=data.lastManualWidth; if(data.lastManualHeight) lastManualHeight=data.lastManualHeight; document.getElementById("canvasWidthInput").value=canvasWidth; document.getElementById("canvasHeightInput").value=canvasHeight; document.getElementById("logoX").value=Math.round(overlayX); document.getElementById("logoY").value=Math.round(overlayY); document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("textX").value=Math.round(textPosX); document.getElementById("textY").value=Math.round(textPosY); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; isAutoSizeFromBg=false; updateAllPreviews(); renderFontList(); renderSymbolPanel(); updateCustomFontsFooter(); if(customIconsList.length>0) updateIconPreview(customIconsList); resetTextPosition(); drawCard(); showAlert("✅ Proje yüklendi!","success"); } catch(err){ showAlert("❌ Hata: Geçersiz proje!","error"); } }; reader.readAsText(file); }; inp.click(); });
     
-    document.getElementById("loadProjectBtn").addEventListener("click", () => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "application/json";
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const data = JSON.parse(ev.target.result);
-                    
-                    canvasWidth = data.canvasWidth || 640;
-                    canvasHeight = data.canvasHeight || 580;
-                    textPosX = data.textPosX || 320;
-                    textPosY = data.textPosY || 290;
-                    overlayX = data.overlayX || 320;
-                    overlayY = data.overlayY || 290;
-                    overlayWidth = data.overlayWidth || 80;
-                    overlayHeight = data.overlayHeight || 80;
-                    currentFont = data.currentFont || "Beau Rivage";
-                    
-                    textColorHidden.value = data.textColor || "#4a2e6b";
-                    bgColorHidden.value = data.bgColor || "#faf5ff";
-                    borderOuterHidden.value = data.borderOuterColor || "#81778A";
-                    borderInnerHidden.value = data.borderInnerColor || "#D9D6DE";
-                    borderThirdHidden.value = data.borderThirdColor || "#B9B4BF";
-                    if(data.borderDoubleColor1) borderDoubleColor1Hidden.value = data.borderDoubleColor1;
-                    if(data.borderDoubleColor2) borderDoubleColor2Hidden.value = data.borderDoubleColor2;
-                    
-                    borderWidthSlider.value = parseInt(data.borderWidth) || 4;
-                    if(data.borderOffset !== undefined) {
-                        borderOffset = data.borderOffset;
-                        if(borderOffsetSlider) borderOffsetSlider.value = borderOffset;
-                        if(borderOffsetVal) borderOffsetVal.innerText = borderOffset + "px";
-                    }
-                    borderThirdStyleSelect.value = data.borderThirdStyle || "solid";
-                    borderLayerCountSelect.value = data.borderLayerCount || "3";
-                    textShadowCheck.checked = data.textShadow || false;
-                    gradToggle.checked = data.gradientToggle !== undefined ? data.gradientToggle : true;
-                    gradColor1Hidden.value = data.gradColor1 || "#f9e5ff";
-                    gradColor2Hidden.value = data.gradColor2 || "#ffffff";
-                    gradAngle.value = data.gradAngle || "0";
-                    
-                    document.getElementById("fontSize").value = data.fontSize || 40;
-                    document.getElementById("fontWeight").value = data.fontWeight || "700";
-                    document.getElementById("textAlign").value = data.textAlign || "center";
-                    document.getElementById("cardText").value = data.cardText || "";
-                    
-                    if(data.customFontsList) customFontsList = data.customFontsList;
-                    if(data.customIconsList) customIconsList = data.customIconsList;
-                    
-                    document.getElementById("canvasWidthInput").value = canvasWidth;
-                    document.getElementById("canvasHeightInput").value = canvasHeight;
-                    document.getElementById("logoX").value = Math.round(overlayX);
-                    document.getElementById("logoY").value = Math.round(overlayY);
-                    document.getElementById("logoWidth").value = overlayWidth;
-                    document.getElementById("logoHeight").value = overlayHeight;
-                    document.getElementById("logoWidthVal").innerText = overlayWidth + "px";
-                    document.getElementById("logoHeightVal").innerText = overlayHeight + "px";
-                    document.getElementById("textX").value = Math.round(textPosX);
-                    document.getElementById("textY").value = Math.round(textPosY);
-                    
-                    logoWSlider.value = overlayWidth;
-                    logoHSlider.value = overlayHeight;
-                    
-                    updateAllPreviews();
-                    renderFontList();
-                    renderSymbolPanel();
-                    updateCustomFontsFooter();
-                    
-                    if(customIconsList.length > 0) {
-                        updateIconPreview(customIconsList);
-                    }
-                    
-                    resetTextPosition();
-                    drawCard();
-                    showAlert("✅ Proje başarıyla yüklendi!", "success");
-                        
-                } catch(err) {
-                    console.error(err);
-                    showAlert("❌ Hata: Geçersiz proje dosyası!", "error");
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    });
+    function downloadImage(format){ let link=document.createElement("a"); link.download=format==="png"?"kutlama_karti.png":"kutlama_karti.jpg"; link.href=canvas.toDataURL(format==="png"?"image/png":"image/jpeg",0.95); link.click(); showAlert(format.toUpperCase()+" indirildi!","success"); }
+    document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => { let htmlContent=document.documentElement.outerHTML; const ozelIkonlar=customIconsList.join(','); const ozelFontlar=customFontsList.join(','); const yuklemeScripti='<scr'+'ipt>window.addEventListener("DOMContentLoaded",function(){var ikonlar="'+ozelIkonlar.replace(/"/g,'\\"')+'";var fontlar="'+ozelFontlar.replace(/"/g,'\\"')+'";if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){var dizi=ikonlar.split(",");for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){var dizi2=fontlar.split(",");for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});</scr'+'ipt>'; if(htmlContent.indexOf('</head>')>-1) htmlContent=htmlContent.replace('</head>',yuklemeScripti+'</head>'); const blob=new Blob([htmlContent],{type:"text/html"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="kutlama_karti.html"; a.click(); URL.revokeObjectURL(a.href); showAlert("HTML kaydedildi! Özel ikon/font korundu.","success"); });
+    async function shareFile(blob,fileName){ const file=new File([blob],fileName,{type:blob.type}); if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Kutlama Kartım"}); showAlert("🎉 Kart paylaşıldı!","success"); return true; } catch(e){ if(e.name!=="AbortError") showAlert("Paylaşım iptal edildi.","warning"); } } else { showAlert("Paylaşım desteklenmiyor, dosya indiriliyor...","info"); return false; } return false; }
+    document.getElementById("shareAsPngBtn").addEventListener("click", async ()=>{ const dataUrl=canvas.toDataURL("image/png"); const blob=await (await fetch(dataUrl)).blob(); if(!await shareFile(blob,"kutlama_karti.png")){ const a=document.createElement("a"); a.href=dataUrl; a.download="kutlama_karti.png"; a.click(); } document.getElementById("shareDropdown").classList.remove("active"); });
+    document.getElementById("shareAsJpgBtn").addEventListener("click", async ()=>{ const dataUrl=canvas.toDataURL("image/jpeg",0.92); const blob=await (await fetch(dataUrl)).blob(); if(!await shareFile(blob,"kutlama_karti.jpg")){ const a=document.createElement("a"); a.href=dataUrl; a.download="kutlama_karti.jpg"; a.click(); } document.getElementById("shareDropdown").classList.remove("active"); });
+    document.getElementById("shareAsHtmlBtn").addEventListener("click", () => { let htmlContent=document.documentElement.outerHTML; const ozelIkonlar=customIconsList.join(','); const ozelFontlar=customFontsList.join(','); const yuklemeScripti='<scr'+'ipt>window.addEventListener("DOMContentLoaded",function(){var ikonlar="'+ozelIkonlar.replace(/"/g,'\\"')+'";var fontlar="'+ozelFontlar.replace(/"/g,'\\"')+'";if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){var dizi=ikonlar.split(",");for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){var dizi2=fontlar.split(",");for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});</scr'+'ipt>'; if(htmlContent.indexOf('</head>')>-1) htmlContent=htmlContent.replace('</head>',yuklemeScripti+'</head>'); const blob=new Blob([htmlContent],{type:"text/html"}); const file=new File([blob],"kutlama_karti.html",{type:"text/html"}); if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], title:"Kutlama Kartı HTML"}).catch(()=>{ const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kutlama_karti.html"; a.click(); URL.revokeObjectURL(url); }); } else { const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kutlama_karti.html"; a.click(); URL.revokeObjectURL(url); } showAlert("HTML paylaşıldı/indirildi!","success"); document.getElementById("shareDropdown").classList.remove("active"); });
+    const shareBtn=document.getElementById("shareBtn"); const shareDropdown=document.getElementById("shareDropdown"); shareBtn.addEventListener("click",(e)=>{ e.stopPropagation(); shareDropdown.classList.toggle("active"); }); document.addEventListener("click",(e)=>{ if(!shareBtn.contains(e.target) && !shareDropdown.contains(e.target)) shareDropdown.classList.remove("active"); });
     
-    function downloadImage(format) { 
-        let link = document.createElement("a"); 
-        link.download = format==="png" ? "kutlama_karti.png" : "kutlama_karti.jpg"; 
-        link.href = canvas.toDataURL(format==="png" ? "image/png" : "image/jpeg", 0.95); 
-        link.click(); 
-        showAlert(format.toUpperCase() + " indirildi!", "success"); 
-    }
-    document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); 
-    document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
-    
-    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
-        let htmlContent = document.documentElement.outerHTML;
-        const ozelIkonlar = customIconsList.join(',');
-        const ozelFontlar = customFontsList.join(',');
-        const yuklemeScripti = '<scr' + 'ipt>' +
-            'window.addEventListener("DOMContentLoaded",function(){' +
-            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
-            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
-            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
-            'var dizi=ikonlar.split(",");' +
-            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
-            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
-            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
-            'var dizi2=fontlar.split(",");' +
-            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
-            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
-            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
-            '</scr' + 'ipt>';
-        if (htmlContent.indexOf('</head>') > -1) {
-            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
-        }
-        const blob = new Blob([htmlContent], {type: "text/html"});
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "kutlama_karti.html";
-        link.click();
-        URL.revokeObjectURL(link.href);
-        showAlert('HTML kaydedildi! ' + customIconsList.length + ' özel ikon ve ' + customFontsList.length + ' özel font korundu.', "success");
-    });
-    
-    async function shareFile(blob, fileName) {
-        const file = new File([blob], fileName, { type: blob.type });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            try { 
-                await navigator.share({ files: [file], title: "Kutlama Kartım" }); 
-                showAlert("🎉 Kart başarıyla paylaşıldı!", "success"); 
-                return true; 
-            } catch(e) { 
-                if(e.name !== "AbortError") showAlert("Paylaşım iptal edildi.", "warning"); 
-            }
-        } else { 
-            showAlert("Tarayıcınız paylaşımı desteklemiyor, dosya indiriliyor...", "info"); 
-            return false; 
-        }
-        return false;
-    }
-    
-    document.getElementById("shareAsPngBtn").addEventListener("click", async () => {
-        const dataUrl = canvas.toDataURL("image/png");
-        const blob = await (await fetch(dataUrl)).blob();
-        if(!await shareFile(blob, "kutlama_karti.png")) {
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = "kutlama_karti.png";
-            a.click();
-        }
-        document.getElementById("shareDropdown").classList.remove("active");
-    });
-    
-    document.getElementById("shareAsJpgBtn").addEventListener("click", async () => {
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
-        const blob = await (await fetch(dataUrl)).blob();
-        if(!await shareFile(blob, "kutlama_karti.jpg")) {
-            const a = document.createElement("a");
-            a.href = dataUrl;
-            a.download = "kutlama_karti.jpg";
-            a.click();
-        }
-        document.getElementById("shareDropdown").classList.remove("active");
-    });
-    
-    document.getElementById("shareAsHtmlBtn").addEventListener("click", () => {
-        let htmlContent = document.documentElement.outerHTML;
-        const ozelIkonlar = customIconsList.join(',');
-        const ozelFontlar = customFontsList.join(',');
-        const yuklemeScripti = '<scr' + 'ipt>' +
-            'window.addEventListener("DOMContentLoaded",function(){' +
-            'var ikonlar="' + ozelIkonlar.replace(/"/g, '\\"') + '";' +
-            'var fontlar="' + ozelFontlar.replace(/"/g, '\\"') + '";' +
-            'if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){' +
-            'var dizi=ikonlar.split(",");' +
-            'for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}' +
-            'if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}' +
-            'if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){' +
-            'var dizi2=fontlar.split(",");' +
-            'for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}' +
-            'if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();' +
-            'if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});' +
-            '</scr' + 'ipt>';
-        if (htmlContent.indexOf('</head>') > -1) {
-            htmlContent = htmlContent.replace('</head>', yuklemeScripti + '</head>');
-        }
-        const blob = new Blob([htmlContent], {type: "text/html"});
-        const file = new File([blob], "kutlama_karti.html", { type: "text/html" });
-        
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({ files: [file], title: "Kutlama Kartı HTML" }).catch(() => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "kutlama_karti.html";
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-        } else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "kutlama_karti.html";
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        showAlert('HTML dosyası paylaşıldı/indirildi!', "success");
-        document.getElementById("shareDropdown").classList.remove("active");
-    });
-    
-    const shareBtn = document.getElementById("shareBtn");
-    const shareDropdown = document.getElementById("shareDropdown");
-    shareBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        shareDropdown.classList.toggle("active");
-    });
-    document.addEventListener("click", (e) => {
-        if(!shareBtn.contains(e.target) && !shareDropdown.contains(e.target)) {
-            shareDropdown.classList.remove("active");
-        }
-    });
-    
+    // **YENİ: Arkaplan yükleme (otomatik boyutlandırma ile)**
     function loadBg(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
-        r.onload=e=>{let img=new Image(); img.onload=()=>{bgImage=img; document.getElementById("imagePreviewArea").style.display="flex"; document.getElementById("thumbImg").src=e.target.result; drawCard(); showAlert("Arkaplan yüklendi (tam görünüm)", "success");}; img.src=e.target.result;}; 
+        r.onload=e=>{ let img=new Image(); img.onload=()=>{ 
+            bgImage=img; 
+            document.getElementById("imagePreviewArea").style.display="flex"; 
+            document.getElementById("thumbImg").src=e.target.result; 
+            // *** OTOMATİK BOYUTLANDIRMA ***
+            setCanvasSize(img.width, img.height, true);
+            drawCard(); 
+            showAlert("Arkaplan yüklendi, canvas boyutu otomatik ayarlandı!","success"); 
+        }; img.src=e.target.result; }; 
         r.readAsDataURL(file);
     }
+    
+    function clearBackground() {
+        bgImage = null;
+        document.getElementById("imagePreviewArea").style.display = "none";
+        // Arkaplan kaldırılınca eski manuel boyuta dön (varsayılan 640x580)
+        setCanvasSize(lastManualWidth, lastManualHeight, false);
+        drawCard();
+        showAlert("Arkaplan kaldırıldı, manuel boyuta dönüldü.");
+    }
+    
     function loadOverlay(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
-        r.onload=e=>{let img=new Image(); img.onload=()=>{overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi", "success");}; img.src=e.target.result;}; 
+        r.onload=e=>{ let img=new Image(); img.onload=()=>{ overlayImage=img; originalImgW=img.width; originalImgH=img.height; let base=80, asp=originalImgH/originalImgW; overlayWidth=base; overlayHeight=Math.min(Math.max(Math.round(base*asp),10),2000); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("overlayPreviewArea").style.display="flex"; document.getElementById("overlayThumb").src=e.target.result; drawCard(); showAlert("Logo yüklendi","success");}; img.src=e.target.result;}; 
         r.readAsDataURL(file);
     }
     const dropZoneBg=document.getElementById("dropZone"), bgInput=document.getElementById("bgImageInput"); 
@@ -1903,7 +1135,7 @@
     dropZoneBg.addEventListener("dragleave",()=>dropZoneBg.classList.remove("dragover")); 
     dropZoneBg.addEventListener("drop",e=>{e.preventDefault(); dropZoneBg.classList.remove("dragover"); if(e.dataTransfer.files[0]) loadBg(e.dataTransfer.files[0]);}); 
     bgInput.addEventListener("change",e=>{if(e.target.files[0]) loadBg(e.target.files[0]);}); 
-    document.getElementById("clearBgBtn").addEventListener("click",()=>{bgImage=null; document.getElementById("imagePreviewArea").style.display="none"; drawCard(); showAlert("Arkaplan kaldırıldı");});
+    document.getElementById("clearBgBtn").addEventListener("click", clearBackground);
     
     const overlayDrop=document.getElementById("overlayDropZone"), overlayInput=document.getElementById("overlayImageInput"); 
     overlayDrop.addEventListener("click",()=>overlayInput.click()); 
@@ -1913,147 +1145,32 @@
     overlayInput.addEventListener("change",e=>{if(e.target.files[0]) loadOverlay(e.target.files[0]);}); 
     document.getElementById("clearOverlayBtn").addEventListener("click",()=>{overlayImage=null; document.getElementById("overlayPreviewArea").style.display="none"; drawCard(); showAlert("Logo kaldırıldı");});
     
-    function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family=" + f.replace(/ /g,"+") + ":wght@300;400;600;700&display=swap"; document.head.appendChild(l);});} 
-    preloadFonts();
+    function preloadFonts() { fontData.forEach(f=>{let l=document.createElement("link"); l.rel="stylesheet"; l.href="https://fonts.googleapis.com/css2?family="+f.replace(/ /g,"+")+":wght@300;400;600;700&display=swap"; document.head.appendChild(l);}); } preloadFonts();
     
-    function renderFontList() { 
-        let term=document.getElementById("searchInput").value.toLowerCase(); 
-        let cont=document.getElementById("fontList"); 
-        cont.innerHTML=""; 
-        let allFonts = [...fontData, ...customFontsList];
-        allFonts.forEach(f=>{
-            if(term && !f.toLowerCase().includes(term)) return; 
-            let div=document.createElement("div"); 
-            div.className="font-item" + (customFontsList.includes(f) ? " custom-font-item" : ""); 
-            div.onclick=()=>{currentFont=f; drawCard(); showAlert("Font: " + f);}; 
-            div.innerHTML="<span class='font-name' style='font-family: \"" + f + "\", cursive;'>" + f + "</span><span class='font-badge'>" + (customFontsList.includes(f) ? "⭐" : "🖊️") + "</span>"; 
-            cont.appendChild(div);
-        });
-        updateCustomFontsFooter();
-    }
-    
-    document.getElementById("addCustomFontBtn").addEventListener("click", () => {
-        const fontUrl = document.getElementById("customFontUrl").value.trim();
-        const fontName = document.getElementById("customFontName").value.trim();
-        if (!fontUrl || !fontName) { showAlert("❌ Lütfen hem font URL'sini hem de font adını girin!", "error"); return; }
-        if (!fontUrl.includes('fonts.googleapis.com')) { showAlert("⚠️ Lütfen geçerli bir Google Fonts URL'si girin!", "error"); return; }
-        const link = document.createElement("link"); link.rel = "stylesheet"; link.href = fontUrl; document.head.appendChild(link);
-        if (!customFontsList.includes(fontName)) { customFontsList.push(fontName); renderFontList(); showAlert("✅ \"" + fontName + "\" fontu başarıyla EKLENDI!", "success"); } 
-        else { showAlert("⚠️ \"" + fontName + "\" fontu zaten mevcut!", "warning"); }
-        document.getElementById("customFontUrl").value = ""; document.getElementById("customFontName").value = "";
-    });
-    
-    function extractValidIcons(text) {
-        const validIcons = [];
-        const chars = [...text];
-        for (let char of chars) {
-            if (char && char.length > 0 && char.charCodeAt(0) !== 65533 && char.trim() !== "") {
-                if (!/[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/.test(char) || /[⭐✨🌟💫⚡🔥💥❤️💛💚💙💜🎉🎊🎈🎁🎀🎂🍰🥳]/.test(char)) {
-                    if (!validIcons.includes(char)) validIcons.push(char);
-                }
-            }
-        }
-        return validIcons;
-    }
-    
-    function addCustomIcons() {
-        const inputText = document.getElementById("customIconsInput").value;
-        if (!inputText.trim()) { showAlert("📝 Lütfen önce ikonları yapıştırın!", "info"); return; }
-        const validIcons = extractValidIcons(inputText);
-        if (validIcons.length === 0) { showAlert("⚠️ Geçerli ikon bulunamadı!", "error"); return; }
-        let addedCount = 0;
-        for (let icon of validIcons) {
-            if (!customIconsList.includes(icon)) {
-                customIconsList.push(icon);
-                addedCount++;
-            }
-        }
-        if (addedCount > 0) {
-            renderSymbolPanel();
-            updateIconPreview(validIcons);
-            showAlert("✨ " + addedCount + " yeni özel ikon EKLENDI! Toplam özel ikon: " + customIconsList.length, "success");
-            document.getElementById("customIconsInput").value = "";
-        } else {
-            showAlert("ℹ️ Tüm ikonlar zaten mevcut. (" + validIcons.length + " adet)", "info");
-            updateIconPreview(validIcons);
-        }
-    }
-    
-    function updateIconPreview(icons) {
-        const previewDiv = document.getElementById("customIconsPreview");
-        if (icons.length === 0) { previewDiv.innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>'; return; }
-        previewDiv.innerHTML = "";
-        icons.slice(0, 30).forEach(icon => {
-            const span = document.createElement("span"); span.className = "preview-icon-mini"; span.textContent = icon;
-            span.title = "\"" + icon + "\" eklemek için tıkla";
-            span.onclick = () => { document.getElementById("cardText").value += icon; drawCard(); showAlert("✨ \"" + icon + "\" eklendi"); };
-            previewDiv.appendChild(span);
-        });
-        if (icons.length > 30) { const moreSpan = document.createElement("span"); moreSpan.textContent = "+" + (icons.length - 30); moreSpan.style.fontSize = "11px"; moreSpan.style.padding = "4px 8px"; previewDiv.appendChild(moreSpan); }
-    }
-    
-    function renderSymbolPanel() {
-        const panel = document.getElementById("symbolPanel");
-        const allSymbols = [...DEFAULT_SYMBOLS, ...customIconsList];
-        panel.innerHTML = "<span style='font-size:12px; font-weight:600;'>✨ " + allSymbols.length + " Sembol & Emoji (" + customIconsList.length + " özel): </span>";
-        allSymbols.forEach(sym => {
-            if (sym && typeof sym === "string" && sym.length > 0 && sym.charCodeAt(0) !== 65533) {
-                const btn = document.createElement("button"); btn.className = "symbol-btn"; btn.textContent = sym;
-                btn.title = "\"" + sym + "\" eklemek için tıkla";
-                btn.onclick = () => { document.getElementById("cardText").value += sym; drawCard(); showAlert("✨ \"" + sym + "\" eklendi"); document.getElementById("cardText").focus(); };
-                panel.appendChild(btn);
-            }
-        });
-    }
-    
+    function renderFontList(){ let term=document.getElementById("searchInput").value.toLowerCase(); let cont=document.getElementById("fontList"); cont.innerHTML=""; let allFonts=[...fontData,...customFontsList]; allFonts.forEach(f=>{ if(term && !f.toLowerCase().includes(term)) return; let div=document.createElement("div"); div.className="font-item"+(customFontsList.includes(f)?" custom-font-item":""); div.onclick=()=>{ currentFont=f; drawCard(); showAlert("Font: "+f); }; div.innerHTML="<span class='font-name' style='font-family: \""+f+"\", cursive;'>"+f+"</span><span class='font-badge'>"+(customFontsList.includes(f)?"⭐":"🖊️")+"</span>"; cont.appendChild(div); }); updateCustomFontsFooter(); }
+    document.getElementById("addCustomFontBtn").addEventListener("click",()=>{ const fontUrl=document.getElementById("customFontUrl").value.trim(); const fontName=document.getElementById("customFontName").value.trim(); if(!fontUrl||!fontName){ showAlert("❌ URL ve font adı girin!","error"); return; } if(!fontUrl.includes('fonts.googleapis.com')){ showAlert("⚠️ Geçerli Google Fonts URL'si girin!","error"); return; } const link=document.createElement("link"); link.rel="stylesheet"; link.href=fontUrl; document.head.appendChild(link); if(!customFontsList.includes(fontName)){ customFontsList.push(fontName); renderFontList(); showAlert("✅ "+fontName+" eklendi!","success"); } else showAlert("⚠️ "+fontName+" zaten var!","warning"); document.getElementById("customFontUrl").value=""; document.getElementById("customFontName").value=""; });
+    function extractValidIcons(text){ let valid=[]; for(let ch of text){ if(ch && ch.codePointAt(0)!==65533 && ch.trim()!==""){ if(!/[a-zA-Z0-9ğüşıöçĞÜŞİÖÇ]/.test(ch) || /[⭐✨🌟💫⚡🔥💥❤️💛💚💙💜🎉🎊🎈🎁🎀🎂🍰🥳]/.test(ch)){ if(!valid.includes(ch)) valid.push(ch); } } } return valid; }
+    function insertIconAtCursor(icon){ textEditable.focus(); const selection=window.getSelection(); if(!selection.rangeCount) return; const range=selection.getRangeAt(0); range.deleteContents(); const textNode=document.createTextNode(icon); range.insertNode(textNode); range.setStartAfter(textNode); range.setEndAfter(textNode); selection.removeAllRanges(); selection.addRange(range); textEditable.dispatchEvent(new Event('input')); drawCard(); }
+    function addCustomIcons(){ const inputText=document.getElementById("customIconsInput").value; if(!inputText.trim()){ showAlert("📝 İkonları yapıştırın!","info"); return; } const valid=extractValidIcons(inputText); if(valid.length===0){ showAlert("⚠️ Geçerli ikon yok!","error"); return; } let added=0; for(let icon of valid){ if(!customIconsList.includes(icon)){ customIconsList.push(icon); added++; } } if(added>0){ renderSymbolPanel(); updateIconPreview(valid); showAlert("✨ "+added+" yeni ikon eklendi!","success"); document.getElementById("customIconsInput").value=""; } else{ showAlert("ℹ️ Tüm ikonlar mevcut.","info"); updateIconPreview(valid); } }
+    function updateIconPreview(icons){ let preview=document.getElementById("customIconsPreview"); if(icons.length===0){ preview.innerHTML='<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>'; return; } preview.innerHTML=""; icons.slice(0,30).forEach(icon=>{ let span=document.createElement("span"); span.className="preview-icon-mini"; span.textContent=icon; span.title="\""+icon+"\" eklemek için tıkla (imleç konumuna)"; span.onclick=()=>{ insertIconAtCursor(icon); }; preview.appendChild(span); }); if(icons.length>30){ let more=document.createElement("span"); more.textContent="+"+(icons.length-30); more.style.fontSize="11px"; more.style.padding="4px 8px"; preview.appendChild(more); } }
+    function renderSymbolPanel(){ let panel=document.getElementById("symbolPanel"); let allSymbols=[...DEFAULT_SYMBOLS,...customIconsList]; panel.innerHTML="<span style='font-size:12px; font-weight:600;'>✨ "+allSymbols.length+" Sembol & Emoji ("+customIconsList.length+" özel): </span>"; allSymbols.forEach(sym=>{ if(sym && typeof sym==="string" && sym.length>0 && sym.codePointAt(0)!==65533){ let btn=document.createElement("button"); btn.className="symbol-btn"; btn.textContent=sym; btn.title="\""+sym+"\" eklemek için tıkla (imleç konumuna)"; btn.onclick=()=>{ insertIconAtCursor(sym); }; panel.appendChild(btn); } }); }
     document.getElementById("addCustomIconsBtn").addEventListener("click", addCustomIcons);
-    document.getElementById("clearCustomIconsBtn").addEventListener("click", () => {
-        customIconsList = [];
-        renderSymbolPanel();
-        document.getElementById("customIconsPreview").innerHTML = '<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>';
-        document.getElementById("customIconsInput").value = "";
-        showAlert("🗑️ Tüm özel ikonlar temizlendi. Sadece varsayılan " + DEFAULT_SYMBOLS.length + " sembol kaldı.", "info");
-    });
-    
-    function setupCollapsible(headerId, contentId) {
-        const header = document.getElementById(headerId); const content = document.getElementById(contentId);
-        if (!header || !content) return;
-        header.addEventListener("click", () => { content.classList.toggle("open"); header.classList.toggle("open"); });
-        content.classList.remove("open"); header.classList.remove("open");
-    }
-    
-    function updateCustomFontsFooter() {
-        const footerDiv = document.getElementById("customFontsListDisplay");
-        if (!footerDiv) return;
-        if (customFontsList.length === 0) { footerDiv.innerHTML = "Henüz özel font eklenmedi"; } 
-        else { footerDiv.innerHTML = customFontsList.map(font => "<span>⭐ " + font + "</span>").join(''); }
-    }
-    
-    function showAlert(msg, type) {
-        const a = document.getElementById("alertMsg");
-        a.textContent = msg; a.style.display = "block";
-        if (type === "error") a.style.background = "#ffe6e6";
-        else if (type === "success") a.style.background = "#e6ffe6";
-        else if (type === "warning") a.style.background = "#fff3e6";
-        else a.style.background = "#efe6ff";
-        setTimeout(() => a.style.display = "none", 5000);
-    }
+    document.getElementById("clearCustomIconsBtn").addEventListener("click",()=>{ customIconsList=[]; renderSymbolPanel(); document.getElementById("customIconsPreview").innerHTML='<span style="color:#aaa; font-size:11px;">Eklediğiniz ikonlar burada önizlenecek...</span>'; document.getElementById("customIconsInput").value=""; showAlert("🗑️ Tüm özel ikonlar temizlendi.","info"); });
+    function setupCollapsible(headerId,contentId){ let header=document.getElementById(headerId); let content=document.getElementById(contentId); if(!header||!content) return; header.addEventListener("click",()=>{ content.classList.toggle("open"); header.classList.toggle("open"); }); content.classList.remove("open"); header.classList.remove("open"); }
+    function updateCustomFontsFooter(){ let footer=document.getElementById("customFontsListDisplay"); if(!footer) return; if(customFontsList.length===0) footer.innerHTML="Henüz özel font eklenmedi"; else footer.innerHTML=customFontsList.map(f=>"<span>⭐ "+f+"</span>").join(''); }
+    function showAlert(msg,type){ let a=document.getElementById("alertMsg"); a.textContent=msg; a.style.display="block"; if(type==="error") a.style.background="#ffe6e6"; else if(type==="success") a.style.background="#e6ffe6"; else if(type==="warning") a.style.background="#fff3e6"; else a.style.background="#efe6ff"; setTimeout(()=>a.style.display="none",5000); }
     
     updateAllPreviews();
     renderFontList();
-    applyCanvasSize();
+    setCanvasSize(640, 580, false);
     renderSymbolPanel();
-    setupCollapsible("fontPanelHeader", "fontPanelContent");
-    setupCollapsible("customFontPanelHeader", "customFontPanelContent");
-    setupCollapsible("customIconPanelHeader", "customIconPanelContent");
+    setupCollapsible("fontPanelHeader","fontPanelContent");
+    setupCollapsible("customFontPanelHeader","customFontPanelContent");
+    setupCollapsible("customIconPanelHeader","customIconPanelContent");
     resetTextPosition();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard, 200);
-    window.addEventListener("resize", () => { drawCard(); });
-    
-    if(borderOffsetSlider) {
-        borderOffsetSlider.value = borderOffset;
-        borderOffsetVal.innerText = borderOffset + "px";
-    }
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(drawCard); else setTimeout(drawCard,200);
+    window.addEventListener("resize",()=>drawCard());
+    if(borderOffsetSlider){ borderOffsetSlider.value=borderOffset; borderOffsetVal.innerText=borderOffset+"px"; }
 </script>
 </body>
 </html>
