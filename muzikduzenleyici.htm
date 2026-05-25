@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Evrensel Ses Kesici & Birleştirici | Yüzdelik İlerleme | Bayram KOÇ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: linear-gradient(145deg, #0b1120 0%, #1a2332 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .app-container {
+            max-width: 850px;
+            width: 100%;
+            background: rgba(12, 20, 30, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #facc15;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        h1 { font-size: 1.3rem; text-align: center; background: linear-gradient(135deg, #FFE6B0, #FFB347, #C084FC); background-clip: text; -webkit-background-clip: text; color: transparent; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .sub { text-align: center; font-size: 0.7rem; color: #b9c7ff; margin-bottom: 20px; border-bottom: 1px dashed rgba(250,204,21,0.3); padding-bottom: 10px; }
+        .tab-bar { display: flex; gap: 8px; margin-bottom: 1rem; }
+        .tab-btn { flex: 1; background: #1e293b; border: none; padding: 10px; border-radius: 60px; font-weight: 700; color: #94a3b8; cursor: pointer; transition: 0.1s; }
+        .tab-btn.active { background: #facc15; color: #0f172a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .drop-area { background: rgba(0,0,0,0.4); border: 2px dashed #facc15; border-radius: 1.5rem; padding: 1rem; text-align: center; cursor: pointer; margin-bottom: 1rem; }
+        .drop-icon { font-size: 2rem; }
+        .drop-text { font-size: 0.9rem; font-weight: 600; color: #facc15; }
+        .selected-file, .merge-file-item { background: #0f172a; border-radius: 1.2rem; padding: 10px 14px; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .clear-btn, .remove-merge-btn { background: rgba(239,68,68,0.2); border: none; color: #f87171; padding: 5px 12px; border-radius: 40px; cursor: pointer; }
+        .cut-panel { background: #0f172a; border-radius: 1.2rem; padding: 1rem; margin: 1rem 0; }
+        .slider-group { margin-bottom: 1rem; }
+        .slider-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: #cbd5e1; margin-bottom: 5px; }
+        input[type="range"] { width: 100%; accent-color: #facc15; }
+        .time-input-group { display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+        .time-input-box { flex: 1; background: #1e293b; border-radius: 40px; padding: 6px 12px; display: flex; align-items: center; gap: 8px; font-size: 0.7rem; }
+        .time-input-box input { background: #0f172a; border: 1px solid #334155; border-radius: 30px; padding: 5px 8px; width: 90px; color: #facc15; text-align: center; }
+        .wave-container { background: #020617; border-radius: 1rem; padding: 0.5rem; margin: 1rem 0; overflow-x: auto; }
+        canvas { width: 100%; height: 70px; display: block; background: #020617; border-radius: 8px; }
+        .play-control { display: flex; align-items: center; gap: 12px; margin: 0.8rem 0; flex-wrap: wrap; }
+        .play-btn { background: #facc15; color: #0f172a; border: none; padding: 6px 18px; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        .current-time { background: #1e293b; padding: 5px 12px; border-radius: 40px; font-family: monospace; font-size: 0.8rem; color: #facc15; }
+        .action-buttons { display: flex; gap: 12px; margin: 1rem 0; flex-wrap: wrap; }
+        .btn { flex: 1; padding: 12px; border-radius: 60px; font-weight: 700; cursor: pointer; border: none; text-align: center; }
+        .btn-primary { background: #facc15; color: #0f172a; }
+        .btn-grey { background: #334155; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .progress-section { background: #0f172a; border-radius: 1rem; padding: 10px; margin-top: 0.8rem; }
+        .progress-bar { background: #1e293b; border-radius: 40px; height: 28px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #facc15, #ffd966); border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; color: #0f172a; transition: width 0.2s; }
+        .status-msg { background: #0f172a; border-radius: 1rem; padding: 10px; text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 1rem; }
+        .footer { text-align: center; margin-top: 1rem; font-size: 0.65rem; color: #94a3b8; border-top: 1px solid rgba(250,204,21,0.2); padding-top: 12px; }
+        .footer span { color: #facc15; font-weight: bold; }
+        .toast { position: fixed; bottom: 20px; left: 20px; right: 20px; background: #1e293b; color: #facc15; text-align: center; padding: 10px; border-radius: 60px; font-size: 0.7rem; z-index: 1000; display: none; }
+        .merge-list { max-height: 200px; overflow-y: auto; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <h1><span>📊</span> Evrensel Ses Kesici & Birleştirici <span>📈</span></h1>
+    <div class="sub">MP3 • M4A • MP4 • M4B • CAF • Yüzdelik İlerleme • Kes • Birleştir</div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="cut">✂️ Kesme</button>
+        <button class="tab-btn" data-tab="merge">🔗 Birleştirme</button>
+    </div>
+
+    <!-- KESME SEKMESİ -->
+    <div id="tab-cut" class="tab-content active">
+        <div class="drop-area" id="cutDropZone">
+            <div class="drop-icon">🎵 ➜ ✂️</div>
+            <div class="drop-text">Ses dosyası seç (MP3, M4A, MP4, M4B, CAF)</div>
+            <input type="file" id="cutFileInput" accept=".mp3,.m4a,.m4b,.caf,.mp4,audio/mpeg,audio/mp4,audio/x-m4a" style="display:none">
+        </div>
+
+        <div id="cutSelectedDiv" style="display:none;" class="selected-file">
+            <span>🎵 <span id="cutFileName"></span></span>
+            <button id="cutClearBtn" class="clear-btn">✖ Temizle</button>
+        </div>
+
+        <div id="cutPanel" class="cut-panel" style="display:none;">
+            <div class="slider-group">
+                <div class="slider-label"><span>⏪ Başlangıç (saniye)</span><span id="startLabel">0:00</span></div>
+                <input type="range" id="startSlider" min="0" max="100" value="0" step="0.01">
+            </div>
+            <div class="slider-group">
+                <div class="slider-label"><span>⏩ Bitiş (saniye)</span><span id="endLabel">0:00</span></div>
+                <input type="range" id="endSlider" min="0" max="100" value="100" step="0.01">
+            </div>
+            <div class="time-input-group">
+                <div class="time-input-box"><label>Başlangıç (sn):</label><input type="number" id="startSecInput" step="0.1" value="0"></div>
+                <div class="time-input-box"><label>Bitiş (sn):</label><input type="number" id="endSecInput" step="0.1" value="0"></div>
+            </div>
+            <div class="wave-container"><canvas id="waveCanvas" width="800" height="70" style="width:100%; height:auto;"></canvas></div>
+            <div class="play-control">
+                <button id="playBtn" class="play-btn">▶ Oynat</button>
+                <button id="stopBtn" class="play-btn" style="background:#334155;">⏹️ Durdur</button>
+                <div class="current-time">⏱️ <span id="currentTimeDisplay">0:00</span> / <span id="totalTimeDisplay">0:00</span></div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="cutConvertBtn" class="btn btn-primary" disabled>✂️ Kes & MP3'e Dönüştür</button>
+            <button id="cutPreviewBtn" class="btn btn-grey" disabled>🔊 Seçilen Aralığı Dinle</button>
+        </div>
+        <div id="cutProgress" class="progress-section" style="display:none;">
+            <div class="progress-bar"><div class="progress-fill" id="cutProgressFill">0%</div></div>
+            <div style="font-size:0.65rem; text-align:center; margin-top:5px;" id="cutProgressText">Hazırlanıyor...</div>
+        </div>
+    </div>
+
+    <!-- BİRLEŞTİRME SEKMESİ -->
+    <div id="tab-merge" class="tab-content">
+        <div class="drop-area" id="mergeDropZone">
+            <div class="drop-icon">🎵 + 🎵 ➜ 🎧</div>
+            <div class="drop-text">Birden çok ses dosyası seç (MP3, M4A, MP4...)</div>
+            <input type="file" id="mergeFileInput" accept=".mp3,.m4a,.m4b,.caf,.mp4,audio/mpeg,audio/mp4,audio/x-m4a" multiple style="display:none">
+        </div>
+        <div id="mergeList" class="merge-list"></div>
+        <div class="action-buttons">
+            <button id="mergeClearBtn" class="btn btn-grey">🗑️ Tümünü Temizle</button>
+            <button id="mergeConvertBtn" class="btn btn-green" disabled>🔗 Birleştir & MP3 İndir</button>
+        </div>
+        <div id="mergeProgress" class="progress-section" style="display:none;">
+            <div class="progress-bar"><div class="progress-fill" id="mergeProgressFill">0%</div></div>
+            <div style="font-size:0.65rem; text-align:center; margin-top:5px;" id="mergeProgressText">Dosyalar işleniyor...</div>
+        </div>
+    </div>
+
+    <div id="statusMsg" class="status-msg">💡 MP3, M4A, MP4, M4B, CAF dosyası seçin. İşlemler sırasında yüzdelik ilerlemeyi göreceksiniz.</div>
+    <div class="footer"><span>✨ Bayram KOÇ ✨</span> | Yüzdelik İlerleme | Kes + Birleştir</div>
+</div>
+<div id="toastMsg" class="toast">✅ Başarılı</div>
+
+<script>
+    (function(){
+        let lamejs = null;
+        let lameLoaded = false;
+        let cutFile = null, cutBuffer = null, cutDuration = 0;
+        let currentSource = null, currentCtx = null, animId = null;
+        let mergeFiles = [];
+
+        // DOM
+        const statusDiv = document.getElementById('statusMsg');
+        const toastDiv = document.getElementById('toastMsg');
+        // Kesme
+        const cutDrop = document.getElementById('cutDropZone');
+        const cutFileInput = document.getElementById('cutFileInput');
+        const cutSelectedDiv = document.getElementById('cutSelectedDiv');
+        const cutFileNameSpan = document.getElementById('cutFileName');
+        const cutClearBtn = document.getElementById('cutClearBtn');
+        const cutPanel = document.getElementById('cutPanel');
+        const startSlider = document.getElementById('startSlider');
+        const endSlider = document.getElementById('endSlider');
+        const startLabel = document.getElementById('startLabel');
+        const endLabel = document.getElementById('endLabel');
+        const startSecInp = document.getElementById('startSecInput');
+        const endSecInp = document.getElementById('endSecInput');
+        const waveCanvas = document.getElementById('waveCanvas');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const currentTimeSpan = document.getElementById('currentTimeDisplay');
+        const totalTimeSpan = document.getElementById('totalTimeDisplay');
+        const cutConvertBtn = document.getElementById('cutConvertBtn');
+        const cutPreviewBtn = document.getElementById('cutPreviewBtn');
+        const cutProgressDiv = document.getElementById('cutProgress');
+        const cutProgressFill = document.getElementById('cutProgressFill');
+        const cutProgressText = document.getElementById('cutProgressText');
+        // Birleştirme
+        const mergeDrop = document.getElementById('mergeDropZone');
+        const mergeFileInput = document.getElementById('mergeFileInput');
+        const mergeListDiv = document.getElementById('mergeList');
+        const mergeClearBtn = document.getElementById('mergeClearBtn');
+        const mergeConvertBtn = document.getElementById('mergeConvertBtn');
+        const mergeProgressDiv = document.getElementById('mergeProgress');
+        const mergeProgressFill = document.getElementById('mergeProgressFill');
+        const mergeProgressText = document.getElementById('mergeProgressText');
+
+        // Sekmeler
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+                setStatus(btn.dataset.tab === 'cut' ? '✂️ Kesme modu: Ses dosyası seçin' : '🔗 Birleştirme modu: Birden çok dosya seçin');
+            });
+        });
+
+        function showToast(msg, isErr = false) { toastDiv.innerText = msg; toastDiv.style.background = isErr ? '#7f1d1d' : '#1e293b'; toastDiv.style.display = 'block'; setTimeout(() => toastDiv.style.display = 'none', 2000); }
+        function setStatus(msg, isErr = false) { statusDiv.innerHTML = msg; statusDiv.style.color = isErr ? '#f87171' : '#94a3b8'; }
+        function formatTime(sec) { let m = Math.floor(sec/60); let s = Math.floor(sec%60); return `${m}:${s.toString().padStart(2,'0')}`; }
+        function formatDetail(sec) { return `${Math.floor(sec/60)}:${Math.floor(sec%60)}.${Math.floor((sec%1)*10)}`; }
+
+        async function loadLame() {
+            if (window.lamejs) { lamejs = window.lamejs; lameLoaded = true; return; }
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js';
+                s.onload = () => { lamejs = window.lamejs; lameLoaded = true; resolve(); };
+                s.onerror = () => reject(new Error('lamejs yüklenemedi'));
+                document.head.appendChild(s);
+            });
+        }
+        async function audioBufferToMp3(buf, onProgress) {
+            if (!lamejs) throw new Error('lamejs yok');
+            const ch = buf.numberOfChannels;
+            const rate = buf.sampleRate;
+            const enc = new lamejs.Mp3Encoder(ch, rate, 128);
+            const left = buf.getChannelData(0);
+            const right = ch > 1 ? buf.getChannelData(1) : null;
+            const mp3 = [];
+            const block = 1152;
+            const totalBlocks = Math.ceil(left.length / block);
+            for (let i = 0; i < left.length; i += block) {
+                const sz = Math.min(block, left.length - i);
+                const lc = new Int16Array(sz);
+                for (let j = 0; j < sz; j++) lc[j] = Math.max(-32768, Math.min(32767, left[i+j]*32767));
+                if (ch === 1) { const b = enc.encodeBuffer(lc); if (b.length) mp3.push(b); }
+                else {
+                    const rc = new Int16Array(sz);
+                    for (let j = 0; j < sz; j++) rc[j] = Math.max(-32768, Math.min(32767, right[i+j]*32767));
+                    const b = enc.encodeBuffer(lc, rc); if (b.length) mp3.push(b);
+                }
+                if (onProgress) onProgress(30 + (i / left.length) * 60);
+            }
+            const f = enc.flush(); if (f.length) mp3.push(f);
+            return new Blob(mp3, { type: 'audio/mp3' });
+        }
+
+        function drawWave() {
+            if (!cutBuffer) return;
+            const data = cutBuffer.getChannelData(0);
+            const w = waveCanvas.width;
+            const step = Math.max(1, Math.floor(data.length / w));
+            const ctx = waveCanvas.getContext('2d');
+            ctx.clearRect(0, 0, w, 70);
+            ctx.beginPath(); ctx.strokeStyle = '#facc15'; ctx.lineWidth = 1.2;
+            for (let i = 0; i < w; i++) {
+                let min=0,max=0;
+                for (let j=0; j<step; j++) {
+                    const idx = Math.min(data.length-1, i*step+j);
+                    const v = data[idx];
+                    if (v < min) min = v; if (v > max) max = v;
+                }
+                const y1 = 35 + min*35; const y2 = 35 + max*35;
+                ctx.moveTo(i, y1); ctx.lineTo(i, y2);
+            }
+            ctx.stroke();
+        }
+
+        function updateCutUI() {
+            let startP = parseFloat(startSlider.value), endP = parseFloat(endSlider.value);
+            if (startP >= endP) startSlider.value = Math.max(0, endP-0.5);
+            if (endP <= startP) endSlider.value = Math.min(100, startP+0.5);
+            startP = parseFloat(startSlider.value); endP = parseFloat(endSlider.value);
+            const startS = (startP/100)*cutDuration, endS = (endP/100)*cutDuration;
+            startLabel.innerText = formatDetail(startS); endLabel.innerText = formatDetail(endS);
+            startSecInp.value = startS.toFixed(1); endSecInp.value = endS.toFixed(1);
+        }
+        startSlider.addEventListener('input', updateCutUI);
+        endSlider.addEventListener('input', updateCutUI);
+        function fromSecInputs() {
+            let s = parseFloat(startSecInp.value), e = parseFloat(endSecInp.value);
+            if (isNaN(s)) s=0; if (isNaN(e)) e=cutDuration;
+            s = Math.max(0, Math.min(cutDuration, s)); e = Math.max(s+0.1, Math.min(cutDuration, e));
+            startSlider.value = (s/cutDuration)*100; endSlider.value = (e/cutDuration)*100;
+            updateCutUI();
+        }
+        startSecInp.addEventListener('change', fromSecInputs);
+        endSecInp.addEventListener('change', fromSecInputs);
+
+        async function playFull() {
+            stopPlayback();
+            if (!cutBuffer) return;
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const src = ctx.createBufferSource();
+            src.buffer = cutBuffer;
+            src.connect(ctx.destination);
+            src.start(0);
+            currentSource = src; currentCtx = ctx;
+            const startT = ctx.currentTime;
+            function updateTimer() {
+                if (!currentSource || !currentCtx) return;
+                const elapsed = currentCtx.currentTime - startT;
+                const now = Math.min(cutDuration, Math.max(0, elapsed));
+                currentTimeSpan.innerText = formatDetail(now);
+                animId = requestAnimationFrame(updateTimer);
+            }
+            animId = requestAnimationFrame(updateTimer);
+            src.onended = () => { cancelAnimationFrame(animId); currentTimeSpan.innerText = formatDetail(cutDuration); };
+        }
+        function stopPlayback() {
+            if (currentSource) { currentSource.stop(); currentSource = null; }
+            if (currentCtx) { currentCtx.close(); currentCtx = null; }
+            if (animId) { cancelAnimationFrame(animId); animId = null; }
+            currentTimeSpan.innerText = formatDetail(0);
+        }
+        playBtn.addEventListener('click', playFull);
+        stopBtn.addEventListener('click', stopPlayback);
+
+        async function loadCut(file) {
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            const valid = ['mp3','m4a','m4b','caf','mp4'];
+            if (!valid.includes(ext) && !file.type.includes('mpeg') && !file.type.includes('mp4')) {
+                showToast('MP3, M4A, MP4, M4B, CAF dosyası seçin', true);
+                return;
+            }
+            cutFile = file;
+            cutFileNameSpan.innerText = file.name;
+            cutSelectedDiv.style.display = 'flex';
+            setStatus('Ses yükleniyor...');
+            const buf = await file.arrayBuffer();
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            cutBuffer = await ctx.decodeAudioData(buf);
+            cutDuration = cutBuffer.duration;
+            totalTimeSpan.innerText = formatDetail(cutDuration);
+            cutPanel.style.display = 'block';
+            startSlider.value = 0; endSlider.value = 100;
+            startSecInp.value = 0; endSecInp.value = cutDuration.toFixed(1);
+            updateCutUI();
+            drawWave();
+            cutConvertBtn.disabled = false; cutPreviewBtn.disabled = false;
+            setStatus(`✅ ${file.name} yüklendi. Oynat'a basarak ilerlemeyi izleyin.`);
+            if (!lameLoaded) loadLame().catch(e=>setStatus('Kodlayıcı yüklenemedi',true));
+        }
+        function cutClear() {
+            stopPlayback();
+            cutFile=null; cutBuffer=null; cutSelectedDiv.style.display='none'; cutPanel.style.display='none';
+            cutConvertBtn.disabled=true; cutPreviewBtn.disabled=true; cutFileInput.value='';
+            setStatus('Dosya temizlendi.');
+        }
+        async function cutAndConvert() {
+            if (!cutBuffer || !lameLoaded) await loadLame();
+            if (!cutBuffer) return;
+            let s = parseFloat(startSecInp.value), e = parseFloat(endSecInp.value);
+            if (isNaN(s)) s=0; if (isNaN(e)) e=cutDuration;
+            s=Math.max(0,Math.min(cutDuration,s)); e=Math.max(s+0.1,Math.min(cutDuration,e));
+            if (s>=e) { showToast('Geçersiz aralık',true); return; }
+            cutConvertBtn.disabled=true;
+            cutProgressDiv.style.display='block'; cutProgressFill.style.width='0%'; cutProgressText.innerText='Ses kesiliyor...';
+            setStatus('Kesme işlemi başladı...');
+            const offline = new OfflineAudioContext(cutBuffer.numberOfChannels, Math.ceil((e-s)*cutBuffer.sampleRate), cutBuffer.sampleRate);
+            const src = offline.createBufferSource();
+            src.buffer = cutBuffer; src.connect(offline.destination); src.start(0, s, e-s);
+            // Render ilerlemesi için timeout simülasyonu (OfflineAudioContext'in ilerleme events'i yok)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                if (progress <= 40) { cutProgressFill.style.width = progress+'%'; cutProgressFill.innerText = progress+'%'; cutProgressText.innerText = 'Ses işleniyor...'; }
+            }, 300);
+            const rendered = await offline.startRendering();
+            clearInterval(interval);
+            cutProgressFill.style.width = '40%'; cutProgressFill.innerText = '40%'; cutProgressText.innerText = 'MP3\'e dönüştürülüyor...';
+            const mp3 = await audioBufferToMp3(rendered, (p) => { cutProgressFill.style.width = p+'%'; cutProgressFill.innerText = Math.floor(p)+'%'; });
+            cutProgressFill.style.width = '100%'; cutProgressFill.innerText = '100%'; cutProgressText.innerText = 'Tamamlandı!';
+            setTimeout(()=>cutProgressDiv.style.display='none', 1000);
+            let base = cutFile.name.replace(/\.[^/.]+$/,'').replace(/[\\/:*?"<>|]/g,'');
+            const url = URL.createObjectURL(mp3);
+            const a = document.createElement('a'); a.href=url; a.download=`${base}_kesit_${Math.floor(s)}_${Math.floor(e)}.mp3`; a.click();
+            URL.revokeObjectURL(url);
+            setStatus(`✅ Kesit MP3 indirildi.`); showToast('MP3 hazır!');
+            cutConvertBtn.disabled=false;
+        }
+        function previewCut() {
+            if (!cutBuffer) return;
+            let s = parseFloat(startSecInp.value), e = parseFloat(endSecInp.value);
+            if (isNaN(s)) s=0; if (isNaN(e)) e=cutDuration;
+            s=Math.max(0,Math.min(cutDuration,s)); e=Math.max(s+0.1,Math.min(cutDuration,e));
+            stopPlayback();
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const src = ctx.createBufferSource();
+            src.buffer = cutBuffer; src.connect(ctx.destination); src.start(0, s, e-s);
+            currentSource = src; currentCtx = ctx;
+            showToast(`🔊 Önizleme: ${formatTime(s)} - ${formatTime(e)}`);
+        }
+
+        // BİRLEŞTİRME (Yüzdelik ilerlemeli)
+        function renderMerge() {
+            if (mergeFiles.length===0) { mergeListDiv.innerHTML='<div style="color:#6b7280;text-align:center;padding:12px;">Henüz dosya eklenmedi</div>'; mergeConvertBtn.disabled=true; return; }
+            mergeListDiv.innerHTML='';
+            mergeFiles.forEach((item,idx)=>{
+                const d=document.createElement('div'); d.className='merge-file-item';
+                d.innerHTML=`<span>🎵 ${escapeHtml(item.name)}</span><button class="remove-merge-btn" data-idx="${idx}">✖ Kaldır</button>`;
+                mergeListDiv.appendChild(d);
+            });
+            mergeConvertBtn.disabled=false;
+            document.querySelectorAll('.remove-merge-btn').forEach(btn=>{
+                btn.addEventListener('click',(e)=>{ const i=parseInt(btn.dataset.idx); mergeFiles.splice(i,1); renderMerge(); });
+            });
+        }
+        function escapeHtml(s){ return s.replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+        async function addMerge(files) {
+            for(let f of files){
+                const ext = f.name.split('.').pop().toLowerCase();
+                if(!['mp3','m4a','m4b','caf','mp4'].includes(ext) && !f.type.includes('mpeg') && !f.type.includes('mp4')){
+                    showToast(`${f.name} desteklenmiyor`,true); continue;
+                }
+                const buf=await f.arrayBuffer();
+                const ctx=new (window.AudioContext || window.webkitAudioContext)();
+                const buffer=await ctx.decodeAudioData(buf);
+                mergeFiles.push({name:f.name, buffer});
+            }
+            renderMerge();
+            if(!lameLoaded) loadLame();
+        }
+        async function mergeAndDownload() {
+            if(mergeFiles.length===0) return;
+            if(!lameLoaded) await loadLame();
+            mergeConvertBtn.disabled=true;
+            mergeProgressDiv.style.display='block'; mergeProgressFill.style.width='0%'; mergeProgressText.innerText='Dosyalar hazırlanıyor...';
+            setStatus('Birleştirme başladı...');
+            let totalSamples=0; let sampleRate=44100;
+            const channelData=[];
+            for(let idx=0; idx<mergeFiles.length; idx++){
+                const item = mergeFiles[idx];
+                mergeProgressText.innerText = `Dosya ${idx+1}/${mergeFiles.length} işleniyor...`;
+                mergeProgressFill.style.width = `${(idx/mergeFiles.length)*50}%`;
+                const buf = item.buffer;
+                const offline = new OfflineAudioContext(1, buf.length, buf.sampleRate);
+                const src = offline.createBufferSource(); src.buffer = buf; src.connect(offline.destination); src.start();
+                const rendered = await offline.startRendering();
+                const data = rendered.getChannelData(0);
+                channelData.push(data);
+                totalSamples += data.length;
+                if(sampleRate !== buf.sampleRate) sampleRate = buf.sampleRate;
+            }
+            mergeProgressFill.style.width = '60%'; mergeProgressText.innerText = 'Sesler birleştiriliyor...';
+            const combined = new Float32Array(totalSamples);
+            let offset = 0;
+            for(let d of channelData){ combined.set(d, offset); offset += d.length; }
+            const finalBuf = new AudioBuffer({length:combined.length, numberOfChannels:1, sampleRate});
+            finalBuf.copyToChannel(combined,0);
+            mergeProgressFill.style.width = '75%'; mergeProgressText.innerText = 'MP3\'e dönüştürülüyor...';
+            const mp3 = await audioBufferToMp3(finalBuf, (p) => { mergeProgressFill.style.width = 75 + (p*0.25) + '%'; mergeProgressFill.innerText = Math.floor(75+(p*0.25))+'%'; });
+            mergeProgressFill.style.width = '100%'; mergeProgressFill.innerText = '100%'; mergeProgressText.innerText = 'Tamamlandı!';
+            setTimeout(()=>mergeProgressDiv.style.display='none', 1000);
+            const url = URL.createObjectURL(mp3);
+            const a = document.createElement('a'); a.href=url; a.download=`birlesik_${Date.now()}.mp3`; a.click();
+            URL.revokeObjectURL(url);
+            setStatus(`✅ ${mergeFiles.length} dosya birleştirildi.`); showToast('Birleştirme tamam!');
+            mergeConvertBtn.disabled=false;
+        }
+
+        // Eventler
+        cutDrop.addEventListener('click',()=>cutFileInput.click());
+        cutFileInput.addEventListener('change',e=>{if(e.target.files[0]) loadCut(e.target.files[0]);});
+        cutDrop.addEventListener('dragover',e=>{e.preventDefault(); cutDrop.classList.add('drag-over');});
+        cutDrop.addEventListener('dragleave',()=>cutDrop.classList.remove('drag-over'));
+        cutDrop.addEventListener('drop',e=>{e.preventDefault(); cutDrop.classList.remove('drag-over'); if(e.dataTransfer.files[0]) loadCut(e.dataTransfer.files[0]);});
+        cutClearBtn.addEventListener('click',cutClear);
+        cutConvertBtn.addEventListener('click',cutAndConvert);
+        cutPreviewBtn.addEventListener('click',previewCut);
+
+        mergeDrop.addEventListener('click',()=>mergeFileInput.click());
+        mergeFileInput.addEventListener('change',e=>{if(e.target.files.length) addMerge(Array.from(e.target.files)); mergeFileInput.value='';});
+        mergeDrop.addEventListener('dragover',e=>{e.preventDefault(); mergeDrop.classList.add('drag-over');});
+        mergeDrop.addEventListener('dragleave',()=>mergeDrop.classList.remove('drag-over'));
+        mergeDrop.addEventListener('drop',e=>{e.preventDefault(); mergeDrop.classList.remove('drag-over'); if(e.dataTransfer.files.length) addMerge(Array.from(e.dataTransfer.files));});
+        mergeClearBtn.addEventListener('click',()=>{mergeFiles=[]; renderMerge(); setStatus('Birleştirme listesi temizlendi.');});
+        mergeConvertBtn.addEventListener('click',mergeAndDownload);
+
+        loadLame().catch(console.warn);
+        setStatus('💡 MP3, M4A, MP4, M4B, CAF dosyası seçin. Kesme ve birleştirme sırasında yüzdelik ilerlemeyi göreceksiniz.');
+    })();
+</script>
+</body>
+</html>
