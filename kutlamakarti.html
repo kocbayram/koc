@@ -210,6 +210,17 @@
             white-space: pre-wrap;
             outline: none;
         }
+
+        .editable-text p,
+        .editable-text div {
+            margin: 0;
+            padding: 0;
+        }
+
+        .editable-text p:last-child,
+        .editable-text div:last-child {
+            margin-bottom: 0;
+        }
         
         .footer { margin-top: 28px; text-align: center; font-size: 11px; color: #bb9be0; display: flex; justify-content: center; gap: 20px; padding-top: 20px; border-top: 1px solid #eeddff; flex-wrap: wrap; }
         .resize-handle {
@@ -534,7 +545,6 @@
             width: 100px;
         }
         
-        /* Yeni: canvas’ın container içinde görsel olarak taşmasını engelle */
         .canvas-wrapper {
             max-width: 100%;
             overflow-x: auto;
@@ -580,8 +590,8 @@
         <div class="column">
             <div class="card-preview">
                 <div class="canvas-size-control">
-                    <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="640" step="20" min="100" max="2000">
-                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="580" step="20" min="100" max="2000">
+                    <label>📐 Kart Genişlik:</label><input type="number" id="canvasWidthInput" value="620" step="20" min="100" max="2000">
+                    <label>📏 Kart Yükseklik:</label><input type="number" id="canvasHeightInput" value="720" step="20" min="100" max="2000">
                     <button id="applyCanvasSizeBtn" class="btn-secondary">Uygula</button>
                     <button id="resetCanvasSizeBtn" class="btn-secondary">Sıfırla</button>
                     <span style="font-size:11px; color:#a78bfa;">(Manuel)</span>
@@ -783,7 +793,6 @@
 </div>
 
 <script>
-    // ---------- Tüm önceki değişkenler ve fonksiyonlar aynen korundu ----------
     let fontData = ["Beau Rivage","Great Vibes","Harika Enerji","Tangerine","Dancing Script","İtalianno","Estonia","Pacifico","Felipa","Moon Dance","Lobster","Satisfy","Indie Flower","Caveat","Amatic SC","Courgette","Kaushan Script","Shadows Into Light","Tangerine","Allura","Parisienne","Alex Brush","Cookie","Handlee","Kristi","Yellowtail","Sacramento","Merienda","Gloria Hallelujah","Pangolin","Bad Script","Marck Script","Pinyon Script","La Belle Aurore","Mr De Haviland","Rouge Script","Seaweed Script","Norican","Rochester","Birthstone","Festive","Love Light","Moon Dance","Quintessential","WindSong","Water Brush","Updock","The Nautigal","Send Flowers","Qwitcher Grypen","Praise","Meow Script","Luxurious Roman","Klee One","Inspiration","Gwendolyn","Gemunu Libre","Fuggles","Freehand","Estonia","Dongle","Corinthia","Comforter Brush","Cedarville Cursive","Birthstone Bounce","Arizonia","Zeyada","Yesteryear","Vibur","Sofia","Ruthie","Qwigley","Petit Formal Script","Niconne","Monsieur La Doulaise","Miltonian Tattoo","Meddon","Loved by the King","Long Cang","Liu Jian Mao Cao","League Script","Kurale","Jim Nightshade","Italianno","Herr Von Muellerhoff","Fondamento","Emilys Candy","Crafty Girls","Bilbo","Averia Gruesa Libre","Permanent Marker","Fredoka One","Righteous","Bangers","Comfortaa","Press Start 2P","Monoton","Abril Fatface","Fjalla One","Anton","Oswald","Bebas Neue","Luckiest Guy","Chewy","Patrick Hand","Covered By Your Grace","Rock Salt","Bungee","Orbitron","Exo 2","Titillium Web","Josefin Sans","Audiowide","Black Ops One","Poppins","Roboto","Open Sans","Montserrat","Nunito","Raleway","Inter","Lato","Mukta","Work Sans","DM Sans","Manrope","Urbanist","Lexend","Figtree","Quicksand","Rubik","Outfit","Be Vietnam Pro","Playfair Display","Lora","Merriweather","Cormorant Garamond","EB Garamond","Libre Baskerville","Crimson Pro","Bitter","Source Serif 4","Alegreya","Volkhov","Old Standard TT","PT Serif","Noto Serif","Playfair Display","Manrope","Outfit","Poppins","Smooch Sans","Archivo Black","Unna"];
     
     const DEFAULT_SYMBOLS = ["⭐","✨","🌟","💫","⚡","🔥","💥","🌠","🎇","🎆","🔆","💡","🔅","⭐️","🌙","☀️","🌞","💢","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗","💖","💘","💝","💟","🎉","🎊","🎈","🎁","🎀","🎂","🍰","🥳","🎃","🎄","🎍","🎎","🎏","🎐","🎑","🎒","🎓","🎖️","🎗️","🎟️","🌸","🌼","🌻","🌺","🌹","🌷","💐","🍂","🍃","🍁","🌿","🍀","🌱","🌲","🌳","🌴","🌵","🌾","🌽","🍄","🐕","🐩","🐈","🐅","🐆","🐎","🐏","🐑","🐐","🐪","🐫","🦙","🦒","🐘","🦏","🦛","🐭","🐁","🐀","🐹","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🍑","🥭","🍍","🥥","🥝","🍅","🍆","🥑","🥦","🇹🇷","🏆","🏅","🥇","🥈","🥉","⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉","🥏","🎳","🎵","🎶","🎤","🎧","🎷","🎸","🎹","🎻","🥁","🎬","🎨","🎭","🎪","🎯","🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🚚","🚛","🚜","✈️","🚀","👨‍👩‍👧‍👦","👪","💑","👩‍❤️‍👨","👭","👬","👫","🧑‍🤝‍🤝","🤝","✋","🖐️","👋","🤚","🖖","👌","🕎","✡️","☦️","🕉️","☯️","🕊️","🎋","🎍","🎮","🕹️","🎲","♠️","♥️","♦️","♣️","🃏","🎰","🎱","🎯","🎳","📱","☀️","☁️","⛅","🌤️","🌥️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","☃️","⛄","💧","🌈","🧘","🧘‍♂️","🧘‍♀️","🏋️","🤸","🧗","🚴","🏊","🧖","💆","⛪","🕌","🕍","🕋","☸️","💎","👑","💍","💄","👠","👗","🕶️","⌚","📿","💼","🤡","👻","👽","🤖","🎅","🧙","🧚","🧛","🧜","🧞","🧝","🦸","🦹","🧟","🦄"," ⛹️‍♂️ ","🤾🏽‍♀️","ᯓ🏃🏻‍♀️‍➡️ ","🤾 ","🏋️‍♂️","🏋️","🏃🏽","🏃‍♀️","🤸🏼","🏓"," 🏃🏽‍♀️ "];
@@ -792,11 +801,11 @@
     let customIconsList = [];
     let currentFont = "Beau Rivage";
     let bgImage = null, overlayImage = null, originalImgW = 1, originalImgH = 1;
-    let overlayX = 320, overlayY = 290, overlayWidth = 80, overlayHeight = 80;
-    let textPosX = 320, textPosY = 290;
-    let canvasWidth = 640, canvasHeight = 580;
-    let lastManualWidth = 640, lastManualHeight = 580; // son manuel boyutu hatırla
-    let isAutoSizeFromBg = false; // arkaplan otomatik boyutlandı mı?
+    let overlayX = 310, overlayY = 360, overlayWidth = 80, overlayHeight = 80;
+    let textPosX = 310, textPosY = 360;
+    let canvasWidth = 620, canvasHeight = 720;
+    let lastManualWidth = 620, lastManualHeight = 720;
+    let isAutoSizeFromBg = false;
     
     const canvas = document.getElementById("cardCanvas");
     let ctx = canvas.getContext("2d");
@@ -814,6 +823,81 @@
     const textEditable = document.getElementById("cardTextEditable");
     function getCardText() { return textEditable.innerText; }
     function setCardText(val) { textEditable.innerText = val; }
+
+    // ENTER tuşu: sadece satır sonu ekle (Shift gerekmez)
+    textEditable.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.execCommand('insertLineBreak');
+            textEditable.dispatchEvent(new Event('input'));
+        }
+    });
+
+    // Yapıştırma işlemi (metni düz metin olarak yapıştır)
+    textEditable.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textEditable.dispatchEvent(new Event('input'));
+        drawCard();
+    });
+
+    // ========== YENİ wrapText FONKSİYONU - Kullanıcının satır sonlarını KESİNLİKLE korur ==========
+    function wrapText(ctx, text, maxWidth) {
+        // Kullanıcının koyduğu satır sonlarını (\n) koru
+        let paragraphs = text.split('\n');
+        let allLines = [];
+        
+        for (let p = 0; p < paragraphs.length; p++) {
+            let paragraph = paragraphs[p];
+            
+            // Eğer paragraf boşsa, boş satır ekle (kullanıcının boş satır isteğini koru)
+            if (paragraph.length === 0) {
+                allLines.push('');
+                continue;
+            }
+            
+            // Başındaki boşlukları koru
+            let leadingSpaces = '';
+            let spaceMatch = paragraph.match(/^ +/);
+            if (spaceMatch) {
+                leadingSpaces = spaceMatch[0];
+            }
+            
+            // Kelimelere ayır
+            let words = paragraph.substring(leadingSpaces.length).split(' ');
+            let currentLine = leadingSpaces;
+            
+            for (let i = 0; i < words.length; i++) {
+                let word = words[i];
+                if (word === '' && i > 0) continue;
+                
+                let testLine = currentLine + (currentLine === leadingSpaces ? '' : ' ') + word;
+                let metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && currentLine !== leadingSpaces) {
+                    // Mevcut satırı kaydet ve yeni satıra başla
+                    allLines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            // Son satırı ekle
+            allLines.push(currentLine);
+        }
+        
+        return allLines;
+    }
 
     function createHiddenInputs() {
         if(!document.getElementById("textColor")) {
@@ -909,7 +993,7 @@
     document.getElementById("customDoubleColor1Hex").addEventListener("change", syncHexFromInputs);
     document.getElementById("customDoubleColor2Hex").addEventListener("change", syncHexFromInputs);
     
-    // Spektrum (kısa)
+    // Spektrum renk seçici
     const spectrumOverlayEl = document.getElementById("spectrumOverlay");
     const spectrumCanvasEl = document.getElementById("spectrumCanvas");
     const hueSlider = document.getElementById("hueSlider");
@@ -947,7 +1031,7 @@
     if(borderOffsetSlider) borderOffsetSlider.addEventListener("input", (e) => { borderOffset = parseInt(e.target.value); borderOffsetVal.innerText = borderOffset + "px"; drawCard(); });
     
     function roundedRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r); ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h); ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r); ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath(); }
-    function wrapText(ctx, text, maxWidth) { let lines = [], paragraphs = text.split('\n'); for (let i = 0; i < paragraphs.length; i++) { let paragraph = paragraphs[i]; let initialSpaces = ""; let spaceMatch = paragraph.match(/^ +/); if (spaceMatch) initialSpaces = spaceMatch[0]; let words = paragraph.substring(initialSpaces.length).split(' '); let currentLine = initialSpaces; for (let n = 0; n < words.length; n++) { if (words[n] === "" && n > 0) continue; let testLine = currentLine + (currentLine === initialSpaces ? "" : " ") + words[n]; if (ctx.measureText(testLine).width > maxWidth && n > 0) { lines.push(currentLine); currentLine = words[n]; } else currentLine = testLine; } lines.push(currentLine); } return lines; }
+    
     function getLineDash(style){ switch(style){ case "dashed": return [12,8]; case "dotted": return [3,5]; case "dashdot": return [10,6,3,6]; default: return []; } }
     function drawDoubleColorDashedBorder(x, y, w, h, r, lineWidth, color1, color2, dashPattern) { let perimeter = 2*(w+h)-8*r+2*Math.PI*r; let points = []; for(let t=0; t<=perimeter; t+=2) points.push(getPointOnRoundedRect(x,y,w,h,r,t/perimeter)); let dashIndex=0, dashRemaining=dashPattern[0], currentColor=color1, segments=[]; for(let i=0;i<points.length-1;i++){ let p1=points[i],p2=points[i+1], dist=Math.hypot(p2.x-p1.x,p2.y-p1.y), remaining=dist, start=p1; while(remaining>0){ if(dashRemaining<=remaining){ let end={x:start.x+(p2.x-p1.x)*(dashRemaining/dist), y:start.y+(p2.y-p1.y)*(dashRemaining/dist)}; segments.push({start,end,color:currentColor}); start=end; remaining-=dashRemaining; dashIndex=(dashIndex+1)%2; dashRemaining=dashPattern[dashIndex]; currentColor=(dashIndex===0)?color1:color2; } else { let end={x:start.x+(p2.x-p1.x)*(remaining/dist), y:start.y+(p2.y-p1.y)*(remaining/dist)}; segments.push({start,end,color:currentColor}); dashRemaining-=remaining; remaining=0; start=end; } } } ctx.save(); ctx.lineWidth=lineWidth; for(let seg of segments){ ctx.beginPath(); ctx.moveTo(seg.start.x,seg.start.y); ctx.lineTo(seg.end.x,seg.end.y); ctx.strokeStyle=seg.color; ctx.stroke(); } ctx.restore(); }
     function getPointOnRoundedRect(x,y,w,h,r,t){ let top=y, bottom=y+h, left=x, right=x+w; let topLen=w-2*r, rightLen=h-2*r, bottomLen=w-2*r, leftLen=h-2*r, cornerLen=(Math.PI*r)/2, total=topLen+rightLen+bottomLen+leftLen+4*cornerLen, pos=t*total; if(pos<topLen) return {x:left+r+pos, y:top}; pos-=topLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.sin(angle), y:top+r-r*Math.cos(angle)}; } pos-=cornerLen; if(pos<rightLen) return {x:right, y:top+r+pos}; pos-=rightLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.cos(angle), y:bottom-r+r*Math.sin(angle)}; } pos-=cornerLen; if(pos<bottomLen) return {x:right-r-pos, y:bottom}; pos-=bottomLen; if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:left+r-r*Math.sin(angle), y:bottom-r+r*Math.cos(angle)}; } pos-=cornerLen; if(pos<leftLen) return {x:left, y:bottom-r-pos}; pos-=leftLen; let angle=Math.PI/2*(pos/cornerLen); return {x:left+r-r*Math.cos(angle), y:top+r-r*Math.sin(angle)}; }
@@ -960,14 +1044,12 @@
         document.getElementById("textY").value = Math.round(textPosY);
     }
     
-    // **YENİ: Canvas boyutunu güncelle (arkaplan yüklendiğinde otomatik)**
     function setCanvasSize(width, height, isAuto = false) {
         canvasWidth = width;
         canvasHeight = height;
         document.getElementById("canvasWidthInput").value = canvasWidth;
         document.getElementById("canvasHeightInput").value = canvasHeight;
         
-        // Konumları ortala
         overlayX = canvasWidth/2;
         overlayY = canvasHeight/2;
         textPosX = canvasWidth/2;
@@ -1029,10 +1111,36 @@
         if(overlayImage){ let dx=overlayX-overlayWidth/2, dy=overlayY-overlayHeight/2; ctx.drawImage(overlayImage,dx,dy,overlayWidth,overlayHeight); }
         let raw = getCardText();
         if(raw && raw.trim()){ let fontSize=parseInt(document.getElementById("fontSize").value), fontWeight=document.getElementById("fontWeight").value, align=document.getElementById("textAlign").value; ctx.font=fontWeight+" "+fontSize+"px '"+currentFont+"', cursive"; ctx.fillStyle=textColorHidden.value; if(textShadowCheck.checked){ ctx.shadowColor="rgba(0,0,0,0.3)"; ctx.shadowBlur=4; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2; } else ctx.shadowColor="transparent";
-            let maxW=canvasWidth-80, lines; if(align==='free'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='left'; let maxLineWidth=0; for(let i=0;i<lines.length;i++){ let w=ctx.measureText(lines[i]).width; if(w>maxLineWidth) maxLineWidth=w; } let startX=textPosX-(maxLineWidth/2), lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-(totalH/2); for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
-            else if(align==='center'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='center'; let startX=canvasWidth/2, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
-            else if(align==='right'){ lines=wrapText(ctx,raw,maxW); ctx.textAlign='right'; let startX=canvasWidth-60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
-            else{ lines=wrapText(ctx,raw,maxW); ctx.textAlign='left'; let startX=60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); }
+            let maxW=canvasWidth-80, lines; 
+            
+            // Serbest modda satır sonlarını koru, diğer modlarda da koru (artık tüm modlarda aynı wrapText kullanılıyor)
+            lines = wrapText(ctx, raw, maxW);
+            
+            if(align==='free'){ 
+                ctx.textAlign='left'; 
+                let maxLineWidth=0; 
+                for(let i=0;i<lines.length;i++){ 
+                    let w=ctx.measureText(lines[i]).width; 
+                    if(w>maxLineWidth) maxLineWidth=w; 
+                } 
+                let startX=textPosX-(maxLineWidth/2), lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-(totalH/2); 
+                for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); 
+            }
+            else if(align==='center'){ 
+                ctx.textAlign='center'; 
+                let startX=canvasWidth/2, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; 
+                for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); 
+            }
+            else if(align==='right'){ 
+                ctx.textAlign='right'; 
+                let startX=canvasWidth-60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; 
+                for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); 
+            }
+            else{ 
+                ctx.textAlign='left'; 
+                let startX=60, lineH=fontSize*1.35, totalH=lines.length*lineH, startY=textPosY-totalH/2; 
+                for(let i=0;i<lines.length;i++) ctx.fillText(lines[i],startX,startY+i*lineH); 
+            }
             ctx.shadowColor="transparent";
         }
         updateResizeHandlePosition();
@@ -1042,14 +1150,14 @@
     
     function applyCanvasSize() {
         let newWidth=parseInt(document.getElementById("canvasWidthInput").value), newHeight=parseInt(document.getElementById("canvasHeightInput").value);
-        if(isNaN(newWidth)) newWidth=640; if(isNaN(newHeight)) newHeight=580;
+        if(isNaN(newWidth)) newWidth=620; if(isNaN(newHeight)) newHeight=720;
         newWidth=Math.min(Math.max(newWidth,100),2000); newHeight=Math.min(Math.max(newHeight,100),2000);
         setCanvasSize(newWidth, newHeight, false);
     }
     
     function resetCanvasSize() {
-        setCanvasSize(640, 580, false);
-        showAlert("Kart boyutu varsayılana (640x580) sıfırlandı");
+        setCanvasSize(620, 720, false);
+        showAlert("Kart boyutu varsayılana (620x720) sıfırlandı");
     }
     
     const logoWSlider=document.getElementById("logoWidth"), logoHSlider=document.getElementById("logoHeight");
@@ -1085,9 +1193,8 @@
     textShadowCheck.addEventListener("change",drawCard);
     document.getElementById("applyBorderStyleBtn").addEventListener("click", () => { drawCard(); showAlert("Kenarlık stili güncellendi"); });
     
-    // Proje kaydetme / yükleme (aynen)
     document.getElementById("saveProjectBtn").addEventListener("click", () => { let projectData={ canvasWidth,canvasHeight, textPosX,textPosY, overlayX,overlayY,overlayWidth,overlayHeight, currentFont, textColor:textColorHidden.value, bgColor:bgColorHidden.value, borderOuterColor:borderOuterHidden.value, borderInnerColor:borderInnerHidden.value, borderThirdColor:borderThirdHidden.value, borderDoubleColor1:borderDoubleColor1Hidden.value, borderDoubleColor2:borderDoubleColor2Hidden.value, borderWidth:borderWidthSlider.value, borderOffset, borderThirdStyle:borderThirdStyleSelect.value, borderLayerCount:borderLayerCountSelect.value, textShadow:textShadowCheck.checked, gradientToggle:gradToggle.checked, gradColor1:gradColor1Hidden.value, gradColor2:gradColor2Hidden.value, gradAngle:gradAngle.value, fontSize:document.getElementById("fontSize").value, fontWeight:document.getElementById("fontWeight").value, textAlign:document.getElementById("textAlign").value, cardText:getCardText(), customFontsList, customIconsList, lastManualWidth, lastManualHeight }; const dataStr=JSON.stringify(projectData,null,2); const blob=new Blob([dataStr],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kart_projesi.json"; a.click(); URL.revokeObjectURL(url); showAlert("✅ Proje kaydedildi!","success"); });
-    document.getElementById("loadProjectBtn").addEventListener("click", () => { const inp=document.createElement("input"); inp.type="file"; inp.accept="application/json"; inp.onchange=e=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=ev=>{ try{ const data=JSON.parse(ev.target.result); canvasWidth=data.canvasWidth||640; canvasHeight=data.canvasHeight||580; textPosX=data.textPosX||320; textPosY=data.textPosY||290; overlayX=data.overlayX||320; overlayY=data.overlayY||290; overlayWidth=data.overlayWidth||80; overlayHeight=data.overlayHeight||80; currentFont=data.currentFont||"Beau Rivage"; textColorHidden.value=data.textColor||"#4a2e6b"; bgColorHidden.value=data.bgColor||"#faf5ff"; borderOuterHidden.value=data.borderOuterColor||"#81778A"; borderInnerHidden.value=data.borderInnerColor||"#D9D6DE"; borderThirdHidden.value=data.borderThirdColor||"#B9B4BF"; if(data.borderDoubleColor1) borderDoubleColor1Hidden.value=data.borderDoubleColor1; if(data.borderDoubleColor2) borderDoubleColor2Hidden.value=data.borderDoubleColor2; borderWidthSlider.value=parseInt(data.borderWidth)||4; if(data.borderOffset!==undefined){ borderOffset=data.borderOffset; if(borderOffsetSlider) borderOffsetSlider.value=borderOffset; if(borderOffsetVal) borderOffsetVal.innerText=borderOffset+"px"; } borderThirdStyleSelect.value=data.borderThirdStyle||"solid"; borderLayerCountSelect.value=data.borderLayerCount||"3"; textShadowCheck.checked=data.textShadow||false; gradToggle.checked=data.gradientToggle!==undefined?data.gradientToggle:true; gradColor1Hidden.value=data.gradColor1||"#f9e5ff"; gradColor2Hidden.value=data.gradColor2||"#ffffff"; gradAngle.value=data.gradAngle||"0"; document.getElementById("fontSize").value=data.fontSize||40; document.getElementById("fontWeight").value=data.fontWeight||"700"; document.getElementById("textAlign").value=data.textAlign||"center"; setCardText(data.cardText||""); if(data.customFontsList) customFontsList=data.customFontsList; if(data.customIconsList) customIconsList=data.customIconsList; if(data.lastManualWidth) lastManualWidth=data.lastManualWidth; if(data.lastManualHeight) lastManualHeight=data.lastManualHeight; document.getElementById("canvasWidthInput").value=canvasWidth; document.getElementById("canvasHeightInput").value=canvasHeight; document.getElementById("logoX").value=Math.round(overlayX); document.getElementById("logoY").value=Math.round(overlayY); document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("textX").value=Math.round(textPosX); document.getElementById("textY").value=Math.round(textPosY); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; isAutoSizeFromBg=false; updateAllPreviews(); renderFontList(); renderSymbolPanel(); updateCustomFontsFooter(); if(customIconsList.length>0) updateIconPreview(customIconsList); resetTextPosition(); drawCard(); showAlert("✅ Proje yüklendi!","success"); } catch(err){ showAlert("❌ Hata: Geçersiz proje!","error"); } }; reader.readAsText(file); }; inp.click(); });
+    document.getElementById("loadProjectBtn").addEventListener("click", () => { const inp=document.createElement("input"); inp.type="file"; inp.accept="application/json"; inp.onchange=e=>{ const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=ev=>{ try{ const data=JSON.parse(ev.target.result); canvasWidth=data.canvasWidth||620; canvasHeight=data.canvasHeight||720; textPosX=data.textPosX||310; textPosY=data.textPosY||360; overlayX=data.overlayX||310; overlayY=data.overlayY||360; overlayWidth=data.overlayWidth||80; overlayHeight=data.overlayHeight||80; currentFont=data.currentFont||"Beau Rivage"; textColorHidden.value=data.textColor||"#4a2e6b"; bgColorHidden.value=data.bgColor||"#faf5ff"; borderOuterHidden.value=data.borderOuterColor||"#81778A"; borderInnerHidden.value=data.borderInnerColor||"#D9D6DE"; borderThirdHidden.value=data.borderThirdColor||"#B9B4BF"; if(data.borderDoubleColor1) borderDoubleColor1Hidden.value=data.borderDoubleColor1; if(data.borderDoubleColor2) borderDoubleColor2Hidden.value=data.borderDoubleColor2; borderWidthSlider.value=parseInt(data.borderWidth)||4; if(data.borderOffset!==undefined){ borderOffset=data.borderOffset; if(borderOffsetSlider) borderOffsetSlider.value=borderOffset; if(borderOffsetVal) borderOffsetVal.innerText=borderOffset+"px"; } borderThirdStyleSelect.value=data.borderThirdStyle||"solid"; borderLayerCountSelect.value=data.borderLayerCount||"3"; textShadowCheck.checked=data.textShadow||false; gradToggle.checked=data.gradientToggle!==undefined?data.gradientToggle:true; gradColor1Hidden.value=data.gradColor1||"#f9e5ff"; gradColor2Hidden.value=data.gradColor2||"#ffffff"; gradAngle.value=data.gradAngle||"0"; document.getElementById("fontSize").value=data.fontSize||40; document.getElementById("fontWeight").value=data.fontWeight||"700"; document.getElementById("textAlign").value=data.textAlign||"center"; setCardText(data.cardText||""); if(data.customFontsList) customFontsList=data.customFontsList; if(data.customIconsList) customIconsList=data.customIconsList; if(data.lastManualWidth) lastManualWidth=data.lastManualWidth; if(data.lastManualHeight) lastManualHeight=data.lastManualHeight; document.getElementById("canvasWidthInput").value=canvasWidth; document.getElementById("canvasHeightInput").value=canvasHeight; document.getElementById("logoX").value=Math.round(overlayX); document.getElementById("logoY").value=Math.round(overlayY); document.getElementById("logoWidth").value=overlayWidth; document.getElementById("logoHeight").value=overlayHeight; document.getElementById("logoWidthVal").innerText=overlayWidth+"px"; document.getElementById("logoHeightVal").innerText=overlayHeight+"px"; document.getElementById("textX").value=Math.round(textPosX); document.getElementById("textY").value=Math.round(textPosY); logoWSlider.value=overlayWidth; logoHSlider.value=overlayHeight; isAutoSizeFromBg=false; updateAllPreviews(); renderFontList(); renderSymbolPanel(); updateCustomFontsFooter(); if(customIconsList.length>0) updateIconPreview(customIconsList); resetTextPosition(); drawCard(); showAlert("✅ Proje yüklendi!","success"); } catch(err){ showAlert("❌ Hata: Geçersiz proje!","error"); } }; reader.readAsText(file); }; inp.click(); });
     
     function downloadImage(format){ let link=document.createElement("a"); link.download=format==="png"?"kutlama_karti.png":"kutlama_karti.jpg"; link.href=canvas.toDataURL(format==="png"?"image/png":"image/jpeg",0.95); link.click(); showAlert(format.toUpperCase()+" indirildi!","success"); }
     document.getElementById("downloadPngBtn").addEventListener("click",()=>downloadImage("png")); document.getElementById("downloadJpgBtn").addEventListener("click",()=>downloadImage("jpg"));
@@ -1098,7 +1205,6 @@
     document.getElementById("shareAsHtmlBtn").addEventListener("click", () => { let htmlContent=document.documentElement.outerHTML; const ozelIkonlar=customIconsList.join(','); const ozelFontlar=customFontsList.join(','); const yuklemeScripti='<scr'+'ipt>window.addEventListener("DOMContentLoaded",function(){var ikonlar="'+ozelIkonlar.replace(/"/g,'\\"')+'";var fontlar="'+ozelFontlar.replace(/"/g,'\\"')+'";if(ikonlar&&ikonlar.length>0&&typeof customIconsList!=="undefined"){var dizi=ikonlar.split(",");for(var i=0;i<dizi.length;i++){if(dizi[i]&&customIconsList.indexOf(dizi[i])===-1)customIconsList.push(dizi[i]);}if(dizi.length>0&&typeof renderSymbolPanel==="function")renderSymbolPanel();}if(fontlar&&fontlar.length>0&&typeof customFontsList!=="undefined"){var dizi2=fontlar.split(",");for(var i=0;i<dizi2.length;i++){if(dizi2[i]&&customFontsList.indexOf(dizi2[i])===-1)customFontsList.push(dizi2[i]);}if(dizi2.length>0&&typeof renderFontList==="function")renderFontList();if(dizi2.length>0&&typeof updateCustomFontsFooter==="function")updateCustomFontsFooter();}});</scr'+'ipt>'; if(htmlContent.indexOf('</head>')>-1) htmlContent=htmlContent.replace('</head>',yuklemeScripti+'</head>'); const blob=new Blob([htmlContent],{type:"text/html"}); const file=new File([blob],"kutlama_karti.html",{type:"text/html"}); if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file], title:"Kutlama Kartı HTML"}).catch(()=>{ const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kutlama_karti.html"; a.click(); URL.revokeObjectURL(url); }); } else { const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kutlama_karti.html"; a.click(); URL.revokeObjectURL(url); } showAlert("HTML paylaşıldı/indirildi!","success"); document.getElementById("shareDropdown").classList.remove("active"); });
     const shareBtn=document.getElementById("shareBtn"); const shareDropdown=document.getElementById("shareDropdown"); shareBtn.addEventListener("click",(e)=>{ e.stopPropagation(); shareDropdown.classList.toggle("active"); }); document.addEventListener("click",(e)=>{ if(!shareBtn.contains(e.target) && !shareDropdown.contains(e.target)) shareDropdown.classList.remove("active"); });
     
-    // **YENİ: Arkaplan yükleme (otomatik boyutlandırma ile)**
     function loadBg(file) { 
         if(!file.type.match("image.*")) return; 
         let r=new FileReader(); 
@@ -1106,7 +1212,6 @@
             bgImage=img; 
             document.getElementById("imagePreviewArea").style.display="flex"; 
             document.getElementById("thumbImg").src=e.target.result; 
-            // *** OTOMATİK BOYUTLANDIRMA ***
             setCanvasSize(img.width, img.height, true);
             drawCard(); 
             showAlert("Arkaplan yüklendi, canvas boyutu otomatik ayarlandı!","success"); 
@@ -1117,7 +1222,6 @@
     function clearBackground() {
         bgImage = null;
         document.getElementById("imagePreviewArea").style.display = "none";
-        // Arkaplan kaldırılınca eski manuel boyuta dön (varsayılan 640x580)
         setCanvasSize(lastManualWidth, lastManualHeight, false);
         drawCard();
         showAlert("Arkaplan kaldırıldı, manuel boyuta dönüldü.");
@@ -1162,7 +1266,7 @@
     
     updateAllPreviews();
     renderFontList();
-    setCanvasSize(640, 580, false);
+    setCanvasSize(620, 720, false);
     renderSymbolPanel();
     setupCollapsible("fontPanelHeader","fontPanelContent");
     setupCollapsible("customFontPanelHeader","customFontPanelContent");
