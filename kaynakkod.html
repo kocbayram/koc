@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Source Kod Dönüştürücü</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a202c; /* Antrasit Tonu */
+            font-family: system-ui, 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        .card {
+            max-width: 650px;
+            width: 100%;
+            background: #2d3748; /* Koyu Antrasit Kart */
+            border-radius: 2rem;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #d4af37; /* Altın Sarısı Çerçeve */
+        }
+        .header {
+            background: #1a202c;
+            padding: 1.8rem;
+            color: #d4af37; /* Altın Sarısı Başlık */
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        .header h1 {
+            font-size: 1.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .badge {
+            background: #d4af37;
+            color: #1a202c;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #4a5568;
+            background: #1a202c;
+            color: #fff;
+            border-radius: 60px;
+            font-family: monospace;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
+        }
+        .result-box {
+            background: #1a202c;
+            border: 1px dashed #d4af37;
+            padding: 14px;
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-family: monospace;
+            font-size: 0.95rem;
+            text-align: center;
+            word-break: break-all;
+            display: none;
+        }
+        button {
+            background: #d4af37; /* Altın Sarısı Buton */
+            color: #1a202c;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        button:hover {
+            background: #b8972f;
+            transform: scale(1.01);
+        }
+        .info {
+            background: #3a475c;
+            padding: 16px;
+            border-radius: 20px;
+            margin: 20px 0;
+            font-size: 0.85rem;
+            border-left: 5px solid #d4af37;
+            color: #e2e8f0;
+        }
+        code {
+            background: #1a202c;
+            color: #d4af37;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-family: monospace;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            padding: 1.2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            color: #a0aec0;
+            background: #1a202c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <h1>📄 <span>View Source Dönüştürücü</span> <span class="badge">Firefox Uyumlu</span></h1>
+        <p style="margin-top: 8px; color: #a0aec0;">Tarayıcı engeline takılmayan kesin çözüm</p>
+    </div>
+    <div class="content">
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="radyoyol.de veya https://example.com" value="">
+            <div id="resultBox" class="result-box"></div>
+            <button id="viewSourceBtn">⚡ Adresi Dönüştür ve Kopyala</button>
+        </div>
+
+        <div class="info">
+            🚀 <strong>Nasıl Kullanılır?</strong><br>
+            1. Kutucuğa adresi yazıp butona basın.<br>
+            2. Kod, adresi otomatik olarak <code>view-source:</code> formatına getirecek ve **hafızaya kopyalayacaktır**.<br>
+            3. Firefox adres çubuğuna gelin, <code>CTRL + V</code> ile yapıştırıp <code>Enter</code>'a basın.
+        </div>
+    </div>
+    <footer>
+        Bayram KOÇ
+    </footer>
+</div>
+
+<script>
+    (function() {
+        const urlInput = document.getElementById('urlInput');
+        const btn = document.getElementById('viewSourceBtn');
+        const resultBox = document.getElementById('resultBox');
+
+        function sanitizeUrl(raw) {
+            if (!raw) return null;
+            let trimmed = raw.trim();
+            if (trimmed === "") return null;
+            if (!/^https?:\/\//i.test(trimmed)) {
+                trimmed = 'https://' + trimmed;
+            }
+            try {
+                new URL(trimmed);
+                return trimmed;
+            } catch(e) {
+                return null;
+            }
+        }
+
+        function processUrl() {
+            let raw = urlInput.value;
+            let clean = sanitizeUrl(raw);
+            if (!clean) {
+                alert("Geçersiz URL! Örnek: radyoyol.de");
+                return;
+            }
+            
+            const viewSourceUrl = "view-source:" + clean;
+            
+            // Ekranda göster
+            resultBox.innerText = viewSourceUrl;
+            resultBox.style.display = "block";
+
+            // Hafızaya kopyala
+            navigator.clipboard.writeText(viewSourceUrl).then(() => {
+                btn.innerText = "✅ Kopyalandı! Adres Çubuğuna Yapıştırın";
+                btn.style.background = "#48bb78";
+                btn.style.color = "#fff";
+                
+                setTimeout(() => {
+                    btn.innerHTML = "⚡ Adresi Dönüştür ve Kopyala";
+                    btn.style.background = "#d4af37";
+                    btn.style.color = "#1a202c";
+                }, 3000);
+            }).catch(err => {
+                alert("Otomatik kopyalama başarısız oldu, lütfen kutudan kendiniz kopyalayın.");
+            });
+        }
+
+        btn.addEventListener('click', processUrl);
+        urlInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                processUrl();
+            }
+        });
+    })();
+</script>
+</body>
+</html>
