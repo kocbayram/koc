@@ -124,7 +124,7 @@
         .tool-group { margin-bottom: 18px; }
         .tool-group h3 { font-size: 0.75rem; color: #facc15; margin-bottom: 8px; border-left: 2px solid #facc15; padding-left: 8px; }
         .slider-group { margin: 10px 0; }
-        .slider-group label { font-size: 0.7rem; color: #ccd6f0; display: block; margin-bottom: 5px; }
+        .slider-group label { font-size: 0.7 r em; color: #ccd6f0; display: block; margin-bottom: 5px; }
         .slider-row {
             display: flex;
             align-items: center;
@@ -217,13 +217,13 @@
         <!-- KONTROL PANELİ -->
         <div class="controls-panel">
             <div class="tab-buttons">
-                <button class="tab-btn active" data-tab="tab-border">🎨 Kenarlıklar</button>
+                <button class="tab-btn" data-tab="tab-border">🎨 Kenarlıklar</button>
                 <button class="tab-btn" data-tab="tab-round">🪄 Köşe Yuvarla</button>
-                <button class="tab-btn" data-tab="tab-picker">🎯 Renk Seçici</button>
+                <button class="tab-btn active" data-tab="tab-picker">🎯 Renk Seçici</button>
             </div>
             
             <!-- KENARLIKLAR SEKMESİ -->
-            <div id="tab-border" class="tab-content active">
+            <div id="tab-border" class="tab-content">
                 <div class="tool-group">
                     <h3>1. Katman (Dış Kenar)</h3>
                     <div class="color-row">
@@ -310,7 +310,7 @@
             </div>
             
             <!-- RENK SEÇİCİ SEKMESİ -->
-            <div id="tab-picker" class="tab-content">
+            <div id="tab-picker" class="tab-content active">
                 <div class="tool-group">
                     <h3>🎯 Renk Seçici (Pipet)</h3>
                     
@@ -519,7 +519,6 @@
             return;
         }
         
-        // Orijinal boyutları kullan
         let imgW = useImage.width;
         let imgH = useImage.height;
         
@@ -559,7 +558,26 @@
         }
         
         curX += layer3Thick; curY += layer3Thick;
+        
+        // Kırpma (maske) maskelemesi
+        ctx.save();
+        ctx.beginPath();
+        if (w < 2*rad) rad = w/2;
+        if (h < 2*rad) rad = h/2;
+        ctx.moveTo(curX + rad, curY);
+        ctx.lineTo(curX + imgW - rad, curY);
+        ctx.quadraticCurveTo(curX + imgW, curY, curX + imgW, curY + rad);
+        ctx.lineTo(curX + imgW, curY + imgH - rad);
+        ctx.quadraticCurveTo(curX + imgW, curY + imgH, curX + imgW - rad, curY + imgH);
+        ctx.lineTo(curX + rad, curY + imgH);
+        ctx.quadraticCurveTo(curX, curY + imgH, curX, curY + imgH - rad);
+        ctx.lineTo(curX, curY + rad);
+        ctx.quadraticCurveTo(curX, curY, curX + rad, curY);
+        ctx.closePath();
+        ctx.clip(); 
+        
         ctx.drawImage(useImage, curX, curY, imgW, imgH);
+        ctx.restore();
     }
     
     // ========== KÖŞE YUVARLAMA ==========
@@ -615,7 +633,6 @@
         isPicking = true;
         pickTarget = targetId;
         pickPreview = previewId;
-        // Seçili hedefi güncelle
         selectedTarget = targetId;
         showSuccess(`🎯 ${targetName} için renk seçim modu aktif! Resme tıklayın/dokunun`);
     }
@@ -651,8 +668,7 @@
             showError("Geçerli bir hex renk kodu girin (örn: #FF5733)");
             return;
         }
-        // Hangi kenara uygulanacağını belirle
-        let targetId = selectedTarget; // 'layer1Color', 'layer2Color' veya 'layer3Color'
+        let targetId = selectedTarget; 
         let previewId = '';
         if (targetId === 'layer1Color') previewId = 'layer1Preview';
         else if (targetId === 'layer2Color') previewId = 'layer2Preview';
@@ -661,16 +677,13 @@
             showError("Lütfen önce bir renk alma butonuyla hedef kenarı seçin.");
             return;
         }
-        // Güncelle
         const input = document.getElementById(targetId);
         const preview = document.getElementById(previewId);
         if (input) input.value = hex;
         if (preview) preview.style.backgroundColor = hex;
-        // Değişkeni güncelle
         if (targetId === 'layer1Color') layer1Color = hex;
         else if (targetId === 'layer2Color') layer2Color = hex;
         else if (targetId === 'layer3Color') layer3Color = hex;
-        // Önizleme kutusunu da güncelle
         document.getElementById('pickedColorPreview').style.backgroundColor = hex;
         drawBorders();
         showSuccess(`Renk ${hex} olarak uygulandı!`);
@@ -724,7 +737,7 @@
         }
     };
     
-    // ========== KİLİT MEKANİZMASI (Kenarlık kalınlıkları) ==========
+    // ========== KİLİT MEKANİZMASI ==========
     function updateLockUI(lockId, isLocked) {
         const btn = document.getElementById(lockId);
         if (btn) {
@@ -800,7 +813,7 @@
         });
     }
     
-    // ========== RENK KUTUCUKLARI - ANINDA GÜNCELLEME (Kenarlıklar sekmesi) ==========
+    // ========== RENK KUTUCUKLARI ==========
     function setupColorInput(inputId, previewId, setter) {
         const input = document.getElementById(inputId);
         const preview = document.getElementById(previewId);
@@ -823,7 +836,6 @@
     setupColorInput('doubleColor1', null, (v) => doubleColor1 = v);
     setupColorInput('doubleColor2', null, (v) => doubleColor2 = v);
     
-    // PickedHex kutusu önizleme
     document.getElementById('pickedHex').addEventListener('input', function() {
         const val = this.value.trim();
         if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
@@ -831,7 +843,7 @@
         }
     });
     
-    // ========== KENARLIK AYARLARI (Ana sekme) ==========
+    // ========== KENARLIK AYARLARI ==========
     function handleSliderChange(sliderId, valueSpanId, thickVar, setter, pickerSliderId, pickerValId) {
         const slider = document.getElementById(sliderId);
         const lockBtnId = sliderId === 'layer1Thick' ? 'lock1Btn' : sliderId === 'layer2Thick' ? 'lock2Btn' : 'lock3Btn';
@@ -944,7 +956,6 @@
             layer3Thick = 4; 
             gap = 12;
             cornerRadius = 30;
-            lock1 = true; lock2 = true; lock3 = true;
             selectedTarget = 'layer1Color';
             
             document.getElementById('layer1Color').value = layer1Color;
