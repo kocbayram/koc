@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kenarlık Aracı | Köşe Yuvarlama + Renk Seçici | Bayram KOÇ</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background: linear-gradient(145deg, #0b1120 0%, #1a2332 100%);
+            font-family: 'Segoe UI', system-ui;
+            padding: 12px;
+            min-height: 100vh;
+        }
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(12, 20, 30, 0.7);
+            backdrop-filter: blur(14px);
+            border-radius: 1.5rem;
+            padding: 1rem;
+            border-left: 4px solid #facc15;
+        }
+        h1 {
+            font-size: 1.2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #FFE6B0, #FFB347, #C084FC);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        .flex-editor { display: flex; flex-wrap: wrap; gap: 1rem; }
+        
+        .canvas-area {
+            flex: 2; min-width: 280px;
+            background: #03050b;
+            border-radius: 1rem;
+            padding: 0.8rem;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .btn {
+            background: #1e293b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #eef2ff;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: #facc15; color: #0f172a; }
+        .btn-green { background: #10b981; }
+        .btn-gri { background: #475569; }
+        .btn-picker { background: #8b5cf6; color: white; }
+        .btn-lock {
+            background: transparent;
+            border: 1px solid #64748b;
+            padding: 4px 8px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #e2e8f0;
+            line-height: 1;
+            min-width: 36px;
+        }
+        .btn-lock.locked { border-color: #facc15; color: #facc15; }
+        .btn-lock.unlocked { border-color: #10b981; color: #10b981; }
+        
+        .canvas-container {
+            background: #00000055;
+            border-radius: 1rem;
+            overflow: auto;
+            text-align: center;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px black;
+            display: block;
+            margin: 0 auto;
+            cursor: crosshair;
+        }
+        
+        .controls-panel {
+            flex: 1.2; min-width: 260px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: #1e293b;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            color: #94a3b8;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            min-width: 60px;
+        }
+        .tab-btn.active { background: #facc15; color: #0f172a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .tool-group { margin-bottom: 18px; }
+        .tool-group h3 { font-size: 0.75rem; color: #facc15; margin-bottom: 8px; border-left: 2px solid #facc15; padding-left: 8px; }
+        .slider-group { margin: 10px 0; }
+        .slider-group label { font-size: 0.7 r em; color: #ccd6f0; display: block; margin-bottom: 5px; }
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .slider-row input[type="range"] { flex: 1; height: 35px; accent-color: #facc15; }
+        .slider-value {
+            color: #facc15;
+            font-size: 0.8rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 2px solid white;
+            flex-shrink: 0;
+        }
+        .color-input {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 40px;
+            padding: 8px;
+            color: white;
+            font-family: monospace;
+            font-size: 0.7rem;
+        }
+        .btn-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .info-text { font-size: 0.7rem; color: #b9c7ff; text-align: center; margin-top: 8px; }
+        .footer {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.65rem;
+            color: #94a3b8;
+            border-top: 1px solid rgba(250,204,21,0.2);
+            padding-top: 8px;
+        }
+        .footer span { color: #facc15; font-weight: bold; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 10px;
+            right: 10px;
+            padding: 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            text-align: center;
+            z-index: 1100;
+            display: none;
+        }
+        .error-toast { background: #b91c1c; color: white; }
+        .success-toast { background: #10b981; color: white; }
+        @media (max-width: 768px) {
+            .flex-editor { flex-direction: column; }
+            .controls-panel { max-height: 50vh; }
+            .slider-row { flex-wrap: wrap; }
+            .tab-btn { font-size: 0.6rem; padding: 4px 6px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <h1>✨ 3 Katmanlı Kenarlık + Köşe Yuvarlama + Renk Seçici ✨</h1>
+    
+    <div class="flex-editor">
+        <!-- CANVAS ALANI -->
+        <div class="canvas-area">
+            <div class="toolbar">
+                <button class="btn" id="loadImageBtn">📸 Resim Seç</button>
+                <button class="btn btn-green" id="shareBtn">📱 Paylaş</button>
+                <button class="btn btn-primary" id="saveBtn">💾 Kaydet</button>
+                <button class="btn btn-gri" id="resetAllBtn">🔄 Tümünü Sıfırla</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="mainCanvas" touch-action="none"></canvas>
+            </div>
+            <div class="info-text">
+                ✨ <strong>Renk seçmek için:</strong> Renk Seçici sekmesinde butona tıklayın, sonra resme TIKLAYIN/DOKUNUN
+            </div>
+        </div>
+        
+        <!-- KONTROL PANELİ -->
+        <div class="controls-panel">
+            <div class="tab-buttons">
+                <button class="tab-btn" data-tab="tab-border">🎨 Kenarlıklar</button>
+                <button class="tab-btn" data-tab="tab-round">🪄 Köşe Yuvarla</button>
+                <button class="tab-btn active" data-tab="tab-picker">🎯 Renk Seçici</button>
+            </div>
+            
+            <!-- KENARLIKLAR SEKMESİ -->
+            <div id="tab-border" class="tab-content">
+                <div class="tool-group">
+                    <h3>1. Katman (Dış Kenar)</h3>
+                    <div class="color-row">
+                        <div class="color-preview" id="layer1Preview" style="background:#F2D5C6"></div>
+                        <input type="text" class="color-input" id="layer1Color" value="#F2D5C6" maxlength="7">
+                    </div>
+                    <div class="slider-group">
+                        <label>Kalınlık (px)</label>
+                        <div class="slider-row">
+                            <input type="range" id="layer1Thick" min="1" max="20" value="4">
+                            <span class="slider-value" id="layer1ThickVal">4</span>
+                            <button class="btn-lock locked" id="lock1Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <h3>2. Katman (Orta Kenar)</h3>
+                    <div class="color-row">
+                        <div class="color-preview" id="layer2Preview" style="background:#FDF5F0"></div>
+                        <input type="text" class="color-input" id="layer2Color" value="#FDF5F0" maxlength="7">
+                    </div>
+                    <div class="slider-group">
+                        <label>Kalınlık (px)</label>
+                        <div class="slider-row">
+                            <input type="range" id="layer2Thick" min="1" max="20" value="4">
+                            <span class="slider-value" id="layer2ThickVal">4</span>
+                            <button class="btn-lock locked" id="lock2Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-group">
+                    <h3>3. Katman (İç Kenar)</h3>
+                    <div class="color-row">
+                        <div class="color-preview" id="layer3Preview" style="background:#6B4C7A"></div>
+                        <input type="text" class="color-input" id="layer3Color" value="#6B4C7A" maxlength="7">
+                    </div>
+                    <div class="slider-group">
+                        <label>Kalınlık (px)</label>
+                        <div class="slider-row">
+                            <input type="range" id="layer3Thick" min="1" max="15" value="4">
+                            <span class="slider-value" id="layer3ThickVal">4</span>
+                            <button class="btn-lock locked" id="lock3Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                    <div class="slider-group">
+                        <label>🔲 Katman Arası Boşluk (px)</label>
+                        <input type="range" id="gapSlide" min="0" max="25" value="12">
+                    </div>
+                    <div class="slider-group">
+                        <label>🎨 Çizgi Stili</label>
+                        <select id="borderStyle">
+                            <option value="solid" selected>━━ Düz çizgi</option>
+                            <option value="dashed">- - - Kesik çizgi</option>
+                            <option value="dotted">··· Noktalı çizgi</option>
+                            <option value="dashdot">-·-· Çizgi-nokta</option>
+                            <option value="doublecolor">🌈 Çift Renkli Kesik Çizgi</option>
+                            <option value="wave">〰️ Dalgalı Çizgi</option>
+                        </select>
+                    </div>
+                    <div id="doubleColorRow" style="display:flex; gap:8px; margin-top:8px;">
+                        <input type="text" class="color-input" id="doubleColor1" value="#E8A0B4" placeholder="Renk 1">
+                        <input type="text" class="color-input" id="doubleColor2" value="#C77A9A" placeholder="Renk 2">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KÖŞE YUVARLAMA SEKMESİ -->
+            <div id="tab-round" class="tab-content">
+                <div class="tool-group">
+                    <h3>🪄 Resmin Köşelerini Yuvarla</h3>
+                    <div class="slider-group">
+                        <label>📐 Yuvarlaklık Derecesi (px)</label>
+                        <input type="range" id="cornerRadius" min="0" max="150" value="30" step="1">
+                        <span id="radiusValue" style="color:#facc15; font-size:0.8rem;">30</span>
+                    </div>
+                    <div class="btn-grid">
+                        <button class="btn btn-primary" id="applyRoundBtn">✨ Köşeleri Yuvarla</button>
+                        <button class="btn btn-gri" id="resetRoundBtn">↺ Yuvarlamayı Sıfırla</button>
+                    </div>
+                    <div class="info-text">🎯 Resmin sadece dört köşesini yumuşatır, resmin kendisi dikdörtgen kalır.</div>
+                </div>
+            </div>
+            
+            <!-- RENK SEÇİCİ SEKMESİ -->
+            <div id="tab-picker" class="tab-content active">
+                <div class="tool-group">
+                    <h3>🎯 Renk Seçici (Pipet)</h3>
+                    
+                    <div class="btn-grid">
+                        <button class="btn btn-picker" id="pickLayer1Btn">🎨 Dış Kenara Renk Al</button>
+                        <button class="btn btn-picker" id="pickLayer2Btn">🎨 Orta Kenara Renk Al</button>
+                        <button class="btn btn-picker" id="pickLayer3Btn">🎨 İç Kenara Renk Al</button>
+                    </div>
+                    <div class="color-row" style="margin-top:12px">
+                        <div class="color-preview" id="pickedColorPreview" style="background:#cccccc"></div>
+                        <input type="text" class="color-input" id="pickedHex" value="#CCCCCC" placeholder="Örn: #FF5733">
+                        <button class="btn btn-primary" id="applyPickedColorBtn">✅ Uygula</button>
+                    </div>
+                    <div class="info-text" style="margin-top:6px;">📌 Hangi kenara uygulanacağını seçmek için yukarıdaki butonlara tıklayın (varsayılan: Dış Kenar).</div>
+                </div>
+                
+                <!-- KENAR KALINLIKLARI (Kilitli) -->
+                <div class="tool-group">
+                    <h3>📏 Kenar Kalınlıkları</h3>
+                    <div class="slider-group">
+                        <label>Dış Kenar Kalınlığı (px): <span id="pickerLayer1ThickVal">4</span></label>
+                        <div class="slider-row">
+                            <input type="range" id="pickerLayer1Thick" min="1" max="20" value="4">
+                            <button class="btn-lock locked" id="pickerLock1Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                    <div class="slider-group">
+                        <label>Orta Kenar Kalınlığı (px): <span id="pickerLayer2ThickVal">4</span></label>
+                        <div class="slider-row">
+                            <input type="range" id="pickerLayer2Thick" min="1" max="20" value="4">
+                            <button class="btn-lock locked" id="pickerLock2Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                    <div class="slider-group">
+                        <label>İç Kenar Kalınlığı (px): <span id="pickerLayer3ThickVal">4</span></label>
+                        <div class="slider-row">
+                            <input type="range" id="pickerLayer3Thick" min="1" max="15" value="4">
+                            <button class="btn-lock locked" id="pickerLock3Btn" data-lock="true">🔒</button>
+                        </div>
+                    </div>
+                    <div class="info-text" style="margin-top:6px;">🔒 Kilitliyken kalınlık değişmez, kilidi açmak için 🔒 butonuna tıklayın.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <span>✨ Bayram KOÇ ✨</span>
+    </div>
+</div>
+
+<div id="errorToast" class="toast error-toast">⚠️ Hata</div>
+<div id="successToast" class="toast success-toast">✅ Başarılı!</div>
+
+<script>
+(function(){
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Resim
+    let originalImage = null;
+    let isRounded = false;
+    let roundedImage = null;
+    
+    // Kenarlık değişkenleri (başlangıçta 4px ve kilitli)
+    let layer1Color = '#F2D5C6';
+    let layer2Color = '#FDF5F0';
+    let layer3Color = '#6B4C7A';
+    let doubleColor1 = '#E8A0B4';
+    let doubleColor2 = '#C77A9A';
+    let borderStyle = 'solid';
+    let layer1Thick = 4, layer2Thick = 4, layer3Thick = 4, gap = 12;
+    
+    // Kilit durumları (varsayılan kilitli)
+    let lock1 = true, lock2 = true, lock3 = true;
+    
+    // Köşe yuvarlama
+    let cornerRadius = 30;
+    
+    // Renk seçici - hangi kenarın seçili olduğunu tut
+    let selectedTarget = 'layer1Color'; // varsayılan Dış Kenar
+    
+    // Renk seçici pipet modu
+    let isPicking = false;
+    let pickTarget = null;
+    let pickPreview = null;
+    
+    const errorToast = document.getElementById('errorToast');
+    const successToast = document.getElementById('successToast');
+    
+    function showError(msg) { errorToast.innerText = msg; errorToast.style.display = 'block'; setTimeout(() => errorToast.style.display = 'none', 2000); }
+    function showSuccess(msg) { successToast.innerText = msg; successToast.style.display = 'block'; setTimeout(() => successToast.style.display = 'none', 1500); }
+    
+    // ========== KENARLIK ÇİZİM FONKSİYONLARI ==========
+    function roundedRect(ctx, x, y, w, h, r) {
+        if (w < 2*r) r = w/2;
+        if (h < 2*r) r = h/2;
+        ctx.beginPath();
+        ctx.moveTo(x+r, y);
+        ctx.lineTo(x+w-r, y);
+        ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+        ctx.lineTo(x+w, y+h-r);
+        ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+        ctx.lineTo(x+r, y+h);
+        ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+        ctx.lineTo(x, y+r);
+        ctx.quadraticCurveTo(x, y, x+r, y);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    function getLineDash(style) {
+        switch(style) {
+            case "dashed": return [12,8];
+            case "dotted": return [3,5];
+            case "dashdot": return [10,6,3,6];
+            default: return [];
+        }
+    }
+    
+    function getPointOnRoundedRect(x,y,w,h,r,t){
+        let top=y, bottom=y+h, left=x, right=x+w;
+        let topLen=w-2*r, rightLen=h-2*r, bottomLen=w-2*r, leftLen=h-2*r;
+        let cornerLen=(Math.PI*r)/2;
+        let total=topLen+rightLen+bottomLen+leftLen+4*cornerLen;
+        let pos=t*total;
+        if(pos<topLen) return {x:left+r+pos, y:top};
+        pos-=topLen;
+        if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.sin(angle), y:top+r-r*Math.cos(angle)}; }
+        pos-=cornerLen;
+        if(pos<rightLen) return {x:right, y:top+r+pos};
+        pos-=rightLen;
+        if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:right-r+r*Math.cos(angle), y:bottom-r+r*Math.sin(angle)}; }
+        pos-=cornerLen;
+        if(pos<bottomLen) return {x:right-r-pos, y:bottom};
+        pos-=bottomLen;
+        if(pos<cornerLen){ let angle=Math.PI/2*(pos/cornerLen); return {x:left+r-r*Math.sin(angle), y:bottom-r+r*Math.cos(angle)}; }
+        pos-=cornerLen;
+        if(pos<leftLen) return {x:left, y:bottom-r-pos};
+        pos-=leftLen;
+        let angle=Math.PI/2*(pos/cornerLen);
+        return {x:left+r-r*Math.cos(angle), y:top+r-r*Math.sin(angle)};
+    }
+    
+    function drawDoubleColorBorder(x,y,w,h,r,lineWidth,c1,c2){
+        let dashPattern=[15,10];
+        let perimeter=2*(w+h)-8*r+2*Math.PI*r;
+        let points=[];
+        for(let t=0;t<=perimeter;t+=2){
+            points.push(getPointOnRoundedRect(x,y,w,h,r,t/perimeter));
+        }
+        let dashIndex=0, dashRemaining=dashPattern[0], currentColor=c1;
+        for(let i=0;i<points.length-1;i++){
+            let p1=points[i], p2=points[i+1];
+            let dist=Math.hypot(p2.x-p1.x, p2.y-p1.y);
+            let remaining=dist;
+            let start=p1;
+            while(remaining>0){
+                if(dashRemaining<=remaining){
+                    let end={x:start.x+(p2.x-p1.x)*(dashRemaining/dist), y:start.y+(p2.y-p1.y)*(dashRemaining/dist)};
+                    ctx.beginPath(); ctx.moveTo(start.x,start.y); ctx.lineTo(end.x,end.y);
+                    ctx.strokeStyle=currentColor; ctx.stroke();
+                    start=end; remaining-=dashRemaining;
+                    dashIndex=(dashIndex+1)%2;
+                    dashRemaining=dashPattern[dashIndex];
+                    currentColor=(dashIndex===0)?c1:c2;
+                } else {
+                    let end={x:start.x+(p2.x-p1.x)*(remaining/dist), y:start.y+(p2.y-p1.y)*(remaining/dist)};
+                    ctx.beginPath(); ctx.moveTo(start.x,start.y); ctx.lineTo(end.x,end.y);
+                    ctx.strokeStyle=currentColor; ctx.stroke();
+                    dashRemaining-=remaining; remaining=0;
+                }
+            }
+        }
+    }
+    
+    function drawWaveBorder(x,y,w,h,r,lineWidth,color){
+        ctx.save();
+        ctx.strokeStyle=color;
+        ctx.lineWidth=lineWidth;
+        ctx.beginPath();
+        let topLen=w-2*r, rightLen=h-2*r, bottomLen=w-2*r, leftLen=h-2*r, cornerLen=(Math.PI*r)/2;
+        if(topLen>0){
+            let startX=x+r, startY=y, endX=x+w-r, len=endX-startX, steps=Math.max(30,Math.floor(len/4)), amp=4, wave=12;
+            for(let i=0;i<=steps;i++){ let t=i/steps; let cx=startX+len*t; let cy=startY+Math.sin(t*Math.PI*(len/wave))*amp; if(i===0) ctx.moveTo(cx,cy); else ctx.lineTo(cx,cy); }
+        }
+        if(cornerLen>0){ let steps=Math.max(12,Math.floor(cornerLen/2)); for(let i=0;i<=steps;i++){ let t=i/steps, ang=Math.PI/2*t; ctx.lineTo(x+w-r+r*Math.sin(ang), y+r-r*Math.cos(ang)); } }
+        if(rightLen>0){ let startX=x+w, startY=y+r, endY=y+h-r, len=endY-startY, steps=Math.max(30,Math.floor(len/4)), amp=4, wave=12; for(let i=0;i<=steps;i++){ let t=i/steps; let cx=startX+Math.sin(t*Math.PI*(len/wave))*amp; let cy=startY+len*t; ctx.lineTo(cx,cy); } }
+        if(cornerLen>0){ let steps=Math.max(12,Math.floor(cornerLen/2)); for(let i=0;i<=steps;i++){ let t=i/steps, ang=Math.PI/2*t; ctx.lineTo(x+w-r+r*Math.cos(ang), y+h-r+r*Math.sin(ang)); } }
+        if(bottomLen>0){ let startX=x+w-r, startY=y+h, endX=x+r, len=startX-endX, steps=Math.max(30,Math.floor(len/4)), amp=4, wave=12; for(let i=0;i<=steps;i++){ let t=i/steps; let cx=startX-len*t; let cy=startY+Math.sin(t*Math.PI*(len/wave))*amp; ctx.lineTo(cx,cy); } }
+        if(cornerLen>0){ let steps=Math.max(12,Math.floor(cornerLen/2)); for(let i=0;i<=steps;i++){ let t=i/steps, ang=Math.PI/2*t; ctx.lineTo(x+r-r*Math.sin(ang), y+h-r+r*Math.cos(ang)); } }
+        if(leftLen>0){ let startX=x, startY=y+h-r, endY=y+r, len=startY-endY, steps=Math.max(30,Math.floor(len/4)), amp=4, wave=12; for(let i=0;i<=steps;i++){ let t=i/steps; let cx=startX+Math.sin(t*Math.PI*(len/wave))*amp; let cy=startY-len*t; ctx.lineTo(cx,cy); } }
+        if(cornerLen>0){ let steps=Math.max(12,Math.floor(cornerLen/2)); for(let i=0;i<=steps;i++){ let t=i/steps, ang=Math.PI/2*t; ctx.lineTo(x+r-r*Math.cos(ang), y+r-r*Math.sin(ang)); } }
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    // ========== ANA ÇİZİM ==========
+    function drawBorders() {
+        let useImage = (isRounded && roundedImage) ? roundedImage : originalImage;
+        if (!useImage) {
+            canvas.width = 600; canvas.height = 400;
+            ctx.fillStyle = "#12131e"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#ffcd94"; ctx.font = "bold 22px system-ui"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillText("📸 Resim yükleyin", canvas.width/2, canvas.height/2);
+            return;
+        }
+        
+        let imgW = useImage.width;
+        let imgH = useImage.height;
+        
+        let total = layer1Thick + gap + layer2Thick + gap + layer3Thick;
+        canvas.width = imgW + total*2;
+        canvas.height = imgH + total*2;
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        
+        let curX=0, curY=0, curW=w, curH=h, rad = Math.min(w,h)*0.05;
+        
+        // 1. KATMAN
+        ctx.fillStyle = layer1Color; roundedRect(ctx,curX,curY,curW,curH,rad);
+        curX += layer1Thick; curY += layer1Thick; curW -= layer1Thick*2; curH -= layer1Thick*2; rad = Math.max(2,rad-2);
+        curX += gap; curY += gap; curW -= gap*2; curH -= gap*2;
+        
+        // 2. KATMAN
+        ctx.fillStyle = layer2Color; roundedRect(ctx,curX,curY,curW,curH,rad);
+        curX += layer2Thick; curY += layer2Thick; curW -= layer2Thick*2; curH -= layer2Thick*2; rad = Math.max(2,rad-2);
+        curX += gap; curY += gap; curW -= gap*2; curH -= gap*2;
+        
+        // 3. KATMAN
+        if(borderStyle === "wave"){ 
+            drawWaveBorder(curX,curY,curW,curH,rad,Math.max(2,layer3Thick*0.8),layer3Color); 
+        } else if(borderStyle !== "solid"){ 
+            if(borderStyle === "doublecolor"){ 
+                ctx.save(); ctx.lineWidth = Math.max(2,layer3Thick*0.8);
+                drawDoubleColorBorder(curX,curY,curW,curH,rad,Math.max(2,layer3Thick*0.8),doubleColor1,doubleColor2);
+                ctx.restore();
+            } else { 
+                let dash = getLineDash(borderStyle);
+                ctx.save(); if(dash.length) ctx.setLineDash(dash); ctx.strokeStyle = layer3Color; ctx.lineWidth = Math.max(2,layer3Thick*0.8); 
+                roundedRect(ctx,curX,curY,curW,curH,rad); ctx.stroke(); ctx.restore(); 
+            }
+        } else { 
+            ctx.fillStyle = layer3Color; roundedRect(ctx,curX,curY,curW,curH,rad); 
+        }
+        
+        curX += layer3Thick; curY += layer3Thick;
+        
+        // Kırpma (maske) maskelemesi
+        ctx.save();
+        ctx.beginPath();
+        if (w < 2*rad) rad = w/2;
+        if (h < 2*rad) rad = h/2;
+        ctx.moveTo(curX + rad, curY);
+        ctx.lineTo(curX + imgW - rad, curY);
+        ctx.quadraticCurveTo(curX + imgW, curY, curX + imgW, curY + rad);
+        ctx.lineTo(curX + imgW, curY + imgH - rad);
+        ctx.quadraticCurveTo(curX + imgW, curY + imgH, curX + imgW - rad, curY + imgH);
+        ctx.lineTo(curX + rad, curY + imgH);
+        ctx.quadraticCurveTo(curX, curY + imgH, curX, curY + imgH - rad);
+        ctx.lineTo(curX, curY + rad);
+        ctx.quadraticCurveTo(curX, curY, curX + rad, curY);
+        ctx.closePath();
+        ctx.clip(); 
+        
+        ctx.drawImage(useImage, curX, curY, imgW, imgH);
+        ctx.restore();
+    }
+    
+    // ========== KÖŞE YUVARLAMA ==========
+    function roundCorners(radius) {
+        if (!originalImage) { showError("Önce resim yükleyin!"); return; }
+        const w = originalImage.width, h = originalImage.height;
+        const r = Math.min(radius, w/2, h/2);
+        const temp = document.createElement('canvas');
+        temp.width = w; temp.height = h;
+        const tctx = temp.getContext('2d');
+        tctx.clearRect(0,0,w,h);
+        tctx.beginPath();
+        tctx.moveTo(r,0); tctx.lineTo(w-r,0); tctx.quadraticCurveTo(w,0,w,r);
+        tctx.lineTo(w,h-r); tctx.quadraticCurveTo(w,h,w-r,h);
+        tctx.lineTo(r,h); tctx.quadraticCurveTo(0,h,0,h-r);
+        tctx.lineTo(0,r); tctx.quadraticCurveTo(0,0,r,0);
+        tctx.closePath();
+        tctx.clip();
+        tctx.drawImage(originalImage,0,0);
+        const img = new Image();
+        img.onload = () => { roundedImage = img; isRounded = true; drawBorders(); showSuccess(`Köşeler ${radius}px yuvarlatıldı!`); };
+        img.src = temp.toDataURL();
+    }
+    
+    function resetRound() { 
+        isRounded = false; 
+        roundedImage = null; 
+        drawBorders(); 
+        showSuccess("Köşe yuvarlama kaldırıldı!"); 
+    }
+    
+    // ========== RENK SEÇİCİ (Pipet) ==========
+    function getColorAt(e) {
+        let cx, cy;
+        if (e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+        else { cx = e.clientX; cy = e.clientY; }
+        const rect = canvas.getBoundingClientRect();
+        const sx = canvas.width / rect.width;
+        const sy = canvas.height / rect.height;
+        let canvasX = (cx - rect.left) * sx;
+        let canvasY = (cy - rect.top) * sy;
+        if (canvasX < 0 || canvasX >= canvas.width || canvasY < 0 || canvasY >= canvas.height) return null;
+        canvasX = Math.floor(canvasX);
+        canvasY = Math.floor(canvasY);
+        try {
+            const p = ctx.getImageData(canvasX, canvasY, 1, 1).data;
+            return '#' + [p[0], p[1], p[2]].map(x => x.toString(16).padStart(2,'0')).join('');
+        } catch(e) { return null; }
+    }
+    
+    function startPicker(targetId, previewId, targetName) {
+        if (!originalImage) { showError("Önce resim yükleyin!"); return; }
+        isPicking = true;
+        pickTarget = targetId;
+        pickPreview = previewId;
+        selectedTarget = targetId;
+        showSuccess(`🎯 ${targetName} için renk seçim modu aktif! Resme tıklayın/dokunun`);
+    }
+    
+    function onPick(e) {
+        if (!isPicking) return;
+        e.preventDefault();
+        const hex = getColorAt(e);
+        if (hex) {
+            const input = document.getElementById(pickTarget);
+            const preview = document.getElementById(pickPreview);
+            if (input && preview) {
+                input.value = hex;
+                preview.style.backgroundColor = hex;
+                if (pickTarget === 'layer1Color') layer1Color = hex;
+                else if (pickTarget === 'layer2Color') layer2Color = hex;
+                else if (pickTarget === 'layer3Color') layer3Color = hex;
+                drawBorders();
+                document.getElementById('pickedHex').value = hex;
+                document.getElementById('pickedColorPreview').style.backgroundColor = hex;
+                showSuccess(`Renk alındı: ${hex}`);
+            }
+        }
+        isPicking = false;
+        pickTarget = null;
+        pickPreview = null;
+    }
+    
+    // ========== RENK SEÇİCİ MANUEL UYGULA ==========
+    document.getElementById('applyPickedColorBtn').addEventListener('click', function() {
+        const hex = document.getElementById('pickedHex').value.trim();
+        if (!/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+            showError("Geçerli bir hex renk kodu girin (örn: #FF5733)");
+            return;
+        }
+        let targetId = selectedTarget; 
+        let previewId = '';
+        if (targetId === 'layer1Color') previewId = 'layer1Preview';
+        else if (targetId === 'layer2Color') previewId = 'layer2Preview';
+        else if (targetId === 'layer3Color') previewId = 'layer3Preview';
+        else {
+            showError("Lütfen önce bir renk alma butonuyla hedef kenarı seçin.");
+            return;
+        }
+        const input = document.getElementById(targetId);
+        const preview = document.getElementById(previewId);
+        if (input) input.value = hex;
+        if (preview) preview.style.backgroundColor = hex;
+        if (targetId === 'layer1Color') layer1Color = hex;
+        else if (targetId === 'layer2Color') layer2Color = hex;
+        else if (targetId === 'layer3Color') layer3Color = hex;
+        document.getElementById('pickedColorPreview').style.backgroundColor = hex;
+        drawBorders();
+        showSuccess(`Renk ${hex} olarak uygulandı!`);
+    });
+    
+    // ========== RESİM YÜKLEME ==========
+    document.getElementById('loadImageBtn').onclick = () => {
+        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+        inp.onchange = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    isRounded = false; roundedImage = null;
+                    drawBorders();
+                    showSuccess("Resim yüklendi!");
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+        inp.click();
+    };
+    
+    // ========== KAYDET VE PAYLAŞ ==========
+    document.getElementById('saveBtn').onclick = () => {
+        if(!originalImage) { showError("Önce resim yükleyin!"); return; }
+        const a = document.createElement('a');
+        a.download = 'kenarli_resim.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        showSuccess("Kaydedildi!");
+    };
+    
+    document.getElementById('shareBtn').onclick = async () => {
+        if(!originalImage) { showError("Önce resim yükleyin!"); return; }
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        const file = new File([blob], 'resim.png', { type: 'image/png' });
+        if(navigator.share) { 
+            try { await navigator.share({ files: [file] }); showSuccess("Paylaşıldı!"); } 
+            catch(e){} 
+        } else { 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = 'resim.png'; 
+            a.click(); 
+            showSuccess("İndirildi!"); 
+        }
+    };
+    
+    // ========== KİLİT MEKANİZMASI ==========
+    function updateLockUI(lockId, isLocked) {
+        const btn = document.getElementById(lockId);
+        if (btn) {
+            btn.dataset.lock = isLocked ? 'true' : 'false';
+            btn.textContent = isLocked ? '🔒' : '🔓';
+            btn.className = 'btn-lock ' + (isLocked ? 'locked' : 'unlocked');
+        }
+    }
+    
+    function toggleLock(lockId, thickVar, sliderId, valueSpanId, pickerSliderId, pickerValId) {
+        const btn = document.getElementById(lockId);
+        if (!btn) return;
+        const currentLock = btn.dataset.lock === 'true';
+        const newLock = !currentLock;
+        btn.dataset.lock = newLock ? 'true' : 'false';
+        btn.textContent = newLock ? '🔒' : '🔓';
+        btn.className = 'btn-lock ' + (newLock ? 'locked' : 'unlocked');
+        
+        if (newLock) {
+            const slider = document.getElementById(sliderId);
+            if (slider) {
+                slider.value = thickVar;
+                if (valueSpanId) document.getElementById(valueSpanId).textContent = thickVar;
+                if (pickerSliderId) {
+                    document.getElementById(pickerSliderId).value = thickVar;
+                    if (pickerValId) document.getElementById(pickerValId).textContent = thickVar;
+                }
+            }
+        }
+    }
+    
+    function initLocks() {
+        document.getElementById('lock1Btn').addEventListener('click', function() {
+            toggleLock('lock1Btn', layer1Thick, 'layer1Thick', 'layer1ThickVal', 'pickerLayer1Thick', 'pickerLayer1ThickVal');
+        });
+        document.getElementById('pickerLock1Btn').addEventListener('click', function() {
+            toggleLock('pickerLock1Btn', layer1Thick, 'layer1Thick', 'layer1ThickVal', 'pickerLayer1Thick', 'pickerLayer1ThickVal');
+            const mainLock = document.getElementById('lock1Btn');
+            if (mainLock) {
+                const isLocked = document.getElementById('pickerLock1Btn').dataset.lock === 'true';
+                mainLock.dataset.lock = isLocked ? 'true' : 'false';
+                mainLock.textContent = isLocked ? '🔒' : '🔓';
+                mainLock.className = 'btn-lock ' + (isLocked ? 'locked' : 'unlocked');
+            }
+        });
+        
+        document.getElementById('lock2Btn').addEventListener('click', function() {
+            toggleLock('lock2Btn', layer2Thick, 'layer2Thick', 'layer2ThickVal', 'pickerLayer2Thick', 'pickerLayer2ThickVal');
+        });
+        document.getElementById('pickerLock2Btn').addEventListener('click', function() {
+            toggleLock('pickerLock2Btn', layer2Thick, 'layer2Thick', 'layer2ThickVal', 'pickerLayer2Thick', 'pickerLayer2ThickVal');
+            const mainLock = document.getElementById('lock2Btn');
+            if (mainLock) {
+                const isLocked = document.getElementById('pickerLock2Btn').dataset.lock === 'true';
+                mainLock.dataset.lock = isLocked ? 'true' : 'false';
+                mainLock.textContent = isLocked ? '🔒' : '🔓';
+                mainLock.className = 'btn-lock ' + (isLocked ? 'locked' : 'unlocked');
+            }
+        });
+        
+        document.getElementById('lock3Btn').addEventListener('click', function() {
+            toggleLock('lock3Btn', layer3Thick, 'layer3Thick', 'layer3ThickVal', 'pickerLayer3Thick', 'pickerLayer3ThickVal');
+        });
+        document.getElementById('pickerLock3Btn').addEventListener('click', function() {
+            toggleLock('pickerLock3Btn', layer3Thick, 'layer3Thick', 'layer3ThickVal', 'pickerLayer3Thick', 'pickerLayer3ThickVal');
+            const mainLock = document.getElementById('lock3Btn');
+            if (mainLock) {
+                const isLocked = document.getElementById('pickerLock3Btn').dataset.lock === 'true';
+                mainLock.dataset.lock = isLocked ? 'true' : 'false';
+                mainLock.textContent = isLocked ? '🔒' : '🔓';
+                mainLock.className = 'btn-lock ' + (isLocked ? 'locked' : 'unlocked');
+            }
+        });
+    }
+    
+    // ========== RENK KUTUCUKLARI ==========
+    function setupColorInput(inputId, previewId, setter) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        if (!input) return;
+        const update = () => {
+            const val = input.value.trim();
+            if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+                if (preview) preview.style.backgroundColor = val;
+                setter(val);
+                drawBorders();
+            }
+        };
+        input.addEventListener('input', update);
+        input.addEventListener('change', update);
+    }
+    
+    setupColorInput('layer1Color', 'layer1Preview', (v) => layer1Color = v);
+    setupColorInput('layer2Color', 'layer2Preview', (v) => layer2Color = v);
+    setupColorInput('layer3Color', 'layer3Preview', (v) => layer3Color = v);
+    setupColorInput('doubleColor1', null, (v) => doubleColor1 = v);
+    setupColorInput('doubleColor2', null, (v) => doubleColor2 = v);
+    
+    document.getElementById('pickedHex').addEventListener('input', function() {
+        const val = this.value.trim();
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+            document.getElementById('pickedColorPreview').style.backgroundColor = val;
+        }
+    });
+    
+    // ========== KENARLIK AYARLARI ==========
+    function handleSliderChange(sliderId, valueSpanId, thickVar, setter, pickerSliderId, pickerValId) {
+        const slider = document.getElementById(sliderId);
+        const lockBtnId = sliderId === 'layer1Thick' ? 'lock1Btn' : sliderId === 'layer2Thick' ? 'lock2Btn' : 'lock3Btn';
+        const lockBtn = document.getElementById(lockBtnId);
+        if (!slider) return;
+        slider.addEventListener('input', function() {
+            const isLocked = lockBtn ? lockBtn.dataset.lock === 'true' : true;
+            if (isLocked) {
+                slider.value = thickVar;
+                if (valueSpanId) document.getElementById(valueSpanId).textContent = thickVar;
+                if (pickerSliderId) {
+                    document.getElementById(pickerSliderId).value = thickVar;
+                    if (pickerValId) document.getElementById(pickerValId).textContent = thickVar;
+                }
+                return;
+            }
+            const val = parseInt(slider.value);
+            setter(val);
+            if (valueSpanId) document.getElementById(valueSpanId).textContent = val;
+            if (pickerSliderId) {
+                document.getElementById(pickerSliderId).value = val;
+                if (pickerValId) document.getElementById(pickerValId).textContent = val;
+            }
+            drawBorders();
+        });
+    }
+    
+    handleSliderChange('layer1Thick', 'layer1ThickVal', layer1Thick, (v) => layer1Thick = v, 'pickerLayer1Thick', 'pickerLayer1ThickVal');
+    handleSliderChange('layer2Thick', 'layer2ThickVal', layer2Thick, (v) => layer2Thick = v, 'pickerLayer2Thick', 'pickerLayer2ThickVal');
+    handleSliderChange('layer3Thick', 'layer3ThickVal', layer3Thick, (v) => layer3Thick = v, 'pickerLayer3Thick', 'pickerLayer3ThickVal');
+    
+    function handlePickerSlider(sliderId, pickerValId, thickVar, setter, mainSliderId, mainValId) {
+        const slider = document.getElementById(sliderId);
+        const lockBtnId = sliderId === 'pickerLayer1Thick' ? 'pickerLock1Btn' : sliderId === 'pickerLayer2Thick' ? 'pickerLock2Btn' : 'pickerLock3Btn';
+        const lockBtn = document.getElementById(lockBtnId);
+        if (!slider) return;
+        slider.addEventListener('input', function() {
+            const isLocked = lockBtn ? lockBtn.dataset.lock === 'true' : true;
+            if (isLocked) {
+                slider.value = thickVar;
+                if (pickerValId) document.getElementById(pickerValId).textContent = thickVar;
+                if (mainSliderId) {
+                    document.getElementById(mainSliderId).value = thickVar;
+                    if (mainValId) document.getElementById(mainValId).textContent = thickVar;
+                }
+                return;
+            }
+            const val = parseInt(slider.value);
+            setter(val);
+            if (pickerValId) document.getElementById(pickerValId).textContent = val;
+            if (mainSliderId) {
+                document.getElementById(mainSliderId).value = val;
+                if (mainValId) document.getElementById(mainValId).textContent = val;
+            }
+            drawBorders();
+        });
+    }
+    
+    handlePickerSlider('pickerLayer1Thick', 'pickerLayer1ThickVal', layer1Thick, (v) => layer1Thick = v, 'layer1Thick', 'layer1ThickVal');
+    handlePickerSlider('pickerLayer2Thick', 'pickerLayer2ThickVal', layer2Thick, (v) => layer2Thick = v, 'layer2Thick', 'layer2ThickVal');
+    handlePickerSlider('pickerLayer3Thick', 'pickerLayer3ThickVal', layer3Thick, (v) => layer3Thick = v, 'layer3Thick', 'layer3ThickVal');
+    
+    document.getElementById('gapSlide').addEventListener('input', (e) => { gap = parseInt(e.target.value); drawBorders(); });
+    document.getElementById('borderStyle').addEventListener('change', (e) => { 
+        borderStyle = e.target.value; 
+        document.getElementById('doubleColorRow').style.display = borderStyle === 'doublecolor' ? 'flex' : 'none'; 
+        drawBorders(); 
+    });
+    
+    // ========== KÖŞE YUVARLAMA AYARLARI ==========
+    document.getElementById('applyRoundBtn').onclick = () => { 
+        cornerRadius = parseInt(document.getElementById('cornerRadius').value); 
+        roundCorners(cornerRadius); 
+    };
+    document.getElementById('resetRoundBtn').onclick = resetRound;
+    document.getElementById('cornerRadius').addEventListener('input', (e) => {
+        cornerRadius = parseInt(e.target.value);
+        document.getElementById('radiusValue').innerText = cornerRadius;
+    });
+    
+    // ========== RENK SEÇİCİ BUTONLARI ==========
+    document.getElementById('pickLayer1Btn').onclick = () => {
+        startPicker('layer1Color', 'layer1Preview', 'Dış Kenar');
+        selectedTarget = 'layer1Color';
+    };
+    document.getElementById('pickLayer2Btn').onclick = () => {
+        startPicker('layer2Color', 'layer2Preview', 'Orta Kenar');
+        selectedTarget = 'layer2Color';
+    };
+    document.getElementById('pickLayer3Btn').onclick = () => {
+        startPicker('layer3Color', 'layer3Preview', 'İç Kenar');
+        selectedTarget = 'layer3Color';
+    };
+    
+    // ========== SIFIRLA ==========
+    document.getElementById('resetAllBtn').onclick = () => {
+        if(confirm("Tüm ayarları varsayılana sıfırlamak istediğinize emin misiniz?")) {
+            originalImage = null; 
+            isRounded = false; 
+            roundedImage = null;
+            
+            layer1Color = '#F2D5C6'; 
+            layer2Color = '#FDF5F0'; 
+            layer3Color = '#6B4C7A';
+            doubleColor1 = '#E8A0B4'; 
+            doubleColor2 = '#C77A9A';
+            borderStyle = 'solid';
+            layer1Thick = 4; 
+            layer2Thick = 4; 
+            layer3Thick = 4; 
+            gap = 12;
+            cornerRadius = 30;
+            selectedTarget = 'layer1Color';
+            
+            document.getElementById('layer1Color').value = layer1Color;
+            document.getElementById('layer2Color').value = layer2Color;
+            document.getElementById('layer3Color').value = layer3Color;
+            document.getElementById('doubleColor1').value = doubleColor1;
+            document.getElementById('doubleColor2').value = doubleColor2;
+            document.getElementById('layer1Thick').value = layer1Thick;
+            document.getElementById('layer2Thick').value = layer2Thick;
+            document.getElementById('layer3Thick').value = layer3Thick;
+            document.getElementById('gapSlide').value = gap;
+            document.getElementById('borderStyle').value = borderStyle;
+            document.getElementById('cornerRadius').value = cornerRadius;
+            document.getElementById('radiusValue').innerText = cornerRadius;
+            document.getElementById('doubleColorRow').style.display = borderStyle === 'doublecolor' ? 'flex' : 'none';
+            
+            document.getElementById('pickerLayer1Thick').value = layer1Thick;
+            document.getElementById('pickerLayer2Thick').value = layer2Thick;
+            document.getElementById('pickerLayer3Thick').value = layer3Thick;
+            document.getElementById('pickerLayer1ThickVal').textContent = layer1Thick;
+            document.getElementById('pickerLayer2ThickVal').textContent = layer2Thick;
+            document.getElementById('pickerLayer3ThickVal').textContent = layer3Thick;
+            document.getElementById('layer1ThickVal').textContent = layer1Thick;
+            document.getElementById('layer2ThickVal').textContent = layer2Thick;
+            document.getElementById('layer3ThickVal').textContent = layer3Thick;
+            
+            document.getElementById('layer1Preview').style.backgroundColor = layer1Color;
+            document.getElementById('layer2Preview').style.backgroundColor = layer2Color;
+            document.getElementById('layer3Preview').style.backgroundColor = layer3Color;
+            document.getElementById('pickedColorPreview').style.backgroundColor = '#cccccc';
+            document.getElementById('pickedHex').value = '#CCCCCC';
+            
+            updateLockUI('lock1Btn', true);
+            updateLockUI('lock2Btn', true);
+            updateLockUI('lock3Btn', true);
+            updateLockUI('pickerLock1Btn', true);
+            updateLockUI('pickerLock2Btn', true);
+            updateLockUI('pickerLock3Btn', true);
+            
+            drawBorders();
+            showSuccess("Tüm ayarlar sıfırlandı!");
+        }
+    };
+    
+    // ========== SEKMELER ==========
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+    
+    // ========== RENK SEÇİMİ OLAYLARI ==========
+    canvas.addEventListener('click', onPick);
+    canvas.addEventListener('touchstart', onPick, { passive: false });
+    
+    // Başlangıç
+    initLocks();
+    drawBorders();
+})();
+</script>
+</body>
+</html>
