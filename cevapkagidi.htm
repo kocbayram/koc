@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="theme-color" content="#2563eb">
 <title>Cevap Kağıdı Oluşturucu - Optik Form</title>
-<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -154,15 +153,16 @@
     min-height: 48px;
     touch-action: manipulation;
   }
+  button:disabled { opacity: 0.6; cursor: wait; }
   .btn-primary { background: var(--primary); color: white; }
-  .btn-primary:hover { background: var(--primary-dark); }
-  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-primary:active:not(:disabled) { transform: scale(0.98); }
   .btn-success { background: var(--success); color: white; }
-  .btn-success:hover { background: var(--success-dark); }
-  .btn-success:active { transform: scale(0.98); }
+  .btn-success:hover:not(:disabled) { background: var(--success-dark); }
+  .btn-success:active:not(:disabled) { transform: scale(0.98); }
   .btn-secondary { background: #e5e7eb; color: #374151; }
-  .btn-secondary:hover { background: #d1d5db; }
-  .btn-secondary:active { transform: scale(0.98); }
+  .btn-secondary:hover:not(:disabled) { background: #d1d5db; }
+  .btn-secondary:active:not(:disabled) { transform: scale(0.98); }
 
   .checkbox-row {
     display: flex;
@@ -220,19 +220,18 @@
     font-family: 'Times New Roman', serif;
     transform-origin: top center;
   }
+  .page:last-child { margin-bottom: 0; }
   .page-header {
     text-align: center;
     margin-bottom: 16px;
     border-bottom: 2px solid #000;
     padding-bottom: 10px;
   }
-  /* ÜST BAŞLIK (dönem/ders/sınav) */
   .page-header .title {
     font-size: 15px;
     font-weight: bold;
     line-height: 1.35;
   }
-  /* ALT BAŞLIK (CEVAP KAĞIDI) */
   .page-header .subtitle {
     font-size: 16px;
     font-weight: bold;
@@ -294,6 +293,45 @@
     margin-top: 18px;
     border-top: 1px solid #ccc;
     padding-top: 8px;
+  }
+
+  /* ==================== PDF EXPORT MODU ==================== */
+  /* PDF üretimi sırasında geçici olarak uygulanır */
+  body.pdf-export-mode {
+    padding: 0 !important;
+    background: #fff !important;
+  }
+  body.pdf-export-mode .panel,
+  body.pdf-export-mode .mobile-bar,
+  body.pdf-export-mode .overlay {
+    display: none !important;
+  }
+  body.pdf-export-mode .container {
+    display: block !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  body.pdf-export-mode .preview-area {
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+    width: 210mm !important;
+  }
+  body.pdf-export-mode .page {
+    transform: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    page-break-after: always;
+    break-after: page;
+  }
+  body.pdf-export-mode .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
 
   /* MOBİL UYUM */
@@ -399,7 +437,6 @@
 </head>
 <body>
 
-<!-- MOBİL ÜST BAR -->
 <div class="mobile-bar">
   <h1>📝 Cevap Kağıdı</h1>
   <button class="menu-toggle" onclick="togglePanel()" aria-label="Ayarları aç/kapat">
@@ -418,13 +455,10 @@
 
     <div class="panel-scroll">
       <h2>Başlık Bilgileri</h2>
-
-      <!-- ÜST BAŞLIK: Artık boş, dönem/ders/sınav bilgisi girilir -->
       <label>Üst Başlık (Dönem / Ders / Sınav)</label>
       <input type="text" id="title" value=""
              placeholder="Örn: 2024-2025 Güz Dönemi - Matematik 1. Yazılı">
 
-      <!-- ALT BAŞLIK: CEVAP KAĞIDI otomatik gelir -->
       <label>Alt Başlık</label>
       <input type="text" id="subtitle" value="CEVAP KAĞIDI">
 
@@ -483,7 +517,7 @@
     </div>
 
     <div class="panel-actions">
-      <button class="btn-success" onclick="downloadDocx()">⬇️ DOCX Olarak İndir</button>
+      <button class="btn-success" id="pdfBtn" onclick="downloadPDF(this)">⬇️ PDF Olarak İndir</button>
       <button class="btn-secondary" onclick="window.print()">🖨️ Yazdır</button>
       <button class="btn-primary" onclick="updatePreviewAndClose()">👁️ Önizle</button>
     </div>
@@ -497,9 +531,7 @@ const LETTERS = ['A','B','C','D','E','F'];
 
 function getSettings() {
   return {
-    /* ÜST BAŞLIK: boş bırakılabilir (dönem/ders/sınav) */
     title: document.getElementById('title').value.trim(),
-    /* ALT BAŞLIK: varsayılan "CEVAP KAĞIDI" */
     subtitle: document.getElementById('subtitle').value.trim() || 'CEVAP KAĞIDI',
     questionCount: parseInt(document.getElementById('questionCount').value) || 80,
     optionCount: parseInt(document.getElementById('optionCount').value) || 4,
@@ -562,7 +594,6 @@ function buildPagesHTML(s) {
       }
     }
 
-    /* ÜST BAŞLIK (title) ve ALT BAŞLIK (subtitle) — ikisi de boş olabilir */
     const header = `
       <div class="page-header">
         ${s.title ? `<div class="title">${escapeHtml(s.title)}</div>` : ''}
@@ -606,7 +637,7 @@ function scalePreviewForMobile() {
   if (!isMobile) {
     pages.forEach(p => {
       p.style.transform = '';
-      p.style.marginBottom = '20px';
+      p.style.marginBottom = '';
     });
     return;
   }
@@ -655,148 +686,124 @@ function updatePreviewAndClose() {
   }
 }
 
-/* ==================== DOCX ==================== */
-async function downloadDocx() {
-  const s = getSettings();
-  const {
-    Document, Packer, Paragraph, TextRun, AlignmentType,
-    Table, TableRow, TableCell, WidthType, BorderStyle
-  } = docx;
+/* ============================================================
+   PDF İNDİRME — Boş çıktı sorunu düzeltildi
+   ------------------------------------------------------------
+   Eski yaklaşım: ekran dışı klon (position: fixed) → html2canvas
+   göremiyordu → boş PDF.
+   Yeni yaklaşım: GÖRÜNÜR önizlemeyi doğrudan kullan. Sadece
+   geçici olarak "pdf-export-mode" sınıfı eklenir; bu sınıf:
+     • paneli / mobil barı gizler
+     • preview-area padding/shadow/overflow'unu sıfırlar
+     • sayfa transform'larını (mobil scale) sıfırlar
+   PDF üretildikten sonra sınıf kaldırılır, her şey eski haline döner.
+   ============================================================ */
+async function downloadPDF(btn) {
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Hazırlanıyor...';
+  btn.disabled = true;
 
-  const children = [];
-  const totalPages = Math.ceil(s.questionCount / s.perPage);
-
-  for (let p = 0; p < totalPages; p++) {
-    const start = p * s.perPage + 1;
-    const end = Math.min((p + 1) * s.perPage, s.questionCount);
-    const { grid, rows } = layoutQuestions(start, end, s.columnCount);
-
-    // ÜST BAŞLIK (dönem/ders/sınav) — varsa ekle
-    if (s.title) {
-      children.push(new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 60 },
-        children: [new TextRun({
-          text: s.title, bold: true, size: 24, font: 'Times New Roman'
-        })]
-      }));
-    }
-
-    // ALT BAŞLIK (CEVAP KAĞIDI) — her zaman ekle (default "CEVAP KAĞIDI")
-    if (s.subtitle) {
-      children.push(new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 140 },
-        children: [new TextRun({
-          text: s.subtitle, bold: true, size: 30, font: 'Times New Roman'
-        })]
-      }));
-    }
-
-    // Ayırıcı çizgi
-    children.push(new Paragraph({
-      border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: '000000' } },
-      spacing: { after: 180 },
-      children: []
-    }));
-
-    // Öğrenci bilgi (çizgisiz)
-    if (s.showStudentInfo) {
-      children.push(new Paragraph({
-        spacing: { after: 260 },
-        children: [
-          new TextRun({ text: 'Ad Soyad:               ', size: 20, font: 'Times New Roman' }),
-          new TextRun({ text: 'No:               ', size: 20, font: 'Times New Roman' }),
-          new TextRun({ text: 'Sınıf:', size: 20, font: 'Times New Roman' })
-        ]
-      }));
-    }
-
-    // Soru tablosu
-    const colWidth = Math.floor(100 / s.columnCount);
-    const tableRows = [];
-
-    for (let r = 0; r < rows; r++) {
-      const cells = [];
-      for (let c = 0; c < s.columnCount; c++) {
-        const qNum = grid[r][c];
-        const runs = [];
-        if (qNum !== null) {
-          runs.push(new TextRun({
-            text: `${qNum}.  `,
-            bold: true, size: 20, font: 'Times New Roman'
-          }));
-
-          for (let i = 0; i < s.optionCount; i++) {
-            const circle = s.fillMode === 'filled' ? '●' : '○';
-            runs.push(new TextRun({
-              text: circle,
-              size: 22,
-              font: 'Segoe UI Symbol',
-              color: '000000'
-            }));
-            runs.push(new TextRun({
-              text: LETTERS[i] + '   ',
-              size: 20, font: 'Times New Roman'
-            }));
-          }
-        }
-        cells.push(new TableCell({
-          width: { size: colWidth, type: WidthType.PERCENTAGE },
-          borders: {
-            top:    { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
-            bottom: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
-            left:   { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
-            right:  { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }
-          },
-          margins: { top: 40, bottom: 40, left: 80, right: 80 },
-          children: [new Paragraph({ children: runs })]
-        }));
-      }
-      tableRows.push(new TableRow({ children: cells }));
-    }
-
-    children.push(new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      rows: tableRows
-    }));
-
-    if (s.showPageNum) {
-      children.push(new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { before: 240 },
-        children: [new TextRun({
-          text: `Sayfa ${p + 1} / ${totalPages}`,
-          size: 18, italics: true, color: '666666', font: 'Times New Roman'
-        })]
-      }));
-    }
-
-    if (p < totalPages - 1) {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: '', break: 1 })],
-        pageBreakBefore: true
-      }));
-    }
+  // Mobil panel açıksa kapat (önizleme görünür olsun)
+  const panelEl = document.getElementById('panel');
+  if (panelEl.classList.contains('open')) {
+    togglePanel();
+    await new Promise(r => setTimeout(r, 400));
   }
 
-  const doc = new Document({
-    sections: [{
-      properties: {
-        page: {
-          size: { width: 11906, height: 16838 },
-          margin: { top: 850, right: 850, bottom: 850, left: 850 }
-        }
-      },
-      children
-    }]
-  });
+  try {
+    const s = getSettings();
 
-  const blob = await Packer.toBlob(doc);
-  saveAs(blob, `Cevap_Kagidi_${s.questionCount}soru.docx`);
+    // 1) Önizlemeyi tazele
+    updatePreview();
+    await new Promise(r => setTimeout(r, 200));
+
+    const previewArea = document.getElementById('preview');
+    const pages = previewArea.querySelectorAll('.page');
+
+    if (!pages.length) {
+      alert('Önizleme boş. Lütfen ayarları kontrol edin.');
+      return;
+    }
+
+    // 2) Mobil scale transform'larını sıfırla (önemli!)
+    pages.forEach(p => {
+      p.style.transform = '';
+      p.style.marginBottom = '';
+    });
+
+    // 3) PDF export moduna geç
+    document.body.classList.add('pdf-export-mode');
+
+    // 4) Fontların hazır olduğundan emin ol
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch(e) {}
+    }
+    // 5) Layout'un oturması için bekle
+    await new Promise(r => requestAnimationFrame(() => r()));
+    await new Promise(r => setTimeout(r, 120));
+
+    // 6) Sayfa yüksekliklerini tam A4'e sabitle (html2pdf sayfa bölmesi için)
+    //    297mm ≈ 1123px @96dpi
+    pages.forEach(p => {
+      p.style.minHeight = '297mm';
+      p.style.height = '297mm';
+      p.style.overflow = 'hidden';
+    });
+
+    await new Promise(r => setTimeout(r, 50));
+
+    // 7) PDF üret — .preview-area'yı hedef al (görünür, render edilmiş)
+    const opt = {
+      margin: 0,
+      filename: `Cevap_Kagidi_${s.questionCount}soru.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: previewArea.scrollWidth,
+        windowHeight: previewArea.scrollHeight
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    await html2pdf().set(opt).from(previewArea).save();
+
+  } catch (err) {
+    console.error('PDF oluşturma hatası:', err);
+    alert('PDF oluşturulurken bir hata oluştu.\n' + (err.message || err));
+  } finally {
+    // 8) Export modunu kaldır, her şeyi eski haline getir
+    document.body.classList.remove('pdf-export-mode');
+
+    // Sayfa üzerinde bıraktığımız inline stilleri temizle
+    document.querySelectorAll('#preview .page').forEach(p => {
+      p.style.minHeight = '';
+      p.style.height = '';
+      p.style.overflow = '';
+      p.style.transform = '';
+      p.style.marginBottom = '';
+    });
+
+    // Mobil ölçeklemeyi yeniden uygula
+    requestAnimationFrame(() => scalePreviewForMobile());
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
 }
 
-/* ==================== OLAY DİNLEYİCİLERİ ==================== */
+/* OLAY DİNLEYİCİLERİ */
 window.addEventListener('DOMContentLoaded', updatePreview);
 
 let resizeTimer;
