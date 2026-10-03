@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#2563eb">
+<title>Cevap Kağıdı Oluşturucu - Optik Form</title>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #16a34a;
+    --success-dark: #15803d;
+    --gray-bg: #f0f2f5;
+    --panel-bg: #fff;
+    --text: #1a1a1a;
+    --text-soft: #4b5563;
+    --border: #d1d5db;
+  }
+
+  html, body { width: 100%; overflow-x: hidden; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Tahoma, sans-serif;
+    background: var(--gray-bg);
+    color: var(--text);
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  /* ==================== MOBİL ÜST BAR ==================== */
+  .mobile-bar {
+    display: none;              /* masaüstünde gizli */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .mobile-bar h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.3px; }
+  .menu-toggle {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .menu-toggle:active { background: rgba(255,255,255,0.35); }
+
+  /* ==================== ANA DÜZEN ==================== */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* ==================== PANEL ==================== */
+  .panel {
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+
+  h1.panel-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--primary-dark);
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+  }
+  h2 {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin: 18px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #374151;
+    font-weight: 500;
+  }
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    margin-bottom: 12px;
+    background: #fff;
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: inherit;
+  }
+  select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 34px;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .row > div { flex: 1 1 120px; }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    font-family: inherit;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-success { background: var(--success); color: white; }
+  .btn-success:hover { background: var(--success-dark); }
+  .btn-success:active { transform: scale(0.98); }
+  .btn-secondary { background: #e5e7eb; color: #374151; }
+  .btn-secondary:hover { background: #d1d5db; }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .checkbox-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+
+  /* Panel aksiyon butonları — HER İKİ CİHAZDA GÖRÜNÜR */
+  .panel-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+  }
+  .panel-actions button { margin-top: 8px; }
+  .panel-actions button:first-child { margin-top: 0; }
+
+  /* Mobil panel kapatma başlığı — masaüstünde gizli */
+  .panel-close { display: none; }
+
+  /* Overlay — mobilde */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    backdrop-filter: blur(2px);
+  }
+  .overlay.show { display: block; }
+
+  /* ==================== ÖNİZLEME ==================== */
+  .preview-area {
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page {
+    background: white;
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 20px;
+    padding: 12mm 15mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    font-family: 'Times New Roman', serif;
+    transform-origin: top center;
+  }
+  .page-header {
+    text-align: center;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+  .page-header .title { font-size: 17px; font-weight: bold; letter-spacing: 1px; }
+  .page-header .subtitle { font-size: 12px; margin-top: 4px; color: #333; }
+
+  /* ÖĞRENCİ BİLGİ — ÇİZGİSİZ */
+  .student-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 18px;
+    font-size: 12px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .student-info .field {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .questions-grid {
+    display: grid;
+    gap: 12px 22px;
+  }
+  .question-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-family: 'Times New Roman', serif;
+  }
+  .q-num {
+    font-weight: bold;
+    min-width: 26px;
+    text-align: right;
+  }
+  .options {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .bubble {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border: 1.2px solid #000;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+    font-family: Arial, sans-serif;
+    color: #000;
+    background: #fff;
+  }
+  .bubble.filled { background: #000; color: #fff; }
+  .page-num {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    margin-top: 18px;
+    border-top: 1px solid #ccc;
+    padding-top: 8px;
+  }
+
+  /* ==================== MOBİL UYUM (≤ 900px) ==================== */
+  @media (max-width: 900px) {
+    body { padding: 12px; }
+
+    .mobile-bar { display: flex; }
+
+    .container {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    /* Panel tam ekran */
+    .panel {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 200;
+      max-height: 100vh;
+      border-radius: 0;
+      padding: 0;
+      overflow-y: auto;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .panel.open { transform: translateY(0); }
+
+    /* Mobil panel iç scroll alanı */
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 16px 0;
+    }
+
+    /* Mobil kapatma başlığı */
+    .panel-close {
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--panel-bg);
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .panel-close h1.panel-title {
+      border: none;
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+    }
+    .btn-close {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: auto;
+      min-height: auto;
+      margin: 0;
+    }
+
+    /* Mobil alt sabit buton barı */
+    .panel-actions {
+      position: sticky;
+      bottom: 0;
+      background: var(--panel-bg);
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      margin: 0;
+      border-top: 2px solid #e5e7eb;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+    .panel-actions button {
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    /* Önizleme */
+    .preview-area { padding: 12px; border-radius: 8px; }
+    .page { transform-origin: top left; margin-bottom: 12px; }
+
+    .student-info { gap: 12px; }
+    .student-info .field { min-width: 100%; font-size: 11px; }
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 8px; font-size: 14px; }
+    .preview-area { padding: 8px; }
+    .panel-scroll { padding: 12px 12px 0; }
+    .panel-actions { padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); }
+    .row { gap: 8px; }
+    button { font-size: 14px; padding: 12px; }
+    /* iOS'ta input zoom'unu engelle */
+    input[type="text"], input[type="number"], select { font-size: 16px; }
+  }
+
+  /* Masaüstünde mobil öğeleri gizle */
+  @media (min-width: 901px) {
+    .mobile-bar,
+    .overlay,
+    .panel-close { display: none !important; }
+    .panel-actions {
+      /* Masaüstünde normal akışta, sticky olmayan */
+      position: static !important;
+      padding: 12px 0 0 !important;
+      padding-bottom: 0 !important;
+      margin-top: 12px !important;
+      border-top: 1px solid #e5e7eb !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* ==================== YAZDIRMA ==================== */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .panel, .mobile-bar, .overlay { display: none !important; }
+    .container { display: block; }
+    .preview-area {
+      box-shadow: none;
+      padding: 0;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      transform: none !important;
+      width: 100%;
+      page-break-after: always;
+    }
+    .page:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBİL ÜST BAR -->
+<div class="mobile-bar">
+  <h1>📝 Cevap Kağıdı</h1>
+  <button class="menu-toggle" onclick="togglePanel()" aria-label="Ayarları aç/kapat">
+    <span id="menuIcon">⚙️</span> <span id="menuText">Ayarlar</span>
+  </button>
+</div>
+
+<!-- OVERLAY (mobil) -->
+<div class="overlay" id="overlay" onclick="togglePanel()"></div>
+
+<div class="container">
+  <!-- PANEL -->
+  <div class="panel" id="panel">
+    <!-- Mobil başlık -->
+    <div class="panel-close">
+      <h1 class="panel-title">📝 Optik Cevap Kağıdı</h1>
+      <button class="btn-close" onclick="togglePanel()">✕ Kapat</button>
+    </div>
+
+    <!-- Kaydırılabilir içerik (mobilde) -->
+    <div class="panel-scroll">
+      <h2>Başlık Bilgileri</h2>
+      <label>Üst Başlık</label>
+      <input type="text" id="title" value="CEVAP KAĞIDI">
+      <label>Alt Başlık</label>
+      <input type="text" id="subtitle" value="">
+
+      <h2>Soru Ayarları</h2>
+      <div class="row">
+        <div>
+          <label>Soru Sayısı</label>
+          <input type="number" id="questionCount" value="20" min="1" max="500" inputmode="numeric">
+        </div>
+        <div>
+          <label>Seçenek Sayısı</label>
+          <select id="optionCount">
+            <option value="2">2 (A-B)</option>
+            <option value="3">3 (A-B-C)</option>
+            <option value="4" selected>4 (A-B-C-D)</option>
+            <option value="5">5 (A-B-C-D-E)</option>
+            <option value="6">6 (A-B-C-D-E-F)</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Sütun Sayısı</label>
+      <select id="columnCount">
+        <option value="1">1 Sütun</option>
+        <option value="2" selected>2 Sütun</option>
+        <option value="3">3 Sütun</option>
+        <option value="4">4 Sütun</option>
+      </select>
+
+      <h2>Daire Görünümü</h2>
+      <label>Daire İçi</label>
+      <select id="fillMode">
+        <option value="empty" selected>Boş (öğrenci işaretleyecek)</option>
+        <option value="filled">Dolu (cevap anahtarı modu)</option>
+      </select>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="showStudentInfo" checked>
+        Öğrenci bilgi alanlarını göster
+      </label>
+
+      <h2>Sayfa Ayarları</h2>
+      <div class="row">
+        <div>
+          <label>Sayfa Başına Soru</label>
+          <input type="number" id="perPage" value="40" min="10" max="200" inputmode="numeric">
+        </div>
+        <div>
+          <label>Sayfa No</label>
+          <select id="showPageNum">
+            <option value="yes" selected>Göster</option>
+            <option value="no">Gizle</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- AKSİYON BUTONLARI — her iki cihazda görünür -->
+    <div class="panel-actions">
+      <button class="btn-success" onclick="downloadDocx()">⬇️ DOCX Olarak İndir</button>
+      <button class="btn-secondary" onclick="window.print()">🖨️ Yazdır</button>
+      <button class="btn-primary" onclick="updatePreviewAndClose()">👁️ Önizle</button>
+    </div>
+  </div>
+
+  <!-- ÖNİZLEME -->
+  <div class="preview-area" id="preview"></div>
+</div>
+
+<script>
+const LETTERS = ['A','B','C','D','E','F'];
+
+function getSettings() {
+  return {
+    title: document.getElementById('title').value || 'CEVAP KAĞIDI',
+    subtitle: document.getElementById('subtitle').value || '',
+    questionCount: parseInt(document.getElementById('questionCount').value) || 20,
+    optionCount: parseInt(document.getElementById('optionCount').value) || 4,
+    columnCount: parseInt(document.getElementById('columnCount').value) || 2,
+    fillMode: document.getElementById('fillMode').value,
+    showStudentInfo: document.getElementById('showStudentInfo').checked,
+    perPage: parseInt(document.getElementById('perPage').value) || 40,
+    showPageNum: document.getElementById('showPageNum').value === 'yes'
+  };
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* Klasik sıralama: 1,2,3,4... yukarıdan aşağıya,
+   sütun dolunca bir sonraki sütuna geçer. */
+function layoutQuestions(start, end, columnCount) {
+  const qCount = end - start + 1;
+  const rows = Math.ceil(qCount / columnCount);
+  const grid = Array.from({ length: rows }, () => Array(columnCount).fill(null));
+
+  for (let c = 0; c < columnCount; c++) {
+    for (let r = 0; r < rows; r++) {
+      const qNum = start + c * rows + r;
+      if (qNum <= end) grid[r][c] = qNum;
+    }
+  }
+  return { grid, rows };
+}
+
+function buildPagesHTML(s) {
+  const totalPages = Math.ceil(s.questionCount / s.perPage);
+  let html = '';
+
+  for (let p = 0; p < totalPages; p++) {
+    const start = p * s.perPage + 1;
+    const end = Math.min((p + 1) * s.perPage, s.questionCount);
+    const { grid, rows } = layoutQuestions(start, end, s.columnCount);
+
+    let rowsHTML = '';
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < s.columnCount; c++) {
+        const qNum = grid[r][c];
+        if (qNum === null) {
+          rowsHTML += `<div class="question-item" style="visibility:hidden;"></div>`;
+          continue;
+        }
+        const bubbles = LETTERS.slice(0, s.optionCount).map(l =>
+          `<span class="bubble ${s.fillMode === 'filled' ? 'filled' : ''}">${l}</span>`
+        ).join('');
+        rowsHTML += `
+          <div class="question-item">
+            <span class="q-num">${qNum}.</span>
+            <span class="options">${bubbles}</span>
+          </div>
+        `;
+      }
+    }
+
+    const header = `
+      <div class="page-header">
+        <div class="title">${escapeHtml(s.title)}</div>
+        ${s.subtitle ? `<div class="subtitle">${escapeHtml(s.subtitle)}</div>` : ''}
+      </div>
+    `;
+
+    const studentInfo = s.showStudentInfo ? `
+      <div class="student-info">
+        <div class="field">Ad Soyad:</div>
+        <div class="field">No:</div>
+        <div class="field">Sınıf:</div>
+      </div>
+    ` : '';
+
+    const pageNum = s.showPageNum
+      ? `<div class="page-num">Sayfa ${p + 1} / ${totalPages}</div>`
+      : '';
+
+    html += `
+      <div class="page">
+        ${header}
+        ${studentInfo}
+        <div class="questions-grid" style="grid-template-columns: repeat(${s.columnCount}, 1fr);">
+          ${rowsHTML}
+        </div>
+        ${pageNum}
+      </div>
+    `;
+  }
+
+  return html;
+}
+
+/* Mobilde A4 sayfasını ekrana sığdır */
+function scalePreviewForMobile() {
+  const previewArea = document.querySelector('.preview-area');
+  if (!previewArea) return;
+  const pages = previewArea.querySelectorAll('.page');
+  const isMobile = window.innerWidth <= 900;
+
+  if (!isMobile) {
+    pages.forEach(p => {
+      p.style.transform = '';
+      p.style.marginBottom = '20px';
+    });
+    return;
+  }
+
+  const areaWidth = previewArea.clientWidth - 16;
+  const A4_PX = 794;
+  const scale = Math.min(1, areaWidth / A4_PX);
+
+  pages.forEach(p => {
+    p.style.transform = `scale(${scale})`;
+    const originalHeight = p.offsetHeight;
+    const scaledHeight = originalHeight * scale;
+    p.style.marginBottom = `${scaledHeight - originalHeight + 12}px`;
+  });
+}
+
+function updatePreview() {
+  document.getElementById('preview').innerHTML = buildPagesHTML(getSettings());
+  requestAnimationFrame(() => requestAnimationFrame(scalePreviewForMobile));
+}
+
+/* Mobil panel aç/kapa */
+function togglePanel() {
+  const panel = document.getElementById('panel');
+  const overlay = document.getElementById('overlay');
+  const isOpen = panel.classList.contains('open');
+
+  if (isOpen) {
+    panel.classList.remove('open');
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+    document.getElementById('menuIcon').textContent = '⚙️';
+    document.getElementById('menuText').textContent = 'Ayarlar';
+  } else {
+    panel.classList.add('open');
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('menuIcon').textContent = '✕';
+    document.getElementById('menuText').textContent = 'Kapat';
+  }
+}
+
+function updatePreviewAndClose() {
+  updatePreview();
+  if (window.innerWidth <= 900) {
+    setTimeout(togglePanel, 150);
+  }
+}
+
+/* ==================== DOCX ==================== */
+async function downloadDocx() {
+  const s = getSettings();
+  const {
+    Document, Packer, Paragraph, TextRun, AlignmentType,
+    Table, TableRow, TableCell, WidthType, BorderStyle
+  } = docx;
+
+  const children = [];
+  const totalPages = Math.ceil(s.questionCount / s.perPage);
+
+  for (let p = 0; p < totalPages; p++) {
+    const start = p * s.perPage + 1;
+    const end = Math.min((p + 1) * s.perPage, s.questionCount);
+    const { grid, rows } = layoutQuestions(start, end, s.columnCount);
+
+    // Başlık
+    children.push(new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 100 },
+      children: [new TextRun({
+        text: s.title, bold: true, size: 30, font: 'Times New Roman'
+      })]
+    }));
+
+    if (s.subtitle) {
+      children.push(new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 160 },
+        children: [new TextRun({
+          text: s.subtitle, size: 20, font: 'Times New Roman'
+        })]
+      }));
+    }
+
+    // Ayırıcı çizgi
+    children.push(new Paragraph({
+      border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: '000000' } },
+      spacing: { after: 180 },
+      children: []
+    }));
+
+    // Öğrenci bilgi — ÇİZGİSİZ
+    if (s.showStudentInfo) {
+      children.push(new Paragraph({
+        spacing: { after: 260 },
+        children: [
+          new TextRun({ text: 'Ad Soyad:               ', size: 20, font: 'Times New Roman' }),
+          new TextRun({ text: 'No:               ', size: 20, font: 'Times New Roman' }),
+          new TextRun({ text: 'Sınıf:', size: 20, font: 'Times New Roman' })
+        ]
+      }));
+    }
+
+    // Soru tablosu
+    const colWidth = Math.floor(100 / s.columnCount);
+    const tableRows = [];
+
+    for (let r = 0; r < rows; r++) {
+      const cells = [];
+      for (let c = 0; c < s.columnCount; c++) {
+        const qNum = grid[r][c];
+        const runs = [];
+        if (qNum !== null) {
+          runs.push(new TextRun({
+            text: `${qNum}.  `,
+            bold: true, size: 20, font: 'Times New Roman'
+          }));
+
+          for (let i = 0; i < s.optionCount; i++) {
+            const circle = s.fillMode === 'filled' ? '●' : '○';
+            runs.push(new TextRun({
+              text: circle,
+              size: 22,
+              font: 'Segoe UI Symbol',
+              color: '000000'
+            }));
+            runs.push(new TextRun({
+              text: LETTERS[i] + '   ',
+              size: 20, font: 'Times New Roman'
+            }));
+          }
+        }
+        cells.push(new TableCell({
+          width: { size: colWidth, type: WidthType.PERCENTAGE },
+          borders: {
+            top:    { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+            bottom: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+            left:   { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' },
+            right:  { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }
+          },
+          margins: { top: 40, bottom: 40, left: 80, right: 80 },
+          children: [new Paragraph({ children: runs })]
+        }));
+      }
+      tableRows.push(new TableRow({ children: cells }));
+    }
+
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: tableRows
+    }));
+
+    if (s.showPageNum) {
+      children.push(new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { before: 240 },
+        children: [new TextRun({
+          text: `Sayfa ${p + 1} / ${totalPages}`,
+          size: 18, italics: true, color: '666666', font: 'Times New Roman'
+        })]
+      }));
+    }
+
+    if (p < totalPages - 1) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: '', break: 1 })],
+        pageBreakBefore: true
+      }));
+    }
+  }
+
+  const doc = new Document({
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 11906, height: 16838 },
+          margin: { top: 850, right: 850, bottom: 850, left: 850 }
+        }
+      },
+      children
+    }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, `Cevap_Kagidi_${s.questionCount}soru.docx`);
+}
+
+/* ==================== OLAY DİNLEYİCİLERİ ==================== */
+window.addEventListener('DOMContentLoaded', updatePreview);
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(scalePreviewForMobile, 150);
+});
+
+let inputTimer;
+document.querySelectorAll('input, select').forEach(el => {
+  const handler = () => {
+    clearTimeout(inputTimer);
+    inputTimer = setTimeout(updatePreview, 250);
+  };
+  el.addEventListener('input', handler);
+  el.addEventListener('change', handler);
+});
+</script>
+
+</body>
+</html>
