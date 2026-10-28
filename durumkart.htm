@@ -100,6 +100,7 @@
             box-shadow: var(--shadow-md);
             overflow: hidden;
             transition: height 0.3s ease;
+            transform: translateZ(0);
         }
 
         #bg-image-wrapper {
@@ -111,10 +112,15 @@
             display: none;
         }
         #bg-image-wrapper img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(var(--bg-scale, 1));
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
+            transition: transform 0.15s ease-out;
         }
 
         .gradient-orb {
@@ -526,6 +532,7 @@
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .spectrum-slider {
             width: 100%;
@@ -559,11 +566,13 @@
         .slider-info {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 0.72rem;
             font-weight: 700;
             color: var(--text-sub);
             margin-bottom: 4px;
         }
+        .slider-info span { display: flex; align-items: center; gap: 4px; }
         input[type="range"] {
             width: 100%;
             accent-color: var(--primary);
@@ -572,7 +581,32 @@
             background: var(--border-light);
             outline: none;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
+
+        /* KİLİTLİ SLIDER GÖRÜNÜMÜ */
+        input[type="range"].locked {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        input[type="range"].locked::-webkit-slider-thumb {
+            cursor: not-allowed;
+        }
+
+        /* YENİ: BİREYSEL KİLİT BUTONU */
+        .indiv-lock-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 2px;
+            color: var(--text-sub);
+            transition: color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .indiv-lock-btn:hover { transform: scale(1.2); }
 
         .upload-label {
             display: block;
@@ -833,9 +867,12 @@
                     <div class="spectrum-bar-container">
                         <div class="spectrum-bar-header">
                             <span>✨ Canlı Spektrum Tonlama</span>
-                            <span id="spectrum-hue-val">0°</span>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span id="spectrum-hue-val">0°</span>
+                                <button class="indiv-lock-btn" data-target="spectrum-hue" style="color: var(--text-sub);">🔒</button>
+                            </div>
                         </div>
-                        <input type="range" min="0" max="360" value="0" class="spectrum-slider" id="spectrum-hue">
+                        <input type="range" min="0" max="360" value="0" class="spectrum-slider locked" id="spectrum-hue">
                     </div>
 
                     <div class="quick-color-bar">
@@ -857,9 +894,11 @@
                     <label class="upload-label" for="file-input">+ Görsel Yükle</label>
                     <input type="file" id="file-input" accept="image/*" style="display:none;">
                     <div class="slider-box">
-                        <div class="slider-info"><span>Boyut:</span><span id="logo-size-val">100px</span></div>
-                        <!-- YENİ: 20 - 320 arası geniş aralık, 2px adım -->
-                        <input type="range" id="logo-size" min="20" max="320" step="2" value="100">
+                        <div class="slider-info">
+                            <span>Boyut: <span id="logo-size-val">100px</span></span>
+                            <button class="indiv-lock-btn" data-target="logo-size" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="logo-size" min="20" max="320" step="2" value="100" class="locked">
                     </div>
                 </div>
 
@@ -871,6 +910,20 @@
                     </div>
                     <label class="bg-upload-label" for="bg-file-input">+ Arka Plan Görseli Yükle</label>
                     <input type="file" id="bg-file-input" accept="image/*" style="display:none;">
+                    
+                    <div style="margin-top:8px; display:flex; align-items:center; gap:6px;">
+                        <input type="checkbox" id="bg-remove-white" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
+                        <label for="bg-remove-white" style="font-size:0.75rem; font-weight:600; color:var(--text-sub); cursor:pointer;">Beyaz kenarları otomatik temizle</label>
+                    </div>
+
+                    <div class="slider-box" style="margin-top: 10px;">
+                        <div class="slider-info">
+                            <span>Arka Plan Boyutu: <span id="bg-size-val">100%</span></span>
+                            <button class="indiv-lock-btn" data-target="bg-size" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="bg-size" min="0.1" max="2" step="0.05" value="1" class="locked">
+                    </div>
+
                     <div id="bg-selected-div" class="selected-file" style="display:none;">
                         <span>🖼️ <span id="bg-file-name"></span></span>
                         <button id="bg-remove-btn" class="clear-btn">✖ Kaldır</button>
@@ -891,8 +944,11 @@
                     </div>
 
                     <div class="slider-box">
-                        <div class="slider-info"><span>Tüm Metin Boyutu:</span><span id="size-txt">1.4rem</span></div>
-                        <input type="range" id="font-size" min="1" max="2.5" step="0.1" value="1.4">
+                        <div class="slider-info">
+                            <span>Tüm Metin Boyutu: <span id="size-txt">1.4rem</span></span>
+                            <button class="indiv-lock-btn" data-target="font-size" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="font-size" min="1" max="2.5" step="0.1" value="1.4" class="locked">
                     </div>
 
                     <div class="btn-group" style="margin-top:8px;">
@@ -921,18 +977,27 @@
                     </div>
 
                     <div class="slider-box">
-                        <div class="slider-info"><span>Harf Aralığı:</span><span id="spacing-val">0px</span></div>
-                        <input type="range" id="letter-spacing" min="-2" max="6" step="0.5" value="0">
+                        <div class="slider-info">
+                            <span>Harf Aralığı: <span id="spacing-val">0px</span></span>
+                            <button class="indiv-lock-btn" data-target="letter-spacing" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="letter-spacing" min="-2" max="6" step="0.5" value="0" class="locked">
                     </div>
 
                     <div class="slider-box">
-                        <div class="slider-info"><span>Satır Yüksekliği:</span><span id="lineheight-val">1.4</span></div>
-                        <input type="range" id="line-height" min="1" max="2" step="0.05" value="1.4">
+                        <div class="slider-info">
+                            <span>Satır Yüksekliği: <span id="lineheight-val">1.4</span></span>
+                            <button class="indiv-lock-btn" data-target="line-height" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="line-height" min="1" max="2" step="0.05" value="1.4" class="locked">
                     </div>
 
                     <div class="slider-box">
-                        <div class="slider-info"><span>Köşe Yuvarlaklığı:</span><span id="radius-val">0px</span></div>
-                        <input type="range" id="text-radius" min="0" max="40" step="1" value="0">
+                        <div class="slider-info">
+                            <span>Köşe Yuvarlaklığı: <span id="radius-val">0px</span></span>
+                            <button class="indiv-lock-btn" data-target="text-radius" style="color: var(--text-sub);">🔒</button>
+                        </div>
+                        <input type="range" id="text-radius" min="0" max="40" step="1" value="0" class="locked">
                     </div>
                 </div>
 
@@ -979,12 +1044,15 @@
             const logoSize    = document.getElementById('logo-size');
             const logoSizeVal = document.getElementById('logo-size-val');
 
-            const bgFileInput  = document.getElementById('bg-file-input');
-            const bgImage      = document.getElementById('bg-image');
-            const bgImageWrapper = document.getElementById('bg-image-wrapper');
+            const bgFileInput   = document.getElementById('bg-file-input');
+            const bgImage       = document.getElementById('bg-image');
+            const bgImageWrapper= document.getElementById('bg-image-wrapper');
             const bgSelectedDiv = document.getElementById('bg-selected-div');
-            const bgFileNameSpan = document.getElementById('bg-file-name');
-            const bgRemoveBtn  = document.getElementById('bg-remove-btn');
+            const bgFileNameSpan= document.getElementById('bg-file-name');
+            const bgRemoveBtn   = document.getElementById('bg-remove-btn');
+            const bgRemoveWhite = document.getElementById('bg-remove-white');
+            const bgSize        = document.getElementById('bg-size');
+            const bgSizeVal     = document.getElementById('bg-size-val');
 
             const cardText    = document.getElementById('card-text');
             const fontSize    = document.getElementById('font-size');
@@ -1027,6 +1095,87 @@
             let savedRange = null;
             let selectionDebounceTimer = null;
             let lastPointerType = 'mouse';
+
+            /* ---------- BİREYSEL SLIDER KİLİT SİSTEMİ ---------- */
+            const indivLockBtns = document.querySelectorAll('.indiv-lock-btn');
+
+            indivLockBtns.forEach(btn => {
+                const targetId = btn.dataset.target;
+                const slider = document.getElementById(targetId);
+                if (!slider) return;
+
+                // Başlangıçta hepsini kilitle
+                slider.classList.add('locked');
+                btn.textContent = '🔒';
+                btn.style.color = 'var(--text-sub)';
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isLocked = slider.classList.toggle('locked');
+                    btn.textContent = isLocked ? '🔒' : '🔓';
+                    btn.style.color = isLocked ? 'var(--text-sub)' : 'var(--primary)';
+                    btn.title = isLocked ? 'Kilidi Aç' : 'Kilitle';
+                });
+            });
+
+            /* ---------- BEYAZ TEMİZLEME (FLOOD FILL) ---------- */
+            function removeWhiteBackground(imgElement, callback) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const w = imgElement.naturalWidth || imgElement.width;
+                const h = imgElement.naturalHeight || imgElement.height;
+                if (!w || !h) { callback(imgElement.src); return; }
+                
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(imgElement, 0, 0);
+                
+                try {
+                    const imageData = ctx.getImageData(0, 0, w, h);
+                    const data = imageData.data;
+                    const threshold = 240;
+                    
+                    const isWhite = (r, g, b) => r > threshold && g > threshold && b > threshold;
+                    
+                    const stack = [];
+                    for (let x = 0; x < w; x++) { stack.push(x, 0); stack.push(x, h - 1); }
+                    for (let y = 0; y < h; y++) { stack.push(0, y); stack.push(w - 1, y); }
+                    
+                    const visited = new Uint8Array(w * h);
+                    
+                    while (stack.length > 0) {
+                        const y = stack.pop();
+                        const x = stack.pop();
+                        const idx = y * w + x;
+                        if (visited[idx]) continue;
+                        visited[idx] = 1;
+                        
+                        const p = idx * 4;
+                        const r = data[p], g = data[p+1], b = data[p+2];
+                        
+                        if (isWhite(r, g, b)) {
+                            data[p+3] = 0; 
+                            if (x > 0) { stack.push(x-1, y); }
+                            if (x < w-1) { stack.push(x+1, y); }
+                            if (y > 0) { stack.push(x, y-1); }
+                            if (y < h-1) { stack.push(x, y+1); }
+                        }
+                    }
+                    
+                    ctx.putImageData(imageData, 0, 0);
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const url = URL.createObjectURL(blob);
+                            callback(url);
+                        } else {
+                            callback(imgElement.src);
+                        }
+                    }, 'image/png');
+                } catch (e) {
+                    console.error('Beyaz temizleme hatası:', e);
+                    callback(imgElement.src);
+                }
+            }
 
             /* ---------- DOKUNMATİK ALGILAMA ---------- */
             document.addEventListener('pointerdown', (e) => {
@@ -1292,12 +1441,31 @@
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    bgImage.src = ev.target.result;
-                    bgImageWrapper.style.display = 'block';
-                    bgSelectedDiv.style.display = 'flex';
-                    bgFileNameSpan.textContent = file.name;
+                    const img = new Image();
+                    img.onload = () => {
+                        if (bgRemoveWhite.checked) {
+                            removeWhiteBackground(img, (processedUrl) => {
+                                bgImage.src = processedUrl;
+                                bgImageWrapper.style.display = 'block';
+                                bgSelectedDiv.style.display = 'flex';
+                                bgFileNameSpan.textContent = file.name;
+                            });
+                        } else {
+                            bgImage.src = ev.target.result;
+                            bgImageWrapper.style.display = 'block';
+                            bgSelectedDiv.style.display = 'flex';
+                            bgFileNameSpan.textContent = file.name;
+                        }
+                    };
+                    img.src = ev.target.result;
                 };
                 reader.readAsDataURL(file);
+            });
+
+            bgSize.addEventListener('input', () => {
+                const val = parseFloat(bgSize.value);
+                bgImage.style.setProperty('--bg-scale', val);
+                bgSizeVal.textContent = Math.round(val * 100) + '%';
             });
 
             bgRemoveBtn.addEventListener('click', () => {
@@ -1305,6 +1473,10 @@
                 bgImageWrapper.style.display = 'none';
                 bgSelectedDiv.style.display = 'none';
                 bgFileInput.value = '';
+                bgSize.value = 1;
+                bgImage.style.setProperty('--bg-scale', 1);
+                bgSizeVal.textContent = '100%';
+                bgRemoveWhite.checked = false;
             });
 
             /* ---------- METİN İŞLEMLERİ ---------- */
@@ -1651,12 +1823,16 @@
                 bgImageWrapper.style.display = 'none';
                 bgSelectedDiv.style.display = 'none';
                 bgFileInput.value = '';
+                bgSize.value = 1;
+                bgImage.style.setProperty('--bg-scale', 1);
+                bgSizeVal.textContent = '100%';
+                bgRemoveWhite.checked = false;
 
                 applyTheme('gunes');
                 clampAll();
             });
 
-            /* ---------- PNG İNDİR ---------- */
+            /* ---------- PNG İNDİR (Kusursuz Maskeleme) ---------- */
             downloadBtn.addEventListener('click', async () => {
                 if (downloadBtn.disabled) return;
                 downloadBtn.disabled = true;
@@ -1671,18 +1847,64 @@
                         await document.fonts.ready;
                     }
 
+                    const currentRadius = parseInt(textRadius.value) || 0;
+
                     const canvas = await html2canvas(cardCanvas, {
                         scale: 3,
                         useCors: true,
                         backgroundColor: null,
-                        logging: false
+                        logging: false,
+                        onclone: (clonedDoc) => {
+                            const clonedCanvas = clonedDoc.getElementById('card-canvas');
+                            if (clonedCanvas) {
+                                clonedCanvas.style.borderRadius = '0px';
+                                clonedCanvas.style.overflow = 'visible';
+                            }
+                        }
                     });
-                    const link = document.createElement('a');
-                    link.download = `durum_karti_${Date.now()}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
+
+                    if (currentRadius > 0) {
+                        const roundedCanvas = document.createElement('canvas');
+                        roundedCanvas.width = canvas.width;
+                        roundedCanvas.height = canvas.height;
+                        const rctx = roundedCanvas.getContext('2d');
+                        
+                        const scaleFactor = canvas.width / cardCanvas.offsetWidth;
+                        const r = currentRadius * scaleFactor;
+                        
+                        rctx.beginPath();
+                        if (rctx.roundRect) {
+                            rctx.roundRect(0, 0, roundedCanvas.width, roundedCanvas.height, r);
+                        } else {
+                            rctx.moveTo(r, 0);
+                            rctx.lineTo(roundedCanvas.width - r, 0);
+                            rctx.quadraticCurveTo(roundedCanvas.width, 0, roundedCanvas.width, r);
+                            rctx.lineTo(roundedCanvas.width, roundedCanvas.height - r);
+                            rctx.quadraticCurveTo(roundedCanvas.width, roundedCanvas.height, roundedCanvas.width - r, roundedCanvas.height);
+                            rctx.lineTo(r, roundedCanvas.height);
+                            rctx.quadraticCurveTo(0, roundedCanvas.height, 0, roundedCanvas.height - r);
+                            rctx.lineTo(0, r);
+                            rctx.quadraticCurveTo(0, 0, r, 0);
+                            rctx.closePath();
+                        }
+                        rctx.clip();
+                        rctx.drawImage(canvas, 0, 0);
+
+                        const link = document.createElement('a');
+                        link.download = `durum_karti_${Date.now()}.png`;
+                        link.href = roundedCanvas.toDataURL('image/png');
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                    } else {
+                        const link = document.createElement('a');
+                        link.download = `durum_karti_${Date.now()}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                    }
+
                 } catch (err) {
                     console.error(err);
                     alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
