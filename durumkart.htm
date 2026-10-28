@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profesyonel Durum Kartı Stüdyosu</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@500;700&family=Beau+Rivage&family=Great+Vibes&family=Lora:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-soft: #e0e7ff;
+            --bg-light: #f8fafc;
+            --panel-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-sub: #64748b;
+            --border-light: #e2e8f0;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 14px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-light);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
+        .header p { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; font-weight: 600; }
+
+        .main-layout { display: flex; flex: 1; flex-direction: column; }
+        @media (min-width: 900px) {
+            .main-layout { flex-direction: row; height: calc(100vh - 58px); }
+        }
+
+        /* ÖNİZLEME ALANI */
+        .preview-workspace {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 12px;
+            background: #f1f5f9;
+            min-height: 520px;
+        }
+
+        .preview-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .preview-hint {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 10px;
+            max-width: 320px;
+        }
+
+        #card-canvas {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            height: 480px;
+            background: #FFFDF9;
+            border-radius: 0px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: height 0.3s ease;
+        }
+
+        #bg-image-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+        }
+        #bg-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #orb-tl { top: -90px; left: -90px; }
+        #orb-br { bottom: -90px; right: -90px; }
+
+        /* LOGO */
+        #logo-wrapper {
+            position: absolute;
+            top: calc(30% - 50px);
+            left: calc(50% - 50px);
+            display: none;
+            z-index: 5;
+            padding: 6px;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        #logo-wrapper:active { cursor: grabbing; }
+        #logo-wrapper:hover { outline: 2px dashed rgba(99, 102, 241, 0.45); outline-offset: 2px; border-radius: 22px; }
+        #logo-wrapper img {
+            display: block;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            pointer-events: none;
+            transition: width 0.15s, height 0.15s;
+        }
+
+        /* METİN KUTUSU */
+        #text-wrapper {
+            position: absolute;
+            top: 52%;
+            left: 8%;
+            width: 84%;
+            z-index: 6;
+        }
+
+        /* Sürükleme Tutamacı */
+        .drag-handle {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 34px;
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25), 0 2px 4px rgba(0,0,0,0.08);
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            z-index: 10;
+            animation: hintPulse 2.4s ease-in-out 3;
+        }
+        .drag-handle:hover {
+            background: var(--primary-soft);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+        .drag-handle .grip { font-size: 1.1rem; line-height: 1; }
+        #text-wrapper.is-dragging .drag-handle {
+            cursor: grabbing;
+            background: var(--primary-soft);
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+            50%      { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2), 0 4px 12px rgba(99, 102, 241, 0.25); }
+        }
+
+        #card-text {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 2px dashed transparent;
+            border-radius: 0px;
+            color: #1e293b;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.4;
+            text-align: center;
+            outline: none;
+            padding: 10px 12px;
+            min-height: 84px;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            user-select: text;
+            -webkit-user-select: text;
+            transition: border-color 0.2s;
+            cursor: text;
+            touch-action: auto;
+        }
+        #card-text:hover,
+        #card-text:focus {
+            border-color: rgba(99, 102, 241, 0.45);
+        }
+        #card-text:empty:before {
+            content: attr(placeholder);
+            color: #94a3b8;
+            pointer-events: none;
+            display: block;
+        }
+
+        /* Seçim vurgu katmanı */
+        .selection-highlight-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 7;
+        }
+
+        #card-canvas.exporting .drag-handle { display: none; }
+        #card-canvas.exporting #card-text     { border-color: transparent !important; }
+        #card-canvas.exporting #card-text:empty:before {
+            content: none !important;
+            display: none !important;
+        }
+        #card-canvas.exporting .selection-highlight-overlay {
+            display: none !important;
+        }
+
+        /* KONTROL PANELİ */
+        .controls-panel {
+            width: 100%;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-light);
+            padding: 14px;
+            overflow-y: auto;
+        }
+        @media (min-width: 900px) {
+            .controls-panel {
+                width: 400px;
+                border-top: none;
+                border-right: 1px solid var(--border-light);
+                order: -1;
+            }
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .control-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-light);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .control-card.highlight-card {
+            border: 2px solid var(--primary-soft);
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+            position: relative;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .control-card.highlight-card.attention {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            animation: cardPulse 0.6s ease;
+        }
+
+        @keyframes cardPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-item {
+            flex: 1;
+            min-width: 44px;
+            padding: 9px 6px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .btn-item:hover { border-color: #cbd5e1; }
+        .btn-item.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .btn-item.font-btn { font-size: 0.7rem; }
+        .btn-item.font-btn[data-font*="Beau Rivage"] { font-family: 'Beau Rivage', cursive; font-size: 0.95rem; font-weight: 400; }
+        .btn-item.font-btn[data-font*="Great Vibes"] { font-family: 'Great Vibes', cursive; font-size: 0.85rem; font-weight: 400; }
+
+        #bold-btn { font-weight: 900; font-family: serif; font-size: 0.95rem; }
+        #italic-btn { font-style: italic; font-family: serif; font-size: 0.95rem; }
+
+        /* TEMALAR */
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .theme-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 3px;
+            background: #fff;
+            border: 1.5px solid var(--border-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.58rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-align: center;
+            line-height: 1.15;
+        }
+        .theme-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+        .theme-item.active {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .theme-preview {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(0,0,0,0.08);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+            flex-shrink: 0;
+        }
+
+        /* RENK GRID */
+        .gradient-zones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .zone-box {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 7px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .zone-box input[type="color"] {
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            padding: 0;
+        }
+        .zone-box span { font-size: 0.68rem; font-weight: 700; color: var(--text-sub); }
+
+        .zone-box.compact {
+            padding: 4px 6px;
+            gap: 4px;
+        }
+        .zone-box.compact span { font-size: 0.65rem; }
+        .zone-box.compact input[type="number"] {
+            width: 32px;
+            font-size: 0.75rem;
+        }
+
+        /* Özel Renk Butonu */
+        .custom-color-trigger {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 0 1px var(--border-light), 0 2px 4px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            position: relative;
+        }
+        .custom-color-trigger:hover { transform: scale(1.1); }
+
+        /* Açılır Spektrum Paneli */
+        .spectrum-popover {
+            display: none;
+            margin-top: 8px;
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            animation: fadeIn 0.2s ease;
+        }
+        .spectrum-popover.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .spectrum-canvas-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        #spectrum-canvas {
+            border-radius: 6px;
+            cursor: crosshair;
+            border: 1px solid var(--border-light);
+            touch-action: none;
+        }
+        #hue-canvas {
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            touch-action: none;
+        }
+
+        .spectrum-preset-dots {
+            display: flex;
+            gap: 6px;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+        .spec-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: transform 0.15s;
+        }
+        .spec-dot:hover { transform: scale(1.2); }
+
+        /* HIZLI RENK PALETİ VE SPEKTRUM ÇUBUĞU */
+        .quick-color-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-light);
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .quick-color-title {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            white-space: nowrap;
+            margin-right: 2px;
+        }
+        .color-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            flex-shrink: 0;
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+            transition: transform 0.15s ease;
+        }
+        .color-dot:hover { transform: scale(1.25); z-index: 2; }
+
+        .spectrum-bar-container {
+            margin-top: 10px;
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 8px;
+        }
+        .spectrum-bar-header {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .spectrum-slider {
+            width: 100%;
+            height: 14px;
+            border-radius: 7px;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            cursor: pointer;
+            background: linear-gradient(to right,
+                #ff0000 0%, #ffff00 17%, #00ff00 33%,
+                #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .spectrum-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .spectrum-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        /* SLIDER */
+        .slider-box { margin-top: 8px; }
+        .slider-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+            height: 6px;
+            border-radius: 4px;
+            background: var(--border-light);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .upload-label {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #ffffff;
+            border: 1.5px dashed var(--border-light);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-label:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Arka plan için özel drop alanı */
+        .bg-upload-label {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #fffbeb;
+            border: 1.5px dashed #f59e0b;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #b45309;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .bg-upload-label:hover { border-color: #d97706; background: #fef3c7; }
+
+        .selected-file {
+            background: #0f172a;
+            border-radius: 1.2rem;
+            padding: 8px 12px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+        }
+        .clear-btn {
+            background: rgba(239,68,68,0.2);
+            border: none;
+            color: #f87171;
+            padding: 4px 10px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .download-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.25);
+            margin-top: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        .download-button:hover:not(:disabled) { transform: translateY(-1px); }
+        .download-button:disabled { opacity: 0.6; cursor: wait; }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 11px;
+            background: #ffffff;
+            border: 1.5px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .reset-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        .divider {
+            height: 1px;
+            background: var(--border-light);
+            margin: 10px 0;
+        }
+
+        .info-text {
+            font-size: 0.68rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: var(--primary-soft);
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* YENİ FOOTER */
+        .app-footer {
+            text-align: center;
+            padding: 18px 12px;
+            background: #ffffff;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.03);
+        }
+        .app-footer .deco {
+            font-size: 1rem;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .app-footer .name {
+            color: var(--primary);
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>🎨 Profesyonel Durum Kartı Stüdyosu</h1>
+            <p>Tema • Efekt • Katman • Sürükle-Bırak • Seçili Metni Biçimlendir</p>
+        </div>
+
+        <div class="main-layout">
+            <!-- ÖNİZLEME -->
+            <div class="preview-workspace">
+                <div class="preview-stack">
+                    <div id="card-canvas">
+                        <div id="bg-image-wrapper">
+                            <img id="bg-image" alt="Arka Plan">
+                        </div>
+
+                        <div id="orb-tl" class="gradient-orb"></div>
+                        <div id="orb-br" class="gradient-orb"></div>
+
+                        <div id="logo-wrapper">
+                            <img id="logo-img" alt="Logo">
+                        </div>
+
+                        <div id="text-wrapper">
+                            <div class="drag-handle" data-drag-handle role="button"
+                                 aria-label="Metin kutusunu taşımak için sürükleyin">
+                                <span class="grip" aria-hidden="true">⠿</span>
+                                <span>Sürükle &amp; Taşı</span>
+                            </div>
+                            <div id="card-text" contenteditable="true" placeholder="Metninizi buraya yazın..."></div>
+                        </div>
+                    </div>
+                    <p class="preview-hint">💡 Metni üstteki tutamaçtan taşıyın. Belirli bir kelimeyi seçip hemen sağ üstteki panelden biçimlendirin.</p>
+                </div>
+            </div>
+
+            <!-- KONTROL PANELİ -->
+            <div class="controls-panel">
+
+                <!-- 1. HIZLI SEÇİM BİÇİMLENDİRME -->
+                <div class="control-card highlight-card" id="highlight-card">
+                    <div class="section-title" style="color: var(--primary);">🎯 Seçili Metni Biçimlendir</div>
+                    <div class="info-text">
+                        Kart üzerindeki metinden bir kısmı seçin. Rengi, boyutu ve kalınlığı buradan değiştirin.
+                    </div>
+
+                    <div class="btn-group" style="margin-bottom: 8px; display: flex; gap: 6px; align-items: stretch;">
+                        <div class="zone-box compact" style="flex: 1; justify-content: center;">
+                            <div class="custom-color-trigger" id="custom-color-trigger" style="background-color: #ff0000;" title="Renk Spektrumunu Aç"></div>
+                            <input type="hidden" id="sel-text-color" value="#ff0000">
+                            <span>Renk</span>
+                        </div>
+                        <div class="zone-box compact" style="flex: 1; justify-content: center;">
+                            <input type="number" id="sel-font-size" value="1.5" step="0.1" min="0.5" max="5" title="Seçili metnin boyutu (rem)">
+                            <span>rem</span>
+                        </div>
+                        <button class="btn-item" id="sel-bold-btn" title="Seçili Metni Kalın Yap" style="flex: 0.6; padding: 4px; font-size: 1.1rem; font-weight: 900; font-family: serif; display: flex; align-items: center; justify-content: center;">B</button>
+                    </div>
+
+                    <div class="spectrum-popover" id="spectrum-popover">
+                        <div style="font-size: 0.65rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; display: flex; justify-content: space-between;">
+                            <span>🌈 Modern Spektrum Seçici</span>
+                            <span id="spectrum-hex-val" style="color: var(--primary);">#FF0000</span>
+                        </div>
+                        <div class="spectrum-canvas-container">
+                            <canvas id="spectrum-canvas" width="220" height="120"></canvas>
+                            <canvas id="hue-canvas" width="24" height="120"></canvas>
+                        </div>
+                        <div class="spectrum-preset-dots">
+                            <div class="spec-dot" style="background: #ff0000;" data-hex="#ff0000"></div>
+                            <div class="spec-dot" style="background: #6366f1;" data-hex="#6366f1"></div>
+                            <div class="spec-dot" style="background: #10b981;" data-hex="#10b981"></div>
+                            <div class="spec-dot" style="background: #f59e0b;" data-hex="#f59e0b"></div>
+                            <div class="spec-dot" style="background: #ec4899;" data-hex="#ec4899"></div>
+                            <div class="spec-dot" style="background: #000000;" data-hex="#000000"></div>
+                            <div class="spec-dot" style="background: #ffffff;" data-hex="#ffffff"></div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group" style="margin-top: 8px;">
+                        <button class="btn-item" id="apply-sel-format" style="background:#eef2ff; color:var(--primary); border-color:var(--primary); font-weight:800; padding: 12px;">Seçili Metne Uygula</button>
+                        <button class="btn-item" id="clear-sel-format" title="Seçili metnin özel biçimini kaldır" style="flex: 0.4; padding: 12px;">Temizle</button>
+                    </div>
+                </div>
+
+                <!-- 2. KART BOYUTU -->
+                <div class="control-card">
+                    <div class="section-title">📐 Kart Boyutu</div>
+                    <div class="btn-group">
+                        <button class="btn-item active" data-format="story">Hikaye (9:16)</button>
+                        <button class="btn-item" data-format="post">Kare (1:1)</button>
+                    </div>
+                </div>
+
+                <!-- 3. HAZIR TEMALAR -->
+                <div class="control-card">
+                    <div class="section-title">🎨 Hazır Temalar</div>
+                    <div class="themes-grid" id="themes-grid"></div>
+                </div>
+
+                <!-- 4. GRADYAN RENKLERİ -->
+                <div class="control-card">
+                    <div class="section-title">🌈 Gradyan Renkleri</div>
+                    <div class="gradient-zones-grid">
+                        <div class="zone-box">
+                            <input type="color" id="zone-base" value="#FFFDF9">
+                            <span>Ana Zemin</span>
+                        </div>
+                        <div class="zone-box">
+                            <input type="color" id="zone-center" value="#F5E6D3">
+                            <span>Orta Geçiş</span>
+                        </div>
+                        <div class="zone-box">
+                            <input type="color" id="zone-tl" value="#fed7aa">
+                            <span>Sol Üst Işık</span>
+                        </div>
+                        <div class="zone-box">
+                            <input type="color" id="zone-br" value="#e0e7ff">
+                            <span>Sağ Alt Işık</span>
+                        </div>
+                    </div>
+
+                    <div class="spectrum-bar-container">
+                        <div class="spectrum-bar-header">
+                            <span>✨ Canlı Spektrum Tonlama</span>
+                            <span id="spectrum-hue-val">0°</span>
+                        </div>
+                        <input type="range" min="0" max="360" value="0" class="spectrum-slider" id="spectrum-hue">
+                    </div>
+
+                    <div class="quick-color-bar">
+                        <span class="quick-color-title">Hızlı Renkler:</span>
+                        <div class="color-dot" style="background-color: #6366f1;" data-quick-color="#6366f1"></div>
+                        <div class="color-dot" style="background-color: #ec4899;" data-quick-color="#ec4899"></div>
+                        <div class="color-dot" style="background-color: #f59e0b;" data-quick-color="#f59e0b"></div>
+                        <div class="color-dot" style="background-color: #10b981;" data-quick-color="#10b981"></div>
+                        <div class="color-dot" style="background-color: #06b6d4;" data-quick-color="#06b6d4"></div>
+                        <div class="color-dot" style="background-color: #8b5cf6;" data-quick-color="#8b5cf6"></div>
+                        <div class="color-dot" style="background-color: #1e293b;" data-quick-color="#1e293b"></div>
+                        <div class="color-dot" style="background-color: #ffffff;" data-quick-color="#ffffff"></div>
+                    </div>
+                </div>
+
+                <!-- 5. LOGO -->
+                <div class="control-card">
+                    <div class="section-title">🖼️ Logo / Görsel</div>
+                    <label class="upload-label" for="file-input">+ Görsel Yükle</label>
+                    <input type="file" id="file-input" accept="image/*" style="display:none;">
+                    <div class="slider-box">
+                        <div class="slider-info"><span>Boyut:</span><span id="logo-size-val">100px</span></div>
+                        <input type="range" id="logo-size" min="60" max="160" step="4" value="100">
+                    </div>
+                </div>
+
+                <!-- 5b. ARKA PLAN (ESKİ KART) -->
+                <div class="control-card">
+                    <div class="section-title">🖼️ Arka Plan (Eski Kart Yükle)</div>
+                    <div class="info-text" style="background:#fef3c7; color:#b45309;">
+                        Daha önce oluşturduğunuz kartı arka plan olarak yükleyip üzerine yeni yazı/logo ekleyin.
+                    </div>
+                    <label class="bg-upload-label" for="bg-file-input">+ Arka Plan Görseli Yükle</label>
+                    <input type="file" id="bg-file-input" accept="image/*" style="display:none;">
+                    <div id="bg-selected-div" class="selected-file" style="display:none;">
+                        <span>🖼️ <span id="bg-file-name"></span></span>
+                        <button id="bg-remove-btn" class="clear-btn">✖ Kaldır</button>
+                    </div>
+                </div>
+
+                <!-- 6. GENEL METİN AYARLARI -->
+                <div class="control-card">
+                    <div class="section-title">✍️ Genel Metin Ayarları</div>
+
+                    <div class="btn-group" style="margin-bottom:6px;">
+                        <button class="btn-item font-btn active" data-font="'Playfair Display', serif">Playfair</button>
+                        <button class="btn-item font-btn" data-font="'Plus Jakarta Sans', sans-serif">Jakarta</button>
+                        <button class="btn-item font-btn" data-font="'Beau Rivage', cursive">Beau Rivage</button>
+                        <button class="btn-item font-btn" data-font="'Great Vibes', cursive">Great Vibes</button>
+                        <button class="btn-item font-btn" data-font="'Montserrat', sans-serif">Montserrat</button>
+                        <button class="btn-item font-btn" data-font="'Lora', serif">Lora</button>
+                    </div>
+
+                    <div class="slider-box">
+                        <div class="slider-info"><span>Tüm Metin Boyutu:</span><span id="size-txt">1.4rem</span></div>
+                        <input type="range" id="font-size" min="1" max="2.5" step="0.1" value="1.4">
+                    </div>
+
+                    <div class="btn-group" style="margin-top:8px;">
+                        <button class="btn-item" id="bold-btn" title="Tümünü Kalın Yap">B</button>
+                        <button class="btn-item" id="italic-btn" title="Tümünü İtalik Yap">I</button>
+                        <button class="btn-item" data-align="left" title="Sola Hizala">Sol</button>
+                        <button class="btn-item active" data-align="center" title="Ortala">Orta</button>
+                        <button class="btn-item" data-align="right" title="Sağa Hizala">Sağ</button>
+                    </div>
+
+                    <div class="zone-box" style="margin-top:8px;">
+                        <input type="color" id="text-color" value="#1e293b">
+                        <span>Tüm Metin Rengi</span>
+                    </div>
+                </div>
+
+                <!-- 7. EFEKTLER -->
+                <div class="control-card">
+                    <div class="section-title">✨ Yazı Efektleri</div>
+
+                    <div class="btn-group">
+                        <button class="btn-item active" data-shadow="none">Gölge Yok</button>
+                        <button class="btn-item" data-shadow="soft">Hafif</button>
+                        <button class="btn-item" data-shadow="medium">Orta</button>
+                        <button class="btn-item" data-shadow="glow">Glow</button>
+                    </div>
+
+                    <div class="slider-box">
+                        <div class="slider-info"><span>Harf Aralığı:</span><span id="spacing-val">0px</span></div>
+                        <input type="range" id="letter-spacing" min="-2" max="6" step="0.5" value="0">
+                    </div>
+
+                    <div class="slider-box">
+                        <div class="slider-info"><span>Satır Yüksekliği:</span><span id="lineheight-val">1.4</span></div>
+                        <input type="range" id="line-height" min="1" max="2" step="0.05" value="1.4">
+                    </div>
+
+                    <div class="slider-box">
+                        <div class="slider-info"><span>Köşe Yuvarlaklığı:</span><span id="radius-val">0px</span></div>
+                        <input type="range" id="text-radius" min="0" max="40" step="1" value="0">
+                    </div>
+                </div>
+
+                <!-- 8. KATMAN -->
+                <div class="control-card">
+                    <div class="section-title">📚 Katman Sırası</div>
+                    <div class="btn-group" style="margin-bottom:6px;">
+                        <button class="btn-item" id="logo-back">⬇ Logo Arkaya</button>
+                        <button class="btn-item" id="logo-front">⬆ Logo Öne</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-item" id="text-back">⬇ Metin Arkaya</button>
+                        <button class="btn-item" id="text-front">⬆ Metin Öne</button>
+                    </div>
+                </div>
+
+                <button id="download-btn" class="download-button">📥 Kartı İndir (PNG)</button>
+                <button id="reset-btn" class="reset-btn">↺ Tüm Ayarları Sıfırla</button>
+            </div>
+        </div>
+
+        <!-- YENİ FOOTER -->
+        <footer class="app-footer">
+            <span class="deco" aria-hidden="true">✨</span>
+            <span class="name">Bayram KOÇ</span>
+            <span class="deco" aria-hidden="true">✨</span>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /* ---------- DOM ---------- */
+            const cardCanvas  = document.getElementById('card-canvas');
+            const zoneBase    = document.getElementById('zone-base');
+            const zoneCenter  = document.getElementById('zone-center');
+            const zoneTl      = document.getElementById('zone-tl');
+            const zoneBr      = document.getElementById('zone-br');
+            const orbTl       = document.getElementById('orb-tl');
+            const orbBr       = document.getElementById('orb-br');
+
+            const fileInput   = document.getElementById('file-input');
+            const logoWrapper = document.getElementById('logo-wrapper');
+            const logoImg     = document.getElementById('logo-img');
+            const logoSize    = document.getElementById('logo-size');
+            const logoSizeVal = document.getElementById('logo-size-val');
+
+            const bgFileInput  = document.getElementById('bg-file-input');
+            const bgImage      = document.getElementById('bg-image');
+            const bgImageWrapper = document.getElementById('bg-image-wrapper');
+            const bgSelectedDiv = document.getElementById('bg-selected-div');
+            const bgFileNameSpan = document.getElementById('bg-file-name');
+            const bgRemoveBtn  = document.getElementById('bg-remove-btn');
+
+            const cardText    = document.getElementById('card-text');
+            const fontSize    = document.getElementById('font-size');
+            const sizeTxt     = document.getElementById('size-txt');
+            const textColor   = document.getElementById('text-color');
+            const boldBtn     = document.getElementById('bold-btn');
+            const italicBtn   = document.getElementById('italic-btn');
+
+            const letterSpacing = document.getElementById('letter-spacing');
+            const spacingVal    = document.getElementById('spacing-val');
+            const lineHeight    = document.getElementById('line-height');
+            const lineHeightVal = document.getElementById('lineheight-val');
+
+            const textRadius    = document.getElementById('text-radius');
+            const radiusVal     = document.getElementById('radius-val');
+
+            const selTextColor       = document.getElementById('sel-text-color');
+            const customColorTrigger = document.getElementById('custom-color-trigger');
+            const spectrumPopover    = document.getElementById('spectrum-popover');
+            const spectrumHexVal     = document.getElementById('spectrum-hex-val');
+            const spectrumCanvas     = document.getElementById('spectrum-canvas');
+            const hueCanvas          = document.getElementById('hue-canvas');
+
+            const selFontSize   = document.getElementById('sel-font-size');
+            const selBoldBtn    = document.getElementById('sel-bold-btn');
+            const applySelFormat= document.getElementById('apply-sel-format');
+            const clearSelFormat= document.getElementById('clear-sel-format');
+            const highlightCard = document.getElementById('highlight-card');
+
+            const textWrapper = document.getElementById('text-wrapper');
+            const downloadBtn = document.getElementById('download-btn');
+            const resetBtn    = document.getElementById('reset-btn');
+            const themesGrid  = document.getElementById('themes-grid');
+
+            const spectrumHue    = document.getElementById('spectrum-hue');
+            const spectrumHueVal = document.getElementById('spectrum-hue-val');
+
+            const draggables  = [];
+            let logoZ = 5, textZ = 6;
+            let savedRange = null;
+            let selectionDebounceTimer = null;
+            let lastPointerType = 'mouse';
+
+            /* ---------- DOKUNMATİK ALGILAMA ---------- */
+            document.addEventListener('pointerdown', (e) => {
+                lastPointerType = e.pointerType || 'mouse';
+            }, true);
+
+            /* ---------- SEÇİM VURGU KATMANI ---------- */
+            function showSelectionHighlight() {
+                removeHighlight();
+                if (!savedRange) return;
+                const canvasRect = cardCanvas.getBoundingClientRect();
+                let rects;
+                try { rects = savedRange.getClientRects(); } catch(err) { return; }
+                if (!rects || !rects.length) return;
+
+                const overlay = document.createElement('div');
+                overlay.className = 'selection-highlight-overlay';
+
+                for (const r of rects) {
+                    if (r.width < 1 || r.height < 1) continue;
+                    const hl = document.createElement('div');
+                    hl.style.cssText = `
+                        position: absolute;
+                        left: ${r.left - canvasRect.left}px;
+                        top: ${r.top - canvasRect.top}px;
+                        width: ${r.width}px;
+                        height: ${r.height}px;
+                        background: rgba(99, 102, 241, 0.35);
+                        border-radius: 3px;
+                        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.55);
+                        pointer-events: none;
+                    `;
+                    overlay.appendChild(hl);
+                }
+                if (overlay.children.length > 0) {
+                    cardCanvas.appendChild(overlay);
+                }
+            }
+
+            function removeHighlight() {
+                const old = cardCanvas.querySelector('.selection-highlight-overlay');
+                if (old) old.remove();
+            }
+
+            /* ---------- ÖZEL CANVAS SPEKTRUM ---------- */
+            const specCtx = spectrumCanvas.getContext('2d');
+            const hueCtx = hueCanvas.getContext('2d');
+            let currentHue = '#ff0000';
+
+            function drawHueBar() {
+                const g = hueCtx.createLinearGradient(0, 0, 0, hueCanvas.height);
+                g.addColorStop(0, '#ff0000');
+                g.addColorStop(0.17, '#ffff00');
+                g.addColorStop(0.33, '#00ff00');
+                g.addColorStop(0.5, '#00ffff');
+                g.addColorStop(0.67, '#0000ff');
+                g.addColorStop(0.83, '#ff00ff');
+                g.addColorStop(1, '#ff0000');
+                hueCtx.fillStyle = g;
+                hueCtx.fillRect(0, 0, hueCanvas.width, hueCanvas.height);
+            }
+
+            function drawSpectrum(baseColor) {
+                specCtx.fillStyle = baseColor;
+                specCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+
+                const whiteG = specCtx.createLinearGradient(0, 0, spectrumCanvas.width, 0);
+                whiteG.addColorStop(0, '#ffffff');
+                whiteG.addColorStop(1, 'rgba(255,255,255,0)');
+                specCtx.fillStyle = whiteG;
+                specCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+
+                const blackG = specCtx.createLinearGradient(0, 0, 0, spectrumCanvas.height);
+                blackG.addColorStop(0, 'rgba(0,0,0,0)');
+                blackG.addColorStop(1, '#000000');
+                specCtx.fillStyle = blackG;
+                specCtx.fillRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+            }
+
+            drawHueBar();
+            drawSpectrum(currentHue);
+
+            customColorTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                spectrumPopover.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!highlightCard.contains(e.target)) {
+                    spectrumPopover.classList.remove('active');
+                }
+            });
+
+            function getCanvasColor(ctx, canvas, e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = Math.min(Math.max(0, e.clientX - rect.left), canvas.width - 1);
+                const y = Math.min(Math.max(0, e.clientY - rect.top), canvas.height - 1);
+                const p = ctx.getImageData(x, y, 1, 1).data;
+                return '#' + [p[0], p[1], p[2]].map(x => x.toString(16).padStart(2, '0')).join('');
+            }
+
+            let isHueDragging = false;
+            hueCanvas.addEventListener('pointerdown', (e) => {
+                isHueDragging = true;
+                currentHue = getCanvasColor(hueCtx, hueCanvas, e);
+                drawSpectrum(currentHue);
+            });
+            hueCanvas.addEventListener('pointermove', (e) => {
+                if (!isHueDragging) return;
+                currentHue = getCanvasColor(hueCtx, hueCanvas, e);
+                drawSpectrum(currentHue);
+            });
+            window.addEventListener('pointerup', () => { isHueDragging = false; isSpecDragging = false; });
+
+            let isSpecDragging = false;
+            function pickColor(e) {
+                const hex = getCanvasColor(specCtx, spectrumCanvas, e);
+                selTextColor.value = hex;
+                customColorTrigger.style.backgroundColor = hex;
+                spectrumHexVal.textContent = hex.toUpperCase();
+            }
+            spectrumCanvas.addEventListener('pointerdown', (e) => { isSpecDragging = true; pickColor(e); });
+            spectrumCanvas.addEventListener('pointermove', (e) => { if (isSpecDragging) pickColor(e); });
+
+            document.querySelectorAll('.spec-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const hex = dot.dataset.hex;
+                    selTextColor.value = hex;
+                    customColorTrigger.style.backgroundColor = hex;
+                    spectrumHexVal.textContent = hex.toUpperCase();
+                });
+            });
+
+            /* ---------- TEMALAR ---------- */
+            const themes = {
+                gunes:    { name: 'Gün Doğumu', base: '#FFFDF9', center: '#F5E6D3', tl: '#fed7aa', br: '#e0e7ff', text: '#1e293b' },
+                okyanus:  { name: 'Okyanus',    base: '#F0F9FF', center: '#DBEAFE', tl: '#7DD3FC', br: '#A5B4FC', text: '#0c4a6e' },
+                orman:    { name: 'Orman',      base: '#F7FEE7', center: '#E0F2E9', tl: '#A7F3D0', br: '#BBF7D0', text: '#14532d' },
+                gul:      { name: 'Gül',        base: '#FFF1F2', center: '#FCE7F3', tl: '#FBCFE8', br: '#FECDD3', text: '#881337' },
+                gece:     { name: 'Gece',       base: '#0F172A', center: '#1E293B', tl: '#4338CA', br: '#7C3AED', text: '#f8fafc' },
+                lavanta:  { name: 'Lavanta',    base: '#FAF5FF', center: '#F3E8FF', tl: '#E9D5FF', br: '#DDD6FE', text: '#4c1d95' },
+                minimal:  { name: 'Minimal',    base: '#FFFFFF', center: '#F8FAFC', tl: '#E2E8F0', br: '#E2E8F0', text: '#0f172a' },
+                altin:    { name: 'Altın',      base: '#FFFBEB', center: '#FEF3C7', tl: '#FCD34D', br: '#FBBF24', text: '#713f12' }
+            };
+
+            Object.keys(themes).forEach(key => {
+                const t = themes[key];
+                const btn = document.createElement('button');
+                btn.className = 'theme-item';
+                btn.dataset.theme = key;
+                btn.innerHTML = `
+                    <span class="theme-preview" style="background: linear-gradient(135deg, ${t.tl}, ${t.center}, ${t.br})"></span>
+                    <span>${t.name}</span>
+                `;
+                btn.addEventListener('click', () => applyTheme(key));
+                themesGrid.appendChild(btn);
+            });
+
+            function applyTheme(key) {
+                const t = themes[key];
+                zoneBase.value = t.base;
+                zoneCenter.value = t.center;
+                zoneTl.value = t.tl;
+                zoneBr.value = t.br;
+                textColor.value = t.text;
+                cardText.style.color = t.text;
+                updateGradient();
+                document.querySelectorAll('.theme-item').forEach(b => b.classList.remove('active'));
+                document.querySelector(`.theme-item[data-theme="${key}"]`).classList.add('active');
+            }
+
+            /* ---------- GRADYAN ---------- */
+            const hexToRgba = (hex, alpha) => {
+                let h = (hex || '').replace('#', '');
+                if (h.length === 3) h = h.split('').map(c => c + c).join('');
+                const num = parseInt(h, 16);
+                if (isNaN(num)) return `rgba(255,255,255,${alpha})`;
+                return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+            };
+
+            function updateGradient() {
+                cardCanvas.style.background =
+                    `radial-gradient(circle at center, ${zoneCenter.value}, ${zoneBase.value})`;
+                orbTl.style.background =
+                    `radial-gradient(circle at center, ${hexToRgba(zoneTl.value, 0.9)} 0%, ${hexToRgba(zoneTl.value, 0)} 70%)`;
+                orbBr.style.background =
+                    `radial-gradient(circle at center, ${hexToRgba(zoneBr.value, 0.9)} 0%, ${hexToRgba(zoneBr.value, 0)} 70%)`;
+            }
+
+            [zoneBase, zoneCenter, zoneTl, zoneBr].forEach(inp => {
+                inp.addEventListener('input', () => {
+                    document.querySelectorAll('.theme-item').forEach(b => b.classList.remove('active'));
+                    updateGradient();
+                });
+            });
+            updateGradient();
+
+            /* ---------- CANLI SPEKTRUM TONLAMA ---------- */
+            function hslToHex(h, s, l) {
+                l /= 100;
+                const a = s * Math.min(l, 1 - l) / 100;
+                const f = n => {
+                    const k = (n + h / 30) % 12;
+                    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                    return Math.round(255 * color).toString(16).padStart(2, '0');
+                };
+                return `#${f(0)}${f(8)}${f(4)}`;
+            }
+
+            spectrumHue.addEventListener('input', () => {
+                const hue = parseInt(spectrumHue.value);
+                spectrumHueVal.textContent = hue + '°';
+                zoneBase.value = hslToHex(hue, 30, 97);
+                zoneCenter.value = hslToHex(hue, 45, 90);
+                zoneTl.value = hslToHex(hue, 70, 80);
+                zoneBr.value = hslToHex((hue + 40) % 360, 60, 85);
+                document.querySelectorAll('.theme-item').forEach(b => b.classList.remove('active'));
+                updateGradient();
+            });
+
+            /* ---------- HIZLI RENKLER ---------- */
+            document.querySelectorAll('.color-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    zoneCenter.value = dot.dataset.quickColor;
+                    updateGradient();
+                });
+            });
+
+            /* ---------- KART FORMATI ---------- */
+            document.querySelectorAll('[data-format]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-format]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    cardCanvas.style.height = btn.dataset.format === 'story' ? '480px' : '320px';
+                    setTimeout(clampAll, 30);
+                });
+            });
+
+            /* ---------- LOGO ---------- */
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    logoImg.src = ev.target.result;
+                    logoWrapper.style.display = 'block';
+                    clampAll();
+                };
+                reader.readAsDataURL(file);
+            });
+
+            logoSize.addEventListener('input', () => {
+                const v = logoSize.value + 'px';
+                logoImg.style.width = v;
+                logoImg.style.height = v;
+                logoSizeVal.textContent = v;
+                clampAll();
+            });
+
+            /* ---------- ARKA PLAN GÖRSELİ (ESKİ KART) ---------- */
+            bgFileInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    bgImage.src = ev.target.result;
+                    bgImageWrapper.style.display = 'block';
+                    bgSelectedDiv.style.display = 'flex';
+                    bgFileNameSpan.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            bgRemoveBtn.addEventListener('click', () => {
+                bgImage.src = '';
+                bgImageWrapper.style.display = 'none';
+                bgSelectedDiv.style.display = 'none';
+                bgFileInput.value = '';
+            });
+
+            /* ---------- METİN İŞLEMLERİ ---------- */
+            function autosizeCardText() {
+                cardText.style.height = 'auto';
+                cardText.style.height = Math.max(cardText.scrollHeight, 84) + 'px';
+            }
+
+            cardText.addEventListener('input', () => {
+                autosizeCardText();
+                clampAll();
+            });
+
+            fontSize.addEventListener('input', () => {
+                cardText.style.fontSize = fontSize.value + 'rem';
+                sizeTxt.textContent = fontSize.value + 'rem';
+                autosizeCardText();
+                clampAll();
+            });
+
+            document.querySelectorAll('[data-font]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    cardText.style.fontFamily = btn.dataset.font;
+                    autosizeCardText();
+                    clampAll();
+                });
+            });
+
+            let isBold = false, isItalic = false;
+            boldBtn.addEventListener('click', () => {
+                isBold = !isBold;
+                boldBtn.classList.toggle('active', isBold);
+                cardText.style.fontWeight = isBold ? '800' : '600';
+            });
+            italicBtn.addEventListener('click', () => {
+                isItalic = !isItalic;
+                italicBtn.classList.toggle('active', isItalic);
+                cardText.style.fontStyle = isItalic ? 'italic' : 'normal';
+            });
+
+            document.querySelectorAll('[data-align]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-align]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    cardText.style.textAlign = btn.dataset.align;
+                });
+            });
+
+            textColor.addEventListener('input', () => {
+                cardText.style.color = textColor.value;
+                document.querySelectorAll('.theme-item').forEach(b => b.classList.remove('active'));
+            });
+
+            letterSpacing.addEventListener('input', () => {
+                cardText.style.letterSpacing = letterSpacing.value + 'px';
+                spacingVal.textContent = letterSpacing.value + 'px';
+            });
+
+            lineHeight.addEventListener('input', () => {
+                cardText.style.lineHeight = lineHeight.value;
+                lineHeightVal.textContent = lineHeight.value;
+                autosizeCardText();
+                clampAll();
+            });
+
+            textRadius.addEventListener('input', () => {
+                const val = textRadius.value;
+                cardText.style.borderRadius = val + 'px';
+                cardCanvas.style.borderRadius = val + 'px';
+                radiusVal.textContent = val + 'px';
+            });
+
+            /* =========================================================
+               OTOMATİK KLAVYE GİZLEME + SEÇİMİ KORUMA SİSTEMİ
+               ========================================================= */
+            cardText.addEventListener('pointerdown', () => {
+                clearTimeout(selectionDebounceTimer);
+                removeHighlight();
+                savedRange = null;
+            });
+
+            document.addEventListener('selectionchange', () => {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return;
+                if (!cardText.contains(sel.anchorNode)) return;
+                if (sel.isCollapsed) return;
+
+                savedRange = sel.getRangeAt(0).cloneRange();
+                highlightCard.classList.remove('attention');
+                void highlightCard.offsetWidth;
+                highlightCard.classList.add('attention');
+
+                if (lastPointerType === 'touch') {
+                    clearTimeout(selectionDebounceTimer);
+                    selectionDebounceTimer = setTimeout(() => {
+                        if (savedRange && !savedRange.collapsed) {
+                            if (document.activeElement && document.activeElement.blur) {
+                                document.activeElement.blur();
+                            }
+                            showSelectionHighlight();
+                        }
+                    }, 600);
+                }
+            });
+
+            cardCanvas.addEventListener('pointerdown', (e) => {
+                if (!e.target.closest('#text-wrapper')) {
+                    clearTimeout(selectionDebounceTimer);
+                    removeHighlight();
+                    savedRange = null;
+                }
+            });
+
+            /* ---------- SEÇİLİ METNİ UYGULAMA ---------- */
+            function applyStylesToSelection(stylesObj) {
+                if (!savedRange || savedRange.collapsed) {
+                    const sel = window.getSelection();
+                    if (!sel.rangeCount || sel.isCollapsed || !cardText.contains(sel.anchorNode)) {
+                        alert("Lütfen önce kart üzerindeki metinden bir kelime veya cümle seçin.");
+                        return;
+                    }
+                    savedRange = sel.getRangeAt(0).cloneRange();
+                }
+
+                const range = savedRange;
+                const span = document.createElement('span');
+                for (const [prop, value] of Object.entries(stylesObj)) {
+                    span.style[prop] = value;
+                }
+
+                try {
+                    span.appendChild(range.extractContents());
+                    range.insertNode(span);
+                } catch (err) {
+                    console.error('Seçim uygulanamadı:', err);
+                    alert("Seçim uygulanamadı, lütfen tekrar deneyin.");
+                    return;
+                }
+
+                const sel = window.getSelection();
+                if (sel) sel.removeAllRanges();
+                savedRange = null;
+                removeHighlight();
+
+                if (document.activeElement === cardText) {
+                    cardText.blur();
+                }
+
+                autosizeCardText();
+                clampAll();
+            }
+
+            applySelFormat.addEventListener('click', () => {
+                clearTimeout(selectionDebounceTimer);
+                const colorVal = selTextColor.value;
+                const sizeVal  = selFontSize.value.trim();
+                const styles   = {};
+
+                if (colorVal) styles.color = colorVal;
+                if (sizeVal && !isNaN(parseFloat(sizeVal))) {
+                    styles.fontSize = parseFloat(sizeVal) + 'rem';
+                }
+
+                if (Object.keys(styles).length === 0) {
+                    alert("Lütfen bir renk seçin veya bir boyut girin.");
+                    return;
+                }
+
+                applyStylesToSelection(styles);
+                spectrumPopover.classList.remove('active');
+            });
+
+            selBoldBtn.addEventListener('click', () => {
+                clearTimeout(selectionDebounceTimer);
+                applyStylesToSelection({ fontWeight: '800' });
+            });
+
+            clearSelFormat.addEventListener('click', () => {
+                clearTimeout(selectionDebounceTimer);
+
+                if (!savedRange || savedRange.collapsed) {
+                    const sel = window.getSelection();
+                    if (!sel.rangeCount || sel.isCollapsed || !cardText.contains(sel.anchorNode)) {
+                        alert("Lütfen temizlemek için metin seçin.");
+                        return;
+                    }
+                    savedRange = sel.getRangeAt(0).cloneRange();
+                }
+
+                try {
+                    const textNode = document.createTextNode(savedRange.toString());
+                    savedRange.deleteContents();
+                    savedRange.insertNode(textNode);
+                } catch(err) {
+                    console.error(err);
+                    return;
+                }
+
+                const sel = window.getSelection();
+                if (sel) sel.removeAllRanges();
+                savedRange = null;
+                removeHighlight();
+
+                if (document.activeElement === cardText) {
+                    cardText.blur();
+                }
+
+                autosizeCardText();
+                clampAll();
+            });
+
+            /* ---------- EFEKTLER ---------- */
+            const shadows = {
+                none:   'none',
+                soft:   '0 2px 6px rgba(0,0,0,0.15)',
+                medium: '0 4px 12px rgba(0,0,0,0.28)',
+                glow:   '0 0 18px rgba(99,102,241,0.75), 0 0 6px rgba(255,255,255,0.4)'
+            };
+            document.querySelectorAll('[data-shadow]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-shadow]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    cardText.style.textShadow = shadows[btn.dataset.shadow] || 'none';
+                });
+            });
+
+            /* ---------- KATMAN ---------- */
+            const applyZ = () => {
+                logoWrapper.style.zIndex = logoZ;
+                textWrapper.style.zIndex = textZ;
+            };
+            document.getElementById('logo-front').onclick = () => { logoZ = Math.min(logoZ + 1, 20); applyZ(); };
+            document.getElementById('logo-back').onclick  = () => { logoZ = Math.max(logoZ - 1, 2); applyZ(); };
+            document.getElementById('text-front').onclick = () => { textZ = Math.min(textZ + 1, 20); applyZ(); };
+            document.getElementById('text-back').onclick  = () => { textZ = Math.max(textZ - 1, 2); applyZ(); };
+            applyZ();
+
+            /* ---------- SÜRÜKLE-BIRAK ---------- */
+            function getCenter(el) {
+                const canvasRect = cardCanvas.getBoundingClientRect();
+                const rect = el.getBoundingClientRect();
+                return {
+                    x: rect.left - canvasRect.left + rect.width / 2,
+                    y: rect.top - canvasRect.top + rect.height / 2
+                };
+            }
+
+            function applyCenter(el, cx, cy, margin) {
+                const canvasRect = cardCanvas.getBoundingClientRect();
+                const rect = el.getBoundingClientRect();
+                const halfW = rect.width / 2;
+                const halfH = rect.height / 2;
+                const minX = halfW + margin;
+                const maxX = canvasRect.width - halfW - margin;
+                const minY = halfH + margin;
+                const maxY = canvasRect.height - halfH - margin;
+                const targetX = maxX < minX ? canvasRect.width / 2  : Math.min(Math.max(cx, minX), maxX);
+                const targetY = maxY < minY ? canvasRect.height / 2 : Math.min(Math.max(cy, minY), maxY);
+                const left = targetX - halfW;
+                const top = targetY - halfH;
+                el.style.left = (left / canvasRect.width) * 100 + '%';
+                el.style.top = (top / canvasRect.height) * 100 + '%';
+            }
+
+            function makeDraggable(el, { handleSelector = null, margin = 6 } = {}) {
+                draggables.push({ el, margin });
+
+                let activePointer = null;
+                let startPX = 0, startPY = 0, startCX = 0, startCY = 0;
+
+                el.addEventListener('pointerdown', (e) => {
+                    if (activePointer !== null) return;
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+                    const onHandle = handleSelector ? !!e.target.closest(handleSelector) : true;
+                    if (!onHandle && e.target !== el) return;
+
+                    clearTimeout(selectionDebounceTimer);
+                    removeHighlight();
+                    savedRange = null;
+
+                    const c = getCenter(el);
+                    startCX = c.x;
+                    startCY = c.y;
+                    startPX = e.clientX;
+                    startPY = e.clientY;
+                    activePointer = e.pointerId;
+
+                    try { el.setPointerCapture(e.pointerId); } catch (err) {}
+                    el.classList.add('is-dragging');
+                    e.preventDefault();
+                });
+
+                el.addEventListener('pointermove', (e) => {
+                    if (e.pointerId !== activePointer) return;
+                    applyCenter(el, startCX + (e.clientX - startPX), startCY + (e.clientY - startPY), margin);
+                });
+
+                function endDrag(e) {
+                    if (e.pointerId !== activePointer) return;
+                    try { el.releasePointerCapture(e.pointerId); } catch (err) {}
+                    activePointer = null;
+                    el.classList.remove('is-dragging');
+                }
+                el.addEventListener('pointerup', endDrag);
+                el.addEventListener('pointercancel', endDrag);
+            }
+
+            makeDraggable(logoWrapper, { margin: 6 });
+            makeDraggable(textWrapper, { handleSelector: '[data-drag-handle]', margin: 6 });
+
+            function clampAll() {
+                draggables.forEach(({ el, margin }) => {
+                    if (!el.offsetWidth && !el.offsetHeight) return;
+                    const c = getCenter(el);
+                    applyCenter(el, c.x, c.y, margin);
+                });
+            }
+
+            /* ---------- SIFIRLA ---------- */
+            resetBtn.addEventListener('click', () => {
+                clearTimeout(selectionDebounceTimer);
+                removeHighlight();
+                savedRange = null;
+
+                logoWrapper.style.left = 'calc(50% - 50px)';
+                logoWrapper.style.top  = 'calc(30% - 50px)';
+                textWrapper.style.left = '8%';
+                textWrapper.style.top  = '52%';
+                logoZ = 5; textZ = 6;
+                applyZ();
+
+                textRadius.value = 0;
+                cardText.style.borderRadius = '0px';
+                cardCanvas.style.borderRadius = '0px';
+                radiusVal.textContent = '0px';
+
+                spectrumHue.value = 0;
+                spectrumHueVal.textContent = '0°';
+
+                bgImage.src = '';
+                bgImageWrapper.style.display = 'none';
+                bgSelectedDiv.style.display = 'none';
+                bgFileInput.value = '';
+
+                applyTheme('gunes');
+                clampAll();
+            });
+
+            /* ---------- PNG İNDİR ---------- */
+            downloadBtn.addEventListener('click', async () => {
+                if (downloadBtn.disabled) return;
+                downloadBtn.disabled = true;
+                const oldLabel = downloadBtn.textContent;
+                downloadBtn.textContent = '⏳ Oluşturuluyor...';
+
+                if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+                cardCanvas.classList.add('exporting');
+
+                try {
+                    if (document.fonts && document.fonts.ready) {
+                        await document.fonts.ready;
+                    }
+
+                    const canvas = await html2canvas(cardCanvas, {
+                        scale: 3,
+                        useCors: true,
+                        backgroundColor: null,
+                        logging: false
+                    });
+                    const link = document.createElement('a');
+                    link.download = `durum_karti_${Date.now()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                } catch (err) {
+                    console.error(err);
+                    alert('Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+                } finally {
+                    cardCanvas.classList.remove('exporting');
+                    downloadBtn.disabled = false;
+                    downloadBtn.textContent = oldLabel;
+                }
+            });
+
+            /* ---------- BAŞLANGIÇ ---------- */
+            autosizeCardText();
+            clampAll();
+
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                    autosizeCardText();
+                    clampAll();
+                });
+            }
+
+            window.addEventListener('resize', clampAll);
+        });
+    </script>
+</body>
+</html>
