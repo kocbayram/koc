@@ -60,7 +60,6 @@
             .main-layout { flex-direction: row; height: calc(100vh - 58px); }
         }
 
-        /* ÖNİZLEME ALANI */
         .preview-workspace {
             flex: 1;
             display: flex;
@@ -134,7 +133,6 @@
         #orb-tl { top: -90px; left: -90px; }
         #orb-br { bottom: -90px; right: -90px; }
 
-        /* LOGO */
         #logo-wrapper {
             position: absolute;
             top: calc(30% - 50px);
@@ -160,7 +158,6 @@
             transition: width 0.15s, height 0.15s;
         }
 
-        /* METİN KUTUSU */
         #text-wrapper {
             position: absolute;
             top: 52%;
@@ -169,7 +166,6 @@
             z-index: 6;
         }
 
-        /* Sürükleme Tutamacı */
         .drag-handle {
             position: absolute;
             bottom: 100%;
@@ -251,7 +247,6 @@
             display: block;
         }
 
-        /* Seçim vurgu katmanı */
         .selection-highlight-overlay {
             position: absolute;
             inset: 0;
@@ -269,7 +264,6 @@
             display: none !important;
         }
 
-        /* KONTROL PANELİ */
         .controls-panel {
             width: 100%;
             background: var(--panel-bg);
@@ -350,7 +344,6 @@
         #bold-btn { font-weight: 900; font-family: serif; font-size: 0.95rem; }
         #italic-btn { font-style: italic; font-family: serif; font-size: 0.95rem; }
 
-        /* TEMALAR */
         .themes-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -388,7 +381,6 @@
             flex-shrink: 0;
         }
 
-        /* RENK GRID */
         .gradient-zones-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -424,7 +416,6 @@
             font-size: 0.75rem;
         }
 
-        /* Özel Renk Butonu */
         .custom-color-trigger {
             width: 26px;
             height: 26px;
@@ -437,7 +428,6 @@
         }
         .custom-color-trigger:hover { transform: scale(1.1); }
 
-        /* Açılır Spektrum Paneli */
         .spectrum-popover {
             display: none;
             margin-top: 8px;
@@ -488,7 +478,6 @@
         }
         .spec-dot:hover { transform: scale(1.2); }
 
-        /* HIZLI RENK PALETİ VE SPEKTRUM ÇUBUĞU */
         .quick-color-bar {
             display: flex;
             align-items: center;
@@ -561,7 +550,6 @@
         }
         .spectrum-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
-        /* SLIDER */
         .slider-box { margin-top: 8px; }
         .slider-info {
             display: flex;
@@ -573,6 +561,7 @@
             margin-bottom: 4px;
         }
         .slider-info span { display: flex; align-items: center; gap: 4px; }
+
         input[type="range"] {
             width: 100%;
             accent-color: var(--primary);
@@ -584,7 +573,7 @@
             transition: opacity 0.2s;
         }
 
-        /* KİLİTLİ SLIDER GÖRÜNÜMÜ */
+        /* 🔒 KİLİTLİ SLIDER GÖRÜNÜMÜ */
         input[type="range"].locked {
             pointer-events: none;
             opacity: 0.4;
@@ -593,7 +582,7 @@
             cursor: not-allowed;
         }
 
-        /* YENİ: BİREYSEL KİLİT BUTONU */
+        /* 🔒 BİREYSEL KİLİT BUTONU */
         .indiv-lock-btn {
             background: none;
             border: none;
@@ -624,7 +613,6 @@
         }
         .upload-label:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Arka plan için özel drop alanı */
         .bg-upload-label {
             display: block;
             width: 100%;
@@ -714,7 +702,6 @@
             line-height: 1.3;
         }
 
-        /* FOOTER */
         .app-footer {
             text-align: center;
             padding: 18px 12px;
@@ -730,15 +717,8 @@
             gap: 8px;
             box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.03);
         }
-        .app-footer .deco {
-            font-size: 1rem;
-            color: var(--primary);
-            line-height: 1;
-        }
-        .app-footer .name {
-            color: var(--primary);
-            font-weight: 800;
-        }
+        .app-footer .deco { font-size: 1rem; color: var(--primary); line-height: 1; }
+        .app-footer .name { color: var(--primary); font-weight: 800; }
     </style>
 </head>
 <body>
@@ -910,7 +890,7 @@
                     </div>
                     <label class="bg-upload-label" for="bg-file-input">+ Arka Plan Görseli Yükle</label>
                     <input type="file" id="bg-file-input" accept="image/*" style="display:none;">
-                    
+
                     <div style="margin-top:8px; display:flex; align-items:center; gap:6px;">
                         <input type="checkbox" id="bg-remove-white" style="width:16px; height:16px; accent-color:var(--primary); cursor:pointer;">
                         <label for="bg-remove-white" style="font-size:0.75rem; font-weight:600; color:var(--text-sub); cursor:pointer;">Beyaz kenarları otomatik temizle</label>
@@ -1019,7 +999,6 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <footer class="app-footer">
             <span class="deco" aria-hidden="true">✨</span>
             <span class="name">Bayram KOÇ</span>
@@ -1096,7 +1075,9 @@
             let selectionDebounceTimer = null;
             let lastPointerType = 'mouse';
 
-            /* ---------- BİREYSEL SLIDER KİLİT SİSTEMİ ---------- */
+            /* =========================================================
+               🔒 BİREYSEL SLIDER KİLİT SİSTEMİ
+               ========================================================= */
             const indivLockBtns = document.querySelectorAll('.indiv-lock-btn');
 
             indivLockBtns.forEach(btn => {
@@ -1108,6 +1089,7 @@
                 slider.classList.add('locked');
                 btn.textContent = '🔒';
                 btn.style.color = 'var(--text-sub)';
+                btn.title = 'Kilidi Aç';
 
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1125,43 +1107,43 @@
                 const w = imgElement.naturalWidth || imgElement.width;
                 const h = imgElement.naturalHeight || imgElement.height;
                 if (!w || !h) { callback(imgElement.src); return; }
-                
+
                 canvas.width = w;
                 canvas.height = h;
                 ctx.drawImage(imgElement, 0, 0);
-                
+
                 try {
                     const imageData = ctx.getImageData(0, 0, w, h);
                     const data = imageData.data;
                     const threshold = 240;
-                    
+
                     const isWhite = (r, g, b) => r > threshold && g > threshold && b > threshold;
-                    
+
                     const stack = [];
                     for (let x = 0; x < w; x++) { stack.push(x, 0); stack.push(x, h - 1); }
                     for (let y = 0; y < h; y++) { stack.push(0, y); stack.push(w - 1, y); }
-                    
+
                     const visited = new Uint8Array(w * h);
-                    
+
                     while (stack.length > 0) {
                         const y = stack.pop();
                         const x = stack.pop();
                         const idx = y * w + x;
                         if (visited[idx]) continue;
                         visited[idx] = 1;
-                        
+
                         const p = idx * 4;
                         const r = data[p], g = data[p+1], b = data[p+2];
-                        
+
                         if (isWhite(r, g, b)) {
-                            data[p+3] = 0; 
+                            data[p+3] = 0;
                             if (x > 0) { stack.push(x-1, y); }
                             if (x < w-1) { stack.push(x+1, y); }
                             if (y > 0) { stack.push(x, y-1); }
                             if (y < h-1) { stack.push(x, y+1); }
                         }
                     }
-                    
+
                     ctx.putImageData(imageData, 0, 0);
                     canvas.toBlob((blob) => {
                         if (blob) {
@@ -1309,16 +1291,24 @@
                 });
             });
 
-            /* ---------- TEMALAR ---------- */
+            /* ---------- TEMALAR (16 TEMA) ---------- */
             const themes = {
-                gunes:    { name: 'Gün Doğumu', base: '#FFFDF9', center: '#F5E6D3', tl: '#fed7aa', br: '#e0e7ff', text: '#1e293b' },
-                okyanus:  { name: 'Okyanus',    base: '#F0F9FF', center: '#DBEAFE', tl: '#7DD3FC', br: '#A5B4FC', text: '#0c4a6e' },
-                orman:    { name: 'Orman',      base: '#F7FEE7', center: '#E0F2E9', tl: '#A7F3D0', br: '#BBF7D0', text: '#14532d' },
-                gul:      { name: 'Gül',        base: '#FFF1F2', center: '#FCE7F3', tl: '#FBCFE8', br: '#FECDD3', text: '#881337' },
-                gece:     { name: 'Gece',       base: '#0F172A', center: '#1E293B', tl: '#4338CA', br: '#7C3AED', text: '#f8fafc' },
-                lavanta:  { name: 'Lavanta',    base: '#FAF5FF', center: '#F3E8FF', tl: '#E9D5FF', br: '#DDD6FE', text: '#4c1d95' },
-                minimal:  { name: 'Minimal',    base: '#FFFFFF', center: '#F8FAFC', tl: '#E2E8F0', br: '#E2E8F0', text: '#0f172a' },
-                altin:    { name: 'Altın',      base: '#FFFBEB', center: '#FEF3C7', tl: '#FCD34D', br: '#FBBF24', text: '#713f12' }
+                gunes:     { name: 'Gün Doğumu', base: '#FFFDF9', center: '#F5E6D3', tl: '#fed7aa', br: '#e0e7ff', text: '#1e293b' },
+                okyanus:   { name: 'Okyanus',    base: '#F0F9FF', center: '#DBEAFE', tl: '#7DD3FC', br: '#A5B4FC', text: '#0c4a6e' },
+                orman:     { name: 'Orman',      base: '#F7FEE7', center: '#E0F2E9', tl: '#A7F3D0', br: '#BBF7D0', text: '#14532d' },
+                gul:       { name: 'Gül',        base: '#FFF1F2', center: '#FCE7F3', tl: '#FBCFE8', br: '#FECDD3', text: '#881337' },
+                gece:      { name: 'Gece',       base: '#0F172A', center: '#1E293B', tl: '#4338CA', br: '#7C3AED', text: '#f8fafc' },
+                lavanta:   { name: 'Lavanta',    base: '#FAF5FF', center: '#F3E8FF', tl: '#E9D5FF', br: '#DDD6FE', text: '#4c1d95' },
+                minimal:   { name: 'Minimal',    base: '#FFFFFF', center: '#F8FAFC', tl: '#E2E8F0', br: '#E2E8F0', text: '#0f172a' },
+                altin:     { name: 'Altın',      base: '#FFFBEB', center: '#FEF3C7', tl: '#FCD34D', br: '#FBBF24', text: '#713f12' },
+                safir:     { name: 'Safir',      base: '#0f172a', center: '#1e1b4b', tl: '#2563eb', br: '#38bdf8', text: '#f1f5f9' },
+                zumrut:    { name: 'Zümrüt',     base: '#022c22', center: '#064e3b', tl: '#10b981', br: '#34d399', text: '#ecfdf5' },
+                gunbatimi: { name: 'Gün Batımı', base: '#2e1065', center: '#581c87', tl: '#f43f5e', br: '#fb923c', text: '#fff1f2' },
+                seftali:   { name: 'Şeftali',    base: '#fff7ed', center: '#ffedd5', tl: '#fdba74', br: '#f43f5e', text: '#7c2d12' },
+                nane:      { name: 'Nane',       base: '#f0fdf4', center: '#dcfce7', tl: '#86efac', br: '#2dd4bf', text: '#134e4a' },
+                kehribar:  { name: 'Kehribar',   base: '#fefce8', center: '#fef9c3', tl: '#fde047', br: '#f97316', text: '#713f12' },
+                neon:      { name: 'Neon Cyber', base: '#030712', center: '#111827', tl: '#f43f5e', br: '#06b6d4', text: '#f9fafb' },
+                pastel:    { name: 'Pastel Düş', base: '#fdf4ff', center: '#fae8ff', tl: '#f5d0fe', br: '#c084fc', text: '#581c87' }
             };
 
             Object.keys(themes).forEach(key => {
@@ -1551,9 +1541,7 @@
                 radiusVal.textContent = val + 'px';
             });
 
-            /* =========================================================
-               OTOMATİK KLAVYE GİZLEME + SEÇİMİ KORUMA SİSTEMİ
-               ========================================================= */
+            /* ---------- KLAVYE GİZLEME + SEÇİMİ KORUMA ---------- */
             cardText.addEventListener('pointerdown', () => {
                 clearTimeout(selectionDebounceTimer);
                 removeHighlight();
@@ -1832,7 +1820,7 @@
                 clampAll();
             });
 
-            /* ---------- PNG İNDİR (Kusursuz Maskeleme) ---------- */
+            /* ---------- PNG İNDİR ---------- */
             downloadBtn.addEventListener('click', async () => {
                 if (downloadBtn.disabled) return;
                 downloadBtn.disabled = true;
@@ -1868,10 +1856,10 @@
                         roundedCanvas.width = canvas.width;
                         roundedCanvas.height = canvas.height;
                         const rctx = roundedCanvas.getContext('2d');
-                        
+
                         const scaleFactor = canvas.width / cardCanvas.offsetWidth;
                         const r = currentRadius * scaleFactor;
-                        
+
                         rctx.beginPath();
                         if (rctx.roundRect) {
                             rctx.roundRect(0, 0, roundedCanvas.width, roundedCanvas.height, r);
