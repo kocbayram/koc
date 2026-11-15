@@ -7,7 +7,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@500;700&family=Beau+Rivage&family=Great+Vibes&family=Lora:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&family=Beau+Rivage&family=Great+Vibes&family=Gemunu+Libre:wght@400;700&family=Unna:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -237,6 +237,12 @@
             touch-action: auto;
             scrollbar-width: thin;
         }
+
+        /* YENİ: İçerideki tüm alt etiketlerin (span vb.) ana metnin fontunu kesinlikle miras almasını sağlar */
+        #card-text * {
+            font-family: inherit !important;
+        }
+
         #card-text::-webkit-scrollbar { width: 6px; }
         #card-text::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
         #card-text::-webkit-scrollbar-track { background: transparent; }
@@ -345,6 +351,8 @@
         .btn-item.font-btn { font-size: 0.7rem; }
         .btn-item.font-btn[data-font*="Beau Rivage"] { font-family: 'Beau Rivage', cursive; font-size: 0.95rem; font-weight: 400; }
         .btn-item.font-btn[data-font*="Great Vibes"] { font-family: 'Great Vibes', cursive; font-size: 0.85rem; font-weight: 400; }
+        .btn-item.font-btn[data-font*="Gemunu Libre"] { font-family: 'Gemunu Libre', sans-serif; font-size: 0.8rem; font-weight: 700; }
+        .btn-item.font-btn[data-font*="Unna"] { font-family: 'Unna', serif; font-size: 0.8rem; font-weight: 400; }
 
         #bold-btn { font-weight: 900; font-family: serif; font-size: 0.95rem; }
         #italic-btn { font-style: italic; font-family: serif; font-size: 0.95rem; }
@@ -417,8 +425,19 @@
         }
         .zone-box.compact span { font-size: 0.65rem; }
         .zone-box.compact input[type="number"] {
-            width: 32px;
+            width: 38px;
             font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 2px 4px;
+            text-align: center;
+            outline: none;
+        }
+        .zone-box.compact input[type="number"]:focus {
+            border-color: var(--primary);
+            background: var(--primary-soft);
         }
 
         .custom-color-trigger {
@@ -775,7 +794,7 @@
                                 <span class="grip" aria-hidden="true">⠿</span>
                                 <span>Sürükle &amp; Taşı</span>
                             </div>
-                            <div id="card-text" contenteditable="true" placeholder="Metninizi buraya yazın..."></div>
+                            <div id="card-text" contenteditable="true" placeholder=" "></div>
                         </div>
                     </div>
                     <p class="preview-hint">💡 Metni üstteki tutamaçtan taşıyın. Belirli bir kelimeyi seçip hemen sağ üstteki panelden biçimlendirin.</p>
@@ -943,8 +962,8 @@
                         <button class="btn-item font-btn" data-font="'Plus Jakarta Sans', sans-serif">Jakarta</button>
                         <button class="btn-item font-btn" data-font="'Beau Rivage', cursive">Beau Rivage</button>
                         <button class="btn-item font-btn" data-font="'Great Vibes', cursive">Great Vibes</button>
-                        <button class="btn-item font-btn" data-font="'Montserrat', sans-serif">Montserrat</button>
-                        <button class="btn-item font-btn" data-font="'Lora', serif">Lora</button>
+                        <button class="btn-item font-btn" data-font="'Gemunu Libre', sans-serif">Gemunu Libre</button>
+                        <button class="btn-item font-btn" data-font="'Unna', serif">Unna</button>
                     </div>
 
                     <div class="slider-box">
@@ -1553,12 +1572,6 @@
             });
 
             /* ---------- METİN İŞLEMLERİ ---------- */
-            /* Metin kutusu yüksekliği sınırlandırılır:
-               - Sürükle-Taşı tutamacı için 42px (34px + 8px margin)
-               - Üst/alt güvenlik marjı için 12px (6px + 6px)
-               toplam düşülür. Böylece ne kadar uzun metin yapıştırılırsa
-               yapıştırılsın kutu büyümez, içerik scroll edilir ve tutamaç
-               asla kart dışına taşmaz / kaybolmaz. */
             function getCanvasHeight() {
                 const inline = parseInt(cardCanvas.style.height, 10);
                 if (!isNaN(inline) && inline > 0) return inline;
@@ -1587,7 +1600,6 @@
                 clampAll();
             });
 
-            // Yapıştırma sırasında da yeniden boyutlandır
             cardText.addEventListener('paste', () => {
                 setTimeout(() => {
                     autosizeCardText();
@@ -1595,11 +1607,6 @@
                 }, 0);
             });
 
-            /* Tüm metin boyutu slider'ı değiştiğinde "Seçili Metni
-               Biçimlendir" panelindeki varsayılan rem değeri de otomatik
-               olarak aynı değere senkronize edilir. Kullanıcı daha sonra
-               metni seçip bu değeri elle değiştirerek sadece seçili alan
-               için farklı bir boyut uygulayabilir. */
             fontSize.addEventListener('input', () => {
                 cardText.style.fontSize = fontSize.value + 'rem';
                 sizeTxt.textContent = fontSize.value + 'rem';
@@ -1608,11 +1615,20 @@
                 clampAll();
             });
 
+            // Font değiştirme fonksiyonu
             document.querySelectorAll('[data-font]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    cardText.style.fontFamily = btn.dataset.font;
+                    
+                    const fontToApply = btn.dataset.font;
+                    if (fontToApply) {
+                        cardText.style.setProperty('font-family', fontToApply, 'important');
+                        
+                        cardText.querySelectorAll('*').forEach(el => {
+                            el.style.setProperty('font-family', 'inherit', 'important');
+                        });
+                    }
                     autosizeCardText();
                     clampAll();
                 });
@@ -1662,20 +1678,46 @@
                 radiusVal.textContent = val + 'px';
             });
 
-            /* ---------- KLAVYE GİZLEME + SEÇİMİ KORUMA ---------- */
+            /* ---------- SEÇİMİ KORUMA VE VURGULAMA ---------- */
+            function isRangeInCard(range) {
+                if (!range) return false;
+                try {
+                    const c = range.commonAncestorContainer;
+                    return cardText.contains(c) || c === cardText;
+                } catch (e) { return false; }
+            }
+
+            function captureCurrentSelection() {
+                const sel = window.getSelection();
+                if (!sel || !sel.rangeCount) return;
+                const r = sel.getRangeAt(0);
+                if (r.collapsed) return;
+                if (!isRangeInCard(r)) return;
+
+                savedRange = r.cloneRange();
+                highlightCard.classList.remove('attention');
+                void highlightCard.offsetWidth;
+                highlightCard.classList.add('attention');
+                showSelectionHighlight();
+            }
+
             cardText.addEventListener('pointerdown', () => {
                 clearTimeout(selectionDebounceTimer);
                 removeHighlight();
                 savedRange = null;
             });
 
+            cardText.addEventListener('mouseup', captureCurrentSelection);
+            cardText.addEventListener('keyup', captureCurrentSelection);
+
             document.addEventListener('selectionchange', () => {
                 const sel = window.getSelection();
-                if (!sel.rangeCount) return;
-                if (!cardText.contains(sel.anchorNode)) return;
-                if (sel.isCollapsed) return;
+                if (!sel || !sel.rangeCount) return;
+                const r = sel.getRangeAt(0);
+                if (!isRangeInCard(r)) return;
+                if (r.collapsed) return;
 
-                savedRange = sel.getRangeAt(0).cloneRange();
+                savedRange = r.cloneRange();
                 highlightCard.classList.remove('attention');
                 void highlightCard.offsetWidth;
                 highlightCard.classList.add('attention');
@@ -1690,6 +1732,17 @@
                             showSelectionHighlight();
                         }
                     }, 600);
+                } else {
+                    showSelectionHighlight();
+                }
+            });
+
+            /* Biçimlendirme kartındaki butonlara basıldığında metin kutusundaki
+               seçimin (ve savedRange'in) tarayıcı tarafından temizlenmesini engelle */
+            highlightCard.addEventListener('mousedown', (e) => {
+                const tag = e.target.tagName;
+                if (tag !== 'INPUT') {
+                    e.preventDefault();
                 }
             });
 
@@ -1701,20 +1754,32 @@
                 }
             });
 
-            /* ---------- SEÇİLİ METNİ UYGULAMA (SAĞLAM) ---------- */
-            function isRangeInCard(range) {
-                if (!range) return false;
-                try {
-                    const c = range.commonAncestorContainer;
-                    return cardText.contains(c) || c === cardText;
-                } catch (e) { return false; }
-            }
+            /* ---------- SEÇİLİ METNİ UYGULAMA (SAĞLAM & KESİN) ---------- */
+            let isSelBoldActive = false;
 
-            function applyStylesToSelection(stylesObj) {
+            selBoldBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                clearTimeout(selectionDebounceTimer);
+                isSelBoldActive = !isSelBoldActive;
+                selBoldBtn.classList.toggle('active', isSelBoldActive);
+
+                // Eğer aktif bir seçim varsa anında kalınlığı da uygula
+                const hasSelection = (savedRange && !savedRange.collapsed && isRangeInCard(savedRange)) ||
+                    (() => {
+                        const s = window.getSelection();
+                        return s && s.rangeCount > 0 && !s.isCollapsed && isRangeInCard(s.getRangeAt(0));
+                    })();
+
+                if (hasSelection) {
+                    applyStylesToSelection({ fontWeight: isSelBoldActive ? '800' : '400' }, false);
+                }
+            });
+
+            function applyStylesToSelection(stylesObj, clearSavedAfter = true) {
                 let range = null;
 
                 if (savedRange && !savedRange.collapsed && isRangeInCard(savedRange)) {
-                    range = savedRange;
+                    range = savedRange.cloneRange();
                 } else {
                     const sel = window.getSelection();
                     if (sel && sel.rangeCount > 0 && !sel.isCollapsed && isRangeInCard(sel.getRangeAt(0))) {
@@ -1722,24 +1787,28 @@
                     }
                 }
 
-                if (!range) {
+                if (!range || range.collapsed) {
                     alert("Lütfen önce kart üzerindeki metinden bir kelime veya cümle seçin.");
                     return;
                 }
 
-                const sel = window.getSelection();
-                if (sel) {
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                }
+                const fragment = range.extractContents();
+
+                // Seçilen parça içinde daha önceden oluşturulmuş span'lar varsa
+                // yeni uygulanacak özellikleri ezmelerini engellemek için çakışan stilleri temizle
+                fragment.querySelectorAll('span').forEach(innerSpan => {
+                    if (stylesObj.fontSize) innerSpan.style.fontSize = '';
+                    if (stylesObj.color) innerSpan.style.color = '';
+                    if (stylesObj.fontWeight) innerSpan.style.fontWeight = '';
+                });
 
                 const span = document.createElement('span');
                 for (const [prop, value] of Object.entries(stylesObj)) {
                     span.style[prop] = value;
                 }
+                span.appendChild(fragment);
 
                 try {
-                    span.appendChild(range.extractContents());
                     range.insertNode(span);
                 } catch (err) {
                     console.error('Seçim uygulanamadı:', err);
@@ -1747,15 +1816,33 @@
                     return;
                 }
 
-                if (sel) sel.removeAllRanges();
-                savedRange = null;
-                removeHighlight();
-                if (document.activeElement === cardText) cardText.blur();
+                // Seçimi yeni oluşturulan span üzerinde güncel tut
+                const newRange = document.createRange();
+                newRange.selectNodeContents(span);
+
+                const sel = window.getSelection();
+                if (sel) {
+                    sel.removeAllRanges();
+                    if (!clearSavedAfter) {
+                        sel.addRange(newRange);
+                    }
+                }
+
+                if (clearSavedAfter) {
+                    savedRange = null;
+                    removeHighlight();
+                    if (document.activeElement === cardText) cardText.blur();
+                } else {
+                    savedRange = newRange.cloneRange();
+                    showSelectionHighlight();
+                }
+
                 autosizeCardText();
                 clampAll();
             }
 
-            applySelFormat.addEventListener('click', () => {
+            applySelFormat.addEventListener('click', (e) => {
+                e.preventDefault();
                 clearTimeout(selectionDebounceTimer);
 
                 let colorVal = selTextColor.value;
@@ -1765,44 +1852,53 @@
                     colorVal = rgbStringToHex(bg) || '#000000';
                 }
 
-                const sizeVal = selFontSize.value.trim();
-                const styles  = {};
+                const rawSize = (selFontSize.value || '').toString().replace(',', '.').trim();
+                const parsedSize = parseFloat(rawSize);
+                const styles = {};
 
-                if (colorVal) styles.color = colorVal;
-                if (sizeVal && !isNaN(parseFloat(sizeVal))) {
-                    styles.fontSize = parseFloat(sizeVal) + 'rem';
+                if (colorVal) {
+                    styles.color = colorVal;
+                }
+                if (!isNaN(parsedSize) && parsedSize > 0) {
+                    styles.fontSize = parsedSize + 'rem';
+                }
+                if (isSelBoldActive) {
+                    styles.fontWeight = '800';
                 }
 
                 if (Object.keys(styles).length === 0) {
-                    alert("Lütfen bir renk seçin veya bir boyut girin.");
+                    alert("Lütfen bir renk seçin, kalınlık belirleyin veya bir boyut girin.");
                     return;
                 }
 
-                applyStylesToSelection(styles);
+                applyStylesToSelection(styles, true);
                 spectrumPopover.classList.remove('active');
             });
 
-            selBoldBtn.addEventListener('click', () => {
-                clearTimeout(selectionDebounceTimer);
-                applyStylesToSelection({ fontWeight: '800' });
-            });
-
-            clearSelFormat.addEventListener('click', () => {
+            clearSelFormat.addEventListener('click', (e) => {
+                e.preventDefault();
                 clearTimeout(selectionDebounceTimer);
 
-                if (!savedRange || savedRange.collapsed) {
+                let range = null;
+                if (savedRange && !savedRange.collapsed && isRangeInCard(savedRange)) {
+                    range = savedRange.cloneRange();
+                } else {
                     const sel = window.getSelection();
-                    if (!sel.rangeCount || sel.isCollapsed || !cardText.contains(sel.anchorNode)) {
-                        alert("Lütfen temizlemek için metin seçin.");
-                        return;
+                    if (sel && sel.rangeCount > 0 && !sel.isCollapsed && isRangeInCard(sel.getRangeAt(0))) {
+                        range = sel.getRangeAt(0).cloneRange();
                     }
-                    savedRange = sel.getRangeAt(0).cloneRange();
+                }
+
+                if (!range || range.collapsed) {
+                    alert("Lütfen temizlemek için metin seçin.");
+                    return;
                 }
 
                 try {
-                    const textNode = document.createTextNode(savedRange.toString());
-                    savedRange.deleteContents();
-                    savedRange.insertNode(textNode);
+                    const plainText = range.toString();
+                    const textNode = document.createTextNode(plainText);
+                    range.deleteContents();
+                    range.insertNode(textNode);
                 } catch(err) {
                     console.error(err);
                     return;
@@ -1812,6 +1908,8 @@
                 if (sel) sel.removeAllRanges();
                 savedRange = null;
                 removeHighlight();
+                isSelBoldActive = false;
+                selBoldBtn.classList.remove('active');
 
                 if (document.activeElement === cardText) {
                     cardText.blur();
@@ -1857,10 +1955,6 @@
                 };
             }
 
-            /* topExtra: elemanın üstünde görsel olarak taşan alan
-               (metin kutusu için Sürükle-Taşı çubuğu = 42px).
-               Bu alan sınır hesabına katılarak çubuğun kartın dışına
-               çıkıp kaybolması engellenir. */
             function applyCenter(el, cx, cy, margin, topExtra) {
                 topExtra = topExtra || 0;
                 const canvasRect = cardCanvas.getBoundingClientRect();
@@ -1874,8 +1968,6 @@
                 const maxY = canvasRect.height - halfH - margin;
 
                 const targetX = maxX < minX ? canvasRect.width / 2 : Math.min(Math.max(cx, minX), maxX);
-                // maxY < minY ise: eleman + tutamaç karta sığmıyor.
-                // Bu durumda tutamacı görünür tutmak için minY kullanılır.
                 const targetY = maxY < minY ? minY : Math.min(Math.max(cy, minY), maxY);
 
                 const left = targetX - halfW;
@@ -1950,6 +2042,8 @@
                 clearTimeout(selectionDebounceTimer);
                 removeHighlight();
                 savedRange = null;
+                isSelBoldActive = false;
+                selBoldBtn.classList.remove('active');
 
                 logoWrapper.style.left = 'calc(50% - 50px)';
                 logoWrapper.style.top  = 'calc(30% - 50px)';
@@ -1977,12 +2071,15 @@
 
                 applyTheme('gunes');
 
-                // Genel metin boyutu ve seçili metin varsayılan boyutunu
-                // varsayılan 1.4rem değerine geri döndür ve senkronize et.
                 fontSize.value = 1.4;
                 sizeTxt.textContent = '1.4rem';
                 cardText.style.fontSize = '1.4rem';
                 selFontSize.value = '1.4';
+
+                cardText.style.setProperty('font-family', "'Playfair Display', serif", 'important');
+                document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
+                const defaultFontBtn = document.querySelector('[data-font*="Playfair Display"]');
+                if (defaultFontBtn) defaultFontBtn.classList.add('active');
 
                 autosizeCardText();
                 clampAll();
@@ -2075,7 +2172,6 @@
             autosizeCardText();
             clampAll();
 
-            // Başlangıçta iki boyut alanını da senkronize et
             selFontSize.value = fontSize.value;
 
             if (document.fonts && document.fonts.ready) {
